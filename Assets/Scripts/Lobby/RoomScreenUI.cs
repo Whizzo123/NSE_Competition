@@ -29,7 +29,7 @@ public class RoomScreenUI : MonoBehaviour
 
         players.Add(player);
 
-        player.gameObject.transform.parent = playersList.transform;
+        player.gameObject.transform.SetParent(playersList.transform, false);
 
 
     }

@@ -55,7 +55,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
     {
         BoltLog.Info("ControlGained");
 
-        readyButton.transform.GetChild(0).GetComponent<Text>().color = Color.white;
+        //readyButton.transform.GetChild(0).GetComponent<Text>().color = Color.white;
         SetupPlayer();
     }
     public override void OnEvent(LobbyPlayerKick evnt)
@@ -95,7 +95,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
         removePlayerButton.gameObject.SetActive(false);
         removePlayerButton.interactable = false;
 
-        readyButton.transform.GetChild(0).GetComponent<Text>().text = "JOIN";
+        //readyButton.transform.GetChild(0).GetComponent<Text>().text = "JOIN";
         readyButton.interactable = true;
 
         //we switch from simple name display to name input
@@ -196,7 +196,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 
 			Text textComponent = readyButton.transform.GetChild(0).GetComponent<Text>();
 			textComponent.text = "READY";
-			textComponent.color = ReadyColor;
+			//textComponent.color = ReadyColor;
 			readyButton.interactable = false;
 			nameInput.interactable = false;
 		}
@@ -206,7 +206,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 
 			Text textComponent = readyButton.transform.GetChild(0).GetComponent<Text>();
 			textComponent.text = entity.IsControlled ? "JOIN" : "...";
-			textComponent.color = Color.white;
+			//textComponent.color = Color.white;
 			readyButton.interactable = entity.IsControlled;
 			nameInput.interactable = entity.IsControlled;
 		}
