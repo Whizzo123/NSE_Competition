@@ -9,8 +9,17 @@ public class RoomScreenUI : MonoBehaviour
     public GameObject playersList;
     public GameObject playerPrefab;
 
+    public void ResetUI()
+    {
+        foreach(LobbyPlayersInfo child in playersList.GetComponentsInChildren<LobbyPlayersInfo>())
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
     public void AddPlayer(LobbyPlayer player)
     {
+
         if(player == null) { return; }
 
         if(players.Contains(player))
@@ -20,8 +29,9 @@ public class RoomScreenUI : MonoBehaviour
 
         players.Add(player);
 
-        GameObject lobbyPlayer = Instantiate(playerPrefab, playersList.transform, false);
-        lobbyPlayer.GetComponent<LobbyPlayersInfo>().Populate(player);
+        player.gameObject.transform.parent = playersList.transform;
+
+
     }
 
 }

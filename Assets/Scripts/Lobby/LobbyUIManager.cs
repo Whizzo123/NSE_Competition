@@ -53,10 +53,6 @@ public class LobbyUIManager : GlobalEventListener
 
     private void CreateRoomSession()
     {
-        if (createScreen.playerNameInput.text == "")
-            return;
-        else
-            playerName = createScreen.playerNameInput.text;
         this.roomName = createScreen.inputField.text;
         Debug.Log("CreatingRoomSession");
         BoltLauncher.StartServer();
@@ -86,19 +82,11 @@ public class LobbyUIManager : GlobalEventListener
 
     private void SwapToBrowseScreen()
     {
-        if (createScreen.playerNameInput.text == "")
-            return;
-        else
-            playerName = createScreen.playerNameInput.text;
         BoltLauncher.StartClient();
     }
 
     private void JoinRandomSession()
     {
-        if (createScreen.playerNameInput.text == "")
-            return;
-        else
-            playerName = createScreen.playerNameInput.text;
         randomJoin = true;
         BoltLauncher.StartClient();
     }
@@ -133,9 +121,8 @@ public class LobbyUIManager : GlobalEventListener
     {
         Debug.Log("Inside SessionCreatedOrUpdated");
         SessionCreatedUIHandler(session);
-        LobbyPlayer player = new LobbyPlayer();
-        player.playerName = playerName;
-        roomScreen.AddPlayer(player);
+        BoltEntity player = BoltNetwork.Instantiate(BoltPrefabs.LobbyPlayerInfo);
+        player.TakeControl();
     }
 
     public override void Connected(BoltConnection connection)
@@ -149,11 +136,26 @@ public class LobbyUIManager : GlobalEventListener
         {
             BoltLog.Info("Connected Server: {0}", connection);
 
-            //var entity = BoltNetwork.Instantiate(BoltPrefabs.PlayerInfo);
-            //entity.AssignControl(connection);
-            LobbyPlayer player = new LobbyPlayer();
-            player.playerName = playerName;
-            roomScreen.AddPlayer(player);
+            BoltEntity player = BoltNetwork.Instantiate(BoltPrefabs.LobbyPlayerInfo);
+            player.AssignControl(connection);
+        }
+    }
+
+    public override void EntityAttached(BoltEntity entity)
+    {
+        LobbyPlayer lobbyPlayer = entity.gameObject.GetComponent<LobbyPlayer>();
+        roomScreen.AddPlayer(lobbyPlayer);
+
+        if (lobbyPlayer != null)
+        {
+            if (entity.IsControlled)
+            {
+                lobbyPlayer.SetupPlayer();
+            }
+            else
+            {
+                lobbyPlayer.SetupOtherPlayer();
+            }
         }
     }
 
