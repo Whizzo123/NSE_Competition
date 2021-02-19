@@ -11,13 +11,23 @@ public class LobbyUIManager : GlobalEventListener
     [SerializeField]
     public UIScreens[] screens;
 
+    public string gameSceneName;
+
     private CreateScreenUI createScreen;
     private BrowseScreenUI browseScreen;
     private RoomScreenUI roomScreen;
     private string roomName;
     private string playerName;
 
+    [SerializeField] private int minPlayers = 2;
+
+
+    [Tooltip("Time in second between all players ready & match start")]
+    [SerializeField]
+    private float prematchCountdown = 5.0f;
+
     private bool randomJoin;
+    private bool isCountdown = false;
 
     public GameObject playerLobbyPrefab;
 
@@ -50,6 +60,68 @@ public class LobbyUIManager : GlobalEventListener
         browseScreen.OnClickJoinSession += JoinSessionEvent;
     }
 
+    private void FixedUpdate()
+    {
+        if (BoltNetwork.IsServer && isCountdown == false)
+        {
+            VerifyReady();
+        }
+    }
+
+    private void VerifyReady()
+    {
+        var allReady = true;
+        var readyCount = 0;
+
+        foreach (var entity in BoltNetwork.Entities)
+        {
+            if (entity.StateIs<ILobbyPlayerInfoState>() == false) continue;
+
+            var lobbyPlayer = entity.GetState<ILobbyPlayerInfoState>();
+
+            allReady &= lobbyPlayer.Ready;
+
+            if (allReady == false) break;
+            readyCount++;
+        }
+
+        if (allReady && readyCount >= minPlayers)
+        {
+            isCountdown = true;
+            StartCoroutine(ServerCountdownCoroutine());
+        }
+    }
+
+    private IEnumerator ServerCountdownCoroutine()
+    {
+        var remainingTime = prematchCountdown;
+        var floorTime = Mathf.FloorToInt(remainingTime);
+
+        LobbyCountdown countdown;
+
+        while (remainingTime > 0)
+        {
+            yield return null;
+
+            remainingTime -= Time.deltaTime;
+            var newFloorTime = Mathf.FloorToInt(remainingTime);
+
+            if (newFloorTime != floorTime)
+            {
+                floorTime = newFloorTime;
+
+                countdown = LobbyCountdown.Create(GlobalTargets.Everyone);
+                countdown.Time = floorTime;
+                countdown.Send();
+            }
+        }
+
+        countdown = LobbyCountdown.Create(GlobalTargets.Everyone);
+        countdown.Time = 0;
+        countdown.Send();
+
+        BoltNetwork.LoadScene(gameSceneName);
+    }
 
     private void CreateRoomSession()
     {

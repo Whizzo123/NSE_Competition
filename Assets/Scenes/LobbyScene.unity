@@ -832,6 +832,9 @@ MonoBehaviour:
     screen: {fileID: 1555436509}
   - screenName: Room
     screen: {fileID: 602581311}
+  gameSceneName: GameScene
+  minPlayers: 2
+  prematchCountdown: 5
   playerLobbyPrefab: {fileID: 795114186693884625, guid: 43edba4bcb587804291afe955648a2fb, type: 3}
 --- !u!1 &601909426
 GameObject:
