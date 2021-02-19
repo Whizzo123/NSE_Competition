@@ -189,6 +189,27 @@ public class LobbyUIManager : GlobalEventListener
         }
     }
 
+    public override void EntityDetached(BoltEntity entity)
+    {
+        var lobbyPlayer = entity.gameObject.GetComponent<LobbyPlayer>();
+        roomScreen.RemovePlayer(lobbyPlayer);
+    }
+
+    public override void Disconnected(BoltConnection connection)
+    {
+        foreach (var entity in BoltNetwork.Entities)
+        {
+            if (entity.StateIs<ILobbyPlayerInfoState>() == false || entity.IsController(connection) == false) continue;
+
+            var player = entity.GetComponent<LobbyPlayer>();
+
+            if (player)
+            {
+                player.RemovePlayer();
+            }
+        }
+    }
+
 }
 
 [Serializable]

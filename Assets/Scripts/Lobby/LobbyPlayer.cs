@@ -60,7 +60,11 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
     }
     public override void OnEvent(LobbyPlayerKick evnt)
     {
-        BoltNetwork.Shutdown();
+		if (entity.IsOwner)
+		{
+			BoltNetwork.Destroy(this.gameObject);
+		}
+		BoltNetwork.Shutdown();
     }
 
     public void OnRemovePlayerClick()

@@ -34,4 +34,14 @@ public class RoomScreenUI : MonoBehaviour
 
     }
 
+    public void RemovePlayer(LobbyPlayer player)
+    {
+        if (player == null) { return; }
+
+        if (players.Contains(player))
+        {
+            players.Remove(player);
+        }
+    }
+
 }
