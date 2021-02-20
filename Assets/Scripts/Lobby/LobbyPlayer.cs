@@ -32,6 +32,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
         state.AddCallback("Name", () => nameInput.text = state.Name);
         state.AddCallback("Ready", callback: () => OnClientReady(state.Ready));
 
+		//Is owner asks whether this machine created this player
         if(entity.IsOwner)
         {
             state.Name = string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100));
@@ -191,6 +192,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 	public void OnReadyClicked()
 	{
 		isReady = !isReady;
+		PlayerPrefs.SetString("username", playerName);
 	}
 
 	public void OnClientReady(bool readyState)
