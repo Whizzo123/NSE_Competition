@@ -9,4 +9,17 @@ public class PhotonGameSceneController : GlobalEventListener
     {
         PlayerController.Spawn();
     }
+
+    void Start()
+    {
+        if (BoltNetwork.IsServer)
+        {
+            BoltEntity artefact = BoltNetwork.Instantiate(BoltPrefabs.Artefect);
+            artefact.transform.position = new Vector3(1, -1, -16);
+            artefact.GetComponent<ArtefactBehaviour>().PopulateData("Mayan Jar", 100);
+            artefact.TakeControl();
+        }
+    }
+ 
+
 }
