@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class T_CharacterMovementScript : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
 
     #region privateVariables
@@ -111,7 +111,7 @@ public class T_CharacterMovementScript : MonoBehaviour
         if (Input.GetKey(KeyCode.C))
         {
 
-            HitFoward();
+            //HitFoward();
         }
 
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), 0.15F);
@@ -125,10 +125,12 @@ public class T_CharacterMovementScript : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + dir);
     }
 
-    /// <summary>
-    /// Destroys obstacles directly in front of player
-    /// </summary>
-    void HitFoward()
+/// <summary>
+/// Draws a ray in front of the player to destroy an 'obstacle'.
+/// </summary>
+/// <param name="scale"></param>
+/// <param name="obstacles"></param>
+    void HitFoward(int scale, LayerMask obstacles)
     {
         //Once empty is found, we will drop in that area
         RaycastHit hit;
@@ -136,7 +138,8 @@ public class T_CharacterMovementScript : MonoBehaviour
 
             if (Physics.Raycast(ray,out hit,scale,obstacles))
             {
-            //Debug.DrawLine(transform.position, hit.point, Color.red, 500f); //Draws in scene
+                //Debug.DrawLine(transform.position, hit.point, Color.red, 500f); //Draws in scene
+                //
                 //Instantiate(pickedUpObject, originalPosition + direction, transform.rotation); Either play animation or instantiata object. Either have object do collider destroy or physics destroy
                 Destroy(hit.transform.gameObject);
             }

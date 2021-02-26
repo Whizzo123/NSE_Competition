@@ -15,7 +15,7 @@ public class Proto_Machete : MonoBehaviour
         {
             Destroy(item);
         }
-        FindObjectOfType<T_CharacterMovementScript>().pressed = false;
+        //FindObjectOfType<T_CharacterMovementScript>().pressed = false;
         Destroy(this.gameObject);
 
     }
