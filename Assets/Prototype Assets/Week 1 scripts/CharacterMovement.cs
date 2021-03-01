@@ -91,14 +91,19 @@ public class CharacterMovement : MonoBehaviour
 
 
     }
-    Quaternion pop;
-    Quaternion qa;
+
+
+    //If we wanted the model to remain upright, we can attach this to a child that isn't visible, but has the same parameters as the player(height etc)
+    #region obstacleDestruction+Slopes
+
 
     void PlayerRotation()
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, groundMask))
         {
+            Quaternion pop;
+            Quaternion qa;
             //transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation;
             Vector3 axisOfRotation = (Vector3.Cross(hit.normal, Vector3.up)).normalized;//gets the axis to rotate on a slope.
             float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(for somereason it's negative either way round)
@@ -138,8 +143,8 @@ public class CharacterMovement : MonoBehaviour
             //Debug.Log("HIITEITE");
             }
     }
-    //Vector3 f;
-    
+    #endregion
+
     private void OnDrawGizmos()
     {
         //Gizmos.DrawLine(transform.position, transform.position + axisOfRotation);//shows axisOfRotation
