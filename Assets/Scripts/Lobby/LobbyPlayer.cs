@@ -107,7 +107,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
         nameInput.interactable = true;
 
         nameInput.onEndEdit.RemoveAllListeners();
-        nameInput.onEndEdit.AddListener((text => { playerName = text; }));
+        nameInput.onEndEdit.AddListener((text => { playerName = text; PlayerPrefs.SetString("username", text); }));
 
         readyButton.onClick.RemoveAllListeners();
         readyButton.onClick.AddListener(OnReadyClicked);
@@ -118,8 +118,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
     public void SetupOtherPlayer()
     {
         BoltLog.Info("SetupOtherPlayer");
-
-        nameInput.interactable = false;
+		nameInput.interactable = false;
 
         removePlayerButton.gameObject.SetActive(BoltNetwork.IsServer);
         removePlayerButton.interactable = BoltNetwork.IsServer;
@@ -192,7 +191,6 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 	public void OnReadyClicked()
 	{
 		isReady = !isReady;
-		PlayerPrefs.SetString("username", playerName);
 	}
 
 	public void OnClientReady(bool readyState)

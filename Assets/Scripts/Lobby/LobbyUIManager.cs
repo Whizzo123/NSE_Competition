@@ -81,6 +81,10 @@ public class LobbyUIManager : GlobalEventListener
 
             if (allReady && readyCount >= minPlayers)
             {
+                foreach(LobbyPlayer player in roomScreen.players)
+                {
+                    FindObjectOfType<PlayerData>().AddUsername(player.connection, player.state.Name);
+                }
                 isCountdown = true;
                 StartCoroutine(ServerCountdownCoroutine());
             }
@@ -205,9 +209,11 @@ public class LobbyUIManager : GlobalEventListener
     {
         if (BoltNetwork.IsClient)
         {
+            FindObjectOfType<PlayerData>().RegisterConnection(connection);
             BoltLog.Info("Connected Client: {0}", connection);
             //Create new player object and add it to room
             LobbyPlayer player = new LobbyPlayer();
+            player.connection = connection;
             roomScreen.AddPlayer(player);
             ChangeScreenTo("Room");
         }
@@ -217,6 +223,7 @@ public class LobbyUIManager : GlobalEventListener
             //Create player on the server and assign control to local machine
             BoltEntity player = BoltNetwork.Instantiate(BoltPrefabs.LobbyPlayerInfo);
             player.AssignControl(connection);
+            BoltLog.Info("Server assign control connection: " + connection.ConnectionId);
         }
     }
 

@@ -12,7 +12,9 @@ public class CanvasUIManager : MonoBehaviour
     public static GameObject playerNameTextPrefab;
     public GameObject artefactPickupPopup;
     public PlayerInventoryUI inventoryUI;
+    public ScoreboardUI scoreboardUI;
     public float popupShowTime;
+    public GameObject playerTextContainer;
 
 
     public void PopupArtefactPickupDisplay(ItemArtefact artefact)
@@ -41,7 +43,12 @@ public class CanvasUIManager : MonoBehaviour
         inventoryUI.AddInventoryItem(artefact);
     }
 
-    public static void SpawnPlayerNameTextPrefab(PlayerController playerController)
+    public void RemoveFromInventoryScreen(ItemArtefact artefact)
+    {
+        inventoryUI.SubtractInventoryItem(artefact);
+    }
+
+   /* public static void SpawnPlayerNameTextPrefab(PlayerController playerController)
     {
         BoltLog.Info("Inside SpawnPlayerNameTextPrefab");
         if (playerNameTextPrefab == null)
@@ -56,5 +63,5 @@ public class CanvasUIManager : MonoBehaviour
         go.GetComponent<RectTransform>().position = new Vector3(-18, 271);
 
         playerController.playerNameText = go;
-    }
+    }*/
 }

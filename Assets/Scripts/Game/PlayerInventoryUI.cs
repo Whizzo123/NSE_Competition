@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PlayerInventoryUI : MonoBehaviour
 {
@@ -27,6 +28,18 @@ public class PlayerInventoryUI : MonoBehaviour
         }
     }
 
+    public void SubtractInventoryItem(ItemArtefact item)
+    {
+        if(inventoryTabs.ContainsKey(item.name))
+        {
+            UpdateInventoryItem(item, false);
+        }
+        else
+        {
+            BoltLog.Error("Attempting to subtract when no inventory tab exists under that name");
+        }
+    }
+
     private void UpdateInventoryItem(ItemArtefact item, bool adding)
     {
         if (adding)
@@ -38,14 +51,23 @@ public class PlayerInventoryUI : MonoBehaviour
             inventoryTabs[item.name].GetComponent<InventoryTabUI>().EditCount(-1);
             if(inventoryTabs[item.name].GetComponent<InventoryTabUI>().GrabPersonalCount() <= 0)
             {
-                RemoveInventoryItem(item);
+                RemoveInventoryItem(item.name);
             }
         }
     }
 
-    public void RemoveInventoryItem(ItemArtefact item)
+    public void ClearInventoryScreen()
     {
-        Destroy(inventoryTabs[item.name]);
-        inventoryTabs.Remove(item.name);
+        string[] inventoryKeys = inventoryTabs.Keys.ToArray<string>();
+        for (int i = 0; i < inventoryKeys.Length; i++)
+        {
+            RemoveInventoryItem(inventoryKeys[i]);
+        }
+    }
+
+    public void RemoveInventoryItem(string name)
+    {
+        Destroy(inventoryTabs[name]);
+        inventoryTabs.Remove(name);
     }
 }
