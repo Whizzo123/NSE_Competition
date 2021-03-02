@@ -32,6 +32,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
         state.AddCallback("Name", () => nameInput.text = state.Name);
         state.AddCallback("Ready", callback: () => OnClientReady(state.Ready));
 
+		//Is owner asks whether this machine created this player
         if(entity.IsOwner)
         {
             state.Name = string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100));
@@ -106,7 +107,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
         nameInput.interactable = true;
 
         nameInput.onEndEdit.RemoveAllListeners();
-        nameInput.onEndEdit.AddListener((text => { playerName = text; }));
+        nameInput.onEndEdit.AddListener((text => { playerName = text; PlayerPrefs.SetString("username", text); }));
 
         readyButton.onClick.RemoveAllListeners();
         readyButton.onClick.AddListener(OnReadyClicked);
@@ -117,8 +118,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
     public void SetupOtherPlayer()
     {
         BoltLog.Info("SetupOtherPlayer");
-
-        nameInput.interactable = false;
+		nameInput.interactable = false;
 
         removePlayerButton.gameObject.SetActive(BoltNetwork.IsServer);
         removePlayerButton.interactable = BoltNetwork.IsServer;
