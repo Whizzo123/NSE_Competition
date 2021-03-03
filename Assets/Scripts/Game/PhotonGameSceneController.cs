@@ -21,7 +21,7 @@ public class PhotonGameSceneController : GlobalEventListener
 
             BoltEntity secondArtefact = BoltNetwork.Instantiate(BoltPrefabs.Artefect);
             secondArtefact.transform.position = new Vector3(-15, -1, 4);
-            secondArtefact.GetComponent<ArtefactBehaviour>().PopulateData("Empty Tube Of Toothpaste", ArtefactRarity.Legendary);
+            secondArtefact.GetComponent<ArtefactBehaviour>().PopulateData("Empty Tube Of Toothpaste", ArtefactRarity.Exotic);
             secondArtefact.TakeControl();
 
             BoltEntity stash = BoltNetwork.Instantiate(BoltPrefabs.Stash);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Bolt;
 
-public enum ArtefactRarity { Common, UnCommon, Rare, SuperRare, Legendary}
+public enum ArtefactRarity { Common, Rare, Exotic}
 
 public class ArtefactBehaviour : EntityBehaviour<IArtefactState>
 {
@@ -38,19 +38,13 @@ public class ArtefactBehaviour : EntityBehaviour<IArtefactState>
         switch(rarity)
         {
             case ArtefactRarity.Common:
-                dataPoints = 100;
-                break;
-            case ArtefactRarity.UnCommon:
-                dataPoints = 250;
+                dataPoints = 200;
                 break;
             case ArtefactRarity.Rare:
-                dataPoints = 500;
-                break;
-            case ArtefactRarity.SuperRare:
                 dataPoints = 1000;
                 break;
-            case ArtefactRarity.Legendary:
-                dataPoints = 2000;
+            case ArtefactRarity.Exotic:
+                dataPoints = 5000;
                 break;
         }
         state.Points = dataPoints;
