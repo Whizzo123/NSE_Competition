@@ -8,13 +8,14 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
 {
 
     private bool dragging;
-    private string abilityName;
-    private string abilityDescription;
-    private int abilityPoints;
+    public string abilityName { get; private set; }
+    public string abilityDescription { get; private set; }
+    public int abilityPoints { get; private set; }
 
     void Start()
     {
         dragging = false;
+        PopulateAbilityIcon("Speed", "this is the best ability", Random.Range(1, 5), null);
     }
 
     public void PopulateAbilityIcon(string name, string description, int points, Sprite imageSprite)
