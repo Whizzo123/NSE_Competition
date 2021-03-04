@@ -16,6 +16,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     private ArtefactBehaviour targetedArtefact;
     private Stash gameStash;
     private PlayerController targetedPlayerToStealFrom;
+
+    private bool loadoutReleased;
+
     //---------------------------
    // public List<ItemArtefact> inventory;
 
@@ -25,29 +28,16 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     public override void Attached()
     {
         state.SetTransforms(state.PlayerTransform, transform);
+        SetLoadoutReleased(false);
         //Set state transform to be equal to current transform
         if (entity.IsOwner)
         {
-
+            state.LoadoutReady = false;
             for (int i = 0; i < state.Inventory.Length; i++)
             {
                 state.Inventory[i].ItemName = "";
                 state.Inventory[i].ItemPoints = 0;
             }
-            
-            //Add a callback that whenever state.Name is modified change playerNameText.text 
-            state.AddCallback("Name", () =>
-            {
-                if (entity.IsOwner)
-                {
-                    //playerNameText.GetComponent<Text>().text = state.Name;
-                }
-                else
-                {
-                //Stops other players name text showing up on screen
-                //playerNameText.gameObject.SetActive(false);
-            }
-            });
         }
         //inventory = new List<ItemArtefact>();
         if(!entity.IsOwner)
@@ -127,67 +117,71 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             playerNameText.GetComponent<Text>().text = "Player Name: " + state.Name;
         }
 
-        if(Input.GetKey(KeyCode.W)) { movement.z += 1; }
-        if(Input.GetKey(KeyCode.S)) { movement.z -= 1; }
-        if(Input.GetKey(KeyCode.A)) { movement.x -= 1; }
-        if(Input.GetKey(KeyCode.D)) { movement.x += 1; }
-
-
-        if(movement != Vector3.zero)
+        if (loadoutReleased)
         {
-            transform.Translate(movement.normalized * speed * BoltNetwork.FrameDeltaTime);
-        }
 
-        if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height) 
-        {
-            if (lastMousePos != Input.mousePosition)
+            if (Input.GetKey(KeyCode.W)) { movement.z += 1; }
+            if (Input.GetKey(KeyCode.S)) { movement.z -= 1; }
+            if (Input.GetKey(KeyCode.A)) { movement.x -= 1; }
+            if (Input.GetKey(KeyCode.D)) { movement.x += 1; }
+
+
+            if (movement != Vector3.zero)
             {
-                float mouseMoveDistance = lastMousePos.x - Input.mousePosition.x;
-                if (inverted)
-                    mouseMoveDistance *= -1;
-                this.transform.Rotate(new Vector3(0, mouseMoveDistance * rotationSpeed * Time.deltaTime, 0));
+                transform.Translate(movement.normalized * speed * BoltNetwork.FrameDeltaTime);
             }
 
-            lastMousePos = Input.mousePosition;
-        }
-
-        if(Input.GetKeyDown(KeyCode.E))
-        {
-            if (targetedArtefact != null)
+            if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
             {
-                targetedArtefact.Pickup(this);
-                targetedArtefact = null;
-            }
-            if(gameStash != null)
-            {
-                gameStash.AddToStashScores(this);
-            }
-        }
-        if(Input.GetKeyDown(KeyCode.F))
-        {
-            BoltLog.Info("F pressed");
-            if(targetedPlayerToStealFrom != null)
-            {
-                BoltLog.Info("Has a target");
-                if(targetedPlayerToStealFrom.IsInventoryEmpty())
+                if (lastMousePos != Input.mousePosition)
                 {
-                    BoltLog.Info("Attempting steal");
-                    InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
-                    AddToInventory(randomArtefact.ItemName, randomArtefact.ItemPoints);
-                    int indexToRemove = -1;
-                    for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
+                    float mouseMoveDistance = lastMousePos.x - Input.mousePosition.x;
+                    if (inverted)
+                        mouseMoveDistance *= -1;
+                    this.transform.Rotate(new Vector3(0, mouseMoveDistance * rotationSpeed * Time.deltaTime, 0));
+                }
+
+                lastMousePos = Input.mousePosition;
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (targetedArtefact != null)
+                {
+                    targetedArtefact.Pickup(this);
+                    targetedArtefact = null;
+                }
+                if (gameStash != null)
+                {
+                    gameStash.AddToStashScores(this);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                BoltLog.Info("F pressed");
+                if (targetedPlayerToStealFrom != null)
+                {
+                    BoltLog.Info("Has a target");
+                    if (targetedPlayerToStealFrom.IsInventoryEmpty())
                     {
-                        if (targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
+                        BoltLog.Info("Attempting steal");
+                        InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
+                        AddToInventory(randomArtefact.ItemName, randomArtefact.ItemPoints);
+                        int indexToRemove = -1;
+                        for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
                         {
-                            indexToRemove = i;
+                            if (targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
+                            {
+                                indexToRemove = i;
+                            }
                         }
+                        var request = InventoryRemove.Create();
+                        request.ItemIndex = indexToRemove;
+                        request.InventoryEntity = targetedPlayerToStealFrom.entity;
+                        request.ItemName = randomArtefact.ItemName;
+                        request.ItemPoints = randomArtefact.ItemPoints;
+                        request.Send();
                     }
-                    var request = InventoryRemove.Create();
-                    request.ItemIndex = indexToRemove;
-                    request.InventoryEntity = targetedPlayerToStealFrom.entity;
-                    request.ItemName = randomArtefact.ItemName;
-                    request.ItemPoints = randomArtefact.ItemPoints;
-                    request.Send();
                 }
             }
         }
@@ -267,6 +261,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 }
             }
         }
+    }
+
+    public void SetLoadoutReleased(bool value)
+    {
+        loadoutReleased = value;
     }
 
     public static void Spawn()
