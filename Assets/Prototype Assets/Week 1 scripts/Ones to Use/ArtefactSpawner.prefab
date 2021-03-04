@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6113681094690531790}
   - component: {fileID: 6113681094690531791}
   m_Layer: 0
-  m_Name: GameObjectSpawner
+  m_Name: ArtefactSpawner
   m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   raycastDistance: 100.84
-  objectToSpawn: {fileID: 919432600166237137, guid: 8b66ce3b6e152e744aa896fdf1feb736, type: 3}
+  objectToSpawn:
+  - {fileID: 781001905739417216, guid: 70fe023e6abe1f14e9d280ff46df9499, type: 3}
   ground:
     serializedVersion: 2
     m_Bits: 256

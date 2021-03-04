@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Obstacle
   - Spawner
+  - Artefact
   layers:
   - Default
   - TransparentFX

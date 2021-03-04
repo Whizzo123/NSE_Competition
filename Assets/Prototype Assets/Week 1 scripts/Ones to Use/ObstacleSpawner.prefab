@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4425282659211757523
+--- !u!1 &6113681094690531824
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,43 +8,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4425282659211757521}
-  - component: {fileID: 4425282659211757520}
+  - component: {fileID: 6113681094690531790}
+  - component: {fileID: 6113681094690531791}
   m_Layer: 0
-  m_Name: SpawnerSpawner
-  m_TagString: Untagged
+  m_Name: GameObjectSpawner
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4425282659211757521
+--- !u!4 &6113681094690531790
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4425282659211757523}
+  m_GameObject: {fileID: 6113681094690531824}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 47.71, y: 8.52, z: 15.26}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4425282659211757520
+--- !u!114 &6113681094690531791
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4425282659211757523}
+  m_GameObject: {fileID: 6113681094690531824}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd7444d1b9f41b047ba34aa3440b6180, type: 3}
+  m_Script: {fileID: 11500000, guid: a3097ede6af43394a971aead4ffe878d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemToSpread: {fileID: 6113681094690531824, guid: 1a2e8f6cb7875bf42a6cc7328e2f590b, type: 3}
-  numItemsToSpawn: 10
-  itemXSpread: 10
-  itemYSpread: 0
-  itemZSpread: 10
+  raycastDistance: 100.84
+  objectToSpawn:
+  - {fileID: 919432600166237137, guid: 8b66ce3b6e152e744aa896fdf1feb736, type: 3}
+  ground:
+    serializedVersion: 2
+    m_Bits: 256

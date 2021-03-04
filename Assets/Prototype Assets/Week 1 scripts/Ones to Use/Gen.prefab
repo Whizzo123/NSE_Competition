@@ -45,8 +45,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 100
   height: 100
+  spawner: {fileID: 6113681094690531824, guid: 1a2e8f6cb7875bf42a6cc7328e2f590b, type: 3}
   seed: 
   useRandomSeed: 1
-  smooth: 5
-  randomFillPercent: 39
-  itemToSpread: {fileID: 6113681094690531824, guid: 1a2e8f6cb7875bf42a6cc7328e2f590b, type: 3}
+  randomFillPercent: 45
+  mapSmoothing: 5
+  obstacles:
+  - {fileID: 919432600166237137, guid: 8b66ce3b6e152e744aa896fdf1feb736, type: 3}
+  artefactSpawner:
+  - {fileID: 781001905739417216, guid: 70fe023e6abe1f14e9d280ff46df9499, type: 3}
+  - {fileID: 781001905739417216, guid: 3104c34aa5154cd468d0f6594030df57, type: 3}
+  - {fileID: 781001905739417216, guid: 111a6aa02ebfc384cb2ce59933a30946, type: 3}
+  commonArtefacts: 40
+  rareArtefacts: 5
+  exoticArtefacts: 1

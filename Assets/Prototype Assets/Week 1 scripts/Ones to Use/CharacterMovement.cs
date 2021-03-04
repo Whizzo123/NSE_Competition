@@ -93,24 +93,27 @@ public class CharacterMovement : MonoBehaviour
     }
 
 
-    //If we wanted the model to remain upright, we can attach this to a child that isn't visible, but has the same parameters as the player(height etc)
+
     #region obstacleDestruction+Slopes
 
-
+    /// <summary>
+    /// Rotates player according to slope and movement direction.
+    /// If we wanted the model to remain upright, we can attach this to a child that isn't visible, but has the same parameters as the player(height etc)
+    /// </summary>
     void PlayerRotation()
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, groundMask))
         {
-            Quaternion pop;
-            Quaternion qa;
-            //transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation;
+            Quaternion finalQuat;
             Vector3 axisOfRotation = (Vector3.Cross(hit.normal, Vector3.up)).normalized;//gets the axis to rotate on a slope.
-            float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(for somereason it's negative either way round)
-            Quaternion aA = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
-            Quaternion lR = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
-            pop = aA.normalized * lR;
-            transform.rotation = pop;
+            float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(for somereason it's negative either way round) (dot product)
+            Quaternion slopeQuat = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
+            Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
+            finalQuat = slopeQuat.normalized * lookQuat; //Quaternion rotation of look rotation and slope rotation
+            transform.rotation = finalQuat;
+            #region deadCode
+            /*
             Debug.Log(pop + "Pop Quaternion");
             Debug.Log(pop.eulerAngles + "Eular Angle of Pop");
             Debug.Log(aA + "Quaternion of rotation");
@@ -118,44 +121,29 @@ public class CharacterMovement : MonoBehaviour
             Debug.Log(lR + "Quaternion Look Rotation");
             Debug.Log(lR.eulerAngles + "Eular Angle of Look Rotation");
             Debug.Log(rotationAngle + "Rotation Angles");
-            qa = Quaternion.Euler(transform.rotation.eulerAngles);
+            */
             //Negative directions
             //f = new Vector3(0, 14, -180); THIS is what it needs to be instead, the rotation is (0,180, -14) OR (0, -180, 346) It has the general pattern but it's not it
-
+            #endregion
         }
 
     }
     /// <summary>
-    /// Destroys obstacles directly in front of player
-    /// </summary>#
-    /// 
+    /// Destroys obstacles directly in front of player. This relies on PlayerRotation().
+    /// </summary>
     void HitFoward()
     {
         RaycastHit hit;
-        //it was just transform.forward for the ray. I fecking hate myself
         Ray ray = new Ray(transform.position, transform.forward);
-        //Debug.Log(transform.rotation.eulerAngles.normalized);
         if (Physics.Raycast(ray,out hit,scale,obstacles))
             {
-            //Debug.DrawLine(transform.position, hit.point, Color.red, 500f); //Draws in scene
-                //Instantiate(pickedUpObject, originalPosition + direction, transform.rotation); Either play animation or instantiata object. Either have object do collider destroy or physics destroy
                 Destroy(hit.transform.gameObject);
-            //Debug.Log("HIITEITE");
+            //run couroutine to delay next obstacle destruction
             }
     }
     #endregion
 
-    private void OnDrawGizmos()
-    {
-        //Gizmos.DrawLine(transform.position, transform.position + axisOfRotation);//shows axisOfRotation
-        //Gizmos.DrawSphere(playerGroundCheck.position, groundDistance);//Shows ground check
-        //Gizmos.DrawLine(transform.position, transform.position + direction);//Shows Direction facing in
-        //Gizmos.DrawRay(transform.position, transform.position + (direction + transform.up));
-        //Gizmos.DrawRay(transform.position, qa.eulerAngles);
-        Gizmos.DrawRay(transform.position, transform.forward * scale);
-        //Gizmos.DrawRay(transform.position, Vector3.ProjectOnPlane(transform.position, hi);
-       // Gizmos.DrawRay(transform.position, f);
-    }
+
 
 }
 
@@ -168,3 +156,15 @@ public class CharacterMovement : MonoBehaviour
     Instantiate(machete, transform.position, Quaternion.identity, transform);
 
 }*/
+/*    private void OnDrawGizmos()
+    {
+        //Gizmos.DrawLine(transform.position, transform.position + axisOfRotation);//shows axisOfRotation
+        //Gizmos.DrawSphere(playerGroundCheck.position, groundDistance);//Shows ground check
+        //Gizmos.DrawLine(transform.position, transform.position + direction);//Shows Direction facing in
+        //Gizmos.DrawRay(transform.position, transform.position + (direction + transform.up));
+        //Gizmos.DrawRay(transform.position, qa.eulerAngles);
+        Gizmos.DrawRay(transform.position, transform.forward * scale);
+        //Gizmos.DrawRay(transform.position, Vector3.ProjectOnPlane(transform.position, hi);
+       // Gizmos.DrawRay(transform.position, f);
+    }
+*/
