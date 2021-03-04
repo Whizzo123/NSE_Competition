@@ -16,6 +16,7 @@ public class CanvasUIManager : MonoBehaviour
     public float popupShowTime;
     public GameObject playerTextContainer;
     public GameObject loadoutScreen;
+    public GameObject loadoutScreenButton;
 
 
     public void PopupArtefactPickupDisplay(ItemArtefact artefact)
@@ -45,6 +46,8 @@ public class CanvasUIManager : MonoBehaviour
         {
             //Close screen and deal with equipping of loadouts on player
             PlayerController.localPlayer.state.LoadoutReady = true;
+            loadoutScreenButton.GetComponent<Image>().color = Color.green;
+            loadoutScreenButton.GetComponent<Button>().interactable = false;
         }
     }
 

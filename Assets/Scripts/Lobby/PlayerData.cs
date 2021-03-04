@@ -6,14 +6,19 @@ using Bolt;
 [BoltGlobalBehaviour("LobbyScene", "GameScene")]
 public class PlayerData : GlobalEventListener
 {
-
+    #region Variables
     private Dictionary<BoltConnection, string> connectionToUsername;
     private string serverUsername;
+    #endregion
 
+    /// <summary>
+    /// Run after bolt instance is started for (client or server)
+    /// </summary>
     public override void BoltStartDone()
     {
         connectionToUsername = new Dictionary<BoltConnection, string>();
     }
+
 
     public void AddUsername(BoltConnection connection, string username)
     {

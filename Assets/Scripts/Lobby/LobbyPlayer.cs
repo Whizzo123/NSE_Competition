@@ -6,7 +6,7 @@ using System;
 
 public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 {
-
+    #region Variables
     public BoltConnection connection;
 
     public InputField nameInput;
@@ -18,15 +18,18 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 
 	public static LobbyPlayer localPlayer;
 
+	public string playerName;
+	public bool isReady;
+	#endregion
 
 	public LobbyPlayer()
     {
 
     }
 
-    public string playerName;
-    public bool isReady;
-
+	/// <summary>
+	/// Called after entity is attached in the network like the unity Start function
+	/// </summary>
     public override void Attached()
     {
         state.AddCallback("Name", () => nameInput.text = state.Name);
@@ -40,6 +43,9 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
         }
     }
 
+	/// <summary>
+	/// Like update function only run on the controller computer
+	/// </summary>
 	public override void SimulateController()
 	{
 		// Update every 5 frames
@@ -52,6 +58,9 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 		entity.QueueInput(input);
 	}
 
+	/// <summary>
+	/// Called when either TakeControl() or AssignControl() is used on an entity
+	/// </summary>
 	public override void ControlGained()
     {
         BoltLog.Info("ControlGained");
@@ -89,6 +98,9 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 		}
 	}
 
+	/// <summary>
+	/// Sets up player on the client computer
+	/// </summary>
 	public void SetupPlayer()
     {
         BoltLog.Info("SetupPlayer");
@@ -114,7 +126,9 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 
         OnClientReady(state.Ready);
     }
-
+	/// <summary>
+	/// Sets up player on the server computer
+	/// </summary>
     public void SetupOtherPlayer()
     {
         BoltLog.Info("SetupOtherPlayer");
@@ -131,6 +145,9 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
         OnClientReady(state.Ready);
     }
 
+	/// <summary>
+	/// Called when player is removed from lobby
+	/// </summary>
 	public void RemovePlayer()
 	{
 		if (entity && entity.IsAttached)
@@ -193,6 +210,10 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 		isReady = !isReady;
 	}
 
+	/// <summary>
+	/// Check to see if player is ready and change lobbyplayer uiElement accordingly
+	/// </summary>
+	/// <param name="readyState"></param>
 	public void OnClientReady(bool readyState)
 	{
 		if (readyState)

@@ -6,6 +6,7 @@ using System;
 
 public class CreateScreenUI : MonoBehaviour
 {
+    #region Variables
     public Action OnCreateButtonClick;
     public Action OnBrowseButtonClick;
     public Action OnRandomButtonClick;
@@ -15,7 +16,11 @@ public class CreateScreenUI : MonoBehaviour
     public Button createButton;
     public Button browseButton;
     public Button randomButton;
+    #endregion
 
+    /// <summary>
+    /// When create screen is switched to
+    /// </summary>
     public void OnEnable()
     {
         createButton.onClick.RemoveAllListeners();

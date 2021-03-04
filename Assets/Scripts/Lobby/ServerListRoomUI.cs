@@ -7,11 +7,15 @@ using UdpKit;
 
 public class ServerListRoomUI : MonoBehaviour
 {
+
+    #region Variables
     public Action OnJoinRoomClicked;
 
     public Text roomNameText;
     public Text concurrentPlayersText;
     private Button joinRoom;
+
+    #endregion 
 
     void Start()
     {
@@ -22,7 +26,12 @@ public class ServerListRoomUI : MonoBehaviour
             if (OnJoinRoomClicked != null) OnJoinRoomClicked();
         });
     }
-
+    /// <summary>
+    /// Create uiElement for server in the server list
+    /// </summary>
+    /// <param name="match"></param>
+    /// <param name="backgroundColor"></param>
+    /// <param name="clickAction"></param>
     public void Populate(UdpSession match, Color backgroundColor, Action clickAction)
     {
         roomNameText.text = match.HostName;

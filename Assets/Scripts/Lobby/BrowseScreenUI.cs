@@ -7,13 +7,17 @@ using System;
 
 public class BrowseScreenUI : GlobalEventListener
 {
-
+    #region Variables
     public GameObject sessionListObjectPrefab;
     public GameObject noServerFoundText;
     public GameObject serverList;
 
     public event Action<UdpSession> OnClickJoinSession;
+    #endregion 
 
+    /// <summary>
+    /// Resets UI by destroying the old outdated server list uielements
+    /// </summary>
     private void ResetUI()
     {
         noServerFoundText.SetActive(true);
@@ -24,6 +28,10 @@ public class BrowseScreenUI : GlobalEventListener
         }
     }
 
+    /// <summary>
+    /// Updated frequently with all servers hosted currently on the bolt network
+    /// </summary>
+    /// <param name="sessionList"></param>
     public override void SessionListUpdated(Map<Guid, UdpSession> sessionList)
     {
         Debug.Log("Recieved session list update");

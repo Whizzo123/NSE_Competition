@@ -19,12 +19,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
     private bool loadoutReleased;
 
-    //---------------------------
-   // public List<ItemArtefact> inventory;
-
     public static PlayerController localPlayer;
     #endregion
 
+    /// <summary>
+    /// Called when entity attached to network 
+    /// </summary>
     public override void Attached()
     {
         state.SetTransforms(state.PlayerTransform, transform);
@@ -39,7 +39,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 state.Inventory[i].ItemPoints = 0;
             }
         }
-        //inventory = new List<ItemArtefact>();
         if(!entity.IsOwner)
         {
             //Disable other players cameras so that we don't accidentally get assigned to another players camera
@@ -47,6 +46,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         }
     }
 
+    /// <summary>
+    /// Called in order to add artefact to player inventory
+    /// </summary>
+    /// <param name="artefactName"></param>
+    /// <param name="artefactPoints"></param>
     public void AddToInventory(string artefactName, int artefactPoints)
     {
         ItemArtefact item = new ItemArtefact();
@@ -66,6 +70,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         }
     }
 
+    /// <summary>
+    /// Called in order to remove from artefact from inventory
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="name"></param>
+    /// <param name="points"></param>
     public void RemoveFromInventory(int index, string name, int points)
     {
         state.Inventory[index].ItemName = "";
@@ -76,6 +86,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         FindObjectOfType<CanvasUIManager>().RemoveFromInventoryScreen(itemArtefact);
     }
 
+    /// <summary>
+    /// Find empty inventory slot from player inventory
+    /// </summary>
+    /// <returns></returns>
     private int FindEmptyInventorySlot()
     {
         for (int i = 0; i < state.Inventory.Length; i++)
@@ -93,6 +107,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         localPlayer = this;
     }
 
+    //Remove all items from inventory
     public void ClearInventory()
     {
         FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
@@ -103,6 +118,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         }
     }
 
+    /// <summary>
+    /// Called on every update of the owner computer a.k.a computer that created this entity
+    /// </summary>
     public override void SimulateOwner()
     {
         float speed = 4f;
@@ -187,6 +205,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         }
     }
 
+
+    /// <summary>
+    /// Check to see whether inventory has any empty slots
+    /// </summary>
+    /// <returns></returns>
     public bool IsInventoryEmpty()
     {
         for (int i = 0; i < state.Inventory.Length; i++)
@@ -200,11 +223,19 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         return false;
     }
 
+    /// <summary>
+    /// Just grab the first item in the player inventory
+    /// </summary>
+    /// <returns></returns>
     public InventoryItem GrabRandomItem()
     {
         return state.Inventory[0];
     }
 
+    /// <summary>
+    /// Sets player name to state
+    /// </summary>
+    /// <param name="playerName"></param>
     private void Setup(string playerName)
     {
         if(entity.IsOwner)
@@ -263,11 +294,18 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         }
     }
 
+    /// <summary>
+    /// Used to set whether we are able to move now or not
+    /// </summary>
+    /// <param name="value"></param>
     public void SetLoadoutReleased(bool value)
     {
         loadoutReleased = value;
     }
 
+    /// <summary>
+    /// Used to spawn in gameobject for player
+    /// </summary>
     public static void Spawn()
     {
         Vector3 pos = new Vector3(Random.Range(-16, 16), 0.6f, Random.Range(-16, 16));

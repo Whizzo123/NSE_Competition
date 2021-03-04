@@ -8,6 +8,9 @@ public class Stash : EntityBehaviour<IStashState>
 {
     private Dictionary<string, int> nameToScore;
 
+    /// <summary>
+    /// Called when entity attached in network like unity start method
+    /// </summary>
     public override void Attached()
     {
         if (entity.IsOwner)
@@ -21,6 +24,10 @@ public class Stash : EntityBehaviour<IStashState>
         nameToScore = new Dictionary<string, int>();
     }
 
+    /// <summary>
+    /// Called when adding to stash from player inventory
+    /// </summary>
+    /// <param name="player"></param>
     public void AddToStashScores(PlayerController player)
     {
         var request = ScoreUpdate.Create();
@@ -36,6 +43,11 @@ public class Stash : EntityBehaviour<IStashState>
         player.ClearInventory();
     }
 
+    /// <summary>
+    /// Used to update the Stash state
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="points"></param>
     public void UpdateState(string name, int points)
     {
         int index = Contains(name);
@@ -64,6 +76,11 @@ public class Stash : EntityBehaviour<IStashState>
         }
     }
 
+    /// <summary>
+    /// Checks to see if stash contains entry for player name
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     private int Contains(string name)
     {
         for (int i = 0; i < state.StashedScores.Length; i++)

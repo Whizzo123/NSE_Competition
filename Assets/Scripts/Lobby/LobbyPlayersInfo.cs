@@ -6,7 +6,7 @@ using System;
 
 public class LobbyPlayersInfo : MonoBehaviour
 {
-
+    #region Variables
     public Text playerNameText;
     public Button readyButton;
 
@@ -15,6 +15,7 @@ public class LobbyPlayersInfo : MonoBehaviour
 
     private LobbyPlayer myPlayer;
     private Action OnReadyButtonClicked;
+    #endregion 
 
     public void Populate(LobbyPlayer player)
     {

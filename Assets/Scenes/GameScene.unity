@@ -1215,6 +1215,7 @@ MonoBehaviour:
   popupShowTime: 10
   playerTextContainer: {fileID: 371200727}
   loadoutScreen: {fileID: 1850204380}
+  loadoutScreenButton: {fileID: 1714226636}
 --- !u!1 &714175996
 GameObject:
   m_ObjectHideFlags: 0
