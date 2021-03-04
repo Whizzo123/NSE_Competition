@@ -31,4 +31,11 @@ public class NetworkCallbacks : GlobalEventListener
             evnt.InventoryEntity.GetComponent<PlayerController>().RemoveFromInventory(evnt.ItemIndex, evnt.ItemName, evnt.ItemPoints);
         }
     }
+
+    public override void OnEvent(LoadoutScreenDisable evnt)
+    {
+        BoltLog.Info("Called OnEvent LoadoutScreenDisable");
+        FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
+        PlayerController.localPlayer.SetLoadoutReleased(true);
+    }
 }

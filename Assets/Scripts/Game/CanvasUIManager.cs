@@ -44,7 +44,7 @@ public class CanvasUIManager : MonoBehaviour
         if(FindObjectOfType<LoadoutBarUI>().NumberOfLoadoutAbilitiesEquipped() > 0)
         {
             //Close screen and deal with equipping of loadouts on player
-            loadoutScreen.SetActive(false);
+            PlayerController.localPlayer.state.LoadoutReady = true;
         }
     }
 

@@ -5,14 +5,18 @@ using Bolt;
 [BoltGlobalBehaviour("GameScene")]
 public class PhotonGameSceneController : GlobalEventListener
 {
+
+    private int minPlayers = 2;
+    private bool loadoutChoiceComplete;
+
     public override void SceneLoadLocalDone(string scene)
     {
         PlayerController.Spawn();
-        FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(true);
     }
 
     void Start()
     {
+        loadoutChoiceComplete = false;
         if (BoltNetwork.IsServer)
         {
             BoltEntity artefact = BoltNetwork.Instantiate(BoltPrefabs.Artefect);
@@ -28,6 +32,34 @@ public class PhotonGameSceneController : GlobalEventListener
             BoltEntity stash = BoltNetwork.Instantiate(BoltPrefabs.Stash);
             stash.transform.position = new Vector3(-19 , -1.5f, -20);
             stash.TakeControl();
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (BoltNetwork.IsServer && loadoutChoiceComplete == false)
+        {
+            var allReady = true;
+            var readyCount = 0;
+
+            foreach (var entity in BoltNetwork.Entities)
+            {
+                if (entity.StateIs<IGamePlayerState>() == false) continue;
+
+                var playerController = entity.GetState<IGamePlayerState>();
+                allReady &= playerController.LoadoutReady;
+
+                if (allReady == false) break;
+                readyCount++;
+            }
+
+            if (allReady && readyCount >= minPlayers)
+            {
+                //Disable loadout screens
+                var request = LoadoutScreenDisable.Create();
+                request.Send();
+                loadoutChoiceComplete = true;
+            }
         }
     }
  
