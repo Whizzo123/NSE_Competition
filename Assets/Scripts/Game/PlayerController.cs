@@ -16,6 +16,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     private ArtefactBehaviour targetedArtefact;
     private Stash gameStash;
     private PlayerController targetedPlayerToStealFrom;
+
+    private bool loadoutReleased;
+
     //---------------------------
    // public List<ItemArtefact> inventory;
 
@@ -25,29 +28,15 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     public override void Attached()
     {
         state.SetTransforms(state.PlayerTransform, transform);
+        loadoutReleased = false;
         //Set state transform to be equal to current transform
         if (entity.IsOwner)
         {
-
             for (int i = 0; i < state.Inventory.Length; i++)
             {
                 state.Inventory[i].ItemName = "";
                 state.Inventory[i].ItemPoints = 0;
             }
-            
-            //Add a callback that whenever state.Name is modified change playerNameText.text 
-            state.AddCallback("Name", () =>
-            {
-                if (entity.IsOwner)
-                {
-                    //playerNameText.GetComponent<Text>().text = state.Name;
-                }
-                else
-                {
-                //Stops other players name text showing up on screen
-                //playerNameText.gameObject.SetActive(false);
-            }
-            });
         }
         //inventory = new List<ItemArtefact>();
         if(!entity.IsOwner)

@@ -15,6 +15,7 @@ public class CanvasUIManager : MonoBehaviour
     public ScoreboardUI scoreboardUI;
     public float popupShowTime;
     public GameObject playerTextContainer;
+    public GameObject loadoutScreen;
 
 
     public void PopupArtefactPickupDisplay(ItemArtefact artefact)
@@ -38,6 +39,15 @@ public class CanvasUIManager : MonoBehaviour
         artefactPickupPopup.SetActive(false);
     }
 
+    public void OnLoadoutReadyButtonClick()
+    {
+        if(FindObjectOfType<LoadoutBarUI>().NumberOfLoadoutAbilitiesEquipped() > 0)
+        {
+            //Close screen and deal with equipping of loadouts on player
+            loadoutScreen.SetActive(false);
+        }
+    }
+
     public void AddToInventoryScreen(ItemArtefact artefact)
     {
         inventoryUI.AddInventoryItem(artefact);
@@ -47,21 +57,4 @@ public class CanvasUIManager : MonoBehaviour
     {
         inventoryUI.SubtractInventoryItem(artefact);
     }
-
-   /* public static void SpawnPlayerNameTextPrefab(PlayerController playerController)
-    {
-        BoltLog.Info("Inside SpawnPlayerNameTextPrefab");
-        if (playerNameTextPrefab == null)
-        {
-            playerNameTextPrefab = Resources.Load<GameObject>("Prefabs/PlayerNameText");
-            if (playerNameTextPrefab == null)
-                BoltLog.Error("Resources load failed");
-        }
-
-        GameObject go = Instantiate(playerNameTextPrefab);
-        go.transform.SetParent(FindObjectOfType<Canvas>().transform);
-        go.GetComponent<RectTransform>().position = new Vector3(-18, 271);
-
-        playerController.playerNameText = go;
-    }*/
 }

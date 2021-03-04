@@ -8,6 +8,7 @@ public class PhotonGameSceneController : GlobalEventListener
     public override void SceneLoadLocalDone(string scene)
     {
         PlayerController.Spawn();
+        FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(true);
     }
 
     void Start()

@@ -11,11 +11,13 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
     public string abilityName { get; private set; }
     public string abilityDescription { get; private set; }
     public int abilityPoints { get; private set; }
+    //Set to true when in loadout and if is true once it returns to abilitybar we know to refund points
+    public bool iconInLoadout { get; private set; }
 
     void Start()
     {
         dragging = false;
-        PopulateAbilityIcon("Speed", "this is the best ability", Random.Range(1, 5), null);
+        PopulateAbilityIcon("Speed", "this is the best ability", Random.Range(3, 7), null);
     }
 
     public void PopulateAbilityIcon(string name, string description, int points, Sprite imageSprite)
@@ -40,15 +42,30 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
             if(result.gameObject.GetComponent<AbilityBarUI>())
             {
                 result.gameObject.GetComponent<AbilityBarUI>().AddGameObjectToContent(gameObject);
+                if(iconInLoadout)
+                {
+                    FindObjectOfType<LoadoutBarUI>().RefundPoints(abilityPoints);
+                    SetIconAsPartOfLoadout(false);
+                }
             }
             else if(result.gameObject.GetComponent<LoadoutBarUI>())
             {
-                result.gameObject.GetComponent<LoadoutBarUI>().AddGameObjectToContent(gameObject);
+                //Check whether we have enough points left to add the ability
+                if(result.gameObject.GetComponent<LoadoutBarUI>().AddGameObjectToContent(gameObject) == false)
+                {
+                    //If not then add to ability bar instead
+                    FindObjectOfType<AbilityBarUI>().AddGameObjectToContent(gameObject);
+                }
             }
         }
         if(this.transform.parent == FindObjectOfType<Canvas>().transform)
         {
             FindObjectOfType<AbilityBarUI>().AddGameObjectToContent(gameObject);
+            if (iconInLoadout)
+            {
+                FindObjectOfType<LoadoutBarUI>().RefundPoints(abilityPoints);
+                SetIconAsPartOfLoadout(false);
+            }
         }
     }
 
@@ -71,4 +88,8 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
         return results;
     }
 
+    public void SetIconAsPartOfLoadout(bool partOfLoadout)
+    {
+        iconInLoadout = partOfLoadout;
+    }
 }
