@@ -8,30 +8,34 @@ using UdpKit;
 
 public class LobbyUIManager : GlobalEventListener
 {
+    #region Variables
     [SerializeField]
     public UIScreens[] screens;
-
-    public string gameSceneName;
 
     private CreateScreenUI createScreen;
     private BrowseScreenUI browseScreen;
     private RoomScreenUI roomScreen;
+
+    public string gameSceneName;
     private string roomName;
 
+    [Tooltip("Minimum Required Players To Start")]
     [SerializeField] private int minPlayers = 2;
-
 
     [Tooltip("Time in second between all players ready & match start")]
     [SerializeField]
-    private float prematchCountdown = 5.0f;
+    public float prematchCountdown = 5.0f;
 
     private bool randomJoin;
     private bool isCountdown = false;
 
     public GameObject playerLobbyPrefab;
 
+    #endregion
+
     void Start()
     {
+        //Setup all the screens for the lobby
         createScreen = FindScreenByName("Create").screen.GetComponent<CreateScreenUI>();
         if(createScreen == null)
         {
@@ -47,13 +51,16 @@ public class LobbyUIManager : GlobalEventListener
         {
             Debug.LogError("Failed to find the room screen");
         }
+        //Set random join to false by default
         randomJoin = false;
         StartUI();
     }
 
+    /// <summary>
+    /// Sets up click handlers for the menu buttons
+    /// </summary>
     private void StartUI()
     {
-
         createScreen.OnCreateButtonClick += CreateRoomSession;
         createScreen.OnBrowseButtonClick += SwapToBrowseScreen;
         createScreen.OnRandomButtonClick += JoinRandomSession;
@@ -62,25 +69,30 @@ public class LobbyUIManager : GlobalEventListener
 
     private void FixedUpdate()
     {
+        //Check whether this is running on server computer and if we are not counting down yet
         if (BoltNetwork.IsServer && isCountdown == false)
         {
             var allReady = true;
             var readyCount = 0;
 
+            //Grab a list of all the bolt entities currently on the network
             foreach (var entity in BoltNetwork.Entities)
             {
+                //Check if this entity is tied to LobbyPlayerInfo state if not loop back
                 if (entity.StateIs<ILobbyPlayerInfoState>() == false) continue;
-
+                //Grab the state
                 var lobbyPlayer = entity.GetState<ILobbyPlayerInfoState>();
-
+                //Check if lobby player has hit ready button and add to allReady condition
                 allReady &= lobbyPlayer.Ready;
-
+                //If we have hit a lobby player that isn't ready break out of foreach loop
                 if (allReady == false) break;
+                //Adding to ready count
                 readyCount++;
             }
-
+            //If all players hit are ready and our count of players is above the minimum we need to start a game
             if (allReady && readyCount >= minPlayers)
             {
+                //This username code is not currently used we use PlayerPrefs instead for the moment until I can be bothered to try and make this work :)
                 foreach(LobbyPlayer player in roomScreen.players)
                 {
                     FindObjectOfType<PlayerData>().AddUsername(player.connection, player.state.Name);
@@ -91,6 +103,10 @@ public class LobbyUIManager : GlobalEventListener
         }
     }
 
+    /// <summary>
+    /// Countdown through prematch countdown then load up game scene
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ServerCountdownCoroutine()
     {
         var remainingTime = prematchCountdown;
@@ -108,20 +124,23 @@ public class LobbyUIManager : GlobalEventListener
             if (newFloorTime != floorTime)
             {
                 floorTime = newFloorTime;
-
+                //Create lobbycountdown event to update everyone's time
                 countdown = LobbyCountdown.Create(GlobalTargets.Everyone);
                 countdown.Time = floorTime;
                 countdown.Send();
             }
         }
-
+        //Once we are basically at zero send a final one
         countdown = LobbyCountdown.Create(GlobalTargets.Everyone);
         countdown.Time = 0;
         countdown.Send();
-
+        //Tell network to load game scene for everyone
         BoltNetwork.LoadScene(gameSceneName);
     }
 
+    /// <summary>
+    /// Called when creating a room on the network
+    /// </summary>
     private void CreateRoomSession()
     {
         this.roomName = createScreen.inputField.text;
@@ -130,6 +149,9 @@ public class LobbyUIManager : GlobalEventListener
         BoltLauncher.StartServer();
     }
 
+    /// <summary>
+    /// Called once the bolt network has finished starting called whenever either BoltLauncher.StartServer() or BoltLauncher.StartClient() is done
+    /// </summary>
     public override void BoltStartDone()
     {
         //Once either BoltLauncher.StartServer() or BoltLauncher.StartClient() has run

@@ -13,6 +13,11 @@ public class ScoreboardUI : MonoBehaviour
         tabs = new List<ScoreboardTabUI>();
     }
 
+    /// <summary>
+    /// Updates the score board with name and score
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="score"></param>
     public void UpdateBoard(string name, int score)
     {
         ScoreboardTabUI tab = GetTab(name);
@@ -20,6 +25,11 @@ public class ScoreboardUI : MonoBehaviour
         tab.EditScore(score);
     }
 
+    /// <summary>
+    /// Grab uielement for on scoreboard that is linked to player name
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public ScoreboardTabUI GetTab(string name)
     {
         foreach (ScoreboardTabUI item in tabs)

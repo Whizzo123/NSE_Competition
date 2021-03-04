@@ -14,6 +14,10 @@ public class PlayerInventoryUI : MonoBehaviour
     }
 
     
+    /// <summary>
+    /// Called in order to add item to inventory screen
+    /// </summary>
+    /// <param name="item"></param>
     public void AddInventoryItem(ItemArtefact item)
     {
         if(inventoryTabs.ContainsKey(item.name))
@@ -28,6 +32,10 @@ public class PlayerInventoryUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called in order to remove item from inventory by one count from screen
+    /// </summary>
+    /// <param name="item"></param>
     public void SubtractInventoryItem(ItemArtefact item)
     {
         if(inventoryTabs.ContainsKey(item.name))
@@ -40,6 +48,11 @@ public class PlayerInventoryUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called in order to update inventory items
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="adding"></param>
     private void UpdateInventoryItem(ItemArtefact item, bool adding)
     {
         if (adding)
@@ -56,6 +69,10 @@ public class PlayerInventoryUI : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Clears entire inventory screen
+    /// </summary>
     public void ClearInventoryScreen()
     {
         string[] inventoryKeys = inventoryTabs.Keys.ToArray<string>();
@@ -65,6 +82,10 @@ public class PlayerInventoryUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Destroys inventory item uielement and removes from inventory screen list
+    /// </summary>
+    /// <param name="name"></param>
     public void RemoveInventoryItem(string name)
     {
         Destroy(inventoryTabs[name]);
