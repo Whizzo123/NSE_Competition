@@ -13,8 +13,6 @@ public class DescriptionBoxUI : MonoBehaviour
 
     private AbilityIconUI iconUIDisplaying;
 
-    private bool overIconUI;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -24,12 +22,13 @@ public class DescriptionBoxUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        overIconUI = false;
+        bool overIconUI = false;
         PointerEventData evntData = new PointerEventData(FindObjectOfType<EventSystem>());
         evntData.position = Input.mousePosition;
         List<RaycastResult> results = RaycastAgainstUIAtCurrentMousePos(evntData);
         foreach(RaycastResult result in results)
         {
+            Debug.Log("Results Name: " + result.gameObject.name);
             if (result.gameObject.GetComponent<AbilityIconUI>())
             {
                 overIconUI = true;
@@ -50,11 +49,11 @@ public class DescriptionBoxUI : MonoBehaviour
                 break;
             }
         }
-        if(overIconUI)
+        if(overIconUI && GetComponent<Image>().enabled == false)
         {
             SwitchScreen(true);
         }
-        else
+        else if(overIconUI == false && GetComponent<Image>().enabled == true)
         {
             SwitchScreen(false);
             iconUIDisplaying = null;
