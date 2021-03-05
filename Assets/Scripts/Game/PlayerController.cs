@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Bolt;
+using System;
 
 public class PlayerController : EntityBehaviour<IGamePlayerState>
 {
@@ -16,18 +17,22 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     private ArtefactBehaviour targetedArtefact;
     private Stash gameStash;
     private PlayerController targetedPlayerToStealFrom;
-
+    public float speed = 4f;
     private bool loadoutReleased;
 
     public static PlayerController localPlayer;
+
+    public Action<Ability> abilityMethod;
     #endregion
 
     /// <summary>
     /// Called when entity attached to network 
     /// </summary>
     public override void Attached()
-    {
+    { 
+
         state.SetTransforms(state.PlayerTransform, transform);
+        speed = 4f;
         SetLoadoutReleased(false);
         //Set state transform to be equal to current transform
         if (entity.IsOwner)
@@ -123,7 +128,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// </summary>
     public override void SimulateOwner()
     {
-        float speed = 4f;
         Vector3 movement = Vector3.zero;
 
         if(playerNameText == null)
