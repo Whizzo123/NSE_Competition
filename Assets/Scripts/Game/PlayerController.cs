@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Bolt;
-using System;
 
 public class PlayerController : EntityBehaviour<IGamePlayerState>
 {
@@ -22,7 +21,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
     public static PlayerController localPlayer;
 
-    public Action<Ability> abilityMethod;
     #endregion
 
     /// <summary>
