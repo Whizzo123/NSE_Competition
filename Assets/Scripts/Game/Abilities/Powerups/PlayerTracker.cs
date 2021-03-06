@@ -30,4 +30,9 @@ public class PlayerTracker : Powerup
         throw new System.NotImplementedException();
     }
 
+    public override Ability Clone()
+    {
+        return new PlayerTracker();
+    }
+
 }

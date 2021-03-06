@@ -40,6 +40,17 @@ public class LoadoutBarUI : MonoBehaviour
         UpdatePoints(pointsToRefund);
     }
 
+    public List<string> GetLoadoutForAbilitySlotBar()
+    {
+        AbilityIconUI[] loadout = transform.GetComponentsInChildren<AbilityIconUI>();
+        List<string> loadoutNames = new List<string>();
+        for (int i = 0; i < loadout.Length; i++)
+        {
+            loadoutNames.Add(loadout[i].abilityName);
+        }
+        return loadoutNames;
+    }
+
     private void UpdatePoints(int incrementForPoints)
     {
         currentPointsLeft += incrementForPoints;

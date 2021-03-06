@@ -9,4 +9,9 @@ public class Camouflage : Powerup
       
     }
 
+    public override Ability Clone()
+    {
+        return new Camouflage();
+    }
+
 }

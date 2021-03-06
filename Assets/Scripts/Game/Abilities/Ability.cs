@@ -38,9 +38,9 @@ public class Ability
         fullCharge = amountToCharge;
     }
 
-    virtual public Ability Clone(Ability ability)
+    virtual public Ability Clone()
     {
-        return new Ability(ability.name, ability.description, ability.pointsCost, ability.useType, ability.fullCharge);
+        return new Ability(name, description, pointsCost, useType, fullCharge);
     }
 
 
@@ -56,6 +56,7 @@ public class Ability
 
     virtual public void Use()
     {
+        BoltLog.Info("Just calling plain old use method");
         if (useType == AbilityUseTypes.ONE_TIME)
         {
             used = true;

@@ -56,14 +56,12 @@ public class AbilityRegister : MonoBehaviour
 
     public Powerup ClonePowerup(string name)
     {
-        Powerup powerup = powerups[name];
-        return new Powerup(powerup.GetAbilityName(), powerup.GetAbilityDescription(), powerup.GetAbilityCost(), powerup.GetUseType(), powerup.GetChargeAmount());
+        return (Powerup)powerups[name].Clone();
     }
 
     public Debuff CloneDebuff(string name)
     {
-        Debuff debuff = debuffs[name];
-        return new Debuff(debuff.GetAbilityName(), debuff.GetAbilityDescription(), debuff.GetAbilityCost(), debuff.GetUseType(), debuff.GetChargeAmount());
+        return (Debuff)debuffs[name].Clone();
     }
 
     public Trap CloneTrap(string name)
@@ -98,10 +96,13 @@ public class AbilityRegister : MonoBehaviour
     {
         traps = new Dictionary<string, Trap>();
         BearTrap bearTrap = new BearTrap();
-        //Trap obstacleTrap = new Trap("Obstacle Surprise", "Spawns obstacles to delay enemy players", 3, Effects.ObstacleTrap, AbilityUseTypes.ONE_TIME);
-        //Trap voodooPoisonTrap = new Trap("Voodoo Poision Trap", "Hits enemy with voodoo poison effect hindering their movement", 3, Effects.VoodooPoision, AbilityUseTypes.ONE_TIME);
-        //Trap visionCloudTrap = new Trap("Vision Cloud", "Hinders your opponents by shrinking their visual field", 3, Effects.VisionClouding, AbilityUseTypes.ONE_TIME);
+        ObstacleTrap obstacleTrap = new ObstacleTrap();
+        VoodooPoisonTrap voodooTrap = new VoodooPoisonTrap();
+        VisionCloudTrap visionTrap = new VisionCloudTrap();
         traps.Add(bearTrap.GetAbilityName(), bearTrap);
+        traps.Add(obstacleTrap.GetAbilityName(), obstacleTrap);
+        traps.Add(voodooTrap.GetAbilityName(), voodooTrap);
+        traps.Add(visionTrap.GetAbilityName(), visionTrap);
     }
 
 

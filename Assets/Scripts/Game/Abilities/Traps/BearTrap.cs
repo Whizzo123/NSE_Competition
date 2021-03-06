@@ -10,4 +10,9 @@ public class BearTrap : Trap
 
     }
 
+    public override Ability Clone()
+    {
+        return new BearTrap();
+    }
+
 }

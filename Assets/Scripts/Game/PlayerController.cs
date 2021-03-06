@@ -119,6 +119,32 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             state.Inventory[i].ItemPoints = 0;
         }
     }
+
+    /// <summary>
+    /// Check to see whether inventory has any empty slots
+    /// </summary>
+    /// <returns></returns>
+    public bool IsInventoryEmpty()
+    {
+        for (int i = 0; i < state.Inventory.Length; i++)
+        {
+            if (state.Inventory[i].ItemName == "")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Just grab the first item in the player inventory
+    /// </summary>
+    /// <returns></returns>
+    public InventoryItem GrabRandomItem()
+    {
+        return state.Inventory[0];
+    }
     #endregion 
 
     public override void ControlGained()
@@ -160,7 +186,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 transform.Translate(movement.normalized * speed * BoltNetwork.FrameDeltaTime);
             }
 
-            if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+            //Old camera code
+           /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
             {
                 if (lastMousePos != Input.mousePosition)
                 {
@@ -171,7 +198,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 }
 
                 lastMousePos = Input.mousePosition;
-            }
+            }*/
 
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -222,31 +249,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     }
 
 
-    /// <summary>
-    /// Check to see whether inventory has any empty slots
-    /// </summary>
-    /// <returns></returns>
-    public bool IsInventoryEmpty()
-    {
-        for (int i = 0; i < state.Inventory.Length; i++)
-        {
-            if (state.Inventory[i].ItemName == "")
-            {
-                return true;
-            }
-        }
-       
-        return false;
-    }
-
-    /// <summary>
-    /// Just grab the first item in the player inventory
-    /// </summary>
-    /// <returns></returns>
-    public InventoryItem GrabRandomItem()
-    {
-        return state.Inventory[0];
-    }
+   
 
     /// <summary>
     /// Sets player name to state
@@ -260,6 +263,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             state.Name = playerName;
         }
     }
+
+    #region Collision
 
     public void OnTriggerEnter(Collider collider)
     {
@@ -318,6 +323,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             }
         }
     }
+
+    #endregion
 
     /// <summary>
     /// Used to set whether we are able to move now or not

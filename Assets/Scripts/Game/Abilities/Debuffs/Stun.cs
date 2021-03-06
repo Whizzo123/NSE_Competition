@@ -10,4 +10,20 @@ public class Stun : Debuff
         
     }
 
+    public override void Use()
+    {
+        BoltLog.Info("Inside stun use");
+        if(target == null)
+        {
+            GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
+            PlayerController closestPlayer = FindClosestPlayer();
+            GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().targetObject = closestPlayer.gameObject;
+            target = closestPlayer;
+        }
+    }
+
+    public override Ability Clone()
+    {
+        return new Stun();
+    }
 }

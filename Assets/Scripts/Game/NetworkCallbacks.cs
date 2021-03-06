@@ -42,6 +42,7 @@ public class NetworkCallbacks : GlobalEventListener
     public override void OnEvent(LoadoutScreenDisable evnt)
     {
         BoltLog.Info("Called OnEvent LoadoutScreenDisable");
+        FindObjectOfType<AbilitySlotBarUI>().LoadInAbilitiesFromLoadout(FindObjectOfType<LoadoutBarUI>().GetLoadoutForAbilitySlotBar());
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
         PlayerController.localPlayer.SetLoadoutReleased(true);
     }

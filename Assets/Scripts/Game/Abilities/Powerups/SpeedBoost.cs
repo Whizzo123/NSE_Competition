@@ -20,9 +20,8 @@ public class SpeedBoost : Powerup
     }
 
 
-    public override Ability Clone(Ability ability)
+    public override Ability Clone()
     {
-        SpeedBoost speedBoost = (SpeedBoost)ability;
         return new SpeedBoost();
     }
 

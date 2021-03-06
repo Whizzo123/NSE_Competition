@@ -23,6 +23,21 @@ public class AbilityInventory
         }
     }
 
+    public void ActivateAbility(string abilityName)
+    {
+        BoltLog.Info("Inside activate ability: " + abilityName);
+        foreach (Ability ability in abilities)
+        {
+            BoltLog.Info("Enumeration: " + ability.GetAbilityName());
+            if(ability.GetAbilityName() == abilityName)
+            {
+                BoltLog.Info("Found ability calling use function");
+                ability.Use();
+                break;
+            }
+        }
+    }
+
     public void AddAbilityToInventory(Ability ability)
     {
         if(ability.GetType().IsSubclassOf(typeof(Powerup)))
@@ -30,6 +45,12 @@ public class AbilityInventory
             Powerup powerup = (Powerup)ability;
             powerup.SetPlayerToEmpower(player);
             abilities.Add(powerup);
+        }
+        else if(ability.GetType().IsSubclassOf(typeof(Debuff)))
+        {
+            Debuff debuff = (Debuff)ability;
+            debuff.SetCastingPlayer(player);
+            abilities.Add(debuff);
         }
         else
         {
