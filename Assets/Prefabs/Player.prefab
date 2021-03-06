@@ -297,7 +297,7 @@ MonoBehaviour:
   nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
   inverted: 1
   rotationSpeed: 200
-  loadoutReady: 0
+  speed: 4
 --- !u!114 &7811146946738992401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,7 +312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: 33585ba3-0e56-45e1-ae42-f8ad2897e993
-  _prefabId: 3
+  _prefabId: 4
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1

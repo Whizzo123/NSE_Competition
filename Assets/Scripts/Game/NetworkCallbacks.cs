@@ -13,6 +13,13 @@ public class NetworkCallbacks : GlobalEventListener
         evnt.artefactToDisable.gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 
+    public override void OnEvent(AbilityPickupDisable evnt)
+    {
+        BoltLog.Info("Called OnEvent AbilityPickupDisable");
+        evnt.AbilityEntity.gameObject.GetComponent<MeshRenderer>().enabled = false;
+        evnt.AbilityEntity.gameObject.GetComponent<SphereCollider>().enabled = false;
+    }
+
     public override void OnEvent(ScoreUpdate evnt)
     {
         BoltLog.Info("Called OnEvent ScoreUpdate");

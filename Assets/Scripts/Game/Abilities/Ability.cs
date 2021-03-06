@@ -13,7 +13,8 @@ public class Ability
     protected int pointsCost;
     protected Action<Ability> onAbilityUse;
     protected AbilityUseTypes useType;
-    private bool used;
+    protected bool used;
+    protected bool inUse;
     protected float fullCharge;
     protected float currentCharge;
 
@@ -22,59 +23,43 @@ public class Ability
         name = "default";
         description = "This is an ability";
         pointsCost = 1;
-        onAbilityUse += DefaultAbility;
         useType = AbilityUseTypes.ONE_TIME;
         used = false;
         fullCharge = 0;
     }
 
-    public Ability(string abilityName, string abilityDescription, int abilityCost, Action<Ability> onUse, AbilityUseTypes abilityType, float amountToCharge = 0)
+    public Ability(string abilityName, string abilityDescription, int abilityCost, AbilityUseTypes abilityType, float amountToCharge = 0)
     {
         name = abilityName;
         description = abilityDescription;
         pointsCost = abilityCost;
-        onAbilityUse += onUse;
         useType = abilityType;
         used = false;
         fullCharge = amountToCharge;
     }
 
-    public void UpdateAbility()
+    virtual public Ability Clone(Ability ability)
     {
-        if (useType == AbilityUseTypes.RECHARGE)
-        {
-            if (currentCharge < fullCharge)
-            {
-                currentCharge += Time.deltaTime;
-                if (currentCharge > fullCharge)
-                    currentCharge = fullCharge;
-            }
-        }
-        else if (useType == AbilityUseTypes.PASSIVE)
-        {
-            Use(this);
-        }
+        return new Ability(ability.name, ability.description, ability.pointsCost, ability.useType, ability.fullCharge);
     }
 
-    virtual public void Use(Ability ability)
+
+    virtual public void UpdateAbility()
     {
-        if (used)
-        {
-            //Somehow get rid of ability from player use
-        }
-        else
-        {
-            onAbilityUse.Invoke(ability);
-            if (useType == AbilityUseTypes.ONE_TIME)
-            {
-                used = true;
-            }
-        }
+
     }
 
-    private void DefaultAbility(Ability ability)
+    virtual protected IEnumerator EffectDurationCountdown()
     {
-        Debug.LogWarning("void DefaultAbility(): You have activated my trap card!!!");
+        yield return null;
+    }
+
+    virtual public void Use()
+    {
+        if (useType == AbilityUseTypes.ONE_TIME)
+        {
+            used = true;
+        }
     }
 
     public string GetAbilityName()

@@ -16,8 +16,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     private ArtefactBehaviour targetedArtefact;
     private Stash gameStash;
     private PlayerController targetedPlayerToStealFrom;
+    private AbilityPickup targetedAbilityPickup;
     public float speed = 4f;
     private bool loadoutReleased;
+    public AbilityInventory abilityInventory;
 
     public static PlayerController localPlayer;
 
@@ -32,6 +34,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         state.SetTransforms(state.PlayerTransform, transform);
         speed = 4f;
         SetLoadoutReleased(false);
+        abilityInventory = new AbilityInventory(this);
         //Set state transform to be equal to current transform
         if (entity.IsOwner)
         {
@@ -49,6 +52,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         }
     }
 
+    #region ArtefactInventory
     /// <summary>
     /// Called in order to add artefact to player inventory
     /// </summary>
@@ -105,11 +109,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         return -1;
     }
 
-    public override void ControlGained()
-    {
-        localPlayer = this;
-    }
-
     //Remove all items from inventory
     public void ClearInventory()
     {
@@ -120,6 +119,14 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             state.Inventory[i].ItemPoints = 0;
         }
     }
+    #endregion 
+
+    public override void ControlGained()
+    {
+        localPlayer = this;
+    }
+
+    
 
     /// <summary>
     /// Called on every update of the owner computer a.k.a computer that created this entity
@@ -127,6 +134,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     public override void SimulateOwner()
     {
         Vector3 movement = Vector3.zero;
+
+        abilityInventory.Update();
 
         if(playerNameText == null)
         {
@@ -171,9 +180,14 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     targetedArtefact.Pickup(this);
                     targetedArtefact = null;
                 }
-                if (gameStash != null)
+                else if (gameStash != null)
                 {
                     gameStash.AddToStashScores(this);
+                }
+                else if(targetedAbilityPickup != null)
+                {
+                    targetedAbilityPickup.PickupAbility(this);
+                    targetedAbilityPickup = null;
                 }
             }
             if (Input.GetKeyDown(KeyCode.F))
@@ -267,6 +281,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 BoltLog.Info("Colliding with player");
                 targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
             }
+            else if(collider.gameObject.GetComponent<AbilityPickup>())
+            {
+                targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
+            }
         }
     }
 
@@ -291,6 +309,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 {
                     BoltLog.Info("Exiting from other player collider");
                     targetedPlayerToStealFrom = null;
+                }
+                else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
+                {
+                    BoltLog.Info("Exiting from other player collider");
+                    targetedAbilityPickup = null;
                 }
             }
         }
