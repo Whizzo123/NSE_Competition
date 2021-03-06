@@ -9,11 +9,31 @@ public class AbilityRegister : MonoBehaviour
     private Dictionary<string, Debuff> debuffs;
     private Dictionary<string, Trap> traps;
 
-    public void Start()
+    public void Initialize()
     {
         RegisterPowerups();
         RegisterDebuffs();
         RegisterTraps();
+    }
+
+    public List<Ability> GetLoadoutList()
+    {
+        List<Ability> loadoutList = new List<Ability>();
+
+        foreach (Powerup powerup in powerups.Values)
+        {
+            loadoutList.Add(powerup);
+        }
+        foreach (Debuff debuff in debuffs.Values)
+        {
+            loadoutList.Add(debuff);
+        }
+        foreach (Trap trap in traps.Values)
+        {
+            loadoutList.Add(trap);
+        }
+
+        return loadoutList;
     }
 
     public Ability Clone(string name)
@@ -57,28 +77,31 @@ public class AbilityRegister : MonoBehaviour
         powerups = new Dictionary<string, Powerup>();
         SpeedBoost speedBoost = new SpeedBoost();
         PlayerTracker playerTracker = new PlayerTracker();
-        /*Powerup playerTracker = new Powerup("Player Tracker", "Track player whereabouts on map", 5, Effects.ActivatePlayerTracker, AbilityUseTypes.RECHARGE, 30.0f, Effects.OnActivatePlayerTrackerEnd 50.0f);
-        Powerup clueInterpretation = new Powerup("Interpretation", "Get occasional access to clues of where the closest rarest artefact is", 5, Effects.CreateClueForPlayer, AbilityUseTypes.RECHARGE, 40.0f);
-        Powerup camouflage = new Powerup("Camouflage", "Allows you to blend in with your surroundings for limited amount of time", 4, Effects.EnableCamouflage, AbilityUseTypes.RECHARGE, 50.0f);
-        Powerup largerTools = new Powerup("Larger Tools", "Magically makes your tools bigger allowing you to clear areas quicker", 5, Effects.EnlargeTools, AbilityUseTypes.RECHARGE, 50.0f);*/
+        Camouflage camouflage = new Camouflage();
+        //Powerup clueInterpretation = new Powerup("Interpretation", "Get occasional access to clues of where the closest rarest artefact is", 5, Effects.CreateClueForPlayer, AbilityUseTypes.RECHARGE, 40.0f);
+        //Powerup largerTools = new Powerup("Larger Tools", "Magically makes your tools bigger allowing you to clear areas quicker", 5, Effects.EnlargeTools, AbilityUseTypes.RECHARGE, 50.0f);*/
         powerups.Add(speedBoost.GetAbilityName(), speedBoost);
+        powerups.Add(playerTracker.GetAbilityName(), playerTracker);
+        powerups.Add(camouflage.GetAbilityName(), camouflage);
     }
 
     private void RegisterDebuffs()
     {
         debuffs = new Dictionary<string, Debuff>();
         //Debuff slowdown = new Debuff("Slow Down", "Slow down enemy player of your choice", 2, Effects.SlowDown, AbilityUseTypes.RECHARGE, 5);
-       // debuffs.Add(slowdown.GetAbilityName(), slowdown);
+        Stun stunDebuff = new Stun();
+        // debuffs.Add(slowdown.GetAbilityName(), slowdown);
+        debuffs.Add(stunDebuff.GetAbilityName(), stunDebuff);
     }
 
     private void RegisterTraps()
     {
         traps = new Dictionary<string, Trap>();
-        //Trap bearTrap = new Trap("Bear Trap", "Ensnare your opponents in a bear trap to immobilize them", 3, Effects.BearTrap, AbilityUseTypes.ONE_TIME);
+        BearTrap bearTrap = new BearTrap();
         //Trap obstacleTrap = new Trap("Obstacle Surprise", "Spawns obstacles to delay enemy players", 3, Effects.ObstacleTrap, AbilityUseTypes.ONE_TIME);
         //Trap voodooPoisonTrap = new Trap("Voodoo Poision Trap", "Hits enemy with voodoo poison effect hindering their movement", 3, Effects.VoodooPoision, AbilityUseTypes.ONE_TIME);
         //Trap visionCloudTrap = new Trap("Vision Cloud", "Hinders your opponents by shrinking their visual field", 3, Effects.VisionClouding, AbilityUseTypes.ONE_TIME);
-        //traps.Add(bearTrap.GetAbilityName(), bearTrap);
+        traps.Add(bearTrap.GetAbilityName(), bearTrap);
     }
 
 
