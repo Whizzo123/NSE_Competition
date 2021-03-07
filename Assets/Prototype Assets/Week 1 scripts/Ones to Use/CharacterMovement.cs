@@ -28,7 +28,9 @@ public class CharacterMovement : MonoBehaviour
     [Space]
     [Header("NSE PROJECT STUFF")]
     [SerializeField][Tooltip("Obstacles should be objects that the player can destroy")] private LayerMask obstacles;
-    [SerializeField][Tooltip("Scale is the magnitude of the ray cast to destroy obstacles")] private int scale = 5;
+    [SerializeField][Tooltip("Scale is the magnitude of the ray cast to destroy obstacles")] private int scale = 1;
+    [SerializeField] [Tooltip("Amount of delay for destroying obstacles")] private float waitTime = 0.05f;
+    private bool wait = false;
     private Vector3 direction;//direction player is facing based on previous movement
     //[SerializeField]private GameObject machete; //Instantiate gameobject to show visual(machete will need a script or animation
     //[SerializeField] private Animator animation; //Maybe have an animationHandler Script, will play animation, should have no effect on player movement
@@ -51,11 +53,13 @@ public class CharacterMovement : MonoBehaviour
     {
         playerRigidBody = GetComponent<Rigidbody>();
         playerCharacterController = GetComponent<CharacterController>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("E");
         #region Falling
         //Projects a sphere underneath player to check ground layer
         isGrounded = Physics.CheckSphere(playerGroundCheck.position, groundDistance, groundMask);
@@ -84,9 +88,11 @@ public class CharacterMovement : MonoBehaviour
         #endregion
 
         PlayerRotation();
-        if (Input.GetKey(KeyCode.C))
+
+        if (Input.GetKey(KeyCode.C) && wait == false)
         {
-            HitFoward();
+            wait = true;
+            StartCoroutine(cut());
         }
 
 
@@ -102,6 +108,7 @@ public class CharacterMovement : MonoBehaviour
     /// </summary>
     void PlayerRotation()
     {
+        //Think about changning ray to sphere mayber depending on how the game plays and feels
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, groundMask))
         {
@@ -138,11 +145,20 @@ public class CharacterMovement : MonoBehaviour
         if (Physics.Raycast(ray,out hit,scale,obstacles))
             {
                 Destroy(hit.transform.gameObject);
-            //run couroutine to delay next obstacle destruction
             }
     }
     #endregion
 
+    /// <summary>
+    /// Gives a delay to the destroying obstacles function 'HitForward()'.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator cut()
+    {
+        HitFoward();
+        yield return new WaitForSeconds(waitTime);
+        wait = false;
+    }
 
 
 }
