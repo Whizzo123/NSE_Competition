@@ -50,12 +50,29 @@ MonoBehaviour:
   useRandomSeed: 1
   randomFillPercent: 45
   mapSmoothing: 5
+  raycastDistance: 100
+  slopeAngle: 30
+  ground:
+    serializedVersion: 2
+    m_Bits: 256
+  indestructables:
+    serializedVersion: 2
+    m_Bits: 1024
   obstacles:
   - {fileID: 919432600166237137, guid: 8b66ce3b6e152e744aa896fdf1feb736, type: 3}
   artefactSpawner:
-  - {fileID: 781001905739417216, guid: 70fe023e6abe1f14e9d280ff46df9499, type: 3}
-  - {fileID: 781001905739417216, guid: 3104c34aa5154cd468d0f6594030df57, type: 3}
-  - {fileID: 781001905739417216, guid: 111a6aa02ebfc384cb2ce59933a30946, type: 3}
-  commonArtefacts: 40
-  rareArtefacts: 5
+  - {fileID: 2505025424221703280, guid: 3d0ac13837ff5bd4b8b3c3ae43c107db, type: 3}
+  - {fileID: 2505025424221703280, guid: e143cc29a81e5ad479cd809106f217bd, type: 3}
+  - {fileID: 2505025424221703280, guid: 862d5411c21e01b48bba64c650b480fc, type: 3}
+  commonArtefacts: 50
+  rareArtefacts: 10
   exoticArtefacts: 1
+  commonIndestructables:
+  - {fileID: 1733360191824578543, guid: ff990316570976e45882100b6c5788cd, type: 3}
+  - {fileID: 919432600166237137, guid: 8b66ce3b6e152e744aa896fdf1feb736, type: 3}
+  rareIndestructables:
+  - {fileID: 8402028746714389220, guid: 7531ce5f85adaa44fa40808934629143, type: 3}
+  commonCommonality: 7
+  radius: 17
+  regionSize: {x: 100, y: 100}
+  rejectionSamples: 39

@@ -209,25 +209,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c64a30921690b7041b91714d1f985525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerFallingVelocity: {x: 0, y: 0, z: 0}
-  playerHand: {fileID: 8275471538698737650}
   playerSpeed: 15
-  playerGravity: -10
-  playerJumpHeight: 2
-  playerHandEmpty: 1
+  playerGravity: -65.2
   playerGroundCheck: {fileID: 8275471538698737650}
   groundDistance: 0.4
   groundMask:
     serializedVersion: 2
     m_Bits: 256
-  isGrounded: 0
   obstacles:
     serializedVersion: 2
     m_Bits: 512
   scale: 1
-  dir: {x: 0, y: 0, z: 0}
-  machete: {fileID: 8736819056270585101, guid: 341f7195da33efd45b50470da590653b, type: 3}
+  waitTime: 0.05
   pressed: 0
+  playerFallingVelocity: {x: 0, y: 0, z: 0}
 --- !u!143 &8275471538484718685
 CharacterController:
   m_ObjectHideFlags: 0
@@ -241,7 +236,7 @@ CharacterController:
   serializedVersion: 2
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
+  m_SlopeLimit: 30.01
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001

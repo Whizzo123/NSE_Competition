@@ -20,7 +20,7 @@ public class ObjectPlacement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        points = Proto_Procedural.GenerateGrids(radius, regionSize, rejectionSamples);
+        //points = Proto_Procedural.GenerateGrids(radius, regionSize, rejectionSamples);
         foreach (Vector2 vector2 in points)
         {
             Instantiate(prefab, vector2, Quaternion.identity);
