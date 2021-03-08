@@ -32,11 +32,6 @@ public class PhotonGameSceneController : GlobalEventListener
             BoltEntity stash = BoltNetwork.Instantiate(BoltPrefabs.Stash);
             stash.transform.position = new Vector3(-19 , -1.5f, -20);
             stash.TakeControl();
-
-            BoltEntity abilityPickup = BoltNetwork.Instantiate(BoltPrefabs.AbilityPickup);
-            abilityPickup.transform.position = new Vector3(5, -1, 18);
-            abilityPickup.GetComponent<AbilityPickup>().SetAbilityOnPickup("Speed");
-            abilityPickup.TakeControl();
         }
     }
 

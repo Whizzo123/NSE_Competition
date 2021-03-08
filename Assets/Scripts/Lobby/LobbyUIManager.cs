@@ -92,6 +92,11 @@ public class LobbyUIManager : GlobalEventListener
             //If all players hit are ready and our count of players is above the minimum we need to start a game
             if (allReady && readyCount >= minPlayers)
             {
+                //This username code is not currently used we use PlayerPrefs instead for the moment until I can be bothered to try and make this work :)
+                foreach(LobbyPlayer player in roomScreen.players)
+                {
+                    FindObjectOfType<PlayerData>().AddUsername(player.connection, player.state.Name);
+                }
                 isCountdown = true;
                 StartCoroutine(ServerCountdownCoroutine());
             }
@@ -226,6 +231,7 @@ public class LobbyUIManager : GlobalEventListener
     {
         if (BoltNetwork.IsClient)
         {
+            FindObjectOfType<PlayerData>().RegisterConnection(connection);
             BoltLog.Info("Connected Client: {0}", connection);
             //Create new player object and add it to room
             LobbyPlayer player = new LobbyPlayer();

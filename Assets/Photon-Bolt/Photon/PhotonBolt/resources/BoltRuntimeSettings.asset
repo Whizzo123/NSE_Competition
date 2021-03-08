@@ -29,7 +29,7 @@ MonoBehaviour:
     serverDejitterDelay: 6
     serverDejitterDelayMin: 3
     serverDejitterDelayMax: 9
-    serverConnectionLimit: 8
+    serverConnectionLimit: 32
     serverConnectionAcceptMode: 0
     commandQueueSize: 60
     commandRedundancy: 6
@@ -49,7 +49,7 @@ MonoBehaviour:
   debugBuildMode: 1
   debugStartMapName: SimpleMoveAndShoot_Game
   debugPlayAsServer: 1
-  showDebugInfo: 0
+  showDebugInfo: 1
   overrideTimeScale: 1
   debugEditorMode: 0
   consoleToggleKey: 9

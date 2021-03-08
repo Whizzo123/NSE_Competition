@@ -16,28 +16,22 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     private ArtefactBehaviour targetedArtefact;
     private Stash gameStash;
     private PlayerController targetedPlayerToStealFrom;
-    private AbilityPickup targetedAbilityPickup;
-    public float speed = 4f;
+
     private bool loadoutReleased;
-    public AbilityInventory abilityInventory;
 
     public static PlayerController localPlayer;
-
     #endregion
 
     /// <summary>
     /// Called when entity attached to network 
     /// </summary>
     public override void Attached()
-    { 
-
+    {
         state.SetTransforms(state.PlayerTransform, transform);
         SetLoadoutReleased(false);
-        abilityInventory = new AbilityInventory(this);
         //Set state transform to be equal to current transform
         if (entity.IsOwner)
         {
-            state.Speed = 4f;
             state.LoadoutReady = false;
             for (int i = 0; i < state.Inventory.Length; i++)
             {
@@ -52,7 +46,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         }
     }
 
-    #region ArtefactInventory
     /// <summary>
     /// Called in order to add artefact to player inventory
     /// </summary>
@@ -109,6 +102,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         return -1;
     }
 
+    public override void ControlGained()
+    {
+        localPlayer = this;
+    }
+
     //Remove all items from inventory
     public void ClearInventory()
     {
@@ -121,47 +119,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     }
 
     /// <summary>
-    /// Check to see whether inventory has any empty slots
-    /// </summary>
-    /// <returns></returns>
-    public bool IsInventoryEmpty()
-    {
-        for (int i = 0; i < state.Inventory.Length; i++)
-        {
-            if (state.Inventory[i].ItemName == "")
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Just grab the first item in the player inventory
-    /// </summary>
-    /// <returns></returns>
-    public InventoryItem GrabRandomItem()
-    {
-        return state.Inventory[0];
-    }
-    #endregion 
-
-    public override void ControlGained()
-    {
-        localPlayer = this;
-    }
-
-    
-
-    /// <summary>
     /// Called on every update of the owner computer a.k.a computer that created this entity
     /// </summary>
     public override void SimulateOwner()
     {
+        float speed = 4f;
         Vector3 movement = Vector3.zero;
-
-        abilityInventory.Update();
 
         if(playerNameText == null)
         {
@@ -183,11 +146,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
             if (movement != Vector3.zero)
             {
-                transform.Translate(movement.normalized * state.Speed * BoltNetwork.FrameDeltaTime);
+                transform.Translate(movement.normalized * speed * BoltNetwork.FrameDeltaTime);
             }
 
-            //Old camera code
-           /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+            if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
             {
                 if (lastMousePos != Input.mousePosition)
                 {
@@ -198,7 +160,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 }
 
                 lastMousePos = Input.mousePosition;
-            }*/
+            }
 
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -207,14 +169,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     targetedArtefact.Pickup(this);
                     targetedArtefact = null;
                 }
-                else if (gameStash != null)
+                if (gameStash != null)
                 {
                     gameStash.AddToStashScores(this);
-                }
-                else if(targetedAbilityPickup != null)
-                {
-                    targetedAbilityPickup.PickupAbility(this);
-                    targetedAbilityPickup = null;
                 }
             }
             if (Input.GetKeyDown(KeyCode.F))
@@ -249,7 +206,31 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     }
 
 
-   
+    /// <summary>
+    /// Check to see whether inventory has any empty slots
+    /// </summary>
+    /// <returns></returns>
+    public bool IsInventoryEmpty()
+    {
+        for (int i = 0; i < state.Inventory.Length; i++)
+        {
+            if (state.Inventory[i].ItemName == "")
+            {
+                return true;
+            }
+        }
+       
+        return false;
+    }
+
+    /// <summary>
+    /// Just grab the first item in the player inventory
+    /// </summary>
+    /// <returns></returns>
+    public InventoryItem GrabRandomItem()
+    {
+        return state.Inventory[0];
+    }
 
     /// <summary>
     /// Sets player name to state
@@ -263,8 +244,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             state.Name = playerName;
         }
     }
-
-    #region Collision
 
     public void OnTriggerEnter(Collider collider)
     {
@@ -285,10 +264,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             {
                 BoltLog.Info("Colliding with player");
                 targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
-            }
-            else if(collider.gameObject.GetComponent<AbilityPickup>())
-            {
-                targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
             }
         }
     }
@@ -315,16 +290,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     BoltLog.Info("Exiting from other player collider");
                     targetedPlayerToStealFrom = null;
                 }
-                else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
-                {
-                    BoltLog.Info("Exiting from other player collider");
-                    targetedAbilityPickup = null;
-                }
             }
         }
     }
-
-    #endregion
 
     /// <summary>
     /// Used to set whether we are able to move now or not
