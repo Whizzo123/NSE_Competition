@@ -17,7 +17,7 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
     void Start()
     {
         dragging = false;
-        PopulateAbilityIcon("Speed", "this is the best ability", Random.Range(3, 7), null);
+        //PopulateAbilityIcon("Speed", "this is the best ability", Random.Range(3, 7), null);
     }
 
     public void PopulateAbilityIcon(string name, string description, int points, Sprite imageSprite)
@@ -25,6 +25,7 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
         abilityName = name;
         abilityDescription = description;
         abilityPoints = points;
+        GetComponent<Image>().color = Random.ColorHSV();
     }
 
     public void OnBeginDrag(PointerEventData eventData)

@@ -17,6 +17,7 @@ public class CanvasUIManager : MonoBehaviour
     public GameObject playerTextContainer;
     public GameObject loadoutScreen;
     public GameObject loadoutScreenButton;
+    public GameObject targetIconGO;
 
 
     public void PopupArtefactPickupDisplay(ItemArtefact artefact)
