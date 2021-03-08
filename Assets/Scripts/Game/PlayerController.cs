@@ -342,7 +342,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     {
         Vector3 pos = new Vector3(Random.Range(-16, 16), 0.6f, Random.Range(-16, 16));
 
-        BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs.NetworkPlayer, pos, Quaternion.identity);
+        BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs.Player, pos, Quaternion.identity);
         playerEntity.TakeControl();
         //string playerUsername = FindObjectOfType<PlayerData>().GetUsername(playerEntity.Controller);
 
