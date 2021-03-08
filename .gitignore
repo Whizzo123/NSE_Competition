@@ -58,5 +58,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+#Get rid of photon just causes issues
 [Aa]ssets/Photon-Bolt*
 
