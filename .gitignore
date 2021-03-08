@@ -58,9 +58,3 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-#Get rid of photon just causes issues
-/[Aa]ssets/Photon-Bolt/
-
-Assets/Photon-Bolt/Photon/PhotonBolt/project.json
-Assets/Photon-Bolt/Photon/PhotonBolt/resources/BoltPrefabDatabase.asset
-Assets/Photon-Bolt/Photon/PhotonBolt/resources/BoltRuntimeSettings.asset
