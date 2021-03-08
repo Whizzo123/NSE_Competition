@@ -283,7 +283,6 @@ MonoBehaviour:
   nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
   inverted: 1
   rotationSpeed: 200
-  speed: 4
 --- !u!114 &7811146946738992401
 MonoBehaviour:
   m_ObjectHideFlags: 0
