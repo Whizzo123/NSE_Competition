@@ -13,6 +13,13 @@ public class NetworkCallbacks : GlobalEventListener
         evnt.artefactToDisable.gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 
+    public override void OnEvent(AbilityPickupDisable evnt)
+    {
+        BoltLog.Info("Called OnEvent AbilityPickupDisable");
+        evnt.AbilityEntity.gameObject.GetComponent<MeshRenderer>().enabled = false;
+        evnt.AbilityEntity.gameObject.GetComponent<SphereCollider>().enabled = false;
+    }
+
     public override void OnEvent(ScoreUpdate evnt)
     {
         BoltLog.Info("Called OnEvent ScoreUpdate");
@@ -35,7 +42,20 @@ public class NetworkCallbacks : GlobalEventListener
     public override void OnEvent(LoadoutScreenDisable evnt)
     {
         BoltLog.Info("Called OnEvent LoadoutScreenDisable");
+        FindObjectOfType<AbilitySlotBarUI>().LoadInAbilitiesFromLoadout(FindObjectOfType<LoadoutBarUI>().GetLoadoutForAbilitySlotBar());
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
         PlayerController.localPlayer.SetLoadoutReleased(true);
+    }
+
+    public override void OnEvent(StunEnemyPlayer evnt)
+    {
+        BoltLog.Info("Called OnEvent StunEnemyPlayer");
+        if(evnt.Target.IsOwner)
+        {
+            if (!evnt.End)
+                evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 1f;
+            else
+                evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 4f;
+        }
     }
 }
