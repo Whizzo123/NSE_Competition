@@ -32,12 +32,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     { 
 
         state.SetTransforms(state.PlayerTransform, transform);
-        speed = 4f;
         SetLoadoutReleased(false);
         abilityInventory = new AbilityInventory(this);
         //Set state transform to be equal to current transform
         if (entity.IsOwner)
         {
+            state.Speed = 4f;
             state.LoadoutReady = false;
             for (int i = 0; i < state.Inventory.Length; i++)
             {
@@ -183,7 +183,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
             if (movement != Vector3.zero)
             {
-                transform.Translate(movement.normalized * speed * BoltNetwork.FrameDeltaTime);
+                transform.Translate(movement.normalized * state.Speed * BoltNetwork.FrameDeltaTime);
             }
 
             //Old camera code

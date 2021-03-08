@@ -27,6 +27,30 @@ public class Debuff : Ability
         return target;
     }
 
+    public override void UpdateAbility()
+    {
+        if (inUse)
+        {
+            if (currentDuration < effectDuration)
+            {
+                Debug.Log("Debuff in use increasing duration now at: " + currentDuration);
+                currentDuration += Time.deltaTime;
+                if (currentDuration > effectDuration)
+                    currentDuration = effectDuration;
+            }
+            else
+            {
+                currentDuration = 0;
+                EndEffect();
+            }
+        }
+    }
+
+    public virtual void EndEffect()
+    {
+
+    }
+
     protected PlayerController FindClosestPlayer()
     {
         float shortestDistance = float.MaxValue;
@@ -34,7 +58,7 @@ public class Debuff : Ability
 
         foreach(BoltEntity entity in BoltNetwork.Entities)
         {
-            if (entity.StateIs<IGamePlayerState>() == false) continue;
+            if (entity.StateIs<IGamePlayerState>() == false || entity == castingPlayer.entity) continue;
             float newDistance = GetDistance(entity.GetComponent<PlayerController>().gameObject.transform.position,
                 castingPlayer.gameObject.transform.position);
             if (newDistance < shortestDistance)

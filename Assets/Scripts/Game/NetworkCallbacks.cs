@@ -46,4 +46,16 @@ public class NetworkCallbacks : GlobalEventListener
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
         PlayerController.localPlayer.SetLoadoutReleased(true);
     }
+
+    public override void OnEvent(StunEnemyPlayer evnt)
+    {
+        BoltLog.Info("Called OnEvent StunEnemyPlayer");
+        if(evnt.Target.IsOwner)
+        {
+            if (!evnt.End)
+                evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 1f;
+            else
+                evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 4f;
+        }
+    }
 }

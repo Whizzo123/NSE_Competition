@@ -20,6 +20,24 @@ public class Stun : Debuff
             GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().targetObject = closestPlayer.gameObject;
             target = closestPlayer;
         }
+        else
+        {
+            inUse = true;
+            var request = StunEnemyPlayer.Create();
+            request.Target = target.entity;
+            request.End = false;
+            request.Send();
+            GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().targetObject = null;
+        }
+    }
+
+    public override void EndEffect()
+    {
+        inUse = false;
+        var request = StunEnemyPlayer.Create();
+        request.Target = target.entity;
+        request.End = true;
+        request.Send();
     }
 
     public override Ability Clone()
