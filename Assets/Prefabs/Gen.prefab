@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4003292575508371856}
   - component: {fileID: 4003292575508371857}
+  - component: {fileID: 7671949710289692790}
   m_Layer: 0
   m_Name: Gen
   m_TagString: Untagged
@@ -45,11 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 100
   height: 100
-  spawner: {fileID: 6113681094690531824, guid: 1a2e8f6cb7875bf42a6cc7328e2f590b, type: 3}
-  seed: 
-  useRandomSeed: 1
-  randomFillPercent: 45
-  mapSmoothing: 5
   raycastDistance: 100
   slopeAngle: 30
   ground:
@@ -60,12 +56,16 @@ MonoBehaviour:
     m_Bits: 1024
   obstacles:
   - {fileID: 919432600166237137, guid: 8b66ce3b6e152e744aa896fdf1feb736, type: 3}
+  seed: 
+  useRandomSeed: 1
+  randomFillPercent: 45
+  mapSmoothing: 5
   artefactSpawner:
-  - {fileID: 2505025424221703280, guid: 3d0ac13837ff5bd4b8b3c3ae43c107db, type: 3}
-  - {fileID: 2505025424221703280, guid: e143cc29a81e5ad479cd809106f217bd, type: 3}
-  - {fileID: 2505025424221703280, guid: 862d5411c21e01b48bba64c650b480fc, type: 3}
-  commonArtefacts: 50
-  rareArtefacts: 10
+  - {fileID: 3322170139644694061, guid: dc15e92ea2cc60d49a7e6ed52baef36e, type: 3}
+  - {fileID: 3322170139644694061, guid: dc15e92ea2cc60d49a7e6ed52baef36e, type: 3}
+  - {fileID: 3322170139644694061, guid: dc15e92ea2cc60d49a7e6ed52baef36e, type: 3}
+  commonArtefacts: 3
+  rareArtefacts: 2
   exoticArtefacts: 1
   commonIndestructables:
   - {fileID: 1733360191824578543, guid: ff990316570976e45882100b6c5788cd, type: 3}
@@ -76,3 +76,32 @@ MonoBehaviour:
   radius: 17
   regionSize: {x: 100, y: 100}
   rejectionSamples: 39
+--- !u!114 &7671949710289692790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4003292575508371854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneGuid: 
+  _serializerGuid: 816d62c9-b81f-4f2e-967c-f62cb5585d3f
+  _prefabId: 2
+  _updateRate: 1
+  _autoFreezeProxyFrames: 0
+  _clientPredicted: 1
+  _allowInstantiateOnClient: 1
+  _persistThroughSceneLoads: 0
+  _sceneObjectDestroyOnDetach: 1
+  _sceneObjectAutoAttach: 1
+  _alwaysProxy: 0
+  _detachOnDisable: 1
+  _allowFirstReplicationWhenFrozen: 0
+  _autoRemoveChildEntities: 0
+  _entityBehaviourQueryOption: 0
+  _entityPriorityCalculatorQueryOption: 1
+  _entityReplicationFilterQueryOption: 1

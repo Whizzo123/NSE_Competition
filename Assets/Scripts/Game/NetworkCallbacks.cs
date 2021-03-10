@@ -38,4 +38,10 @@ public class NetworkCallbacks : GlobalEventListener
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
         PlayerController.localPlayer.SetLoadoutReleased(true);
     }
+    public override void OnEvent(ObstacleDisable evnt)
+    {
+        BoltLog.Info("Called OnEvent ObstacleDisable");
+        evnt.Obstacle.gameObject.GetComponent<MeshRenderer>().enabled = false;
+        evnt.Obstacle.gameObject.GetComponent<BoxCollider>().enabled = false;
+    }
 }
