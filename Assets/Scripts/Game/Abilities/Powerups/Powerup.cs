@@ -48,9 +48,8 @@ public class Powerup : Ability
             //Destroy
 
         }
-        else if (useType == AbilityUseTypes.PASSIVE && !used)
+        else if (useType == AbilityUseTypes.PASSIVE)
         {
-            used = true;
             Use();
         }
     }

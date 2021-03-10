@@ -15,7 +15,8 @@ public class SpeedBoost : Powerup
     public override void Use()
     {
         //All logic here
-        GetPlayerToEmpower().speed = boostToSpeed;
+        if(GetPlayerToEmpower().speed != boostToSpeed)
+            GetPlayerToEmpower().speed = boostToSpeed;
         base.Use();
     }
 

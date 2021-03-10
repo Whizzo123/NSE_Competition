@@ -17,7 +17,7 @@ public class Stun : Debuff
         {
             GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
             PlayerController closestPlayer = FindClosestPlayer();
-            GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().targetObject = closestPlayer.gameObject;
+            GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
             target = closestPlayer;
         }
         else
@@ -27,7 +27,7 @@ public class Stun : Debuff
             request.Target = target.entity;
             request.End = false;
             request.Send();
-            GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().targetObject = null;
+            GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
         }
     }
 
