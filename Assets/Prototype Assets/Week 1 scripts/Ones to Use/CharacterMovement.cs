@@ -17,18 +17,18 @@ public class CharacterMovement : MonoBehaviour
     [Range(-1, -100)]
     [SerializeField] private float playerGravity = -65;
     [Space]
-    
+
     [Header("PlayerGroundChecks")]
-    [SerializeField][Tooltip("A GameObject underneath the palyer")] private Transform playerGroundCheck;
-    [SerializeField][Tooltip("The radius of a sphere that gets drawn on playerGroundCheck")] private float groundDistance = 0.4f;
-    [SerializeField][Tooltip("Floor that player should be able to walk on")] private LayerMask groundMask;
+    [SerializeField] [Tooltip("A GameObject underneath the palyer")] private Transform playerGroundCheck;
+    [SerializeField] [Tooltip("The radius of a sphere that gets drawn on playerGroundCheck")] private float groundDistance = 0.4f;
+    [SerializeField] [Tooltip("Floor that player should be able to walk on")] private LayerMask groundMask;
     private bool isGrounded;
     [Space]
 
     [Space]
     [Header("NSE PROJECT STUFF")]
-    [SerializeField][Tooltip("Obstacles should be objects that the player can destroy")] private LayerMask obstacles;
-    [SerializeField][Tooltip("Scale is the magnitude of the ray cast to destroy obstacles")] private int scale = 1;
+    [SerializeField] [Tooltip("Obstacles should be objects that the player can destroy")] private LayerMask obstacles;
+    [SerializeField] [Tooltip("Scale is the magnitude of the ray cast to destroy obstacles")] private int scale = 1;
     [SerializeField] [Tooltip("Amount of delay for destroying obstacles")] private float waitTime = 0.05f;
     private bool wait = false;
     private Vector3 direction;//direction player is facing based on previous movement
@@ -53,7 +53,7 @@ public class CharacterMovement : MonoBehaviour
     {
         playerRigidBody = GetComponent<Rigidbody>();
         playerCharacterController = GetComponent<CharacterController>();
-        
+
     }
 
     // Update is called once per frame
@@ -63,11 +63,11 @@ public class CharacterMovement : MonoBehaviour
         #region Falling
         //Projects a sphere underneath player to check ground layer
         isGrounded = Physics.CheckSphere(playerGroundCheck.position, groundDistance, groundMask);
-        
+
         //Player recieves a constant y velocity from gravity
         playerFallingVelocity.y += playerGravity * Time.deltaTime;
 
-        if(isGrounded && playerFallingVelocity.y < 0)
+        if (isGrounded && playerFallingVelocity.y < 0)
         {
             playerFallingVelocity.y = -1f;
         }
@@ -135,6 +135,8 @@ public class CharacterMovement : MonoBehaviour
         }
 
     }
+
+    #endregion
     /// <summary>
     /// Destroys obstacles directly in front of player. This relies on PlayerRotation().
     /// </summary>
@@ -142,12 +144,11 @@ public class CharacterMovement : MonoBehaviour
     {
         RaycastHit hit;
         Ray ray = new Ray(transform.position, transform.forward);
-        if (Physics.Raycast(ray,out hit,scale,obstacles))
-            {
-                Destroy(hit.transform.gameObject);
-            }
+        if (Physics.Raycast(ray, out hit, scale, obstacles))
+        {
+            Destroy(hit.transform.gameObject);
+        }
     }
-    #endregion
 
     /// <summary>
     /// Gives a delay to the destroying obstacles function 'HitForward()'.
@@ -162,14 +163,33 @@ public class CharacterMovement : MonoBehaviour
 
 
 }
+/*
+public LayerMask obstacles;
+
+/// <summary>
+/// Destroys obstacles directly in front of player. This relies on PlayerRotation().
+/// </summary>
+void HitFoward()
+{
+    RaycastHit hit;
+    Ray ray = new Ray(transform.position, transform.forward);
+    if (Physics.Raycast(ray, out hit, 5, obstacles))
+    {
+        var request = ObstacleDisable.Create();
+        request.Obstacle = hit.transform.gameObject.GetComponent<BoltEntity>();
+        request.Send();
+    }
+}
+/*
+
 
 
 
 /*void SwingMachete()
 {
-    Debug.Log("In Functions");
-    //Instantiate(machete, transform);
-    Instantiate(machete, transform.position, Quaternion.identity, transform);
+Debug.Log("In Functions");
+//Instantiate(machete, transform);
+Instantiate(machete, transform.position, Quaternion.identity, transform);
 
 }*/
 /*    private void OnDrawGizmos()
