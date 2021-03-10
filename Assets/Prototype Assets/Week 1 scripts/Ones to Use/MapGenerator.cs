@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
+using Bolt;
 /// <summary>
 /// Main idea behind the map generator is cellular automata and a sprinkle of poisson disc sampling.ref.'Proto_Procedural.cs'. 
 /// WARNING: Currently it is way to taxing on the system. Just a 100x100 grid has a 2 second delay on a high end copmputer. Look at 'ProfilerDataSimSmall.data' profiler data to see issues
 /// regarding computer performance.
 /// </summary>
-public class MapGenerator : MonoBehaviour
+public class MapGenerator : EntityBehaviour<IGenerator>
 {
     #region Globals
     [Header("Map")]
@@ -51,13 +51,24 @@ public class MapGenerator : MonoBehaviour
 
     #endregion
 
+    public override void Attached()
+    {
+        Debug.Log("GameStarted");
+        state.SetTransforms(state.Transform, transform);
 
+        Debug.Log("GameStartedDone");
+    }
     private void Start()
     {
+        if (BoltNetwork.IsServer)
+        {
+            StartCoroutine(GenerateAll());
+        }
+
         //Find a way to generate things one at a time to look cool?
         //Couroutines? Don't really work. I've tried putting couroutines inside the generation themselves however couroutines do not pause the generation of everything
         //Only that particular branch of code, the rest continue running.
-        StartCoroutine(GenerateAll());
+
     }
 
     /// <summary>
@@ -75,6 +86,8 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     IEnumerator GenerateAll()
     {
+
+        Debug.Log("GenerateCalled");
         GenerateIndestructables();
         yield return new WaitForSeconds(2);
         GenerateMap();
@@ -332,9 +345,9 @@ public class MapGenerator : MonoBehaviour
             }
             else//Spawn obstacles and return false;
             {
+                Debug.Log("Indestructable Instance");
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
-                Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(0, 90, -90));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
-                Debug.Log("Grass is has a rotated model. The code reflects this and will apply some extra rotation. Return to 'Spawner.cs' to remove when models have upright rotation");
+                BoltNetwork.Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(0, 90, -90));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
                 return false;
             }
 
@@ -354,7 +367,7 @@ public class MapGenerator : MonoBehaviour
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
         {
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            Instantiate(ob, hit.point, spawnRotation);
+            BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
         }
         ///////////////Destroy(this.gameobject);
     }
@@ -378,7 +391,7 @@ public class MapGenerator : MonoBehaviour
             else //Spawn indestructable
             {
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-                Instantiate(ob, hit.point, spawnRotation);
+                BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
                 //Destroy(this.gameObject);
             }
 
