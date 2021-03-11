@@ -59,7 +59,6 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("E");
         #region Falling
         //Projects a sphere underneath player to check ground layer
         isGrounded = Physics.CheckSphere(playerGroundCheck.position, groundDistance, groundMask);

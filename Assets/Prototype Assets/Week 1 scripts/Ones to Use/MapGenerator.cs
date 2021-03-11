@@ -31,6 +31,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     [Range(0, 100)]
     [SerializeField] [Tooltip("Percentace of the block to be filled")] private int randomFillPercent = 45;
     [SerializeField] [Tooltip("The more mapSmoothinging operations that occur the less fragmented the pattern is, however it is also taxing. Diminishing Returns")] private int mapSmoothing = 3;
+    [SerializeField] [Tooltip("The spacing between each spawn of any objects that use map, the scale of spawned objects have to be manually tweaked. This is equivalent to multiplying the world position.")] private int spawnPosScale = 1;
     [Space]
 
     [Header(" --------- Artefacts")]
@@ -218,7 +219,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                     if (map[x, z] == 0)
                     {
                         //Spawn random Obstacle via' ObstacleSpawner()'
-                        Vector3 spawnPosition = new Vector3(x, 0, z) + transform.position;
+                        Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, z *spawnPosScale) + transform.position;
                         if (ObstacleSpawner((obstacles[UnityEngine.Random.Range(0, obstacles.Length)]), spawnPosition))
                         {
                             map[x, z] = 1;
@@ -256,7 +257,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                     if (map2[x, y] == 0 && (UnityEngine.Random.Range(0, width * height) <= totalArtefacts * iterations) && itemsSpawned < totalArtefacts)
                     {
                         
-                        Vector3 spawnPosition = new Vector3(x, 0, y) + transform.position;
+                        Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, y * spawnPosScale) + transform.position;
                         //Hones in on last artefact types to spawn
                         float ran = UnityEngine.Random.Range(0, totalArtefacts - itemsSpawned);
                         //There should never be more exotics than rares, more rares than commons.

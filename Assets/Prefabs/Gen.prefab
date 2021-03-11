@@ -60,6 +60,7 @@ MonoBehaviour:
   useRandomSeed: 1
   randomFillPercent: 45
   mapSmoothing: 5
+  spawnPosScale: 2
   artefactSpawner:
   - {fileID: 3322170139644694061, guid: dc15e92ea2cc60d49a7e6ed52baef36e, type: 3}
   - {fileID: 3322170139644694061, guid: dc15e92ea2cc60d49a7e6ed52baef36e, type: 3}
@@ -90,7 +91,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: 816d62c9-b81f-4f2e-967c-f62cb5585d3f
-  _prefabId: 2
+  _prefabId: 3
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1
