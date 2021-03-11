@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Bolt;
+using System.Linq;
 
 [BoltGlobalBehaviour("GameScene")]
 public class NetworkCallbacks : GlobalEventListener
@@ -97,5 +99,44 @@ public class NetworkCallbacks : GlobalEventListener
         BoltLog.Info("Called OnEvent ObstacleDisable");
         evnt.Obstacle.gameObject.GetComponent<MeshRenderer>().enabled = false;
         evnt.Obstacle.gameObject.GetComponent<BoxCollider>().enabled = false;
+    }
+
+    public override void OnEvent(DisplayWinScreen evnt)
+    {
+        BoltLog.Info("Calling DisplayWinScreen event");
+        NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
+        StashedScore[] results = new StashedScore[scores.Length];
+        for (int i = 0; i < results.Length; i++)
+        {
+            results[i] = null;
+        }
+        List<StashedScore> scoreList = scores.ToList<StashedScore>();
+        int lastMinScore = int.MaxValue;
+        while (scoreList.Count > 0)
+        {
+            StashedScore minScore = null;
+            foreach (StashedScore score in scoreList)
+            {
+                if(score.Score <= lastMinScore)
+                {
+                    minScore = score;
+                    lastMinScore = score.Score;
+                }
+            }
+            for (int i = 0; i < results.Length; i++)
+            {
+                if(results == null)
+                {
+                    results[i] = minScore;
+                }
+            }
+            scoreList.Remove(minScore);
+        }
+        FindObjectOfType<CanvasUIManager>().winScreen.gameObject.SetActive(true);
+        for (int i = 0; i < results.Length; i++)
+        {
+            FindObjectOfType<CanvasUIManager>().winScreen.AddToContent(results[i].Name, results[i].Score);
+        }
+        
     }
 }

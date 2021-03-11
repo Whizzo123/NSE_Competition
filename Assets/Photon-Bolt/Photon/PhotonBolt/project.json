@@ -6073,6 +6073,15 @@
       "Groups": [
         "samples"
       ]
+    },
+    {
+      "$type": "Bolt.Compiler.EventDefinition, bolt.compiler",
+      "Properties": [],
+      "Name": "DisplayWinScreen",
+      "Guid": "625bca66-1e49-4801-97f5-ca897eaf8fbd",
+      "Groups": [
+        "samples"
+      ]
     }
   ],
   "ActiveGroup": "samples"

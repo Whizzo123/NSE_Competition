@@ -8,6 +8,10 @@ public class PhotonGameSceneController : GlobalEventListener
 
     private int minPlayers = 2;
     private bool loadoutChoiceComplete;
+    //Max time for game to 8 mins - 480
+    private float totalAllottedGameTime = 45;
+    private float currentRunningGameTime = 0;
+    private bool displayedWinScreen = false;
 
     public override void SceneLoadLocalDone(string scene)
     {
@@ -64,6 +68,33 @@ public class PhotonGameSceneController : GlobalEventListener
                 var request = LoadoutScreenDisable.Create();
                 request.Send();
                 loadoutChoiceComplete = true;
+            }
+        }
+        if(BoltNetwork.IsServer && !displayedWinScreen && loadoutChoiceComplete)
+        {
+            if(currentRunningGameTime < totalAllottedGameTime)
+            {
+                currentRunningGameTime += BoltNetwork.FrameDeltaTime;
+                BoltLog.Info("Running time is: " + currentRunningGameTime);
+            }
+            else
+            {
+                //End game
+                var request = DisplayWinScreen.Create();
+                request.Send();
+                displayedWinScreen = true;
+            }
+
+            NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
+            foreach (StashedScore score in scores)
+            {
+                if(score.Score > 10000)
+                {
+                    //End game
+                    var request = DisplayWinScreen.Create();
+                    request.Send();
+                    displayedWinScreen = true;
+                }
             }
         }
     }

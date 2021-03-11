@@ -6,7 +6,6 @@ using Bolt;
 
 public class Stash : EntityBehaviour<IStashState>
 {
-    private Dictionary<string, int> nameToScore;
 
     /// <summary>
     /// Called when entity attached in network like unity start method
@@ -21,7 +20,6 @@ public class Stash : EntityBehaviour<IStashState>
                 state.StashedScores[i].Score = 0;
             }
         }
-        nameToScore = new Dictionary<string, int>();
     }
 
     /// <summary>
