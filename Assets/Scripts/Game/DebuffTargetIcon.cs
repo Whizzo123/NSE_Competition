@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DebuffTargetIcon : MonoBehaviour
 {
-    public GameObject targetObject;
+    private GameObject targetObject;
     private float widthOffset;
     private float heightOffset;
 
@@ -13,6 +13,19 @@ public class DebuffTargetIcon : MonoBehaviour
     {
         widthOffset = GetComponent<RectTransform>().sizeDelta.x / 2;
         heightOffset = GetComponent<RectTransform>().sizeDelta.y / 2;
+    }
+
+    public void SetTargetIconObject(GameObject go)
+    {
+        targetObject = go;
+        if(targetObject == null)
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            gameObject.SetActive(true);
+        }
     }
 
     // Update is called once per frame

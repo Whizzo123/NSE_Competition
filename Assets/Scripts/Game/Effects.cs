@@ -17,12 +17,6 @@ public class Effects
         debuff.GetTarget();
     }
 
-    public static void BearTrap(Ability ability)
-    {
-        Trap trap = (Trap)ability;
-        trap.GetProximityTriggerDistance();
-    }
-
     public static void ObstacleTrap(Ability ability)
     {
         Trap trap = (Trap)ability;

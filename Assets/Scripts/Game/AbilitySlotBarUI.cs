@@ -24,4 +24,31 @@ public class AbilitySlotBarUI : MonoBehaviour
         }
     }
 
+    public void SetSlotChargingState(string name, bool state)
+    {
+        GetSlot(name).IsCharging(state);
+    }
+
+    public void RemoveItemFromBar(string abilityName)
+    {
+        GetSlot(abilityName).SetAbilityName(string.Empty);
+    }
+
+    public void SetSlotUseState(string name, bool state)
+    {
+        GetSlot(name).InUse(state);
+    }
+
+    private AbilitySlotUI GetSlot(string abilityName)
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i].GetAbilityName() == abilityName)
+            {
+                return slots[i];
+            }
+        }
+        return null;
+    }
+
 }

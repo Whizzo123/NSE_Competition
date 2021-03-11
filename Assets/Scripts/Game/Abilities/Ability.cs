@@ -11,7 +11,7 @@ public class Ability
     protected string name;
     protected string description;
     protected int pointsCost;
-    protected Action<Ability> onAbilityUse;
+    protected AbilityInventory inventory;
     protected AbilityUseTypes useType;
     protected bool used;
     protected bool inUse;
@@ -36,6 +36,7 @@ public class Ability
         useType = abilityType;
         used = false;
         fullCharge = amountToCharge;
+        currentCharge = fullCharge;
     }
 
     virtual public Ability Clone()
@@ -56,7 +57,6 @@ public class Ability
 
     virtual public void Use()
     {
-        BoltLog.Info("Just calling plain old use method");
         if (useType == AbilityUseTypes.ONE_TIME)
         {
             used = true;
@@ -78,11 +78,6 @@ public class Ability
         return pointsCost;
     }
 
-    public Action<Ability> GetEffect()
-    {
-        return onAbilityUse;
-    }
-
     public AbilityUseTypes GetUseType()
     {
         return useType;
@@ -91,5 +86,15 @@ public class Ability
     public float GetChargeAmount()
     {
         return fullCharge;
+    }
+
+    public float GetCurrentCharge()
+    {
+        return currentCharge;
+    }
+
+    public void SetInventory(AbilityInventory _inventory)
+    {
+        inventory = _inventory;
     }
 }

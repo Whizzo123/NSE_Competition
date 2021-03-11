@@ -20,6 +20,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     public float speed = 4f;
     private bool loadoutReleased;
     public AbilityInventory abilityInventory;
+    public bool immobilize;
 
     public static PlayerController localPlayer;
 
@@ -34,6 +35,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         state.SetTransforms(state.PlayerTransform, transform);
         SetLoadoutReleased(false);
         abilityInventory = new AbilityInventory(this);
+        immobilize = false;
         //Set state transform to be equal to current transform
         if (entity.IsOwner)
         {
@@ -174,18 +176,19 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
         if (loadoutReleased)
         {
-
-            if (Input.GetKey(KeyCode.W)) { movement.z += 1; }
-            if (Input.GetKey(KeyCode.S)) { movement.z -= 1; }
-            if (Input.GetKey(KeyCode.A)) { movement.x -= 1; }
-            if (Input.GetKey(KeyCode.D)) { movement.x += 1; }
-
-
-            if (movement != Vector3.zero)
+            if (immobilize == false)
             {
-                transform.Translate(movement.normalized * state.Speed * BoltNetwork.FrameDeltaTime);
-            }
+                if (Input.GetKey(KeyCode.W)) { movement.z += 1; }
+                if (Input.GetKey(KeyCode.S)) { movement.z -= 1; }
+                if (Input.GetKey(KeyCode.A)) { movement.x -= 1; }
+                if (Input.GetKey(KeyCode.D)) { movement.x += 1; }
 
+
+                if (movement != Vector3.zero)
+                {
+                    transform.Translate(movement.normalized * state.Speed * BoltNetwork.FrameDeltaTime);
+                }
+            }
             //Old camera code
            /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
             {
