@@ -46,11 +46,10 @@ public class NetworkCallbacks : GlobalEventListener
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
         PlayerController.localPlayer.SetLoadoutReleased(true);
     }
-
     public override void OnEvent(StunEnemyPlayer evnt)
     {
         BoltLog.Info("Called OnEvent StunEnemyPlayer");
-        if(evnt.Target.IsOwner)
+        if (evnt.Target.IsOwner)
         {
             if (!evnt.End)
             {
@@ -91,5 +90,12 @@ public class NetworkCallbacks : GlobalEventListener
         {
             evnt.Trap.GetComponent<MeshRenderer>().enabled = true;
         }
+    }
+
+    public override void OnEvent(ObstacleDisable evnt)
+    {
+        BoltLog.Info("Called OnEvent ObstacleDisable");
+        evnt.Obstacle.gameObject.GetComponent<MeshRenderer>().enabled = false;
+        evnt.Obstacle.gameObject.GetComponent<BoxCollider>().enabled = false;
     }
 }
