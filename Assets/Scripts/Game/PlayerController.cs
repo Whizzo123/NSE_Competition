@@ -235,7 +235,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 playerMovement = new Vector3
                 (Input.GetAxisRaw("Horizontal"), 
                  playerFallingVelocity.y,
-                 Input.GetAxisRaw("Vertical"));
+                 Input.GetAxisRaw("Vertical")).normalized;
 
                 if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
                 {
