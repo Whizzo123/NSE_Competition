@@ -29,6 +29,7 @@ public class Debuff : Ability
 
     public override void UpdateAbility()
     {
+        if(useType == AbilityUseTypes.RECHARGE)
         if (inUse)
         {
             if (currentDuration < effectDuration)
@@ -44,11 +45,30 @@ public class Debuff : Ability
                 EndEffect();
             }
         }
+        else
+        {
+            if (currentCharge < fullCharge)
+            {
+                currentCharge += Time.deltaTime;
+                if (currentCharge > fullCharge)
+                {
+                    currentCharge = fullCharge;
+                    GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, false);
+                }
+            }
+        }
+        else if (useType == AbilityUseTypes.PASSIVE)
+        {
+            Use();
+        }
     }
 
     public virtual void EndEffect()
     {
-
+        currentCharge = 0;
+        currentDuration = 0;
+        inUse = false;
+        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
     }
 
     protected PlayerController FindClosestPlayer()

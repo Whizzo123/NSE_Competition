@@ -8,6 +8,11 @@ public class AbilitySlotUI : MonoBehaviour
 {
     private string abilityName;
     private bool isEmpty;
+    public Color containAbilityColor;
+    public Color emptyColor;
+    public Color chargingColor;
+    public Color inUseColor;
+    private bool isCharging;
 
     void Start()
     {
@@ -18,12 +23,40 @@ public class AbilitySlotUI : MonoBehaviour
     public void SlotClick()
     {
         BoltLog.Info("Slot clicking");
-        PlayerController.localPlayer.abilityInventory.ActivateAbility(abilityName);
+        if (!isCharging)
+        {
+            PlayerController.localPlayer.abilityInventory.ActivateAbility(abilityName);
+        }
     }
 
     public string GetAbilityName()
     {
         return abilityName;
+    }
+
+    public void IsCharging(bool charging)
+    {
+        if(charging)
+        {
+            GetComponent<Image>().color = chargingColor;
+        }
+        else
+        {
+            GetComponent<Image>().color = containAbilityColor;
+        }
+        isCharging = charging;
+    }
+
+    public void InUse(bool use)
+    {
+        if(use)
+        {
+            GetComponent<Image>().color = inUseColor;
+        }
+        else
+        {
+            GetComponent<Image>().color = chargingColor;
+        }
     }
 
     public bool SetAbilityName(string name)
@@ -32,6 +65,14 @@ public class AbilitySlotUI : MonoBehaviour
         {
             abilityName = name;
             isEmpty = false;
+            GetComponent<Image>().color = containAbilityColor;
+            return true;
+        }
+        else if(name == string.Empty)
+        {
+            abilityName = name;
+            isEmpty = true;
+            GetComponent<Image>().color = emptyColor;
             return true;
         }
         return false;

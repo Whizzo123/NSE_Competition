@@ -2,7 +2,7 @@
 
 public class Trap : Ability
 {
-    private float proximityTriggerDistance;
+    protected PlayerController placingPlayer;
 
     public Trap(string abilityName, string abilityDescription, int abilityCost, AbilityUseTypes abilityType, float amountToCharge = 0) 
         : base(abilityName, abilityDescription, abilityCost, abilityType, amountToCharge)
@@ -10,14 +10,18 @@ public class Trap : Ability
 
     }
 
-    public float GetProximityTriggerDistance()
+    public override void UpdateAbility()
     {
-        return proximityTriggerDistance;
+        if(used)
+        {
+            //Destroy from inventory
+            placingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
+        }
     }
 
-    public void SetProximityTriggerDistance(float triggerDistance)
+    public void SetPlacingPlayer(PlayerController player)
     {
-        proximityTriggerDistance = triggerDistance;
+        placingPlayer = player;
     }
 
 }

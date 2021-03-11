@@ -15,8 +15,11 @@ public class SpeedBoost : Powerup
     public override void Use()
     {
         //All logic here
-        if(GetPlayerToEmpower().speed != boostToSpeed)
-            GetPlayerToEmpower().speed = boostToSpeed;
+        if (GetPlayerToEmpower().state.Speed != boostToSpeed && oppositeDebuffActivated == false)
+        {
+            BoltLog.Info("Setting speed");
+            GetPlayerToEmpower().state.Speed = boostToSpeed;
+        }
         base.Use();
     }
 

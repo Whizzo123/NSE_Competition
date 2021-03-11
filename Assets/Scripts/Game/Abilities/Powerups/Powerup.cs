@@ -8,11 +8,13 @@ public class Powerup : Ability
     private PlayerController playerToEmpower;
     private float effectDuration;
     private float currentDuration;
+    protected bool oppositeDebuffActivated;
 
     public Powerup(string abilityName, string abilityDescription, int abilityCost, AbilityUseTypes abilityType, float amountToCharge = 0, float durationOfEffect = 0) 
         : base(abilityName, abilityDescription, abilityCost, abilityType, amountToCharge)
     {
         effectDuration = durationOfEffect;
+        oppositeDebuffActivated = false;
     }
 
     public override void UpdateAbility()
@@ -21,6 +23,7 @@ public class Powerup : Ability
         {
             if (inUse)
             {
+
                 //Do stuff to do with duration of effect
                 if (currentDuration < effectDuration)
                 {
@@ -39,7 +42,10 @@ public class Powerup : Ability
                 {
                     currentCharge += Time.deltaTime;
                     if (currentCharge > fullCharge)
+                    {
                         currentCharge = fullCharge;
+                        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, false);
+                    }
                 }
             }
         }
@@ -59,6 +65,7 @@ public class Powerup : Ability
         currentCharge = 0;
         currentDuration = 0;
         inUse = false;
+        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
     }
 
     public PlayerController GetPlayerToEmpower()
@@ -69,5 +76,10 @@ public class Powerup : Ability
     public void SetPlayerToEmpower(PlayerController player)
     {
         playerToEmpower = player;
+    }
+
+    public void SetOppositeDebuffActivated(bool activated)
+    {
+        oppositeDebuffActivated = activated;
     }
 }

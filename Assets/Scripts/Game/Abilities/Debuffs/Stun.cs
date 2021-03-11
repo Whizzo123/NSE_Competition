@@ -28,6 +28,7 @@ public class Stun : Debuff
             request.End = false;
             request.Send();
             GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
+            GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(name, true);
         }
     }
 
@@ -38,6 +39,9 @@ public class Stun : Debuff
         request.Target = target.entity;
         request.End = true;
         request.Send();
+        target = null;
+        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(name, false);
+        base.EndEffect();
     }
 
     public override Ability Clone()

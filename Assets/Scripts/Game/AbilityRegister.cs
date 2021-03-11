@@ -67,9 +67,8 @@ public class AbilityRegister : MonoBehaviour
     public Trap CloneTrap(string name)
     {
         Trap trap = traps[name];
-        return new Trap(trap.GetAbilityName(), trap.GetAbilityDescription(), trap.GetAbilityCost(), trap.GetUseType(), trap.GetChargeAmount());
+        return (Trap)traps[name].Clone();
     }
-
     private void RegisterPowerups()
     {
         powerups = new Dictionary<string, Powerup>();
