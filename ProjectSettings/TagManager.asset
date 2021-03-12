@@ -19,11 +19,11 @@ TagManager:
   - ground
   - obstacles
   - indestructables
-  - 
-  - 
-  - 
-  - 
-  - 
+  - DesertGround
+  - GrassGround
+  - SnowGround
+  - SwampGround
+  - JungleGround
   - 
   - 
   - 

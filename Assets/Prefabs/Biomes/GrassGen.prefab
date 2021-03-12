@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4003292575508371857}
   - component: {fileID: 7671949710289692790}
   m_Layer: 0
-  m_Name: Gen
+  m_Name: GrassGen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,11 +55,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   obstacles:
-  - {fileID: 919432600166237137, guid: 8b66ce3b6e152e744aa896fdf1feb736, type: 3}
+  - {fileID: 4535611236803373704, guid: 2333f038b3da3e04fac54f1fedfe0596, type: 3}
+  - {fileID: 1532813135748813004, guid: f74e5b3e89690724882b1ea505f6a20b, type: 3}
   seed: 
   useRandomSeed: 1
   randomFillPercent: 45
-  mapSmoothing: 5
+  mapSmoothing: 3
   spawnPosScale: 2
   artefactSpawner:
   - {fileID: 3322170139644694061, guid: dc15e92ea2cc60d49a7e6ed52baef36e, type: 3}
@@ -69,14 +70,13 @@ MonoBehaviour:
   rareArtefacts: 2
   exoticArtefacts: 1
   commonIndestructables:
-  - {fileID: 1733360191824578543, guid: ff990316570976e45882100b6c5788cd, type: 3}
-  - {fileID: 919432600166237137, guid: 8b66ce3b6e152e744aa896fdf1feb736, type: 3}
+  - {fileID: 1668521074350713737, guid: d5b4966f1fda24148b5d5b6b4361a006, type: 3}
   rareIndestructables:
-  - {fileID: 8402028746714389220, guid: 7531ce5f85adaa44fa40808934629143, type: 3}
+  - {fileID: 4955175273534750712, guid: c9afdb6a19efa904ebba973389c2673d, type: 3}
   commonCommonality: 7
   radius: 17
   regionSize: {x: 100, y: 100}
-  rejectionSamples: 39
+  rejectionSamples: 20
 --- !u!114 &7671949710289692790
 MonoBehaviour:
   m_ObjectHideFlags: 0
