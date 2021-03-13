@@ -698,6 +698,10 @@ PrefabInstance:
       propertyPath: ground.m_Bits
       value: 16384
       objectReference: {fileID: 0}
+    - target: {fileID: 4003292575508371857, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
+      propertyPath: obstaclesLayer.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
 --- !u!1 &646472329
