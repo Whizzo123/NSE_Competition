@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Bolt;
+using System.Linq;
 
 [BoltGlobalBehaviour("GameScene")]
 public class NetworkCallbacks : GlobalEventListener
@@ -27,7 +29,7 @@ public class NetworkCallbacks : GlobalEventListener
         {
             evnt.StashEntity.GetComponent<Stash>().UpdateState(evnt.PlayerName, evnt.Score);
         }
-        FindObjectOfType<CanvasUIManager>().scoreboardUI.UpdateBoard(evnt.PlayerName, evnt.Score);
+        FindObjectOfType<CanvasUIManager>().scoreboardUI.UpdateBoard(evnt.PlayerName);
     }
 
     public override void OnEvent(InventoryRemove evnt)
@@ -97,5 +99,66 @@ public class NetworkCallbacks : GlobalEventListener
         BoltLog.Info("Called OnEvent ObstacleDisable");
         evnt.Obstacle.gameObject.GetComponent<MeshRenderer>().enabled = false;
         evnt.Obstacle.gameObject.GetComponent<BoxCollider>().enabled = false;
+    }
+
+    public override void OnEvent(DisplayWinScreen evnt)
+    {
+        BoltLog.Info("Calling DisplayWinScreen event");
+        NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
+        StashedScore[] results = new StashedScore[scores.Length];
+        for (int i = 0; i < results.Length; i++)
+        {
+            results[i] = null;
+        }
+        List<StashedScore> scoreList = scores.ToList<StashedScore>();
+        for(int i = 0; i < scoreList.Count; i++)
+        {
+            int lastMaxScore = int.MinValue;
+            StashedScore maxScore = null;
+            foreach (StashedScore score in scoreList)
+            {
+                if (score.Name == string.Empty) continue;
+                Debug.Log("Testing score: " + score.Name + " with a score of " + score.Score);
+                Debug.Log("Against lastMaxScore of: " + lastMaxScore);
+                if(score.Score > lastMaxScore)
+                {
+                    Debug.Log("Setting as min score: " + score.Score + " : " + score.Name);
+                    maxScore = score;
+                    lastMaxScore = score.Score;
+                }
+            }
+            if (maxScore != null)
+            {
+                for (int j = 0; j < results.Length; j++)
+                {
+                    if (results[j] == null)
+                    {
+                        Debug.Log("Adding into results: " + maxScore.Name);
+                        results[j] = maxScore;
+                        break;
+                    }
+                    else
+                    {
+                        Debug.Log("Getting results[" + j + "]: " + results[j].Name);
+                    }
+                }
+                scoreList.Remove(maxScore);
+            }
+        }
+        FindObjectOfType<CanvasUIManager>().winScreen.gameObject.SetActive(true);
+        for (int i = 0; i < results.Length; i++)
+        {
+            if (results[i] != null)
+            {
+                Debug.Log("Adding to results: " + results[i].Name + " with score of: " + results[i].Score);
+                FindObjectOfType<CanvasUIManager>().winScreen.AddToContent(results[i].Name, results[i].Score);
+            }
+        }
+        
+    }
+
+    public override void OnEvent(GameCountdown evnt)
+    {
+        FindObjectOfType<CanvasUIManager>().SetTimeText(evnt.Time);
     }
 }

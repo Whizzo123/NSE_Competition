@@ -192,7 +192,14 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         playerCharacterController = this.gameObject.GetComponent<CharacterController>();
     }
 
-
+    public bool InventoryNotEmpty()
+    {
+        for (int i = 0; i < state.Inventory.Length; i++)
+        {
+            if (state.Inventory[i].ItemPoints > 0) return true;
+        }
+        return false;
+    }
 
     /// <summary>
     /// Called on every update of the owner computer a.k.a computer that created this entity
@@ -254,7 +261,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     targetedArtefact.Pickup(this);
                     targetedArtefact = null;
                 }
-                else if (gameStash != null)
+                else if (gameStash != null && InventoryNotEmpty())
                 {
                     gameStash.AddToStashScores(this);
                 }
@@ -306,8 +313,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             #endregion
         }
     }
-    
-
 
     /// <summary>
     /// Sets player name to state
