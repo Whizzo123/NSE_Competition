@@ -9,9 +9,11 @@ public class PhotonGameSceneController : GlobalEventListener
     private int minPlayers = 2;
     private bool loadoutChoiceComplete;
     //Max time for game to 8 mins - 480
-    private float totalAllottedGameTime = 45;
+    private float totalAllottedGameTime = 480;
     private float currentRunningGameTime = 0;
+    private int pointGoal = 5100; //10000
     private bool displayedWinScreen = false;
+    private bool inCountdown = false;
 
     public override void SceneLoadLocalDone(string scene)
     {
@@ -32,6 +34,11 @@ public class PhotonGameSceneController : GlobalEventListener
             secondArtefact.transform.position = new Vector3(-15, -1, 4);
             secondArtefact.GetComponent<ArtefactBehaviour>().PopulateData("Empty Tube Of Toothpaste", ArtefactRarity.Exotic);
             secondArtefact.TakeControl();
+
+            BoltEntity thirdArtefact = BoltNetwork.Instantiate(BoltPrefabs.Artefect);
+            thirdArtefact.transform.position = new Vector3(10, -1, -1);
+            thirdArtefact.GetComponent<ArtefactBehaviour>().PopulateData("Tooth Pick", ArtefactRarity.Common);
+            thirdArtefact.TakeControl();
 
             BoltEntity stash = BoltNetwork.Instantiate(BoltPrefabs.Stash);
             stash.transform.position = new Vector3(-19 , -1.5f, -20);
@@ -72,23 +79,16 @@ public class PhotonGameSceneController : GlobalEventListener
         }
         if(BoltNetwork.IsServer && !displayedWinScreen && loadoutChoiceComplete)
         {
-            if(currentRunningGameTime < totalAllottedGameTime)
+            if (inCountdown == false)
             {
-                currentRunningGameTime += BoltNetwork.FrameDeltaTime;
-                BoltLog.Info("Running time is: " + currentRunningGameTime);
+                inCountdown = true;
+                currentRunningGameTime = totalAllottedGameTime;
+                StartCoroutine(RunGameCountdown());
             }
-            else
-            {
-                //End game
-                var request = DisplayWinScreen.Create();
-                request.Send();
-                displayedWinScreen = true;
-            }
-
             NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
             foreach (StashedScore score in scores)
             {
-                if(score.Score > 10000)
+                if (score.Score > pointGoal)
                 {
                     //End game
                     var request = DisplayWinScreen.Create();
@@ -98,6 +98,33 @@ public class PhotonGameSceneController : GlobalEventListener
             }
         }
     }
- 
 
+    private IEnumerator RunGameCountdown()
+    {
+        var floorTime = Mathf.FloorToInt(totalAllottedGameTime);
+        GameCountdown countdown;
+        while (currentRunningGameTime > 0)
+        {
+            yield return null;
+
+            currentRunningGameTime -= Time.deltaTime;
+            var newFloorTime = Mathf.FloorToInt(currentRunningGameTime);
+
+            if (newFloorTime != floorTime)
+            {
+                floorTime = newFloorTime;
+                //Create lobbycountdown event to update everyone's time
+                countdown = GameCountdown.Create();
+                countdown.Time = floorTime;
+                countdown.Send();
+            }
+        }
+        countdown = GameCountdown.Create();
+        countdown.Time = 0;
+        countdown.Send();
+        //End game
+        var request = DisplayWinScreen.Create();
+        request.Send();
+        displayedWinScreen = true;
+    }
 }

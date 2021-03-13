@@ -154,6 +154,14 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         localPlayer = this;
     }
 
+    public bool InventoryNotEmpty()
+    {
+        for (int i = 0; i < state.Inventory.Length; i++)
+        {
+            if (state.Inventory[i].ItemPoints > 0) return true;
+        }
+        return false;
+    }
     
 
     /// <summary>
@@ -189,19 +197,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     transform.Translate(movement.normalized * state.Speed * BoltNetwork.FrameDeltaTime);
                 }
             }
-            //Old camera code
-           /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
-            {
-                if (lastMousePos != Input.mousePosition)
-                {
-                    float mouseMoveDistance = lastMousePos.x - Input.mousePosition.x;
-                    if (inverted)
-                        mouseMoveDistance *= -1;
-                    this.transform.Rotate(new Vector3(0, mouseMoveDistance * rotationSpeed * Time.deltaTime, 0));
-                }
-
-                lastMousePos = Input.mousePosition;
-            }*/
 
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -210,7 +205,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     targetedArtefact.Pickup(this);
                     targetedArtefact = null;
                 }
-                else if (gameStash != null)
+                else if (gameStash != null && InventoryNotEmpty())
                 {
                     gameStash.AddToStashScores(this);
                 }
@@ -250,8 +245,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             }
         }
     }
-
-
    
 
     /// <summary>

@@ -74,6 +74,19 @@ public class Stash : EntityBehaviour<IStashState>
         }
     }
 
+    public int FindScoreForPlayer(string name)
+    {
+        for (int i = 0; i < state.StashedScores.Length; i++)
+        {
+            if(state.StashedScores[i].Name == name)
+            {
+                return state.StashedScores[i].Score;
+            }
+        }
+        Debug.LogError("ERROR: COULDN'T FIND SCORE IN STASH FOR PLAYER: " + name);
+        return 0;
+    }
+
     /// <summary>
     /// Checks to see if stash contains entry for player name
     /// </summary>

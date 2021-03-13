@@ -9,9 +9,8 @@ public class WinScreenUI : MonoBehaviour
 
     public void AddToContent(string name, int points)
     {
-        GameObject go = Instantiate(winElementPrefab);
-        go.transform.SetParent(transform);
-        go.GetComponent<WinElementUI>().PopulateFields(name, transform.childCount - 1, points);
+        GameObject go = Instantiate(winElementPrefab, content.transform);
+        go.GetComponent<WinElementUI>().PopulateFields(name, content.transform.childCount, points);
     }
 
 }

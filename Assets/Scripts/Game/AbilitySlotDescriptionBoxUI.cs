@@ -25,7 +25,6 @@ public class AbilitySlotDescriptionBoxUI : MonoBehaviour
         List<RaycastResult> results = RaycastAgainstUIAtCurrentMousePos(evntData);
         foreach (RaycastResult result in results)
         {
-            Debug.Log("Results Name: " + result.gameObject.name);
             if (result.gameObject.GetComponent<AbilitySlotUI>())
             {
                 overSlotUI = true;

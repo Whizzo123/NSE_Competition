@@ -29,7 +29,7 @@ public class NetworkCallbacks : GlobalEventListener
         {
             evnt.StashEntity.GetComponent<Stash>().UpdateState(evnt.PlayerName, evnt.Score);
         }
-        FindObjectOfType<CanvasUIManager>().scoreboardUI.UpdateBoard(evnt.PlayerName, evnt.Score);
+        FindObjectOfType<CanvasUIManager>().scoreboardUI.UpdateBoard(evnt.PlayerName);
     }
 
     public override void OnEvent(InventoryRemove evnt)
@@ -111,32 +111,54 @@ public class NetworkCallbacks : GlobalEventListener
             results[i] = null;
         }
         List<StashedScore> scoreList = scores.ToList<StashedScore>();
-        int lastMinScore = int.MaxValue;
-        while (scoreList.Count > 0)
+        for(int i = 0; i < scoreList.Count; i++)
         {
-            StashedScore minScore = null;
+            int lastMaxScore = int.MinValue;
+            StashedScore maxScore = null;
             foreach (StashedScore score in scoreList)
             {
-                if(score.Score <= lastMinScore)
+                if (score.Name == string.Empty) continue;
+                Debug.Log("Testing score: " + score.Name + " with a score of " + score.Score);
+                Debug.Log("Against lastMaxScore of: " + lastMaxScore);
+                if(score.Score > lastMaxScore)
                 {
-                    minScore = score;
-                    lastMinScore = score.Score;
+                    Debug.Log("Setting as min score: " + score.Score + " : " + score.Name);
+                    maxScore = score;
+                    lastMaxScore = score.Score;
                 }
             }
-            for (int i = 0; i < results.Length; i++)
+            if (maxScore != null)
             {
-                if(results == null)
+                for (int j = 0; j < results.Length; j++)
                 {
-                    results[i] = minScore;
+                    if (results[j] == null)
+                    {
+                        Debug.Log("Adding into results: " + maxScore.Name);
+                        results[j] = maxScore;
+                        break;
+                    }
+                    else
+                    {
+                        Debug.Log("Getting results[" + j + "]: " + results[j].Name);
+                    }
                 }
+                scoreList.Remove(maxScore);
             }
-            scoreList.Remove(minScore);
         }
         FindObjectOfType<CanvasUIManager>().winScreen.gameObject.SetActive(true);
         for (int i = 0; i < results.Length; i++)
         {
-            FindObjectOfType<CanvasUIManager>().winScreen.AddToContent(results[i].Name, results[i].Score);
+            if (results[i] != null)
+            {
+                Debug.Log("Adding to results: " + results[i].Name + " with score of: " + results[i].Score);
+                FindObjectOfType<CanvasUIManager>().winScreen.AddToContent(results[i].Name, results[i].Score);
+            }
         }
         
+    }
+
+    public override void OnEvent(GameCountdown evnt)
+    {
+        FindObjectOfType<CanvasUIManager>().SetTimeText(evnt.Time);
     }
 }
