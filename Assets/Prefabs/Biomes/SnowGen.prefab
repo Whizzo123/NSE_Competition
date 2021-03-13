@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4003292575508371857}
   - component: {fileID: 7671949710289692790}
   m_Layer: 0
-  m_Name: GrassGen
+  m_Name: SnowGen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,13 +50,13 @@ MonoBehaviour:
   slopeAngle: 30
   ground:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 8192
   indestructables:
     serializedVersion: 2
     m_Bits: 1024
   obstacles:
-  - {fileID: 4535611236803373704, guid: 2333f038b3da3e04fac54f1fedfe0596, type: 3}
-  - {fileID: 1532813135748813004, guid: f74e5b3e89690724882b1ea505f6a20b, type: 3}
+  - {fileID: 2688836191104013220, guid: d3afd9d013043a94fab5d7d3d258d5f6, type: 3}
+  - {fileID: 185835751915258432, guid: 0a5fccc016a715040a13aec993bbc1b2, type: 3}
   seed: 
   useRandomSeed: 1
   randomFillPercent: 45
@@ -70,9 +70,9 @@ MonoBehaviour:
   rareArtefacts: 2
   exoticArtefacts: 1
   commonIndestructables:
-  - {fileID: 1668521074350713737, guid: d5b4966f1fda24148b5d5b6b4361a006, type: 3}
+  - {fileID: 2249814389572057584, guid: 2f56eb921f6abb64d912f067234e2928, type: 3}
   rareIndestructables:
-  - {fileID: 4955175273534750712, guid: c9afdb6a19efa904ebba973389c2673d, type: 3}
+  - {fileID: 2249814389572057584, guid: 2f56eb921f6abb64d912f067234e2928, type: 3}
   commonCommonality: 7
   radius: 17
   regionSize: {x: 100, y: 100}

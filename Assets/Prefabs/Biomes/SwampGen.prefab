@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4003292575508371857}
   - component: {fileID: 7671949710289692790}
   m_Layer: 0
-  m_Name: GrassGen
+  m_Name: SwampGen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,13 +50,15 @@ MonoBehaviour:
   slopeAngle: 30
   ground:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 16384
   indestructables:
     serializedVersion: 2
     m_Bits: 1024
   obstacles:
-  - {fileID: 4535611236803373704, guid: 2333f038b3da3e04fac54f1fedfe0596, type: 3}
-  - {fileID: 1532813135748813004, guid: f74e5b3e89690724882b1ea505f6a20b, type: 3}
+  - {fileID: 500538238761241592, guid: 2061188ef3db8ab44869771e830efc24, type: 3}
+  - {fileID: 8533540124145401301, guid: 00cb3504113861d4089d093920a7d595, type: 3}
+  - {fileID: 837650025802701721, guid: b95c01031e222f04eb96637cd1f26183, type: 3}
+  - {fileID: 5902703101862481559, guid: 9197cb1c3f6b7ae4abbbe26ecb1c407a, type: 3}
   seed: 
   useRandomSeed: 1
   randomFillPercent: 45
@@ -70,9 +72,10 @@ MonoBehaviour:
   rareArtefacts: 2
   exoticArtefacts: 1
   commonIndestructables:
-  - {fileID: 1668521074350713737, guid: d5b4966f1fda24148b5d5b6b4361a006, type: 3}
+  - {fileID: 2093812781681116658, guid: 66efb65d0ba112f41b072ba21aa61590, type: 3}
+  - {fileID: 3070034401098280377, guid: f023e00d3e772504a8821380903e09b6, type: 3}
   rareIndestructables:
-  - {fileID: 4955175273534750712, guid: c9afdb6a19efa904ebba973389c2673d, type: 3}
+  - {fileID: 6002486304829926535, guid: 4fe8ba3e554d9a942913268498290136, type: 3}
   commonCommonality: 7
   radius: 17
   regionSize: {x: 100, y: 100}
