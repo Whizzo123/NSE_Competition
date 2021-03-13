@@ -18,6 +18,8 @@ public class CanvasUIManager : MonoBehaviour
     public GameObject loadoutScreen;
     public GameObject loadoutScreenButton;
     public GameObject targetIconGO;
+    public WinScreenUI winScreen;
+    public Text TimeText;
 
 
     public void PopupArtefactPickupDisplay(ItemArtefact artefact)
@@ -60,5 +62,10 @@ public class CanvasUIManager : MonoBehaviour
     public void RemoveFromInventoryScreen(ItemArtefact artefact)
     {
         inventoryUI.SubtractInventoryItem(artefact);
+    }
+
+    public void SetTimeText(int timeLeft)
+    {
+        TimeText.text = "Time: " + timeLeft;
     }
 }
