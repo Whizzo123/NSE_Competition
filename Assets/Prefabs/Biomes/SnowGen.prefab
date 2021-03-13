@@ -54,6 +54,9 @@ MonoBehaviour:
   indestructables:
     serializedVersion: 2
     m_Bits: 1024
+  obstaclesLayer:
+    serializedVersion: 2
+    m_Bits: 512
   obstacles:
   - {fileID: 2688836191104013220, guid: d3afd9d013043a94fab5d7d3d258d5f6, type: 3}
   - {fileID: 185835751915258432, guid: 0a5fccc016a715040a13aec993bbc1b2, type: 3}

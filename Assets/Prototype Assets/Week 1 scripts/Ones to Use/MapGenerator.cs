@@ -22,6 +22,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     [SerializeField] [Tooltip("The angle of the slope where objects won't spawn")] [Range(1, 90)] private float slopeAngle = 30f;
     [SerializeField] private LayerMask ground;
     [SerializeField] private LayerMask indestructables;
+    [SerializeField] private LayerMask obstaclesLayer;
     [Space]
 
     [Header(" --------- Obstacles")]
@@ -367,8 +368,13 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         RaycastHit hit;
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
         {
-            Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
+            if(Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, obstaclesLayer))
+            {
+                Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                GameObject go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
+                go.transform.SetParent(hit.transform);
+            }
+
         }
         ///////////////Destroy(this.gameobject);
     }
