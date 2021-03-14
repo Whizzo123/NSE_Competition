@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3322170139644694062}
   - component: {fileID: 6314912429928538868}
   m_Layer: 0
-  m_Name: Artefect
+  m_Name: Artefect 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: bf7920f0-7f03-48c0-83f8-9f96f8dfc878
-  _prefabId: 2
+  _prefabId: 10
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1

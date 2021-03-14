@@ -264,17 +264,17 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                         //There should never be more exotics than rares, more rares than commons.
                         if (ran < exoticArtefacts && eSpawned < exoticArtefacts)
                         {
-                            ArtefactSpawner(artefactSpawner[0], spawnPosition);
+                            ArtefactSpawner(artefactSpawner[0], spawnPosition, ArtefactRarity.Exotic);
                             eSpawned++;
                         }
                         else if(ran < rareArtefacts && rSpawned < rareArtefacts)
                         {
-                            ArtefactSpawner(artefactSpawner[1], spawnPosition);
+                            ArtefactSpawner(artefactSpawner[1], spawnPosition, ArtefactRarity.Rare);
                             rSpawned++;
                         }
                         else if(ran < commonArtefacts && cSpawned < commonArtefacts)
                         {
-                            ArtefactSpawner(artefactSpawner[2], spawnPosition);
+                            ArtefactSpawner(artefactSpawner[2], spawnPosition, ArtefactRarity.Common);
                             cSpawned++;
                         }
                         else
@@ -367,9 +367,10 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     /// <summary>
     /// Shoots ray down from spawn location. 'objectToSpawn'.ref.Spawner is then instantiated at the hit point if the point is ground. It will also align the object to the rotation of the land.
     /// </summary>
-    public void ArtefactSpawner(GameObject ob, Vector3 spawnPos)
+    public void ArtefactSpawner(GameObject ob, Vector3 spawnPos, ArtefactRarity rarity)
     {
         //If ground is hit, spawn artefact
+
         RaycastHit hit;
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
         {
@@ -377,6 +378,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             {
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
                 GameObject go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
+                go.GetComponent<ArtefactBehaviour>().PopulateData(go.name, rarity);
                 go.transform.SetParent(hit.transform);
             }
 

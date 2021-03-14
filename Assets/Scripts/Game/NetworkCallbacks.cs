@@ -99,6 +99,8 @@ public class NetworkCallbacks : GlobalEventListener
         BoltLog.Info("Called OnEvent ObstacleDisable");
         evnt.Obstacle.gameObject.GetComponent<MeshRenderer>().enabled = false;
         evnt.Obstacle.gameObject.GetComponent<BoxCollider>().enabled = false;
+        evnt.Obstacle.gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+        evnt.Obstacle.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
     }
 
     public override void OnEvent(DisplayWinScreen evnt)
