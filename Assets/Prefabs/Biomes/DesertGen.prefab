@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ea04b9507ba6e744ad79b0caecaa2a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 100
-  height: 100
+  width: 200
+  height: 200
   raycastDistance: 100
   slopeAngle: 30
   ground:
@@ -68,9 +68,9 @@ MonoBehaviour:
   mapSmoothing: 3
   spawnPosScale: 2
   artefactSpawner:
-  - {fileID: 3322170139644694061, guid: dc15e92ea2cc60d49a7e6ed52baef36e, type: 3}
-  - {fileID: 3322170139644694061, guid: dc15e92ea2cc60d49a7e6ed52baef36e, type: 3}
-  - {fileID: 3322170139644694061, guid: dc15e92ea2cc60d49a7e6ed52baef36e, type: 3}
+  - {fileID: 5093038191571087133, guid: 1dba2e8985ad58b44ab3f75969c836ff, type: 3}
+  - {fileID: 5110210771469321765, guid: f02762067df284a4c8b09d531bc10af6, type: 3}
+  - {fileID: 3500044115046012371, guid: e4ff61ddd21a39b4098cd82b882ffe05, type: 3}
   commonArtefacts: 3
   rareArtefacts: 2
   exoticArtefacts: 1
@@ -80,7 +80,7 @@ MonoBehaviour:
   - {fileID: 4079003387046216654, guid: d4f9c44f1a672d640b28362d8d109d08, type: 3}
   commonCommonality: 7
   radius: 17
-  regionSize: {x: 100, y: 100}
+  regionSize: {x: 200, y: 200}
   rejectionSamples: 20
 --- !u!114 &7671949710289692790
 MonoBehaviour:

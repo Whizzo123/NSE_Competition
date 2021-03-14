@@ -336,8 +336,14 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         {
             return true;
         }
+        LayerMask lm = ground;
+        if (ground.Equals(LayerMask.NameToLayer("SwampGround")))
+        {
+            lm.Equals(LayerMask.NameToLayer("SwampWater"));
+        }
+
         //If ground is found
-        if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
+        if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, lm))
         {
             //If angle hit is bigger than 'slopeAngle' then return true
             float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(dot product)
@@ -347,7 +353,6 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             }
             else//Spawn obstacles and return false;
             {
-                Debug.Log("Indestructable Instance");
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
                 BoltNetwork.Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(0, 90, -90));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
                 return false;
@@ -391,6 +396,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         {
             //If angle hit is bigger than 'slopeAngle' then return true
             float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(dot product)
+
             if (rotationAngle > slopeAngle)
             {
                 //Destroy(this.gameObject);
@@ -398,7 +404,23 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             else //Spawn indestructable
             {
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-                BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
+                GameObject go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
+                if (go.name.Contains("Rock"))
+                {
+                    Quaternion randAllRotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
+                    go.transform.rotation = go.transform.rotation * randAllRotation;
+                    int randScale = UnityEngine.Random.Range(1, 3);
+                    go.transform.localScale = new Vector3(randScale, randScale, randScale);
+                }
+                else
+                {
+                    //Quaternion randYRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
+                    //go.transform.rotation = go.transform.rotation * randYRotation;
+                    go.transform.rotation *= Quaternion.AngleAxis(UnityEngine.Random.Range(0,360), go.transform.up);
+                    int randScale = UnityEngine.Random.Range(1, 3);
+                    go.transform.localScale = new Vector3(randScale, randScale, randScale);
+                }
+
                 //Destroy(this.gameObject);
             }
 
