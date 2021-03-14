@@ -8,33 +8,45 @@ public enum ArtefactRarity { Common, Rare, Exotic}
 public class ArtefactBehaviour : EntityBehaviour<IArtefactState>
 {
 
-    private string name;
+    private string artefactName;
     private int points;
     private ArtefactRarity rarity;
+    private bool availableForPickup;
+
 
     public override void Attached()
     {
         if (entity.IsOwner)
         {
-            state.Name = name;
+            state.Name = artefactName;
             state.Points = points;
         }
+        availableForPickup = false;
     }
 
 
     public void Pickup(PlayerController player)
     {
-        player.AddToInventory(state.Name, state.Points);
-        var request = ArtefactDisable.Create();
-        request.artefactToDisable = this.entity;
-        request.Send();
+        if (availableForPickup)
+        {
+            player.AddToInventory(state.Name, state.Points);
+            var request = ArtefactDisable.Create();
+            request.artefactToDisable = this.entity;
+            request.Send();
+        }
+    }
+
+    public void EnableForPickup()
+    {
+        availableForPickup = true;
     }
 
     public void PopulateData(string dataName, ArtefactRarity rarity)
     {
         state.Name = dataName;
-        name = dataName;
+        artefactName = dataName;
         int dataPoints = 0;
+        this.rarity = rarity;
         switch(rarity)
         {
             case ArtefactRarity.Common:
