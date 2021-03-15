@@ -77,7 +77,7 @@ MonoBehaviour:
   rareIndestructables:
   - {fileID: 4955175273534750712, guid: c9afdb6a19efa904ebba973389c2673d, type: 3}
   commonCommonality: 7
-  radius: 17
+  radius: 15
   regionSize: {x: 200, y: 200}
   rejectionSamples: 20
 --- !u!114 &7671949710289692790
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: 816d62c9-b81f-4f2e-967c-f62cb5585d3f
-  _prefabId: 17
+  _prefabId: 19
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1

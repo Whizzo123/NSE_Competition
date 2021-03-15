@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 6767751282043283440}
   - component: {fileID: -4149822959941459747}
   - component: {fileID: -8472157328950332674}
+  - component: {fileID: 7865791788089855507}
+  - component: {fileID: -555304112163448755}
   m_Layer: 0
   m_Name: Gem2
   m_TagString: Artefact
@@ -97,7 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: bf7920f0-7f03-48c0-83f8-9f96f8dfc878
-  _prefabId: 13
+  _prefabId: 14
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1
@@ -120,8 +122,33 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5110210771469321765}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 1
+  m_Center: {x: 0.000034078956, y: -0.000012353063, z: -0.005710028}
+--- !u!114 &7865791788089855507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5110210771469321765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0028d2f7b8b6d444698dca294d649af4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &-555304112163448755
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5110210771469321765}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.13785811
   m_Center: {x: 0.000034078956, y: -0.000012353063, z: -0.005710028}

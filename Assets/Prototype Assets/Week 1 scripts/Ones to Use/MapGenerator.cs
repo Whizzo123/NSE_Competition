@@ -53,7 +53,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
 
     #endregion
 
-    public override void Attached()
+    /*public override void Attached()
     {
         Debug.Log("GameStarted");
         state.SetTransforms(state.Transform, transform);
@@ -64,19 +64,19 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     {
         if (BoltNetwork.IsServer)
         {
-            StartCoroutine(GenerateAll());
+            GenerateEverything();
         }
 
         //Find a way to generate things one at a time to look cool?
         //Couroutines? Don't really work. I've tried putting couroutines inside the generation themselves however couroutines do not pause the generation of everything
         //Only that particular branch of code, the rest continue running.
 
-    }
+    }*/
 
     /// <summary>
     /// Generates All the obstacles in the map, 
     /// </summary> 
-    void GenerateEverything()
+    public void GenerateEverything()
     {
         GenerateIndestructables();
         GenerateMap();
@@ -86,19 +86,14 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     /// <summary>
     /// Generates All the obstacles in the map IN A COUROUTINE!
     /// </summary>
-    IEnumerator GenerateAll()
+    /*IEnumerator GenerateAll()
     {
-
-        Debug.Log("GenerateCalled");
+        
         GenerateIndestructables();
-        yield return new WaitForSeconds(2);
         GenerateMap();
-        yield return new WaitForSeconds(2);
         ObstacleGeneration();//This function causes the most performance issues.
-        yield return new WaitForSeconds(2);
         ArtefactSpawner();
-        yield return new WaitForSeconds(2);
-    }
+    }*/
 
 
     #region MapGeneration
@@ -337,11 +332,10 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             return true;
         }
         LayerMask lm = ground;
-        if (ground.Equals(LayerMask.NameToLayer("SwampGround")))
+        if (lm.value == LayerMask.GetMask("SwampGround"))
         {
-            lm.Equals(LayerMask.NameToLayer("SwampWater"));
+            lm = LayerMask.GetMask("SwampWater");
         }
-
         //If ground is found
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, lm))
         {
@@ -354,7 +348,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             else//Spawn obstacles and return false;
             {
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
-                BoltNetwork.Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(0, 90, -90));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
+                BoltNetwork.Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(-90, 0, 0));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
                 return false;
             }
 
@@ -377,8 +371,9 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             if(Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, obstaclesLayer))
             {
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-                GameObject go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
+                BoltEntity go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
                 go.GetComponent<ArtefactBehaviour>().PopulateData(go.name, rarity);
+                go.GetComponent<MeshRenderer>().enabled = false;
                 go.transform.SetParent(hit.transform);
             }
 
@@ -406,23 +401,22 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             else //Spawn indestructable
             {
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-                GameObject go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
-                if (go.name.Contains("Rock"))
+                if (ob.gameObject.name.Contains("Rock"))
                 {
                     Quaternion randAllRotation = Quaternion.Euler(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0, 360));
-                    go.transform.rotation = go.transform.rotation * randAllRotation;
-                    int randScale = UnityEngine.Random.Range(1, 3);
-                    go.transform.localScale = new Vector3(randScale, randScale, randScale);
+                    spawnRotation *= randAllRotation;
+
                 }
                 else
                 {
-                    //Quaternion randYRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
-                    //go.transform.rotation = go.transform.rotation * randYRotation;
-                    go.transform.rotation *= Quaternion.AngleAxis(UnityEngine.Random.Range(0,360), go.transform.up);
-                    int randScale = UnityEngine.Random.Range(1, 3);
-                    go.transform.localScale = new Vector3(randScale, randScale, randScale);
+                    Quaternion randYRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
+                    spawnRotation *= randYRotation;
                 }
 
+                spawnRotation *= Quaternion.Euler(-90, 0, 0);
+                BoltEntity go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
+                int randScale = UnityEngine.Random.Range(1, 3);
+                go.transform.localScale = new Vector3(randScale, randScale, randScale);
                 //Destroy(this.gameObject);
             }
 

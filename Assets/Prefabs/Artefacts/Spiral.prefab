@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 3980219274612586457}
   - component: {fileID: 6382886843492827913}
   - component: {fileID: 5176517472837621847}
+  - component: {fileID: 4417492203701347478}
+  - component: {fileID: 3502227686140650366}
   m_Layer: 0
   m_Name: Spiral
   m_TagString: Artefact
@@ -98,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: bf7920f0-7f03-48c0-83f8-9f96f8dfc878
-  _prefabId: 15
+  _prefabId: 16
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1
@@ -121,8 +123,33 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3187537155700135436}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 1
+  m_Center: {x: -0.000000007450581, y: 0.000000007450581, z: 0.012227606}
+--- !u!114 &4417492203701347478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3187537155700135436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0028d2f7b8b6d444698dca294d649af4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &3502227686140650366
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3187537155700135436}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.112227604
   m_Center: {x: -0.000000007450581, y: 0.000000007450581, z: 0.012227606}

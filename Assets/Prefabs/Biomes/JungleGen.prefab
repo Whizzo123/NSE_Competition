@@ -78,7 +78,7 @@ MonoBehaviour:
   - {fileID: 1913540292418775544, guid: 8b13e8550ddb8a242bc0bef8615a7810, type: 3}
   - {fileID: 4601740283085398513, guid: 31398e7b1e760ae4bae107bf75b73d94, type: 3}
   commonCommonality: 7
-  radius: 17
+  radius: 15
   regionSize: {x: 200, y: 200}
   rejectionSamples: 20
 --- !u!114 &7671949710289692790
@@ -95,7 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: 816d62c9-b81f-4f2e-967c-f62cb5585d3f
-  _prefabId: 18
+  _prefabId: 20
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1
