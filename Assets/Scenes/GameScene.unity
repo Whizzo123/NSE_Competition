@@ -2954,6 +2954,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 779486683772405215, guid: 582274c556be50644a8dc000e29431a4, type: 3}
+      propertyPath: m_FadeMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 779486683772405215, guid: 582274c556be50644a8dc000e29431a4, type: 3}
+      propertyPath: m_AnimateCrossFading
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2519224595844920787, guid: 582274c556be50644a8dc000e29431a4, type: 3}
       propertyPath: m_Name
       value: _emple
@@ -3004,6 +3012,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 582274c556be50644a8dc000e29431a4, type: 3}
+--- !u!1 &467241458588778138 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2519224595844920787, guid: 582274c556be50644a8dc000e29431a4, type: 3}
+  m_PrefabInstance: {fileID: 467241458588778137}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &467241458588778139
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467241458588778138}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3429690629739306066, guid: 0bc43f8c6dfcaa0478015dbf43722fae, type: 3}
 --- !u!1001 &842628540546763061
 PrefabInstance:
   m_ObjectHideFlags: 0

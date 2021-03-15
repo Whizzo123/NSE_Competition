@@ -95,8 +95,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.5484164, y: 1.9654162, z: 0.72152156}
-  m_Center: {x: -0.010591626, y: 0.017530054, z: 0.3542407}
+  m_Size: {x: 2.3226247, y: 2.9481244, z: 1.0822823}
+  m_Center: {x: -0.01588744, y: 0.026295066, z: 0.531361}
 --- !u!114 &1488164825036992659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,19 +134,14 @@ LODGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934861045851026697}
   serializedVersion: 2
-  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
-  m_Size: 1
+  m_LocalReferencePoint: {x: -0.015887499, y: 0.026295066, z: 0.531361}
+  m_Size: 2.9481244
   m_FadeMode: 0
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.6
+  - screenRelativeHeight: 0.10104475
     fadeTransitionWidth: 0
-    renderers: []
-  - screenRelativeHeight: 0.3
-    fadeTransitionWidth: 0
-    renderers: []
-  - screenRelativeHeight: 0.1
-    fadeTransitionWidth: 0
-    renderers: []
+    renderers:
+    - renderer: {fileID: 1727613534598288604}
   m_Enabled: 1

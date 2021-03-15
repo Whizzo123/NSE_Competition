@@ -24,7 +24,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     private bool wait = false;
     [SerializeField] private float playerGravity = -65;
     [SerializeField] private float groundDistance = 2.5f;
-    public float initalRayLength = 2f;
+    public float lengthOfSphere = 2f;
+    public float radiusOfSphere = 1f;
     [Space]
 
     [Header("LayerMasks and Components")]
@@ -66,7 +67,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         if (entity.IsOwner)
         {
             state.Speed = speed;
-            state.RayLength = initalRayLength;
+            state.RayLength = lengthOfSphere;
             state.LoadoutReady = false;
             for (int i = 0; i < state.Inventory.Length; i++)
             {
@@ -461,18 +462,34 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     void HitFoward()
     {
         //Think about changning ray to sphere mayber depending on how the game plays and feels
-        RaycastHit hit;
+        /*RaycastHit hit;
         Ray ray = new Ray(transform.position, transform.forward);
         if (Physics.Raycast(ray, out hit, state.RayLength, obstacles))
         {
             var request = ObstacleDisable.Create();
             request.Obstacle = hit.transform.gameObject.GetComponent<BoltEntity>();
             request.Send();
+        }*/
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit[] hit;
+        hit = Physics.SphereCastAll(ray, radiusOfSphere, state.RayLength, obstacles);
+        foreach (RaycastHit item in hit)
+        {
+            var request = ObstacleDisable.Create();
+            request.Obstacle = item.transform.gameObject.GetComponent<BoltEntity>();
+            request.Send();
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position + transform.forward, radiusOfSphere);
     }
 
     #endregion
 }
+
+        
 
 public struct ItemArtefact
 {
