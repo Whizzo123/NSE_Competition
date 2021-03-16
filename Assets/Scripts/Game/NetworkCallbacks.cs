@@ -164,11 +164,11 @@ public class NetworkCallbacks : GlobalEventListener
 
     public override void OnEvent(ChangeAnimatorMovementParameter evnt)
     {
-        evnt.Target.GetComponent<Animator>().SetBool("moving", evnt.Value);
+        evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetBool("moving", evnt.Value);
     }
 
     public override void OnEvent(FireAnimatorCutTriggerParameter evnt)
     {
-        evnt.Target.GetComponent<Animator>().SetTrigger("Cut");
+        evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Cut");
     }
 }

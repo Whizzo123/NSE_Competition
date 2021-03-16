@@ -247,7 +247,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
                 {
                     direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-                    if (GetComponent<Animator>().GetBool("moving") == false)
+                    if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
                     {
                         var request = ChangeAnimatorMovementParameter.Create();
                         request.Target = entity;
@@ -257,7 +257,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 }
                 else
                 {
-                    if (GetComponent<Animator>().GetBool("moving") == true)
+                    if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
                     {
                         var request = ChangeAnimatorMovementParameter.Create();
                         request.Target = entity;
@@ -363,7 +363,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     {
         Vector3 pos = new Vector3(Random.Range(-16, 16), 0.6f, Random.Range(-16, 16));
 
-        BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs._unrotatedPlayer, pos, Quaternion.identity);
+        BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs.Player, pos, Quaternion.identity);
         playerEntity.TakeControl();
         //string playerUsername = FindObjectOfType<PlayerData>().GetUsername(playerEntity.Controller);
 
