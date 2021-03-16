@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -7142859470176699855}
   - component: {fileID: -6356220220854708457}
   - component: {fileID: 506850976500299319}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Bottle
   m_TagString: Artefact
   m_Icon: {fileID: 0}
@@ -50,7 +50,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5066538118683467629}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -135,7 +135,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5066538118683467629}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.15892255

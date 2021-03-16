@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4003292575508371854
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4003292575508371856}
+  - component: {fileID: 4003292575508371857}
+  - component: {fileID: 7671949710289692790}
+  m_Layer: 0
+  m_Name: DesertGen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4003292575508371856
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4003292575508371854}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 13.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4003292575508371857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4003292575508371854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ea04b9507ba6e744ad79b0caecaa2a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 200
+  height: 200
+  raycastDistance: 100
+  slopeAngle: 30
+  ground:
+    serializedVersion: 2
+    m_Bits: 2048
+  indestructables:
+    serializedVersion: 2
+    m_Bits: 1024
+  obstaclesLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  obstacles:
+  - {fileID: 7057259705426556858, guid: 4063654ecc344474c92bccf6fe0d998b, type: 3}
+  - {fileID: 555891148239531055, guid: 5ec270499adae6e45ae1f084ae6cc752, type: 3}
+  - {fileID: 5082642165031501281, guid: a1b22fb9e91ea4646b8256fd9f0388d7, type: 3}
+  - {fileID: 5043106855782285013, guid: 8949b83891c18d146b93173ca95ce756, type: 3}
+  seed: 
+  useRandomSeed: 1
+  randomFillPercent: 45
+  mapSmoothing: 3
+  spawnPosScale: 2
+  artefactSpawner:
+  - {fileID: 5093038191571087133, guid: 1dba2e8985ad58b44ab3f75969c836ff, type: 3}
+  - {fileID: 5110210771469321765, guid: f02762067df284a4c8b09d531bc10af6, type: 3}
+  - {fileID: 3500044115046012371, guid: e4ff61ddd21a39b4098cd82b882ffe05, type: 3}
+  commonArtefacts: 50
+  rareArtefacts: 20
+  exoticArtefacts: 1
+  commonIndestructables:
+  - {fileID: 4079003387046216654, guid: d4f9c44f1a672d640b28362d8d109d08, type: 3}
+  rareIndestructables:
+  - {fileID: 4079003387046216654, guid: d4f9c44f1a672d640b28362d8d109d08, type: 3}
+  commonCommonality: 7
+  radius: 17
+  regionSize: {x: 200, y: 200}
+  rejectionSamples: 20
+--- !u!114 &7671949710289692790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4003292575508371854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneGuid: 
+  _serializerGuid: f76f12ae-2efd-4c55-a130-2e77b84d87c5
+  _prefabId: 19
+  _updateRate: 1
+  _autoFreezeProxyFrames: 0
+  _clientPredicted: 1
+  _allowInstantiateOnClient: 1
+  _persistThroughSceneLoads: 0
+  _sceneObjectDestroyOnDetach: 1
+  _sceneObjectAutoAttach: 1
+  _alwaysProxy: 0
+  _detachOnDisable: 1
+  _allowFirstReplicationWhenFrozen: 0
+  _autoRemoveChildEntities: 0
+  _entityBehaviourQueryOption: 0
+  _entityPriorityCalculatorQueryOption: 1
+  _entityReplicationFilterQueryOption: 1

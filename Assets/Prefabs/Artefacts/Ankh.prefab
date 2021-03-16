@@ -12,10 +12,9 @@ GameObject:
   - component: {fileID: 8811873735207877122}
   - component: {fileID: 6750587086878281416}
   - component: {fileID: 3250976512454731013}
-  - component: {fileID: 8656408059884100239}
   - component: {fileID: -8767180296026285004}
   - component: {fileID: 5903600952239655352}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Ankh
   m_TagString: Artefact
   m_Icon: {fileID: 0}
@@ -51,7 +50,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5093038191571087133}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -114,19 +113,6 @@ MonoBehaviour:
   _entityBehaviourQueryOption: 0
   _entityPriorityCalculatorQueryOption: 1
   _entityReplicationFilterQueryOption: 1
---- !u!135 &8656408059884100239
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5093038191571087133}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1
-  m_Center: {x: -0.009995729, y: 0.5525393, z: 0.030514766}
 --- !u!114 &-8767180296026285004
 MonoBehaviour:
   m_ObjectHideFlags: 0

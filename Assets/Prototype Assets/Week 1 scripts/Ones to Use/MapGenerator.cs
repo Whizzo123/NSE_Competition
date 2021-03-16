@@ -27,7 +27,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
 
     [Header(" --------- Obstacles")]
     [SerializeField] [Tooltip("Obstacle game objects can have infinite amount")] private GameObject[] obstacles;
-    [SerializeField] [Tooltip("Type in seed to generate specific seed pattern")] private string seed;
+    [SerializeField] [Tooltip("Type in seed to generate specific seed pattern")] public string seed;
     [SerializeField] private bool useRandomSeed;
     [Range(0, 100)]
     [SerializeField] [Tooltip("Percentace of the block to be filled")] private int randomFillPercent = 45;
@@ -78,10 +78,16 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     /// </summary> 
     public void GenerateEverything()
     {
-        GenerateIndestructables();
+        if (BoltNetwork.IsServer)
+        {
+            GenerateIndestructables();
+        }
         GenerateMap();
         ObstacleGeneration();
-        ArtefactSpawner();
+        if (BoltNetwork.IsServer)
+        {
+            ArtefactSpawner();
+        }
     }
     /// <summary>
     /// Generates All the obstacles in the map IN A COUROUTINE!
@@ -117,10 +123,18 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     void RandomFillMap()
     {
         //Can't use Random.Range if we want to specify seed.
-        if (useRandomSeed)
+        if (BoltNetwork.IsServer)
         {
-            seed = System.DateTime.Now.ToString();
+            if (useRandomSeed)
+            {
+                seed = System.DateTime.Now.ToString();
+                //Debug.LogError(seed.Length);
+                var request = SpawnObstacle.Create();
+                request.seedString = seed;
+                request.Send();
+            }
         }
+
         System.Random pseudoRandom = new System.Random(seed.GetHashCode());
 
         //Randomly allocates map grid 1's and 0's
@@ -348,7 +362,14 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             else//Spawn obstacles and return false;
             {
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
-                BoltNetwork.Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(-90, 0, 0));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
+                spawnRotation *= Quaternion.Euler(-90, 0, 0);
+                Instantiate(ob, hit.point, spawnRotation);
+                //BoltNetwork.Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(-90, 0, 0));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
+                /*var request = SpawnObstacle.Create();
+                request.PrefabName = ob.gameObject.name;
+                request.spawnPoint = hit.point;
+                request.rotation = spawnRotation;
+                request.Send();*/
                 return false;
             }
 
@@ -357,7 +378,8 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         return false;
 
     }
-
+    int spawned;
+    int notSpawned;
     /// <summary>
     /// Shoots ray down from spawn location. 'objectToSpawn'.ref.Spawner is then instantiated at the hit point if the point is ground. It will also align the object to the rotation of the land.
     /// </summary>
@@ -373,10 +395,19 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
                 BoltEntity go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
                 go.GetComponent<ArtefactBehaviour>().PopulateData(go.name, rarity);
-                go.GetComponent<MeshRenderer>().enabled = false;
-                go.transform.SetParent(hit.transform);
+                spawned++;
+            }
+            else
+            {
+                Debug.LogError("NotSpawning " + ob.name + " artefact at obstacle");
+                notSpawned++;
             }
 
+        }
+        else
+        {
+            Debug.LogError("NotSpawning " + ob.name + " artefact at ground");
+            notSpawned++;
         }
         ///////////////Destroy(this.gameobject);
     }
@@ -415,8 +446,12 @@ public class MapGenerator : EntityBehaviour<IGenerator>
 
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
                 BoltEntity go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
-                int randScale = UnityEngine.Random.Range(1, 3);
-                go.transform.localScale = new Vector3(randScale, randScale, randScale);
+                
+                /*var request = SpawnObstacle.Create();
+                request.PrefabName = ob.gameObject.name;
+                request.spawnPoint = hit.point;
+                request.rotation = spawnRotation;
+                request.Send();*/
                 //Destroy(this.gameObject);
             }
 

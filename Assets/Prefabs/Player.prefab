@@ -121,7 +121,7 @@ MonoBehaviour:
     m_Bits: 512
   ground:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 63744
   playerNameText: {fileID: 0}
   playerCamera: {fileID: 0}
   nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
@@ -214,7 +214,7 @@ CharacterController:
   m_Height: 2
   m_Radius: 0.5
   m_SlopeLimit: 35.23
-  m_StepOffset: 0.3
+  m_StepOffset: 0.77
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0.05, y: -0.3, z: 0.2}
