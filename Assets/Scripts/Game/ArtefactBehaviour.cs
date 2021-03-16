@@ -63,5 +63,9 @@ public class ArtefactBehaviour : EntityBehaviour<IArtefactState>
         points = dataPoints;
     }
 
+    public ArtefactRarity GetRarity()
+    {
+        return rarity;
+    }
 
 }
