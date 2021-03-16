@@ -88,7 +88,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             //Disable other players cameras so that we don't accidentally get assigned to another players camera
             if(playerCamera != null)
                 playerCamera.gameObject.SetActive(false);
-
         }
     }
 
@@ -249,6 +248,23 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
                 {
                     direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+                    if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
+                    {
+                        var request = ChangeAnimatorMovementParameter.Create();
+                        request.Target = entity;
+                        request.Value = true;
+                        request.Send();
+                    }
+                }
+                else
+                {
+                    if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
+                    {
+                        var request = ChangeAnimatorMovementParameter.Create();
+                        request.Target = entity;
+                        request.Value = false;
+                        request.Send();
+                    }
                 }
                 playerCharacterController.Move(playerMovement * state.Speed * BoltNetwork.FrameDeltaTime);
                 PlayerRotation();
@@ -309,6 +325,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             #region Obstacle Interaction
             if (Input.GetKey(KeyCode.C) && wait == false)
             {
+                var request = FireAnimatorCutTriggerParameter.Create();
+                request.Target = entity;
+                request.Send();
                 wait = true;
                 StartCoroutine(Hit());
             }
