@@ -39,6 +39,7 @@ public class ArtefactBehaviour : EntityBehaviour<IArtefactState>
     public void EnableForPickup()
     {
         availableForPickup = true;
+        //GetComponent<MeshRenderer>().enabled = true;
     }
 
     public void PopulateData(string dataName, ArtefactRarity rarity)

@@ -15,6 +15,11 @@ public class NetworkCallbacks : GlobalEventListener
         evnt.artefactToDisable.gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 
+    public override void OnEvent(ArtefactEnable evnt)
+    {
+        evnt.artefact.gameObject.GetComponent<SphereCollider>().enabled = true;
+        evnt.artefact.gameObject.GetComponent<MeshRenderer>().enabled = true;
+    }
     public override void OnEvent(AbilityPickupDisable evnt)
     {
         BoltLog.Info("Called OnEvent AbilityPickupDisable");
@@ -96,11 +101,38 @@ public class NetworkCallbacks : GlobalEventListener
 
     public override void OnEvent(ObstacleDisable evnt)
     {
-        BoltLog.Info("Called OnEvent ObstacleDisable");
+        /*BoltLog.Info("Called OnEvent ObstacleDisable");
         evnt.Obstacle.gameObject.GetComponent<MeshRenderer>().enabled = false;
         evnt.Obstacle.gameObject.GetComponent<BoxCollider>().enabled = false;
         evnt.Obstacle.gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-        evnt.Obstacle.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
+        evnt.Obstacle.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();*/
+
+        Ray ray = new Ray(evnt.position, evnt.forward);
+        RaycastHit[] hit;
+        PlayerController ob = FindObjectOfType<PlayerController>();
+        hit = Physics.SphereCastAll(ray,ob.radiusOfSphere, ob.lengthOfSphere, ob.obstacles);
+        foreach (RaycastHit item in hit)
+        {
+            if (item.transform.GetComponent<ArtefactBehaviour>())
+            {
+                item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
+                item.transform.gameObject.GetComponent<SphereCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
+                /*ab = item.transform.gameObject.GetComponent<ArtefactBehaviour>();
+                var req = ArtefactEnable.Create();
+                req.artefact = ab.entity;
+                req.Send();*/
+                //item.transform.gameObject.GetComponentInChildren<ArtefactBehaviour>().transform.SetParent(null);
+            }
+            else
+            {
+                BoltLog.Info(item.transform.name + " DESTRPYING");
+                Destroy(item.transform.gameObject);
+            }
+            Debug.LogError(item.transform.name + "Ping");
+            BoltLog.Info(item.transform.name + "PING");
+
+        }
     }
 
     public override void OnEvent(DisplayWinScreen evnt)
@@ -172,5 +204,20 @@ public class NetworkCallbacks : GlobalEventListener
     public override void OnEvent(FireAnimatorCutTriggerParameter evnt)
     {
         evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Cut");
+    }
+    public override void OnEvent(SpawnObstacle evnt)
+    {
+        MapGenerator[] gens = FindObjectsOfType<MapGenerator>();
+        foreach (MapGenerator item in gens)
+        {
+            item.seed = evnt.seedString;
+        }
+       /* int randScale = UnityEngine.Random.Range(1, 3);
+        string str = "Biomes/" + evnt.PrefabName;
+        //ob.transform.localScale = new Vector3(randScale, randScale, randScale);
+        GameObject instance = Instantiate(Resources.Load(str, typeof(GameObject)), evnt.spawnPoint, evnt.rotation) as GameObject;
+        instance.transform.localScale = new Vector3(randScale, randScale, randScale);*/
+
+
     }
 }

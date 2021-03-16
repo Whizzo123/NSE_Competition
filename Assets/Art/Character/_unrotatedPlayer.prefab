@@ -695,7 +695,8 @@ MonoBehaviour:
   waitTime: 0.05
   playerGravity: -65
   groundDistance: 2.5
-  initalRayLength: 2
+  lengthOfSphere: 2
+  radiusOfSphere: 1
   obstacles:
     serializedVersion: 2
     m_Bits: 512

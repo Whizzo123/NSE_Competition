@@ -24,7 +24,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     private bool wait = false;
     [SerializeField] private float playerGravity = -65;
     [SerializeField] private float groundDistance = 2.5f;
-    public float initalRayLength = 2f;
+    public float lengthOfSphere = 2f;
+    public float radiusOfSphere = 1f;
     [Space]
 
     [Header("LayerMasks and Components")]
@@ -66,7 +67,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         if (entity.IsOwner)
         {
             state.Speed = speed;
-            state.RayLength = initalRayLength;
+            state.RayLength = lengthOfSphere;
             state.LoadoutReady = false;
             for (int i = 0; i < state.Inventory.Length; i++)
             {
@@ -266,8 +267,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                         request.Send();
                     }
                 }
+                this.GetComponent<Rigidbody>().velocity = playerMovement;
                 playerCharacterController.Move(playerMovement * state.Speed * BoltNetwork.FrameDeltaTime);
-                PlayerRotation();
+                //PlayerRotation();
+                Debug.Log(playerFallingVelocity.y + "Falling");
+                Debug.Log(playerMovement + "playerMovement");
             }
             #endregion
 
@@ -405,7 +409,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
 
             finalQuat = slopeQuat.normalized * lookQuat; //Quaternion rotation of look rotation and slope rotation
-            transform.rotation = finalQuat;
+            //transform.rotation = finalQuat;
+            transform.GetChild(0).transform.rotation = finalQuat;
         }
 
     }
@@ -482,18 +487,54 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     void HitFoward()
     {
         //Think about changning ray to sphere mayber depending on how the game plays and feels
-        RaycastHit hit;
+        /*RaycastHit hit;
         Ray ray = new Ray(transform.position, transform.forward);
         if (Physics.Raycast(ray, out hit, state.RayLength, obstacles))
         {
             var request = ObstacleDisable.Create();
             request.Obstacle = hit.transform.gameObject.GetComponent<BoltEntity>();
             request.Send();
+        }*/
+        //change transform.forward to transform.getChild(0).transform.forward
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit[] hit;
+        hit = Physics.SphereCastAll(ray, radiusOfSphere, lengthOfSphere, obstacles);
+        foreach (RaycastHit item in hit)
+        {
+            if (item.transform.GetComponent<ArtefactBehaviour>())
+            {
+                item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
+                item.transform.gameObject.GetComponent<SphereCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
+                /*ab = item.transform.gameObject.GetComponent<ArtefactBehaviour>();
+                var req = ArtefactEnable.Create();
+                req.artefact = ab.entity;
+                req.Send();*/
+                //item.transform.gameObject.GetComponentInChildren<ArtefactBehaviour>().transform.SetParent(null);
+            }
+            else
+            {
+                BoltLog.Info(item.transform.name + " DESTRPYING");
+                Destroy(item.transform.gameObject);
+            }
+            Debug.LogError(item.transform.name + "Ping");
+            BoltLog.Info(item.transform.name + "PING");
         }
+        var request = ObstacleDisable.Create();
+        request.position = transform.position;
+        request.forward = transform.forward;
+        request.Send();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position + transform.forward, radiusOfSphere);
     }
 
     #endregion
 }
+
+        
 
 public struct ItemArtefact
 {
