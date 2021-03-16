@@ -117,13 +117,13 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Cut
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -183,7 +183,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 2220297951849840699, guid: ebccdd3007a49cb478ca623e41827552, type: 3}
+  m_Motion: {fileID: 4373710887299629455, guid: 082ca01bc35ad8544bd4feccf6f7dd1b, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -313,7 +313,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 8529940124391426792, guid: ebccdd3007a49cb478ca623e41827552, type: 3}
+  m_Motion: {fileID: 7443110963517555228, guid: 082ca01bc35ad8544bd4feccf6f7dd1b, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
