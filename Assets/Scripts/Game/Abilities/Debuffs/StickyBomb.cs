@@ -2,10 +2,10 @@
 using UnityEngine;
 
 
-public class Stun : Debuff
+public class StickyBomb : Debuff
 {
 
-    public Stun() : base ("Stun", "Stun an opponent of your choosing to change the tides", 1, AbilityUseTypes.RECHARGE, 30.0f, 20.0f)
+    public StickyBomb() : base ("StickyBomb", "Stun an opponent of your choosing to change the tides", 1, AbilityUseTypes.RECHARGE, 30.0f, 20.0f)
     {
         
     }
@@ -46,6 +46,6 @@ public class Stun : Debuff
 
     public override Ability Clone()
     {
-        return new Stun();
+        return new StickyBomb();
     }
 }

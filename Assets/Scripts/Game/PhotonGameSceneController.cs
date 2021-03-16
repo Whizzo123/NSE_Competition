@@ -18,6 +18,7 @@ public class PhotonGameSceneController : GlobalEventListener
     public override void SceneLoadLocalDone(string scene)
     {
         PlayerController.Spawn();
+        FindObjectOfType<PlayerTestSuite>().InitializeTest();
     }
 
     void Start()
@@ -26,17 +27,17 @@ public class PhotonGameSceneController : GlobalEventListener
         if (BoltNetwork.IsServer)
         {
             BoltEntity artefact = BoltNetwork.Instantiate(BoltPrefabs.Artefect);
-            artefact.transform.position = new Vector3(1, -1, -16);
+            artefact.transform.position = new Vector3(1, -3, -16);
             artefact.GetComponent<ArtefactBehaviour>().PopulateData("Mayan Jar", ArtefactRarity.Common);
             artefact.TakeControl();
 
             BoltEntity secondArtefact = BoltNetwork.Instantiate(BoltPrefabs.Artefect);
-            secondArtefact.transform.position = new Vector3(-15, -1, 4);
+            secondArtefact.transform.position = new Vector3(-15, -3, 4);
             secondArtefact.GetComponent<ArtefactBehaviour>().PopulateData("Empty Tube Of Toothpaste", ArtefactRarity.Exotic);
             secondArtefact.TakeControl();
 
             BoltEntity thirdArtefact = BoltNetwork.Instantiate(BoltPrefabs.Artefect);
-            thirdArtefact.transform.position = new Vector3(10, -1, -1);
+            thirdArtefact.transform.position = new Vector3(10, -3, -1);
             thirdArtefact.GetComponent<ArtefactBehaviour>().PopulateData("Tooth Pick", ArtefactRarity.Common);
             thirdArtefact.TakeControl();
 

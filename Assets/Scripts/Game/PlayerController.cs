@@ -86,7 +86,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         if(!entity.IsOwner)
         {
             //Disable other players cameras so that we don't accidentally get assigned to another players camera
-            playerCamera.gameObject.SetActive(false);
+            if(playerCamera != null)
+                playerCamera.gameObject.SetActive(false);
 
         }
     }
@@ -189,6 +190,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     public override void ControlGained()
     {
         localPlayer = this;
+        playerCamera = FindObjectOfType<Camera>();
         playerCharacterController = this.gameObject.GetComponent<CharacterController>();
     }
 
