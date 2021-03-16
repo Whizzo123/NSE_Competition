@@ -1,8 +1,44 @@
 fileFormatVersion: 2
-guid: 98a5029377bf2ed49bc53386d491171d
+guid: 082ca01bc35ad8544bd4feccf6f7dd1b
 ModelImporter:
   serializedVersion: 20101
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      74: -5713628830220465967
+    second: metarig.007|bagmain.001Action
+  - first:
+      74: 3847262546403573403
+    second: metarig.007|bagstrap.002Action
+  - first:
+      74: 2561676254900953416
+    second: metarig.007|coat.002Action
+  - first:
+      74: -7171512358917983401
+    second: metarig.007|machete.001Action
+  - first:
+      74: 3820160985503087037
+    second: metarig.007|metarig.001Action.001
+  - first:
+      74: -4936744767461848246
+    second: metarig.007|metarig.001Action.002
+  - first:
+      74: 3197124618511951492
+    second: metarig.007|metarig.001Action.003
+  - first:
+      74: 9111269420440279386
+    second: metarig.007|metarig.004Action.001
+  - first:
+      74: 4373710887299629455
+    second: metarig.007|metarig.004Action.002
+  - first:
+      74: -2801623494740511232
+    second: metarig.007|metarig.004Action.003
+  - first:
+      74: 7443110963517555228
+    second: metarig.007|metarig.004Action.004
+  - first:
+      74: -8887868154127377182
+    second: metarig.007|metarigAction
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -34,7 +70,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 5
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -85,7 +121,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 5
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

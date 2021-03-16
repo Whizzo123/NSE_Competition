@@ -163,4 +163,14 @@ public class NetworkCallbacks : GlobalEventListener
     {
         FindObjectOfType<CanvasUIManager>().SetTimeText(evnt.Time);
     }
+
+    public override void OnEvent(ChangeAnimatorMovementParameter evnt)
+    {
+        evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetBool("moving", evnt.Value);
+    }
+
+    public override void OnEvent(FireAnimatorCutTriggerParameter evnt)
+    {
+        evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Cut");
+    }
 }
