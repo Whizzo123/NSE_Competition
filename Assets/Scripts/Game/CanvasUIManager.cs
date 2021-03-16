@@ -18,6 +18,7 @@ public class CanvasUIManager : MonoBehaviour
     public GameObject loadoutScreen;
     public GameObject loadoutScreenButton;
     public GameObject targetIconGO;
+    public PlayerTrackIconUI playerTrackIcon;
     public WinScreenUI winScreen;
     public Text TimeText;
 

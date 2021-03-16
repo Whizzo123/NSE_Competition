@@ -34,7 +34,6 @@ public class Debuff : Ability
         {
             if (currentDuration < effectDuration)
             {
-                Debug.Log("Debuff in use increasing duration now at: " + currentDuration);
                 currentDuration += Time.deltaTime;
                 if (currentDuration > effectDuration)
                     currentDuration = effectDuration;

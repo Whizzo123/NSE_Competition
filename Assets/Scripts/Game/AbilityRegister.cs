@@ -86,7 +86,7 @@ public class AbilityRegister : MonoBehaviour
     {
         debuffs = new Dictionary<string, Debuff>();
         //Debuff slowdown = new Debuff("Slow Down", "Slow down enemy player of your choice", 2, Effects.SlowDown, AbilityUseTypes.RECHARGE, 5);
-        Stun stunDebuff = new Stun();
+        StickyBomb stunDebuff = new StickyBomb();
         // debuffs.Add(slowdown.GetAbilityName(), slowdown);
         debuffs.Add(stunDebuff.GetAbilityName(), stunDebuff);
     }

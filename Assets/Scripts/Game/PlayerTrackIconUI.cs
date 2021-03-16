@@ -7,11 +7,14 @@ public class PlayerTrackIconUI : MonoBehaviour
 
     private PlayerController target;
     public Image iconImage;
+    private float widthOffset;
+    private float heightOffset;
 
     // Use this for initialization
     void Start()
     {
-
+        widthOffset = GetComponent<RectTransform>().sizeDelta.x / 2;
+        heightOffset = GetComponent<RectTransform>().sizeDelta.y / 2;
     }
 
     // Update is called once per frame
@@ -20,7 +23,10 @@ public class PlayerTrackIconUI : MonoBehaviour
         //Do stuff to have icon move around screen
         if(target != null)
         {
-
+            Vector2 screenPos = PlayerController.localPlayer.playerCamera.WorldToScreenPoint(target.transform.position);
+            screenPos.x = Mathf.Clamp(screenPos.x, 0 + widthOffset, Screen.width - widthOffset);
+            screenPos.y = Mathf.Clamp(screenPos.y, 0 + heightOffset, Screen.height - heightOffset);
+            transform.position = screenPos;
         }
     }
 
