@@ -2281,6 +2281,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8444755474015401736, guid: f1f1c90d42a4179428ca47018e5a7f2c, type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1591444678447930695, guid: b5219ae0097ab9442a072db8e9f52c8d, type: 3}
       propertyPath: CollisionModule.m_EnergyLossOnCollision.scalar
       value: 1
@@ -2343,10 +2347,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8169761272852429265, guid: b5219ae0097ab9442a072db8e9f52c8d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8444755474015401736, guid: f1f1c90d42a4179428ca47018e5a7f2c, type: 3}
-      propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3955,10 +3955,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -5575257615335779973, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
-      propertyPath: _serializerGuid
-      value: f76f12ae-2efd-4c55-a130-2e77b84d87c5
-      objectReference: {fileID: 0}
     - target: {fileID: -4174776528086580895, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
       propertyPath: mapGens.Array.data[0]
       value: 

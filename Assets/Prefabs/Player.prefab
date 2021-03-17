@@ -1660,10 +1660,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1acd6921d2b4364aac74fff7dd1adfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
+  speed: 10
   immobilize: 0
-  stoleFrom: 0
-  waitTime: 0.05
+  waitTime: 0.502
   playerGravity: -65
   groundDistance: 2.5
   lengthOfSphere: 2
