@@ -76,4 +76,9 @@ public class ClueInterpretator : Powerup
             return null;
         }
     }
+
+    public override Ability Clone()
+    {
+        return new ClueInterpretator();
+    }
 }

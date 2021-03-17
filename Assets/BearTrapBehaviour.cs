@@ -11,6 +11,9 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
     private bool sprung;
     private bool disabled;
 
+    public GameObject openTrap;
+    public GameObject closedTrap;
+
     public override void Attached()
     {
         currentDuration = 0;
@@ -19,7 +22,7 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
     }
     public void OnTriggerEnter(Collider collider)
     {
-        if(collider.gameObject.GetComponent<PlayerController>())
+        if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
         {
             if (collider.gameObject.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Name != state.PlacingPlayer.GetState<IGamePlayerState>().Name)
             {
@@ -37,6 +40,17 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
         request.Trap = entity;
         request.Send();
         sprung = true;
+    }
+
+    public void Disable()
+    {
+        closedTrap.SetActive(false);
+    }
+
+    public void Close()
+    {
+        openTrap.SetActive(false);
+        closedTrap.SetActive(true);
     }
 
     public override void SimulateOwner()
