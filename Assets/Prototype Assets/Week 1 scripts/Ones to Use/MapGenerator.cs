@@ -383,7 +383,8 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
         {
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            BoltNetwork.Instantiate(ob, hit.point + Vector3.up, spawnRotation);
+            GameObject go = BoltNetwork.Instantiate(ob, hit.point + (Vector3.up * 4), spawnRotation);
+            go.GetComponent<ArtefactBehaviour>().PopulateData(go.name, rarity);
             Debug.LogError("SPAWNED"); 
             return 1;
         }
@@ -410,7 +411,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         g = g + " END";
         Debug.LogError(g); RaycastHit[] hits;
         hits = Physics.RaycastAll(spawnPos, Vector3.down, raycastDistance, obsground);
-        go.GetComponent<ArtefactBehaviour>().PopulateData(go.name, rarity);
+
         foreach (RaycastHit item in hits)
         {
 
