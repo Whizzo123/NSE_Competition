@@ -27,6 +27,15 @@ public class Debuff : Ability
         return target;
     }
 
+    public override void Use()
+    {
+        //Do animation
+        var request = FireAnimatorThrowTrigger.Create();
+        request.Target = castingPlayer.entity;
+        request.Send();
+        base.Use();
+    }
+
     public override void UpdateAbility()
     {
         if(useType == AbilityUseTypes.RECHARGE)

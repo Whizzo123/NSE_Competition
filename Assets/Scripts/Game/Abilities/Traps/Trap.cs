@@ -10,6 +10,15 @@ public class Trap : Ability
 
     }
 
+    public override void Use()
+    {
+        //Do animaton
+        var request = FireAnimatorPutDownTrigger.Create();
+        request.Target = placingPlayer.entity;
+        request.Send();
+        base.Use();
+    }
+
     public override void UpdateAbility()
     {
         if(used)
