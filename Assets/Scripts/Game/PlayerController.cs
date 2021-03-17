@@ -387,7 +387,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             MapGenerator[] mapGens = FindObjectsOfType<MapGenerator>();
             foreach (MapGenerator item in mapGens)
             {
-                item.GenerateAbilities(abilityInventory);
+                //item.GenerateAbilities(abilityInventory);
             }
         }
     }

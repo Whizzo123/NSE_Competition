@@ -474,7 +474,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             //item.GetGameobject of some sort?
             if (item.GetUseType() == AbilityUseTypes.ONE_TIME)
             {
-                abiliti. (item.GetAbilityName());
+                //abiliti. (item.GetAbilityName());
             }
         }
         //This code is based upon the artefact spawning code
@@ -494,9 +494,9 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                     {
                         Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, y * spawnPosScale) + transform.position;
                         //Hones in on last artefact types to spawn
-                        int ran = UnityEngine.Random.Range(0, abilities.Length);
+                        //int ran = UnityEngine.Random.Range(0, abilities.Length);
                         //Artefact can't spawn in same place twice or where there are artefacts.
-                        totalAbilitiesSpawned += AbilitySpawner(abilities[ran], spawnPosition);
+                        //totalAbilitiesSpawned += AbilitySpawner(abilities[ran], spawnPosition);
                         map[x, y] = 1;
                     }
                     else if (totalAbilitiesSpawned >= abilityAmountToSpawn)
