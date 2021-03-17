@@ -75,11 +75,12 @@ public class AbilityRegister : MonoBehaviour
         SpeedBoost speedBoost = new SpeedBoost();
         PlayerTracker playerTracker = new PlayerTracker();
         Camouflage camouflage = new Camouflage();
-        //Powerup clueInterpretation = new Powerup("Interpretation", "Get occasional access to clues of where the closest rarest artefact is", 5, Effects.CreateClueForPlayer, AbilityUseTypes.RECHARGE, 40.0f);
+        ClueInterpretator clueInterpretator = new ClueInterpretator();
         //Powerup largerTools = new Powerup("Larger Tools", "Magically makes your tools bigger allowing you to clear areas quicker", 5, Effects.EnlargeTools, AbilityUseTypes.RECHARGE, 50.0f);*/
         powerups.Add(speedBoost.GetAbilityName(), speedBoost);
         powerups.Add(playerTracker.GetAbilityName(), playerTracker);
         powerups.Add(camouflage.GetAbilityName(), camouflage);
+        powerups.Add(clueInterpretator.GetAbilityName(), clueInterpretator);
     }
 
     private void RegisterDebuffs()

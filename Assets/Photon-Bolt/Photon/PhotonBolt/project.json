@@ -6326,10 +6326,23 @@
           "AssetSettings": {
             "$type": "Bolt.Compiler.PropertyEventSettings, bolt.compiler"
           }
+        },
+        {
+          "Name": "Toggle",
+          "Enabled": true,
+          "Expanded": true,
+          "ReplicationMode": 1,
+          "Priority": 1,
+          "PropertyType": {
+            "$type": "Bolt.Compiler.PropertyTypeBool, bolt.compiler"
+          },
+          "AssetSettings": {
+            "$type": "Bolt.Compiler.PropertyEventSettings, bolt.compiler"
+          }
         }
       ],
-      "Name": "FireAnimatorPutDownTrigger",
-      "Guid": "a010677e-81ae-43e8-8a91-2be17037f544",
+      "Name": "ToggleCamouflage",
+      "Guid": "989e578e-64ba-4e72-bb75-1fdde46486ee",
       "Groups": [
         "samples"
       ]
@@ -6352,7 +6365,30 @@
         }
       ],
       "Name": "FireAnimatorThrowTrigger",
-      "Guid": "656a4c9b-cfed-404c-8f97-ff4ea2b03a6e",
+      "Guid": "b37cd77d-3bae-4e86-92fe-c0ee4254d20e",
+      "Groups": [
+        "samples"
+      ]
+    },
+    {
+      "$type": "Bolt.Compiler.EventDefinition, bolt.compiler",
+      "Properties": [
+        {
+          "Name": "Target",
+          "Enabled": true,
+          "Expanded": true,
+          "ReplicationMode": 1,
+          "Priority": 1,
+          "PropertyType": {
+            "$type": "Bolt.Compiler.PropertyTypeEntity, bolt.compiler"
+          },
+          "AssetSettings": {
+            "$type": "Bolt.Compiler.PropertyEventSettings, bolt.compiler"
+          }
+        }
+      ],
+      "Name": "FireAnimatorPutDownTrigger",
+      "Guid": "a31b4e59-d45c-45da-91c9-e530490958ec",
       "Groups": [
         "samples"
       ]
