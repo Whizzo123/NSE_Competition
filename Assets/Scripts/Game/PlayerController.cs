@@ -419,23 +419,26 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (entity.IsOwner)
+        if (entity.IsAttached)
         {
-            if (collider.gameObject.GetComponent<ArtefactBehaviour>())
+            if (entity.IsOwner)
             {
-                targetedArtefact = collider.gameObject.GetComponent<ArtefactBehaviour>();
-            }
-            else if (collider.gameObject.GetComponent<Stash>())
-            {
-                gameStash = collider.gameObject.GetComponent<Stash>();
-            }
-            else if (collider.gameObject.GetComponent<PlayerController>())
-            {
-                targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
-            }
-            else if (collider.gameObject.GetComponent<AbilityPickup>())
-            {
-                targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
+                if (collider.gameObject.GetComponent<ArtefactBehaviour>())
+                {
+                    targetedArtefact = collider.gameObject.GetComponent<ArtefactBehaviour>();
+                }
+                else if (collider.gameObject.GetComponent<Stash>())
+                {
+                    gameStash = collider.gameObject.GetComponent<Stash>();
+                }
+                else if (collider.gameObject.GetComponent<PlayerController>())
+                {
+                    targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
+                }
+                else if (collider.gameObject.GetComponent<AbilityPickup>())
+                {
+                    targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
+                }
             }
         }
     }
@@ -532,6 +535,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     }
 
     #endregion
+
+    public void ToggleMesh(bool toggle)
+    {
+        //Player -> _scaleTest -> FULL.002
+        transform.GetChild(0).transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = toggle;
+    }
 }
 
         

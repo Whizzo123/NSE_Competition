@@ -399,14 +399,14 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             }
             else
             {
-                Debug.LogError("NotSpawning " + ob.name + " artefact at obstacle");
+               // Debug.LogError("NotSpawning " + ob.name + " artefact at obstacle");
                 notSpawned++;
             }
 
         }
         else
         {
-            Debug.LogError("NotSpawning " + ob.name + " artefact at ground");
+           // Debug.LogError("NotSpawning " + ob.name + " artefact at ground");
             notSpawned++;
         }
         ///////////////Destroy(this.gameobject);

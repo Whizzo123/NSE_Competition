@@ -90,13 +90,18 @@ public class NetworkCallbacks : GlobalEventListener
         }
         if(evnt.End)
         {
-            evnt.Trap.GetComponent<MeshRenderer>().enabled = false;
-            evnt.Trap.GetComponent<SphereCollider>().enabled = false;
+            evnt.Trap.GetComponent<BearTrapBehaviour>().Disable();
         }
         else
         {
-            evnt.Trap.GetComponent<MeshRenderer>().enabled = true;
+            evnt.Trap.GetComponent<BearTrapBehaviour>().Close();
         }
+    }
+
+    public override void OnEvent(ToggleCamouflage evnt)
+    {        
+        if(!evnt.Target.IsOwner)
+            evnt.Target.GetComponent<PlayerController>().ToggleMesh(evnt.Toggle);
     }
 
     public override void OnEvent(ObstacleDisable evnt)
