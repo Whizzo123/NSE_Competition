@@ -203,8 +203,29 @@ public class NetworkCallbacks : GlobalEventListener
 
     public override void OnEvent(FireAnimatorCutTriggerParameter evnt)
     {
-        evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Cut");
+        AnimatorStateInfo state = evnt.Target.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+        if (!state.IsName("StandCut") || !state.IsName("RunCut"))
+            evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Cut");
     }
+
+    public override void OnEvent(FireAnimatorThrowTrigger evnt)
+    {
+        AnimatorStateInfo state = evnt.Target.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+        if(!state.IsName("Throw"))
+        {
+            evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Throw");
+        }
+    }
+
+    public override void OnEvent(FireAnimatorPutDownTrigger evnt)
+    {
+        AnimatorStateInfo state = evnt.Target.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+        if (!state.IsName("PutDown"))
+        {
+            evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("PutDown");
+        }
+    }
+
     public override void OnEvent(SpawnObstacle evnt)
     {
         MapGenerator[] gens = FindObjectsOfType<MapGenerator>();

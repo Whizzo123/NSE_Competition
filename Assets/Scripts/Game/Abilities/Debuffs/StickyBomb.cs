@@ -29,6 +29,7 @@ public class StickyBomb : Debuff
             request.Send();
             GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
             GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(name, true);
+            base.Use();
         }
     }
 
