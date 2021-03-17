@@ -43,6 +43,11 @@ public class NetworkCallbacks : GlobalEventListener
         if (evnt.InventoryEntity.IsOwner)
         {
             evnt.InventoryEntity.GetComponent<PlayerController>().RemoveFromInventory(evnt.ItemIndex, evnt.ItemName, evnt.ItemPoints);
+            evnt.InventoryEntity.GetComponent<PlayerController>().state.HasBeenStolenFrom = true;
+            var request = StunEnemyPlayer.Create();
+            request.Target = evnt.InventoryEntity;
+            request.End = false;
+            request.Send();
         }
     }
 
@@ -70,7 +75,7 @@ public class NetworkCallbacks : GlobalEventListener
                 SpeedBoost spd = (SpeedBoost)evnt.Target.GetComponent<PlayerController>().abilityInventory.FindAbility("Speed");
                 if (spd != null)
                     spd.SetOppositeDebuffActivated(false);
-                evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 4f;
+                evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = FindObjectOfType<PlayerController>().speed;
             }
         }
     }

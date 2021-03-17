@@ -16,6 +16,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     private bool loadoutReleased;
     public AbilityInventory abilityInventory;
     public bool immobilize;
+    private float currentStunAfterTimer;
+    private float timeForStunAfterSteal;
 
     [Space]
 
@@ -63,12 +65,14 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         SetLoadoutReleased(false);
         abilityInventory = new AbilityInventory(this);
         immobilize = false;
+        timeForStunAfterSteal = 10.0f;
         //Set state transform to be equal to current transform
         if (entity.IsOwner)
         {
             state.Speed = speed;
             state.RayLength = lengthOfSphere;
             state.LoadoutReady = false;
+            state.HasBeenStolenFrom = false;
             for (int i = 0; i < state.Inventory.Length; i++)
             {
                 state.Inventory[i].ItemName = "";
@@ -296,13 +300,13 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             #endregion
 
             #region Stealing
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.F) && !state.HasBeenStolenFrom)
             {
                 BoltLog.Info("F pressed");
                 if (targetedPlayerToStealFrom != null)
                 {
                     BoltLog.Info("Has a target");
-                    if (targetedPlayerToStealFrom.IsInventoryEmpty())
+                    if (targetedPlayerToStealFrom.IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false)
                     {
                         BoltLog.Info("Attempting steal");
                         InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
@@ -322,6 +326,23 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                         request.ItemPoints = randomArtefact.ItemPoints;
                         request.Send();
                     }
+                }
+            }
+
+            if(state.HasBeenStolenFrom)
+            {
+                if(currentStunAfterTimer >= timeForStunAfterSteal)
+                {
+                    currentStunAfterTimer = 0;
+                    state.HasBeenStolenFrom = false;
+                    var request = StunEnemyPlayer.Create();
+                    request.Target = entity;
+                    request.End = true;
+                    request.Send();
+                }
+                else
+                {
+                    currentStunAfterTimer += Time.deltaTime;
                 }
             }
             #endregion
