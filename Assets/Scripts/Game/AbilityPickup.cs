@@ -14,9 +14,10 @@ public class AbilityPickup : EntityBehaviour<IAbilityPickup>
             BoltLog.Error("Issuse no game object attached to this entity");
     }
 
+
     public void SetAbilityOnPickup(string abilityName)
     {
-        this.abilityName = abilityName;
+        this.abilityName = abilityName;    //This line was just for testing right?
         state.AbilityName = abilityName;
     }
 
