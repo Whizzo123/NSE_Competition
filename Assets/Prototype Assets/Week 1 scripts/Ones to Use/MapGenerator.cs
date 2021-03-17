@@ -333,7 +333,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     {
         //If indestructable object is found, return true.
         RaycastHit hit;
-        if ((Physics.Raycast(spawnPos, Vector3.down, raycastDistance, indestructables)))
+        if (Physics.Raycast(spawnPos, Vector3.down, raycastDistance, indestructables))
         {
             return true;
         }
@@ -383,9 +383,8 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
         {
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            GameObject go = BoltNetwork.Instantiate(ob, hit.point + (Vector3.up * 4), spawnRotation);
+            GameObject go = BoltNetwork.Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
             go.GetComponent<ArtefactBehaviour>().PopulateData(go.name, rarity);
-            Debug.LogError("SPAWNED"); 
             return 1;
         }
         else
@@ -463,7 +462,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                     spawnRotation *= randYRotation;
                 }
                 int randScale = ran.Next(1, 5);
-                ob.transform.localScale = new Vector3(randScale, randScale, randScale);
+                ob.transform.localScale *= randScale;
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
                 BoltEntity go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
 

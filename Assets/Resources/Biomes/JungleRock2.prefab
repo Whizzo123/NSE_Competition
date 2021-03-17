@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5811123336942805409}
   - component: {fileID: -8592190337294306642}
   - component: {fileID: -4906125063378245963}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: JungleRock2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

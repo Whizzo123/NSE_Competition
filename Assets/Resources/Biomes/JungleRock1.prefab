@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7253852110615884122}
   - component: {fileID: -2672052417003917027}
   - component: {fileID: 2666627640913800532}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: JungleRock1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1913540292418775544}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
