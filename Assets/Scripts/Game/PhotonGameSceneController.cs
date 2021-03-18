@@ -18,7 +18,7 @@ public class PhotonGameSceneController : GlobalEventListener
     public override void SceneLoadLocalDone(string scene)
     {
         PlayerController.Spawn();
-        //FindObjectOfType<PlayerTestSuite>().InitializeTest();
+        FindObjectOfType<PlayerTestSuite>().InitializeTest();
     }
 
     void Start()
@@ -42,7 +42,7 @@ public class PhotonGameSceneController : GlobalEventListener
             thirdArtefact.TakeControl();
 
             BoltEntity stash = BoltNetwork.Instantiate(BoltPrefabs.Stash);
-            stash.transform.position = new Vector3(-19 , -1.5f, -20);
+            stash.transform.position = new Vector3(4.24f , 0.57f, -18.93f);
             stash.TakeControl();
 
             BoltEntity abilityPickup = BoltNetwork.Instantiate(BoltPrefabs.AbilityPickup);
