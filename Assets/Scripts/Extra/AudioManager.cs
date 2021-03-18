@@ -24,6 +24,7 @@ public class AudioManager : MonoBehaviour
         public AudioClip audioClip;
         public float clipVolume = 1;
         public bool loop;
+        public bool music;
 
         public AudioSource audioSource;
     };
@@ -61,7 +62,8 @@ public class AudioManager : MonoBehaviour
         mVol = 1;
         sVol = 1;
         masVol = 1;
-        PlaySound("Music");
+        PlaySound("MusicMenu");
+
     }
 
     /// <summary>
@@ -72,6 +74,15 @@ public class AudioManager : MonoBehaviour
     {
         AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == audioName);
         if (audioFound != null)
+        {
+            audioFound.audioSource.Play();
+        }
+    }
+
+    public void PlaySoundOnly(string audioName)
+    {
+        AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == audioName);
+        if (audioFound != null && !audioFound.audioSource.isPlaying)
         {
             audioFound.audioSource.Play();
         }
@@ -116,14 +127,14 @@ public class AudioManager : MonoBehaviour
     {
         foreach (AudioClips audio in aud)
         {
-            //if (audio.loop == true)
-           // {
+            if (audio.music == true)
+            {
                 audio.audioSource.volume = mVol * masVol;
-            //}
-            //else
-           // {
+            }
+            else
+            {
                 audio.audioSource.volume = sVol * masVol;
-            //}
+            }
         }
     }
     ///<summary>
@@ -154,7 +165,7 @@ public class AudioManager : MonoBehaviour
         {
             audioFound.audioSource.Stop();
         }
-        audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == "Music");
+        audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == "MusicMenu");
         if (audioFound != null)
         {
             audioFound.audioSource.Play();
@@ -172,4 +183,12 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void StopSound(string audioName)
+    {
+        AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == audioName);
+        if (audioFound != null && audioFound.audioSource.isPlaying)
+        {
+            audioFound.audioSource.Stop();
+        }
+    }
 }

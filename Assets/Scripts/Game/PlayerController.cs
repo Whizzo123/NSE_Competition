@@ -231,7 +231,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 #region Falling
                 
                 //Projects a sphere underneath player to check ground layer
-                isGrounded = Physics.CheckSphere(transform.position, groundDistance, ground);
+                isGrounded = Physics.CheckSphere(transform.position - new Vector3(0,2,0), groundDistance, ground);
 
                 //Player recieves a constant y velocity from gravity
                 playerFallingVelocity.y += playerGravity * BoltNetwork.FrameDeltaTime;
@@ -282,11 +282,13 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 if (targetedArtefact != null)
                 {
                     targetedArtefact.Pickup(this);
+                    FindObjectOfType<AudioManager>().PlaySound(targetedArtefact.GetRarity().ToString());
                     targetedArtefact = null;
                 }
                 else if (gameStash != null && InventoryNotEmpty())
                 {
                     gameStash.AddToStashScores(this);
+                    FindObjectOfType<AudioManager>().PlaySound("Stash");
                 }
                 else if (targetedAbilityPickup != null)
                 {
@@ -354,6 +356,27 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 StartCoroutine(Hit());
             }
             #endregion
+
+
+            if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
+            {
+                RaycastHit hit;
+                if(Physics.Raycast(transform.position, Vector3.down, out hit, ground))
+                {
+                    string hitstring = hit.transform.gameObject.layer.ToString();
+                    int layernumber = int.Parse(hitstring);
+                    string lm = LayerMask.LayerToName(layernumber);
+                    if (lm == "SwampGround")
+                    {
+                        FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
+                    }
+                    else
+                    {
+                        FindObjectOfType<AudioManager>().StopSound("SwampGround");
+                    }
+                    FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
+                }
+            }
         }
     }
 
@@ -437,7 +460,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
         {
-            
             Quaternion finalQuat;
             Vector3 axisOfRotation = (Vector3.Cross(hit.normal, Vector3.up)).normalized;//gets the axis to rotate on a slope.
             float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(for somereason it's negative either way round) (dot product)
@@ -445,8 +467,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
             Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
             //finalQuat = lookQuat;
-            finalQuat = slopeQuat.normalized * lookQuat; //Quaternion rotation of look rotation and slope rotation
-            transform.rotation = finalQuat;
+            if (rotationAngle < 45) 
+            {
+                finalQuat = slopeQuat.normalized * lookQuat; //Quaternion rotation of look rotation and slope rotation
+                transform.rotation = finalQuat;
+            }
+
             //transform.GetChild(0).transform.rotation = finalQuat;
         }
 
@@ -536,6 +562,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             request.Send();
         }*/
         //change transform.forward to transform.getChild(0).transform.forward
+        FindObjectOfType<AudioManager>().PlaySound("Cut");
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit[] hit;
         hit = Physics.SphereCastAll(ray, radiusOfSphere, lengthOfSphere, obstacles);
@@ -577,6 +604,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down);
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(transform.position, -transform.up + transform.position);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
     }
 
     #endregion

@@ -34,6 +34,7 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
 
     private void SpringTrap()
     {
+        FindObjectOfType<AudioManager>().PlaySound("BearTrapClose");
         var request = SpringBearTrap.Create();
         request.Victim = trappedPlayer.entity;
         request.End = false;

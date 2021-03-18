@@ -17,6 +17,7 @@ public class PhotonGameSceneController : GlobalEventListener
 
     public override void SceneLoadLocalDone(string scene)
     {
+        FindObjectOfType<AudioManager>().ActivateGameMusic();
         PlayerController.Spawn();
         FindObjectOfType<PlayerTestSuite>().InitializeTest();
     }

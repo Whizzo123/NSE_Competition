@@ -316,6 +316,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         if (lm.value == LayerMask.GetMask("SwampGround"))
         {
             lm = LayerMask.GetMask("SwampWater");
+            
         }
         //If ground is found
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, lm))

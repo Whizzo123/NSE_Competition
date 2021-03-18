@@ -19,6 +19,7 @@ public class BearTrap : Trap
         BoltLog.Info("Spawn pos: " + spawnPos);
         BoltNetwork.Instantiate(BoltPrefabs.BearTrap, spawnPos, Quaternion.identity).GetState<IBearTrap>().PlacingPlayer = placingPlayer.entity;
         base.Use();
+        GameObject.FindObjectOfType<AudioManager>().PlaySound("BearTrapOpening");
     }
 
     public override Ability Clone()
