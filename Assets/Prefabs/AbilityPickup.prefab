@@ -109,6 +109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43e3b36cd56a2543a87cab59c2a6185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  abilityName: 
+  enabledForPickup: 0
 --- !u!114 &8681397992383756562
 MonoBehaviour:
   m_ObjectHideFlags: 0

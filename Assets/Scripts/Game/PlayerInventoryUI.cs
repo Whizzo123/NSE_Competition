@@ -27,7 +27,7 @@ public class PlayerInventoryUI : MonoBehaviour
         else
         {
             GameObject go = Instantiate(inventoryTabPrefab, this.transform);
-            go.GetComponent<InventoryTabUI>().AddText(item.name, 1);
+            go.GetComponent<InventoryTabUI>().Populate(item.name, 1);
             inventoryTabs.Add(item.name, go);
         }
     }

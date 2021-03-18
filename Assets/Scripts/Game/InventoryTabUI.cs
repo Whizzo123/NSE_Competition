@@ -7,12 +7,12 @@ public class InventoryTabUI : MonoBehaviour
 {
     private int personalCount;
 
-    public Text itemNameText;
+    public Image itemImage;
     public Text itemCountText;
 
-    public void AddText(string name, int count)
+    public void Populate(string name, int count)
     {
-        itemNameText.text = name;
+        itemImage.sprite = Resources.Load("UI/" + name, typeof(Sprite)) as Sprite;
         personalCount = count;
         itemCountText.text = "" + personalCount;
     }

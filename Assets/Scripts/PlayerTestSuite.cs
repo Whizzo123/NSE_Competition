@@ -8,7 +8,7 @@ public class PlayerTestSuite : GlobalEventListener
     
     public void InitializeTest()
     {
-        PlayerController.localPlayer.AddToInventory("TestArtefact", Random.Range(500, 1000));
+        PlayerController.localPlayer.AddToInventory("Ankh", Random.Range(500, 1000));
     }
 
 }
