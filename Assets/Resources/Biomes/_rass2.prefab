@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4729223329071754689}
   - component: {fileID: 4859261778640288546}
   m_Layer: 9
-  m_Name: Grass2
+  m_Name: _rass2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -113,5 +113,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 2, z: 2}
+  m_Size: {x: 2, y: 2, z: 3}
   m_Center: {x: 0, y: 0, z: 2.35}

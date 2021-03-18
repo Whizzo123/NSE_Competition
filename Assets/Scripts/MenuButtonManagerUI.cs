@@ -15,13 +15,13 @@ public class MenuButtonManagerUI : MonoBehaviour
 
     public void Options()
     {
-        panel1.SetActive(true);
+        FindObjectOfType<AudioManager>().TurnOn();
         panel2.SetActive(false);
     }
 
     public void titleScreen()
     {
-        panel1.SetActive(false);
+        FindObjectOfType<AudioManager>().TurnOff();
         panel2.SetActive(true);
     }
     public void TitleScreen()
