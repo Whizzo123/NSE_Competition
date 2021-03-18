@@ -27,6 +27,7 @@ public class ArtefactBehaviour : EntityBehaviour<IArtefactState>
 
     public void Pickup(PlayerController player)
     {
+        Debug.Log("Inside pickup avaliable for pickup is set to: " + availableForPickup);
         if (availableForPickup)
         {
             player.AddToInventory(state.Name, state.Points);
