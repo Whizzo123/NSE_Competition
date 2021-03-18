@@ -345,7 +345,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             #endregion
 
             #region Obstacle Interaction
-            if (Input.GetKey(KeyCode.C) && wait == false && state.Paralyzed == false)
+            if (Input.GetKeyDown(KeyCode.C) && wait == false && state.Paralyzed == false)
             {
                 var request = FireAnimatorCutTriggerParameter.Create();
                 request.Target = entity;
