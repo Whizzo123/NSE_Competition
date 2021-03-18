@@ -18,7 +18,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     public bool immobilize;
     private float currentStunAfterTimer;
     private float timeForStunAfterSteal;
-
     [Space]
 
     [Header("Player options")]
@@ -393,7 +392,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         }
     }
 
-    int firstTime = 0;
     /// <summary>
     /// Used to set whether we are able to move now or not
     /// </summary>
@@ -402,6 +400,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     {
         //Debug.LogError("LOADOUT RELEASED");
         loadoutReleased = value;
+        if (GameObject.Find("_wamp_water") && value == true)
+        {
+            GameObject.Find("_wamp_water").GetComponent<MeshCollider>().enabled = false;
+        }
+
         /*if (loadoutReleased == true && firstTime == 0)
         {
             Debug.LogError("WE HAVE LOADOUT RELEASED");
