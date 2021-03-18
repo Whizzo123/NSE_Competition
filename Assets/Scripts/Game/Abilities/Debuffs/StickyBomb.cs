@@ -5,7 +5,7 @@ using UnityEngine;
 public class StickyBomb : Debuff
 {
 
-    public StickyBomb() : base ("StickyBomb", "Stun an opponent of your choosing to change the tides", 1, AbilityUseTypes.RECHARGE, 30.0f, 20.0f)
+    public StickyBomb() : base ("StickyBomb", "Stun an opponent of your choosing to change the tides", 1, AbilityUseTypes.ONE_TIME, 30.0f, 20.0f)
     {
         
     }
