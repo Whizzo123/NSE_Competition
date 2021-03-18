@@ -142,6 +142,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: JungleRain
       objectReference: {fileID: 0}
+    - target: {fileID: 7944263807384030951, guid: a24ead46dc7e25240a0dabff573dd0c7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8098970743737239708, guid: a24ead46dc7e25240a0dabff573dd0c7, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -2216,6 +2220,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DesertParticles (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3433166295858550924, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3434195871412992940, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_RootOrder
       value: 24
@@ -2292,6 +2300,10 @@ PrefabInstance:
     - target: {fileID: 8014773167090302890, guid: b5219ae0097ab9442a072db8e9f52c8d, type: 3}
       propertyPath: m_Name
       value: Snow
+      objectReference: {fileID: 0}
+    - target: {fileID: 8014773167090302890, guid: b5219ae0097ab9442a072db8e9f52c8d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8169761272852429265, guid: b5219ae0097ab9442a072db8e9f52c8d, type: 3}
       propertyPath: m_RootOrder
@@ -2444,6 +2456,10 @@ PrefabInstance:
     - target: {fileID: 1675575551109372594, guid: 7651911b3e8b42841b354f59b888b4c8, type: 3}
       propertyPath: m_Name
       value: SwampFog
+      objectReference: {fileID: 0}
+    - target: {fileID: 1675575551109372594, guid: 7651911b3e8b42841b354f59b888b4c8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1678372209762208708, guid: 7651911b3e8b42841b354f59b888b4c8, type: 3}
       propertyPath: m_RootOrder
@@ -3041,6 +3057,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DesertParticles
       objectReference: {fileID: 0}
+    - target: {fileID: 3433166295858550924, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3434195871412992940, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -3190,6 +3210,10 @@ PrefabInstance:
     - target: {fileID: 3433166295858550924, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_Name
       value: DesertParticles (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3433166295858550924, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3434195871412992940, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_RootOrder
@@ -3955,6 +3979,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5575257615335779973, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -4174776528086580895, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -4174776528086580895, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
       propertyPath: mapGens.Array.data[0]
       value: 
@@ -3978,6 +4010,10 @@ PrefabInstance:
     - target: {fileID: 6086093552605373106, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
       propertyPath: m_Name
       value: GeneratorOfAll
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086093552605373106, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8570793288063568150, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
       propertyPath: m_RootOrder
@@ -4035,6 +4071,10 @@ PrefabInstance:
     - target: {fileID: 4003292575508371854, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
       propertyPath: m_Name
       value: SnowGen
+      objectReference: {fileID: 0}
+    - target: {fileID: 4003292575508371854, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
       propertyPath: m_RootOrder
@@ -4101,6 +4141,10 @@ PrefabInstance:
     - target: {fileID: 4003292575508371854, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
       propertyPath: m_Name
       value: DesertGen
+      objectReference: {fileID: 0}
+    - target: {fileID: 4003292575508371854, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
       propertyPath: m_RootOrder
@@ -4232,6 +4276,10 @@ PrefabInstance:
     - target: {fileID: 4003292575508371854, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
       propertyPath: m_Name
       value: JungleGen
+      objectReference: {fileID: 0}
+    - target: {fileID: 4003292575508371854, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
       propertyPath: m_RootOrder
@@ -4424,6 +4472,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WellParticles
       objectReference: {fileID: 0}
+    - target: {fileID: 2743926252111670037, guid: 6245e6b0cec9d484b9d2b6da378b0bb0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6245e6b0cec9d484b9d2b6da378b0bb0, type: 3}
 --- !u!1001 &7485926283363307649
@@ -4436,6 +4488,10 @@ PrefabInstance:
     - target: {fileID: 4003292575508371854, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
       propertyPath: m_Name
       value: GrassGen
+      objectReference: {fileID: 0}
+    - target: {fileID: 4003292575508371854, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
       propertyPath: m_RootOrder
@@ -4502,6 +4558,10 @@ PrefabInstance:
     - target: {fileID: 4003292575508371854, guid: de681e42e64862c40b814d0d38021bec, type: 3}
       propertyPath: m_Name
       value: SwampGen
+      objectReference: {fileID: 0}
+    - target: {fileID: 4003292575508371854, guid: de681e42e64862c40b814d0d38021bec, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: de681e42e64862c40b814d0d38021bec, type: 3}
       propertyPath: m_RootOrder
