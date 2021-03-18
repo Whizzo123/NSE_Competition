@@ -25,7 +25,7 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
         abilityName = name;
         abilityDescription = description;
         abilityPoints = points;
-        GetComponent<Image>().color = Random.ColorHSV();
+        GetComponent<Image>().sprite = imageSprite;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
