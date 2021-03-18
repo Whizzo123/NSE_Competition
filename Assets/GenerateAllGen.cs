@@ -21,7 +21,7 @@ public class GenerateAllGen : MonoBehaviour
             {
                 RandSeed(i);
                 mapGens[i].GetComponent<MapGenerator>().GenerateEverything(seed);
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(1);
             }
     }
 

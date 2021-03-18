@@ -4439,10 +4439,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7399057401841865788, guid: 7e746f95a0d26d547a3474d9c4fd6f2d, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 387a3bb0d74635c48a419a0d760402be, type: 2}
     - target: {fileID: 8567420295615197011, guid: 7e746f95a0d26d547a3474d9c4fd6f2d, type: 3}
       propertyPath: m_RootOrder
       value: 12
@@ -4491,14 +4487,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: _wamp_water
       objectReference: {fileID: 0}
-    - target: {fileID: 9056255003167946217, guid: 7e746f95a0d26d547a3474d9c4fd6f2d, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9056255003167946217, guid: 7e746f95a0d26d547a3474d9c4fd6f2d, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e746f95a0d26d547a3474d9c4fd6f2d, type: 3}
 --- !u!1001 &7072109347574526744
@@ -4522,7 +4510,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -108.9
+      value: -95.34
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4530,7 +4518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.77
+      value: 26.9
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
       propertyPath: m_LocalRotation.w
