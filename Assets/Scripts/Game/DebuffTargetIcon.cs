@@ -33,7 +33,6 @@ public class DebuffTargetIcon : MonoBehaviour
     {
         if(targetObject != null)
         {
-            Debug.Log("Enemy player position: " + targetObject.transform.position);
             Vector2 screenPos = PlayerController.localPlayer.playerCamera.WorldToScreenPoint(targetObject.transform.position);
             screenPos.x = Mathf.Clamp(screenPos.x, 0 + widthOffset, Screen.width - widthOffset);
             screenPos.y = Mathf.Clamp(screenPos.y, 0 + heightOffset, Screen.height - heightOffset);

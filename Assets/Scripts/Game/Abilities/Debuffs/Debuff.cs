@@ -43,6 +43,7 @@ public class Debuff : Ability
         {
             if (currentDuration < effectDuration)
             {
+                Debug.Log("Current duration");
                 currentDuration += Time.deltaTime;
                 if (currentDuration > effectDuration)
                     currentDuration = effectDuration;
@@ -69,6 +70,24 @@ public class Debuff : Ability
         {
             Use();
         }
+        else if(useType == AbilityUseTypes.ONE_TIME)
+        {
+            if(inUse)
+            {
+                if (currentDuration < effectDuration)
+                {
+                    Debug.Log("Current duration");
+                    currentDuration += Time.deltaTime;
+                    if (currentDuration > effectDuration)
+                        currentDuration = effectDuration;
+                }
+                else
+                {
+                    currentDuration = 0;
+                    EndEffect();
+                }
+            }
+        }
     }
 
     public virtual void EndEffect()
@@ -77,6 +96,7 @@ public class Debuff : Ability
         currentDuration = 0;
         inUse = false;
         GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
+        castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
     }
 
     protected PlayerController FindClosestPlayer()
