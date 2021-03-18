@@ -19,10 +19,16 @@ public class SpeedBoost : Powerup
         {
             BoltLog.Info("Setting speed");
             GetPlayerToEmpower().state.Speed = GetPlayerToEmpower().speed + boostToSpeed;
+            inUse = true;
         }
         base.Use();
     }
 
+    protected override void EndEffect()
+    {
+        GetPlayerToEmpower().state.Speed = GetPlayerToEmpower().speed;
+        base.EndEffect();
+    }
 
     public override Ability Clone()
     {

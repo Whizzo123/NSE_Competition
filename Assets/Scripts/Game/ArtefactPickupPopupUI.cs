@@ -10,7 +10,7 @@ public class ArtefactPickupPopupUI : MonoBehaviour
 
     public void SetMessage(ItemArtefact artefact)
     {
-        popupText.text = "You picked up a " + artefact.name + " this is worth " + artefact.points + " points";
+        popupText.text = "You picked up a " + artefact.name.Replace("(Clone)", "") + " this is worth " + artefact.points + " points";
     }
 
 }

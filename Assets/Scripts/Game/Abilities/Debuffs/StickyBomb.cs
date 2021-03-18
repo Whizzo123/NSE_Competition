@@ -35,6 +35,7 @@ public class StickyBomb : Debuff
 
     public override void EndEffect()
     {
+        Debug.Log("Ending sticky effect");
         inUse = false;
         var request = StunEnemyPlayer.Create();
         request.Target = target.entity;

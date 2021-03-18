@@ -65,6 +65,7 @@ public class NetworkCallbacks : GlobalEventListener
         {
             if (!evnt.End)
             {
+                Debug.Log("Slowing");
                 SpeedBoost spd = (SpeedBoost)evnt.Target.GetComponent<PlayerController>().abilityInventory.FindAbility("Speed");
                 if (spd != null)
                     spd.SetOppositeDebuffActivated(true);
@@ -72,6 +73,7 @@ public class NetworkCallbacks : GlobalEventListener
             }
             else
             {
+                Debug.Log("quickening");
                 SpeedBoost spd = (SpeedBoost)evnt.Target.GetComponent<PlayerController>().abilityInventory.FindAbility("Speed");
                 if (spd != null)
                     spd.SetOppositeDebuffActivated(false);

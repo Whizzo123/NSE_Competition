@@ -16,6 +16,8 @@ public class PhotonGameSceneController : GlobalEventListener
     private int pointGoal = 5100; //10000
     private bool displayedWinScreen = false;
     private bool inCountdown = false;
+    private float winWaitTime = 10;
+    private float currentWinWaitTime = 0;
 
     public override void SceneLoadLocalDone(string scene)
     {
@@ -86,6 +88,12 @@ public class PhotonGameSceneController : GlobalEventListener
                 }
             }
         }
+
+        if(BoltNetwork.IsServer && displayedWinScreen)
+        {
+            currentWinWaitTime = winWaitTime;
+            StartCoroutine(RunWinCountdown());
+        }
     }
 
     private IEnumerator RunLobbyReadyCountdown()
@@ -142,5 +150,25 @@ public class PhotonGameSceneController : GlobalEventListener
         var request = DisplayWinScreen.Create();
         request.Send();
         displayedWinScreen = true;
+    }
+
+    private IEnumerator RunWinCountdown()
+    {
+        var floorTime = Mathf.FloorToInt(winWaitTime);
+
+        while (currentWinWaitTime > 0)
+        {
+            yield return null;
+
+            currentWinWaitTime -= Time.deltaTime;
+            var newFloorTime = Mathf.FloorToInt(currentWinWaitTime);
+
+            if (newFloorTime != floorTime)
+            {
+                floorTime = newFloorTime;
+                //Create lobbycountdown event to update everyone's time
+            }
+        }
+        BoltNetwork.LoadScene("GameScene");
     }
 }
