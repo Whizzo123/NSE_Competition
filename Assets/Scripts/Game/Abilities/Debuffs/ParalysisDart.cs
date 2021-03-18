@@ -6,7 +6,7 @@ using UnityEngine;
 public class ParalysisDart : Debuff
 {
 
-    public ParalysisDart() : base("Paralysis Dart", "Shoot a poison dart capable of turning an enemies hands to lead so they cannot use tools", 3, AbilityUseTypes.ONE_TIME, 20.0f, 10.0f)
+    public ParalysisDart() : base("Paralysis Dart", "Shoot a poison dart capable of turning an enemies hands to lead so they cannot use tools", 3, AbilityUseTypes.RECHARGE, 20.0f, 10.0f)
     {
 
     }
