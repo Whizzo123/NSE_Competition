@@ -7,7 +7,6 @@ using System.Linq;
 [BoltGlobalBehaviour("GameScene")]
 public class NetworkCallbacks : GlobalEventListener
 {
-
     public override void OnEvent(ArtefactDisable evnt)
     {
         BoltLog.Info("Called OnEvent ArtefactDisable");
@@ -70,6 +69,7 @@ public class NetworkCallbacks : GlobalEventListener
                 if (spd != null)
                     spd.SetOppositeDebuffActivated(true);
                 evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 1f;
+                Instantiate(Resources.Load("SlowBombExplosion_PA", typeof(GameObject)) as GameObject, evnt.Target.transform.position, Quaternion.identity);
             }
             else
             {
