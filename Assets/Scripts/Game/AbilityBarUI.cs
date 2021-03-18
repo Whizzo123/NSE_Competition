@@ -22,7 +22,7 @@ public class AbilityBarUI : MonoBehaviour
         foreach (Ability ability in loadoutList)
         {
             GameObject go = Instantiate(abilityIconPrefab);
-            go.GetComponent<AbilityIconUI>().PopulateAbilityIcon(ability.GetAbilityName(), ability.GetAbilityDescription(), ability.GetAbilityCost(), null);
+            go.GetComponent<AbilityIconUI>().PopulateAbilityIcon(ability.GetAbilityName(), ability.GetAbilityDescription(), ability.GetAbilityCost(), Resources.Load("UI/" + ability.GetAbilityName(), typeof(Sprite)) as Sprite);
             AddGameObjectToContent(go);
         }
     }
