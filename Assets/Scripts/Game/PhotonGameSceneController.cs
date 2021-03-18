@@ -11,7 +11,7 @@ public class PhotonGameSceneController : GlobalEventListener
     //Max time for game to 8 mins - 480
     private float totalAllottedGameTime = 360;
     private float currentRunningGameTime = 0;
-    private float readyTime = 35;
+    private float readyTime = 15;
     private float currentReadyTime = 0;
     private int pointGoal = 5100; //10000
     private bool displayedWinScreen = false;
