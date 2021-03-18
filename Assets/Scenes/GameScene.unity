@@ -4230,6 +4230,10 @@ PrefabInstance:
       value: _wamp_water
       objectReference: {fileID: 0}
     - target: {fileID: 9056255003167946217, guid: 7e746f95a0d26d547a3474d9c4fd6f2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9056255003167946217, guid: 7e746f95a0d26d547a3474d9c4fd6f2d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
