@@ -42,12 +42,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     [Space]
 
     [Header("States")]
-    private Vector3 playerFallingVelocity;
+    [SerializeField] private Vector3 playerFallingVelocity;
     private Vector3 playerMovement = Vector3.zero;
     private bool isGrounded = true;
     public Cinemachine.CinemachineVirtualCamera vCam;
     public Camera cam;
-    public Vector3 offset = new Vector3(0,10,10);
+    public Vector3 offset = new Vector3(0, 10, 10);
 
 
 
@@ -58,8 +58,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// Called when entity attached to network 
     /// </summary>
     public override void Attached()
-    { 
-        
+    {
+
         state.SetTransforms(state.PlayerTransform, transform);
         SetLoadoutReleased(false);
         abilityInventory = new AbilityInventory(this);
@@ -88,10 +88,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             vCam.Follow = this.gameObject.transform;
             vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
         }
-        if(!entity.IsOwner)
+        if (!entity.IsOwner)
         {
             //Disable other players cameras so that we don't accidentally get assigned to another players camera
-            if(playerCamera != null)
+            if (playerCamera != null)
                 playerCamera.gameObject.SetActive(false);
         }
     }
@@ -145,7 +145,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     {
         for (int i = 0; i < state.Inventory.Length; i++)
         {
-            if(state.Inventory[i].ItemName == "")
+            if (state.Inventory[i].ItemName == "")
             {
                 return i;
             }
@@ -228,9 +228,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             if (immobilize == false)
             {
                 #region Falling
-                
+
                 //Projects a sphere underneath player to check ground layer
-                isGrounded = Physics.CheckSphere(transform.position - new Vector3(0,2,0), groundDistance, ground);
+                isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
 
                 //Player recieves a constant y velocity from gravity
                 playerFallingVelocity.y += playerGravity * BoltNetwork.FrameDeltaTime;
@@ -244,7 +244,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 #endregion
                 #region Movement
                 playerMovement = new Vector3
-                (Input.GetAxisRaw("Horizontal"), 
+                (Input.GetAxisRaw("Horizontal"),
                  playerFallingVelocity.y,
                  Input.GetAxisRaw("Vertical")).normalized;
 
@@ -328,9 +328,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 }
             }
 
-            if(state.HasBeenStolenFrom)
+            if (state.HasBeenStolenFrom)
             {
-                if(currentStunAfterTimer >= timeForStunAfterSteal)
+                if (currentStunAfterTimer >= timeForStunAfterSteal)
                 {
                     currentStunAfterTimer = 0;
                     state.HasBeenStolenFrom = false;
@@ -361,7 +361,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
             {
                 RaycastHit hit;
-                if(Physics.Raycast(transform.position, Vector3.down, out hit, ground))
+                if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
                 {
                     string hitstring = hit.transform.gameObject.layer.ToString();
                     int layernumber = int.Parse(hitstring);
@@ -377,6 +377,46 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
                 }
             }
+            if (playerFallingVelocity.y < -200)
+            {
+                HitDown();
+            }
+        }
+    }
+
+
+    private void HitDown()
+    {
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit[] hit;
+        hit = Physics.SphereCastAll(ray, radiusOfSphere, lengthOfSphere, obstacles);
+        foreach (RaycastHit item in hit)
+        {
+            if (item.transform.GetComponent<ArtefactBehaviour>())
+            {
+                item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
+                item.transform.gameObject.GetComponent<SphereCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
+                /*ab = item.transform.gameObject.GetComponent<ArtefactBehaviour>();
+                var req = ArtefactEnable.Create();
+                req.artefact = ab.entity;
+                req.Send();*/
+                //item.transform.gameObject.GetComponentInChildren<ArtefactBehaviour>().transform.SetParent(null);
+            }
+            else if (item.transform.GetComponent<AbilityPickup>())
+            {
+                item.transform.gameObject.GetComponent<SphereCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
+                item.transform.GetComponent<AbilityPickup>().enabledForPickup = true;
+            }
+            else
+            {
+                Destroy(item.transform.gameObject);
+            }
+            var request = ObstacleDisable.Create();
+            request.position = transform.position;
+            request.forward = transform.forward;
+            request.Send();
         }
     }
 
