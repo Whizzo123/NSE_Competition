@@ -692,7 +692,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   immobilize: 0
-  stoleFrom: 0
   waitTime: 0.05
   playerGravity: -65
   groundDistance: 2.5

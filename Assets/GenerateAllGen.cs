@@ -4,26 +4,38 @@ using UnityEngine;
 using Bolt;
 public class GenerateAllGen : MonoBehaviour
 {
+
+    string seed;
     public GameObject[] mapGens;
     void Start()
     {
+        if (BoltNetwork.IsServer)
+        {
             StartCoroutine(Gens());
+        }
     }
 
     IEnumerator Gens()
     {
-        if (BoltNetwork.IsClient)
-        {
-            yield return new WaitForSeconds(5);
-        }
-        mapGens[0].GetComponent<MapGenerator>().GenerateEverything();
-        yield return new WaitForSeconds(5);
-        mapGens[1].GetComponent<MapGenerator>().GenerateEverything();
-        yield return new WaitForSeconds(5);
-        mapGens[2].GetComponent<MapGenerator>().GenerateEverything();
-        yield return new WaitForSeconds(5);
-        mapGens[3].GetComponent<MapGenerator>().GenerateEverything();
-        yield return new WaitForSeconds(5);
-        mapGens[4].GetComponent<MapGenerator>().GenerateEverything();
+            for (int i = 0; i < 5; i++)
+            {
+                RandSeed(i);
+                mapGens[i].GetComponent<MapGenerator>().GenerateEverything(seed);
+                yield return new WaitForSeconds(2);
+            }
+    }
+
+    void RandSeed(int i)
+    {
+                seed = System.DateTime.Now.ToString();
+                var request = SpawnObstacle.Create();
+                request.seedString = seed;
+                request.gen = i;
+                request.Send();
+    }
+    
+    public void GenerateCall(int i, string seedFromServer)
+    {
+        mapGens[i].GetComponent<MapGenerator>().GenerateEverything(seedFromServer);
     }
 }

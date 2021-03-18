@@ -57,6 +57,9 @@ MonoBehaviour:
   obstaclesLayer:
     serializedVersion: 2
     m_Bits: 512
+  obsground:
+    serializedVersion: 2
+    m_Bits: 16384
   obstacles:
   - {fileID: 500538238761241592, guid: 2061188ef3db8ab44869771e830efc24, type: 3}
   - {fileID: 8533540124145401301, guid: 00cb3504113861d4089d093920a7d595, type: 3}
