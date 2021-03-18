@@ -20,7 +20,7 @@ public class PhotonGameSceneController : GlobalEventListener
     public override void SceneLoadLocalDone(string scene)
     {
         PlayerController.Spawn();
-        FindObjectOfType<PlayerTestSuite>().InitializeTest();
+        //FindObjectOfType<PlayerTestSuite>().InitializeTest();
         if (BoltNetwork.IsServer)
         {
             currentReadyTime = readyTime;

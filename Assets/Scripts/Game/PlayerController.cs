@@ -221,7 +221,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
             playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
             playerNameText.SetActive(true);
-            playerNameText.GetComponent<Text>().text = "Player Name: " + state.Name;
+            playerNameText.GetComponent<Text>().text = state.Name;
         }
 
         if (loadoutReleased)
