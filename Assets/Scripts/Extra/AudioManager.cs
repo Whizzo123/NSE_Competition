@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using System;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -190,5 +191,16 @@ public class AudioManager : MonoBehaviour
         {
             audioFound.audioSource.Stop();
         }
+    }
+    public GameObject panel;
+    public void TurnOn()
+    {
+        panel.SetActive(true);
+    }
+
+    public void TurnOff()
+    {
+        panel.SetActive(false);
+        SceneManager.LoadScene("TitleScene");
     }
 }

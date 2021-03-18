@@ -52,7 +52,7 @@ MonoBehaviour:
     audioSource: {fileID: 0}
   - clipName: MusicGame
     audioClip: {fileID: 8300000, guid: 82577d6bed172e14ebe0830cca6ccc80, type: 3}
-    clipVolume: 0
+    clipVolume: 0.5
     loop: 0
     music: 1
     audioSource: {fileID: 0}
