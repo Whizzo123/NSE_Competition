@@ -80,6 +80,35 @@ public class NetworkCallbacks : GlobalEventListener
         }
     }
 
+    public override void OnEvent(ParalyzePlayerEvent evnt)
+    {
+        if(evnt.Target.IsOwner)
+        {
+            if(!evnt.End)
+            {
+                evnt.Target.GetState<IGamePlayerState>().Paralyzed = true;
+            }
+            else
+            {
+                evnt.Target.GetState<IGamePlayerState>().Paralyzed = false;
+            }
+        }
+    }
+
+    public override void OnEvent(MortalSpellEvent evnt)
+    {
+        if(evnt.Target.IsOwner)
+        {
+            if(!evnt.End)
+            {
+                evnt.Target.GetState<IGamePlayerState>().Mortal = true;
+            }
+            else
+            {
+                evnt.Target.GetState<IGamePlayerState>().Mortal = false;
+            }
+        }
+    }
     public override void OnEvent(SpringBearTrap evnt)
     {
         if(evnt.Victim.IsOwner)
