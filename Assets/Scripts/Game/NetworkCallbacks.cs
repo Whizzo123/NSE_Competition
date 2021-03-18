@@ -132,6 +132,29 @@ public class NetworkCallbacks : GlobalEventListener
         }
     }
 
+    public override void OnEvent(PoisonPlayer evnt)
+    {
+        if(evnt.Target.IsOwner)
+        {
+            if(!evnt.End)
+            {
+                evnt.Target.GetComponent<PlayerController>().state.Poisoned = true;
+            }
+            else
+            {
+                evnt.Target.GetComponent<PlayerController>().state.Poisoned = false;
+            }
+        }
+        if(evnt.End)
+        {
+            evnt.Trap.GetComponent<VoodooPoisonTrapBehaviour>().Disable();
+        }
+        else
+        {
+            evnt.Trap.GetComponent<VoodooPoisonTrapBehaviour>().Close();
+        }
+    }
+
     public override void OnEvent(ToggleCamouflage evnt)
     {        
         if(!evnt.Target.IsOwner)

@@ -97,13 +97,9 @@ public class AbilityRegister : MonoBehaviour
     {
         traps = new Dictionary<string, Trap>();
         BearTrap bearTrap = new BearTrap();
-        ObstacleTrap obstacleTrap = new ObstacleTrap();
         VoodooPoisonTrap voodooTrap = new VoodooPoisonTrap();
-        VisionCloudTrap visionTrap = new VisionCloudTrap();
         traps.Add(bearTrap.GetAbilityName(), bearTrap);
-        traps.Add(obstacleTrap.GetAbilityName(), obstacleTrap);
-        traps.Add(voodooTrap.GetAbilityName(), voodooTrap);
-        traps.Add(visionTrap.GetAbilityName(), visionTrap);
+        traps.Add(voodooTrap.GetAbilityName(), voodooTrap); 
     }
 
 
