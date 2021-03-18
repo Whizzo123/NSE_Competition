@@ -51,28 +51,14 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     [SerializeField] [Tooltip("This is the area that the indestructables spawn in.")] private Vector2 regionSize = Vector2.one;//It can be the same as the map width and heigh but I thought it better to leave here just in case.
     [SerializeField] [Tooltip("Tries to make spawn location before giving up.")] private int rejectionSamples = 30;
     private List<Vector2> points;
+    [Space]
+
+    [Header(" ---------- Abilities")]
+    [SerializeField] [Tooltip("Amount of ability charges to spawn per biome")] private int abilityAmountToSpawn;
+    [SerializeField] [Tooltip("Ability charges to spawn")] private List<GameObject> abilities;
 
     #endregion
 
-    /*public override void Attached()
-    {
-        Debug.Log("GameStarted");
-        state.SetTransforms(state.Transform, transform);
-
-        Debug.Log("GameStartedDone");
-    }
-    private void Start()
-    {
-        if (BoltNetwork.IsServer)
-        {
-            GenerateEverything();
-        }
-
-        //Find a way to generate things one at a time to look cool?
-        //Couroutines? Don't really work. I've tried putting couroutines inside the generation themselves however couroutines do not pause the generation of everything
-        //Only that particular branch of code, the rest continue running.
-
-    }*/
 
     /// <summary>
     /// Generates All the obstacles in the map, 
@@ -91,17 +77,6 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             ArtefactSpawner();
         }
     }
-    /// <summary>
-    /// Generates All the obstacles in the map IN A COUROUTINE!
-    /// </summary>
-    /*IEnumerator GenerateAll()
-    {
-        
-        GenerateIndestructables();
-        GenerateMap();
-        ObstacleGeneration();//This function causes the most performance issues.
-        ArtefactSpawner();
-    }*/
 
 
     #region MapGeneration
@@ -493,4 +468,80 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         }
     }*/
     #endregion
+
+    /// <summary>
+    /// NEED TO EDIT AFTER MERGE WITH ARTEFACT BRANCH
+    /// </summary>
+    public void GenerateAbilities(AbilityInventory abilityInventoryFromPlayer)
+    {
+        //Need to talk with Joe about how the ability pickup works.
+        List<AbilityPickup> abiliti = null;
+        foreach (AbilityPickup item in abiliti)
+        {
+            abilities.Add(item.gameObject);
+        }
+        
+        List<Ability> abilitiesFromInventory = abilityInventoryFromPlayer.getAbilities();
+        
+        foreach (Ability item in abilitiesFromInventory)
+        {
+            //item.GetGameobject of some sort?
+            if (item.GetUseType() == AbilityUseTypes.ONE_TIME)
+            {
+                //abiliti. (item.GetAbilityName());
+            }
+        }
+        //This code is based upon the artefact spawning code
+        int iterations = 0;
+        int totalAbilitiesSpawned = 0;
+
+        //If all abilities haven't been spawned, go through loop again, iteration increases which then increases the chance to spawn artefacts.
+        while (abilityAmountToSpawn < totalAbilitiesSpawned)
+        {
+            iterations++;
+            for (int x = 1; x < width; x++)
+            {
+                for (int y = 1; y < height; y++)
+                {
+                    //if : Abilites spawning chance  &&  map[] = 0  &&  all artefacts have spawned
+                    if (map[x, y] == 0 && (UnityEngine.Random.Range(0, width * height) <= abilityAmountToSpawn * iterations) && totalAbilitiesSpawned < abilityAmountToSpawn)
+                    {
+                        Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, y * spawnPosScale) + transform.position;
+                        //Hones in on last artefact types to spawn
+                        //int ran = UnityEngine.Random.Range(0, abilities.Length);
+                        //Artefact can't spawn in same place twice or where there are artefacts.
+                        //totalAbilitiesSpawned += AbilitySpawner(abilities[ran], spawnPosition);
+                        map[x, y] = 1;
+                    }
+                    else if (totalAbilitiesSpawned >= abilityAmountToSpawn)
+                    {
+                        //If all artefacts spawned exit loop
+                        y = height + 1;
+                        x = height + 1;
+                        break;
+                    }
+                }
+            }
+
+        }
+}
+
+    int AbilitySpawner(GameObject ob, Vector3 spawnPos)
+    {
+        //If ground is hit, spawn ability
+        RaycastHit hit;
+        if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
+        {
+            Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            BoltNetwork.Instantiate(ob, hit.point + Vector3.up, spawnRotation);
+            GameObject go = BoltNetwork.Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
+            return 1;
+        }
+        else
+        {
+
+            return 0;
+        }
+
+    }
 }

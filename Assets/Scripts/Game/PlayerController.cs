@@ -369,6 +369,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         }
     }
 
+    int firstTime = 0;
     /// <summary>
     /// Used to set whether we are able to move now or not
     /// </summary>
@@ -376,6 +377,15 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     public void SetLoadoutReleased(bool value)
     {
         loadoutReleased = value;
+        if (loadoutReleased == true && firstTime == 0)
+        {
+            firstTime++;
+            MapGenerator[] mapGens = FindObjectsOfType<MapGenerator>();
+            foreach (MapGenerator item in mapGens)
+            {
+                //item.GenerateAbilities(abilityInventory);
+            }
+        }
     }
 
     /// <summary>

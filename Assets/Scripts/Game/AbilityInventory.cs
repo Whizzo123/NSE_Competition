@@ -11,6 +11,11 @@ public class AbilityInventory
 
     private List<Ability> removeList;
 
+    public List<Ability> getAbilities()
+    {
+        return abilities;
+    }
+
     public AbilityInventory(PlayerController playerOwningInventory)
     {
         player = playerOwningInventory;
