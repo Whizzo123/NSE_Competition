@@ -223,13 +223,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             playerNameText.GetComponent<Text>().text = "Player Name: " + state.Name;
         }
 
-        Vector3 movement = Vector3.zero;
         if (loadoutReleased)
         {
             if (immobilize == false)
             {
                 #region Falling
-                /*
+                
                 //Projects a sphere underneath player to check ground layer
                 isGrounded = Physics.CheckSphere(transform.position, groundDistance, ground);
 
@@ -240,10 +239,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 if (isGrounded && playerFallingVelocity.y < 0)
                 {
                     playerFallingVelocity.y = -1f;
-                }*/
-                playerFallingVelocity.y = -1f;
+                }
+                //playerFallingVelocity.y = -1f;
                 #endregion
-
                 #region Movement
                 playerMovement = new Vector3
                 (Input.GetAxisRaw("Horizontal"), 
@@ -271,11 +269,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                         request.Send();
                     }
                 }
-                this.GetComponent<Rigidbody>().velocity = playerMovement;
+                //this.GetComponent<Rigidbody>().velocity = playerFallingVelocity;
                 playerCharacterController.Move(playerMovement * state.Speed * BoltNetwork.FrameDeltaTime);
-                //PlayerRotation();
-                Debug.Log(playerFallingVelocity.y + "Falling");
-                Debug.Log(playerMovement + "playerMovement");
+                PlayerRotation();
             }
             #endregion
 
@@ -422,16 +418,17 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
         {
+            
             Quaternion finalQuat;
             Vector3 axisOfRotation = (Vector3.Cross(hit.normal, Vector3.up)).normalized;//gets the axis to rotate on a slope.
             float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(for somereason it's negative either way round) (dot product)
             Quaternion slopeQuat = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
 
             Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
-
+            //finalQuat = lookQuat;
             finalQuat = slopeQuat.normalized * lookQuat; //Quaternion rotation of look rotation and slope rotation
-            //transform.rotation = finalQuat;
-            transform.GetChild(0).transform.rotation = finalQuat;
+            transform.rotation = finalQuat;
+            //transform.GetChild(0).transform.rotation = finalQuat;
         }
 
     }
@@ -552,7 +549,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position + transform.forward, radiusOfSphere);
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position + (transform.forward * lengthOfSphere), radiusOfSphere);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, -transform.up + transform.position);
     }
 
     #endregion
