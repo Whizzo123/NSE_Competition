@@ -281,6 +281,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             {
                 if (targetedArtefact != null)
                 {
+                    Debug.Log("Picking up Artefact");
                     targetedArtefact.Pickup(this);
                     FindObjectOfType<AudioManager>().PlaySound(targetedArtefact.GetRarity().ToString());
                     targetedArtefact = null;
@@ -482,26 +483,24 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (entity.IsAttached)
+        if (entity.IsOwner)
         {
-            if (entity.IsOwner)
+            if (collider.gameObject.GetComponent<ArtefactBehaviour>())
             {
-                if (collider.gameObject.GetComponent<ArtefactBehaviour>())
-                {
-                    targetedArtefact = collider.gameObject.GetComponent<ArtefactBehaviour>();
-                }
-                else if (collider.gameObject.GetComponent<Stash>())
-                {
-                    gameStash = collider.gameObject.GetComponent<Stash>();
-                }
-                else if (collider.gameObject.GetComponent<PlayerController>())
-                {
-                    targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
-                }
-                else if (collider.gameObject.GetComponent<AbilityPickup>())
-                {
-                    targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
-                }
+                targetedArtefact = collider.gameObject.GetComponent<ArtefactBehaviour>();
+                Debug.Log("Setting Targeted Artefact: " + targetedArtefact.gameObject.name);
+            }
+            else if (collider.gameObject.GetComponent<Stash>())
+            {
+                gameStash = collider.gameObject.GetComponent<Stash>();
+            }
+            else if (collider.gameObject.GetComponent<PlayerController>())
+            {
+                targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
+            }
+            else if (collider.gameObject.GetComponent<AbilityPickup>())
+            {
+                targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
             }
         }
     }
@@ -514,6 +513,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             {
                 if (targetedArtefact != null && collider.gameObject == targetedArtefact.gameObject)
                 {
+                    Debug.Log("Clearing Targeted Artefact: " + targetedArtefact.gameObject.name);
                     targetedArtefact = null;
                 }
                 else if (gameStash != null && collider.gameObject == gameStash.gameObject)

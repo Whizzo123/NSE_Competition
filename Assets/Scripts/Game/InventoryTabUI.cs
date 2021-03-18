@@ -12,7 +12,10 @@ public class InventoryTabUI : MonoBehaviour
 
     public void Populate(string name, int count)
     {
-        itemImage.sprite = Resources.Load("UI/" + name, typeof(Sprite)) as Sprite;
+        Debug.Log("Populate under name: " + name);
+        string substringedName = name.Replace("(Clone)", "");
+        Debug.Log("Populate under sub: " + substringedName);
+        itemImage.sprite = Resources.Load("UI/" + substringedName, typeof(Sprite)) as Sprite;
         personalCount = count;
         itemCountText.text = "" + personalCount;
     }
