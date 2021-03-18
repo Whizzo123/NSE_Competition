@@ -55,7 +55,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
 
     [Header(" ---------- Abilities")]
     [SerializeField] [Tooltip("Amount of ability charges to spawn per biome")] private int abilityAmountToSpawn;
-    [SerializeField] [Tooltip("Ability charges to spawn")] private List<GameObject> abilities;
+    [SerializeField] [Tooltip("Ability charges to spawn")] private GameObject[] abilityChargesToSpawn;
 
     #endregion
 
@@ -219,7 +219,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         int iterations = 0;//Used to make random less taxing in case of small artefact number and it keeps looping.
 
         int totalArtefacts = commonArtefacts + rareArtefacts + exoticArtefacts;
-        int[,] map2 = map;
+        
 
         //If all artefacts haven't been spawned, go through loop again, iteration increases which then increases the chance to spawn artefacts.
         while (itemsSpawned < totalArtefacts)
@@ -230,7 +230,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                 for (int y = 1; y < height; y++)
                 {
                     //Artefact spawning chance  &&  map[] = 0  &&  all artefacts have spawned
-                    if (map2[x, y] == 0 && (UnityEngine.Random.Range(0, width * height) <= totalArtefacts * iterations) && itemsSpawned < totalArtefacts)
+                    if (map[x, y] == 0 && (UnityEngine.Random.Range(0, width * height) <= totalArtefacts * iterations) && itemsSpawned < totalArtefacts)
                     {
                         
                         Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, y * spawnPosScale) + transform.position;
@@ -258,7 +258,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                         }
                         //Artefact can't spawn in same place twice.
                         itemsSpawned = eSpawned + rSpawned + cSpawned;
-                        map2[x, y] = 1;
+                        map[x, y] = 1;
                     }
                     else if (itemsSpawned >= totalArtefacts)
                     {
@@ -469,17 +469,10 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     }*/
     #endregion
 
-    /// <summary>
-    /// NEED TO EDIT AFTER MERGE WITH ARTEFACT BRANCH
-    /// </summary>
-    public void GenerateAbilities(AbilityInventory abilityInventoryFromPlayer)
+
+    /*public void GenerateAbilities(AbilityInventory abilityInventoryFromPlayer)
     {
-        //Need to talk with Joe about how the ability pickup works.
-        List<AbilityPickup> abiliti = null;
-        foreach (AbilityPickup item in abiliti)
-        {
-            abilities.Add(item.gameObject);
-        }
+        List<GameObject> abilitiesToSpawn = new List<GameObject>();
         
         List<Ability> abilitiesFromInventory = abilityInventoryFromPlayer.getAbilities();
         
@@ -488,9 +481,17 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             //item.GetGameobject of some sort?
             if (item.GetUseType() == AbilityUseTypes.ONE_TIME)
             {
-                //abiliti. (item.GetAbilityName());
+                for (int i = 0; i < abilityChargesToSpawn.Length; i++)
+                {
+                    if (abilityChargesToSpawn[i].GetComponent<AbilityPickup>().abilityName == item.GetAbilityName())
+                    {
+                        abilitiesToSpawn.Add(abilityChargesToSpawn[i]);
+                    }
+                }
             }
         }
+        //Debug.LogError(abilitiesToSpawn.Length);
+        Debug.LogError("ABILITIES DONE");
         //This code is based upon the artefact spawning code
         int iterations = 0;
         int totalAbilitiesSpawned = 0;
@@ -508,14 +509,15 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                     {
                         Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, y * spawnPosScale) + transform.position;
                         //Hones in on last artefact types to spawn
-                        //int ran = UnityEngine.Random.Range(0, abilities.Length);
+                        int ran = UnityEngine.Random.Range(0, abilitiesToSpawn.Count);
                         //Artefact can't spawn in same place twice or where there are artefacts.
-                        //totalAbilitiesSpawned += AbilitySpawner(abilities[ran], spawnPosition);
+                        totalAbilitiesSpawned += AbilitySpawner(abilitiesToSpawn[ran], spawnPosition);
                         map[x, y] = 1;
                     }
                     else if (totalAbilitiesSpawned >= abilityAmountToSpawn)
                     {
                         //If all artefacts spawned exit loop
+                        Debug.LogError("Finished loop with" + iterations + " iterations " + totalAbilitiesSpawned + " spawned ");
                         y = height + 1;
                         x = height + 1;
                         break;
@@ -528,13 +530,14 @@ public class MapGenerator : EntityBehaviour<IGenerator>
 
     int AbilitySpawner(GameObject ob, Vector3 spawnPos)
     {
+        Debug.LogError("ABILITY SPAWNER CALLED");
         //If ground is hit, spawn ability
         RaycastHit hit;
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
         {
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            BoltNetwork.Instantiate(ob, hit.point + Vector3.up, spawnRotation);
-            GameObject go = BoltNetwork.Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
+            Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
+            Debug.LogError("SPAWNED AN ABILITY");
             return 1;
         }
         else
@@ -543,5 +546,5 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             return 0;
         }
 
-    }
+    }*/
 }

@@ -26,6 +26,7 @@ public class PhotonGameSceneController : GlobalEventListener
         loadoutChoiceComplete = false;
         if (BoltNetwork.IsServer)
         {
+            /*
             BoltEntity artefact = BoltNetwork.Instantiate(BoltPrefabs.Artefect);
             artefact.transform.position = new Vector3(1, -3, -16);
             artefact.GetComponent<ArtefactBehaviour>().PopulateData("Mayan Jar", ArtefactRarity.Common);
@@ -45,10 +46,11 @@ public class PhotonGameSceneController : GlobalEventListener
             stash.transform.position = new Vector3(-19 , -1.5f, -20);
             stash.TakeControl();
 
+            
             BoltEntity abilityPickup = BoltNetwork.Instantiate(BoltPrefabs.AbilityPickup);
             abilityPickup.transform.position = new Vector3(5, -1, 18);
             abilityPickup.GetComponent<AbilityPickup>().SetAbilityOnPickup("Speed");
-            abilityPickup.TakeControl();
+            abilityPickup.TakeControl();*/
         }
     }
 

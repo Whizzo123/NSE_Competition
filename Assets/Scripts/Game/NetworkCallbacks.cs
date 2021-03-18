@@ -163,6 +163,12 @@ public class NetworkCallbacks : GlobalEventListener
                 req.Send();*/
                 //item.transform.gameObject.GetComponentInChildren<ArtefactBehaviour>().transform.SetParent(null);
             }
+            else if (item.transform.GetComponent<AbilityPickup>())
+            {
+                item.transform.gameObject.GetComponent<SphereCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
+                item.transform.GetComponent<AbilityPickup>().enabledForPickup = true;
+            }
             else
             {
                 Destroy(item.transform.gameObject);

@@ -377,16 +377,24 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// <param name="value"></param>
     public void SetLoadoutReleased(bool value)
     {
+        //Debug.LogError("LOADOUT RELEASED");
         loadoutReleased = value;
-        if (loadoutReleased == true && firstTime == 0)
+        /*if (loadoutReleased == true && firstTime == 0)
         {
+            Debug.LogError("WE HAVE LOADOUT RELEASED");
             firstTime++;
-            MapGenerator[] mapGens = FindObjectsOfType<MapGenerator>();
-            foreach (MapGenerator item in mapGens)
+            GenerateAllGen maps = FindObjectOfType<GenerateAllGen>();
+            /*foreach (MapGenerator item in mapGens)
             {
-                //item.GenerateAbilities(abilityInventory);
+                item.GenerateAbilities(abilityInventory);
+                Debug.LogError("WE ARE CALLING MAPS");
+            }//
+            for (int i = 0; i < maps.mapGens.Length; i++)
+            {
+                Debug.LogError("WE ARE CALLING MAPS");
+                maps.mapGens[i].GetComponent<MapGenerator>().GenerateAbilities(abilityInventory);
             }
-        }
+        }*/
     }
 
     /// <summary>
@@ -544,13 +552,16 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 req.Send();*/
                 //item.transform.gameObject.GetComponentInChildren<ArtefactBehaviour>().transform.SetParent(null);
             }
+            else if (item.transform.GetComponent<AbilityPickup>())
+            {
+                item.transform.gameObject.GetComponent<SphereCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
+                item.transform.GetComponent<AbilityPickup>().enabledForPickup = true;
+            }
             else
             {
-                BoltLog.Info(item.transform.name + " DESTRPYING");
                 Destroy(item.transform.gameObject);
             }
-            Debug.LogError(item.transform.name + "Ping");
-            BoltLog.Info(item.transform.name + "PING");
         }
         var request = ObstacleDisable.Create();
         request.position = transform.position;
