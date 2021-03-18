@@ -13,7 +13,7 @@ public class PhotonGameSceneController : GlobalEventListener
     private float currentRunningGameTime = 0;
     private float readyTime = 15;
     private float currentReadyTime = 0;
-    private int pointGoal = 5100; //10000
+    private int pointGoal = 9999; //10000
     private bool displayedWinScreen = false;
     private bool inCountdown = false;
     private float winWaitTime = 10;
@@ -34,6 +34,8 @@ public class PhotonGameSceneController : GlobalEventListener
     void Start()
     {
         loadoutChoiceComplete = false;
+        displayedWinScreen = false;
+        inCountdown = false;
         if (BoltNetwork.IsServer)
         {
             BoltEntity stash = BoltNetwork.Instantiate(BoltPrefabs.Stash);

@@ -2337,7 +2337,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3434195871412992940, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.568888
+      value: -25.53
       objectReference: {fileID: 0}
     - target: {fileID: 3434195871412992940, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3377,7 +3377,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3434195871412992940, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.568888
+      value: -21.9
       objectReference: {fileID: 0}
     - target: {fileID: 3434195871412992940, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3531,7 +3531,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3434195871412992940, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.568888
+      value: -16.6
       objectReference: {fileID: 0}
     - target: {fileID: 3434195871412992940, guid: ce9ac530cf8cc344d9e2a2fa8b5c21d1, type: 3}
       propertyPath: m_LocalPosition.z
