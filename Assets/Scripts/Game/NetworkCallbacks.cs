@@ -301,8 +301,10 @@ public class NetworkCallbacks : GlobalEventListener
         {
             item.seed = evnt.seedString;
         }*/
-       
+    }
 
-
+    public override void OnEvent(LoadoutCountdown evnt)
+    {
+        FindObjectOfType<CanvasUIManager>().loadoutTimeText.text = "" + evnt.Time;
     }
 }

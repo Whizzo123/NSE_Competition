@@ -18,11 +18,11 @@ public class CanvasUIManager : MonoBehaviour
     public float popupMessageShowTime;
     public GameObject playerTextContainer;
     public GameObject loadoutScreen;
-    public GameObject loadoutScreenButton;
     public GameObject targetIconGO;
     public PlayerTrackIconUI playerTrackIcon;
     public WinScreenUI winScreen;
     public Text TimeText;
+    public Text loadoutTimeText;
 
 
     public void PopupArtefactPickupDisplay(ItemArtefact artefact)
@@ -67,17 +67,6 @@ public class CanvasUIManager : MonoBehaviour
         artefactPickupPopup.SetActive(false);
     }
 
-    public void OnLoadoutReadyButtonClick()
-    {
-        if(FindObjectOfType<LoadoutBarUI>().NumberOfLoadoutAbilitiesEquipped() > 0)
-        {
-            //Close screen and deal with equipping of loadouts on player
-            PlayerController.localPlayer.state.LoadoutReady = true;
-            loadoutScreenButton.GetComponent<Image>().color = Color.green;
-            loadoutScreenButton.GetComponent<Button>().interactable = false;
-        }
-    }
-
     public void AddToInventoryScreen(ItemArtefact artefact)
     {
         inventoryUI.AddInventoryItem(artefact);
@@ -90,6 +79,8 @@ public class CanvasUIManager : MonoBehaviour
 
     public void SetTimeText(int timeLeft)
     {
-        TimeText.text = "Time: " + timeLeft;
+        int mins = timeLeft / 60;
+        int seconds = timeLeft % 60;
+        TimeText.text = mins + ":" + seconds;
     }
 }

@@ -8,8 +8,6 @@ public class AbilitySlotUI : MonoBehaviour
 {
     private string abilityName;
     private bool isEmpty;
-    public Color containAbilityColor;
-    public Color emptyColor;
     public Color chargingColor;
     public Color inUseColor;
     private bool isCharging;
@@ -42,7 +40,7 @@ public class AbilitySlotUI : MonoBehaviour
         }
         else
         {
-            GetComponent<Image>().color = containAbilityColor;
+            GetComponent<Image>().color = Color.white;
         }
         isCharging = charging;
     }
