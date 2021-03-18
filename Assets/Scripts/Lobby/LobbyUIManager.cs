@@ -138,6 +138,7 @@ public class LobbyUIManager : GlobalEventListener
     /// </summary>
     private void CreateRoomSession()
     {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
         this.roomName = createScreen.inputField.text;
         Debug.Log("CreatingRoomSession");
         //Launches server
@@ -176,11 +177,13 @@ public class LobbyUIManager : GlobalEventListener
     private void SwapToBrowseScreen()
     {
         //In order for client to view session list we need to connect them to the network
+        FindObjectOfType<AudioManager>().PlaySound("Click");
         BoltLauncher.StartClient();
     }
 
     private void JoinRandomSession()
     {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
         //Set random join to true
         randomJoin = true;
         //Launch the client
@@ -189,6 +192,7 @@ public class LobbyUIManager : GlobalEventListener
 
     private void JoinSessionEvent(UdpSession session)
     {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
         //Chech whether this is the client should only run on a client
         if (BoltNetwork.IsClient)
         {

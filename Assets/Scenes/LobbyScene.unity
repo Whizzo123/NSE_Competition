@@ -1666,6 +1666,150 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1093110667}
   m_CullTransparentMesh: 0
+--- !u!1 &1175873560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1175873562}
+  - component: {fileID: 1175873561}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1175873561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1175873560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc70924c1d241f648ab88f2219922bd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aud:
+  - clipName: MusicMenu
+    audioClip: {fileID: 8300000, guid: bb18c3f8ecacd8d4d9190bdcff2e49d4, type: 3}
+    clipVolume: 1
+    loop: 1
+    music: 1
+    audioSource: {fileID: 0}
+  - clipName: MusicGame
+    audioClip: {fileID: 8300000, guid: 82577d6bed172e14ebe0830cca6ccc80, type: 3}
+    clipVolume: 0
+    loop: 0
+    music: 1
+    audioSource: {fileID: 0}
+  - clipName: BearTrapOpen
+    audioClip: {fileID: 8300000, guid: 7814fe300d65b804181e9f43e4a00aba, type: 3}
+    clipVolume: 1
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: BearTrapClose
+    audioClip: {fileID: 8300000, guid: 2161773db5827b74c83b211a1e164c59, type: 3}
+    clipVolume: 1
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: GrassGround
+    audioClip: {fileID: 8300000, guid: 36160cbee83b67041894643a6fdcddfb, type: 3}
+    clipVolume: 2
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: DesertGround
+    audioClip: {fileID: 8300000, guid: 4b057a3596054ec4dba392aca898026a, type: 3}
+    clipVolume: 0.7
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: SnowGround
+    audioClip: {fileID: 8300000, guid: 40c57980d9d92b04bb3c054ab70b9224, type: 3}
+    clipVolume: 0.6
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: Stashing
+    audioClip: {fileID: 8300000, guid: 794c7e2143ddeb14ca9dc22c99e3e9a5, type: 3}
+    clipVolume: 1
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: SwampGround
+    audioClip: {fileID: 8300000, guid: 02d0688ab94f7ea4897a0c8ca7f2e8cf, type: 3}
+    clipVolume: 1
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: Common
+    audioClip: {fileID: 8300000, guid: 8ea76239c7f1f214a87e91730b23e2e2, type: 3}
+    clipVolume: 1
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: Rare
+    audioClip: {fileID: 8300000, guid: 91637a95d989398459e37b82d64217a6, type: 3}
+    clipVolume: 1
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: Exotic
+    audioClip: {fileID: 8300000, guid: 7bbd4fc2b2c975a4f8361f9152b66a3c, type: 3}
+    clipVolume: 1
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: Click
+    audioClip: {fileID: 8300000, guid: da02e945c26ef6f4f8400d82f46dfebb, type: 3}
+    clipVolume: 1
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: Cut
+    audioClip: {fileID: 8300000, guid: 3cf83887c4e909a40bc69b3316ccaa87, type: 3}
+    clipVolume: 0.9
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: ground
+    audioClip: {fileID: 8300000, guid: 58bd5c1f4a45ad042accfcefc7d49cce, type: 3}
+    clipVolume: 0.7
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  - clipName: JungleGround
+    audioClip: {fileID: 8300000, guid: 36160cbee83b67041894643a6fdcddfb, type: 3}
+    clipVolume: 2
+    loop: 0
+    music: 0
+    audioSource: {fileID: 0}
+  audioSource: {fileID: 0}
+  mVol: 1
+  sVol: 1
+  masVol: 1
+--- !u!4 &1175873562
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1175873560}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 68.39391, y: -55.603935, z: 77.775665}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1175881658
 GameObject:
   m_ObjectHideFlags: 0

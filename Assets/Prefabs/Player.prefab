@@ -1662,7 +1662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   immobilize: 0
-  waitTime: 0.05
+  waitTime: 0.569
   playerGravity: -65
   groundDistance: 2.5
   lengthOfSphere: 2
