@@ -394,7 +394,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// </summary>
     public static void Spawn()
     {
-        Vector3 pos = new Vector3(Random.Range(-16, 16), 0.6f, Random.Range(-16, 16));
+        Vector3 pos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
 
         BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs.Player, pos, Quaternion.identity);
         playerEntity.TakeControl();
