@@ -436,8 +436,8 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                     Quaternion randYRotation = Quaternion.Euler(0, ran.Next(0, 360), 0);
                     spawnRotation *= randYRotation;
                 }
-                int randScale = ran.Next(1, 5);
-                ob.transform.localScale *= randScale;
+                /*int randScale = ran.Next(1, 5);
+                ob.transform.localScale *= randScale;*/
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
                 BoltEntity go = BoltNetwork.Instantiate(ob, hit.point, spawnRotation);
 

@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 3070034401098280377}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.0384317e+9, y: 2.0384317e+9, z: 2.0384317e+9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -112,7 +112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: 816d62c9-b81f-4f2e-967c-f62cb5585d3f
-  _prefabId: 29
+  _prefabId: 30
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1
