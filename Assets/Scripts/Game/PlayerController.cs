@@ -73,6 +73,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             state.RayLength = lengthOfSphere;
             state.LoadoutReady = false;
             state.HasBeenStolenFrom = false;
+            state.Paralyzed = false;
             for (int i = 0; i < state.Inventory.Length; i++)
             {
                 state.Inventory[i].ItemName = "";
@@ -344,7 +345,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             #endregion
 
             #region Obstacle Interaction
-            if (Input.GetKey(KeyCode.C) && wait == false)
+            if (Input.GetKey(KeyCode.C) && wait == false && state.Paralyzed == false)
             {
                 var request = FireAnimatorCutTriggerParameter.Create();
                 request.Target = entity;

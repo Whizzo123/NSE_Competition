@@ -7,7 +7,7 @@ public class SpeedBoost : Powerup
 
     private float boostToSpeed;
 
-    public SpeedBoost() : base("Speed", "Run really fast", 3, AbilityUseTypes.PASSIVE)
+    public SpeedBoost() : base("Speed", "Run really fast", 3, AbilityUseTypes.RECHARGE, 20.0f, 10.0f)
     {
         boostToSpeed = 7.5f;
     }
@@ -18,7 +18,7 @@ public class SpeedBoost : Powerup
         if (GetPlayerToEmpower().state.Speed != boostToSpeed && oppositeDebuffActivated == false)
         {
             BoltLog.Info("Setting speed");
-            GetPlayerToEmpower().state.Speed = boostToSpeed;
+            GetPlayerToEmpower().state.Speed = GetPlayerToEmpower().speed + boostToSpeed;
         }
         base.Use();
     }

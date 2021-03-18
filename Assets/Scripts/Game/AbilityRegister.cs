@@ -76,7 +76,6 @@ public class AbilityRegister : MonoBehaviour
         PlayerTracker playerTracker = new PlayerTracker();
         Camouflage camouflage = new Camouflage();
         ClueInterpretator clueInterpretator = new ClueInterpretator();
-        //Powerup largerTools = new Powerup("Larger Tools", "Magically makes your tools bigger allowing you to clear areas quicker", 5, Effects.EnlargeTools, AbilityUseTypes.RECHARGE, 50.0f);*/
         powerups.Add(speedBoost.GetAbilityName(), speedBoost);
         powerups.Add(playerTracker.GetAbilityName(), playerTracker);
         powerups.Add(camouflage.GetAbilityName(), camouflage);
@@ -86,10 +85,12 @@ public class AbilityRegister : MonoBehaviour
     private void RegisterDebuffs()
     {
         debuffs = new Dictionary<string, Debuff>();
-        //Debuff slowdown = new Debuff("Slow Down", "Slow down enemy player of your choice", 2, Effects.SlowDown, AbilityUseTypes.RECHARGE, 5);
         StickyBomb stunDebuff = new StickyBomb();
-        // debuffs.Add(slowdown.GetAbilityName(), slowdown);
+        ParalysisDart paralysisDart = new ParalysisDart();
+        MortalSpell mortalSpell = new MortalSpell();
         debuffs.Add(stunDebuff.GetAbilityName(), stunDebuff);
+        debuffs.Add(paralysisDart.GetAbilityName(), paralysisDart);
+        debuffs.Add(mortalSpell.GetAbilityName(), mortalSpell);
     }
 
     private void RegisterTraps()

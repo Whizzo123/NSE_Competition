@@ -23,7 +23,7 @@ public class AbilitySlotUI : MonoBehaviour
     public void SlotClick()
     {
         BoltLog.Info("Slot clicking");
-        if (!isCharging)
+        if (!isCharging && PlayerController.localPlayer.state.Mortal == false)
         {
             PlayerController.localPlayer.abilityInventory.ActivateAbility(abilityName);
         }
