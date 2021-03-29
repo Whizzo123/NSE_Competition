@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2542638993990307579
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2542638993990307576}
+  - component: {fileID: 2542638993990307577}
+  m_Layer: 0
+  m_Name: GG
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2542638993990307576
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2542638993990307579}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 47.244, y: 7.231, z: 4.64}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2542638993990307577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2542638993990307579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45fef5ec1702a5643b2fc2c3cc12aa84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 200
+  height: 200
+  raycastDistance: 100
+  slopeAngle: 30
+  ground:
+    serializedVersion: 2
+    m_Bits: 4096
+  indestructables:
+    serializedVersion: 2
+    m_Bits: 1024
+  obstaclesLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  obsground:
+    serializedVersion: 2
+    m_Bits: 4096
+  obstacles:
+  - {fileID: 4535611236803373704, guid: 2333f038b3da3e04fac54f1fedfe0596, type: 3}
+  - {fileID: 1532813135748813004, guid: f74e5b3e89690724882b1ea505f6a20b, type: 3}
+  seed: 
+  useRandomSeed: 1
+  randomFillPercent: 45
+  mapSmoothing: 3
+  spawnPosScale: 2
+  artefactSpawner:
+  - {fileID: 7348678549364091987, guid: a0559e1c77e1ad84bb56706754ffdd6c, type: 3}
+  - {fileID: 5110210771469321765, guid: f02762067df284a4c8b09d531bc10af6, type: 3}
+  - {fileID: 3500044115046012371, guid: e4ff61ddd21a39b4098cd82b882ffe05, type: 3}
+  commonArtefacts: 50
+  rareArtefacts: 10
+  exoticArtefacts: 1
+  commonIndestructables:
+  - {fileID: 1668521074350713737, guid: d5b4966f1fda24148b5d5b6b4361a006, type: 3}
+  rareIndestructables:
+  - {fileID: 4955175273534750712, guid: c9afdb6a19efa904ebba973389c2673d, type: 3}
+  commonCommonality: 7
+  radius: 17
+  regionSize: {x: 200, y: 200}
+  rejectionSamples: 20
+  abilityAmountToSpawn: 20
+  abilityChargesToSpawn:
+  - {fileID: 1215457902705733312, guid: dd9f2b11c42d2a240af278dfd6aa6c95, type: 3}
+  - {fileID: 4825882355947400030, guid: aaa65518dac45434fb0b5667ddf63322, type: 3}
+  - {fileID: 4752021331141181151, guid: b83b3cb649e2f6e4f853e4153da054fe, type: 3}
+  - {fileID: 5969440039603290143, guid: 247f4466952c83e448438ba1e7787551, type: 3}
