@@ -5,8 +5,6 @@ using UnityEngine;
 using Bolt;
 /// <summary>
 /// Main idea behind the map generator is cellular automata and a sprinkle of poisson disc sampling.ref.'Proto_Procedural.cs'. 
-/// WARNING: Currently it is way to taxing on the system. Just a 100x100 grid has a 2 second delay on a high end copmputer. Look at 'ProfilerDataSimSmall.data' profiler data to see issues
-/// regarding computer performance.
 /// </summary>
 public class MapGenerator : EntityBehaviour<IGenerator>
 {
@@ -180,7 +178,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
 
     #region Prefab Generation
     /// <summary>
-    /// Spreads 'obstacles'.ref.MapGenerator on map if map cell is 0. WARNING: Due to the high volume of obstacle generation this function does, it has a massive impact on performance.
+    /// Spreads 'obstacles'.ref.MapGenerator on map if map cell is 0.
     /// </summary>
     void ObstacleGeneration()
     {
@@ -338,6 +336,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                 return false;
             }
         }
+        
 
         return false;
 
