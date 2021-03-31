@@ -1662,7 +1662,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   immobilize: 0
-  water: {fileID: 0}
   waitTime: 0.569
   playerGravity: -65
   groundDistance: 2.5
@@ -1677,6 +1676,7 @@ MonoBehaviour:
   playerNameText: {fileID: 0}
   playerCamera: {fileID: 0}
   nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
+  playerFallingVelocity: {x: 0, y: 0, z: 0}
   vCam: {fileID: 8073864731859778527, guid: 00eba60cefa011d4e9636e781d77a83c, type: 3}
   cam: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
   offset: {x: 0, y: 10, z: 10}

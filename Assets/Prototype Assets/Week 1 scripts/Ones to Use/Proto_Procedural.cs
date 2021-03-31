@@ -12,9 +12,8 @@ public static class Proto_Procedural
     /// <param name="sampleRegionSize"></param>
     /// <param name="numSamplesBeforeRejection"></param>
     /// <returns></returns>
-    public static List<Vector2> GenerateGrids(float radius, Vector2 sampleRegionSize, int numSamplesBeforeRejection = 30)
+    public static List<Vector2> GenerateGrids(System.Random pseudoRandom, int radius, Vector2 sampleRegionSize, int numSamplesBeforeRejection = 30)
     {
-
         float cellSize = radius / Mathf.Sqrt(2);
 
         int[,] grid = new int[Mathf.CeilToInt(sampleRegionSize.x / cellSize), Mathf.CeilToInt(sampleRegionSize.y / cellSize)];
@@ -24,14 +23,14 @@ public static class Proto_Procedural
         spawnPoint.Add(sampleRegionSize / 2);
         while(spawnPoint.Count > 0)
         {
-            int spawnIndex = Random.Range(0, spawnPoint.Count);
+            int spawnIndex = pseudoRandom.Next(0, spawnPoint.Count);
             Vector2 spawncenter = spawnPoint[spawnIndex];
             bool candidateAccepted = false;
             for (int i = 0; i < numSamplesBeforeRejection; i++)
             {
-                float angle = Random.value * Mathf.PI * 2;
+                float angle = pseudoRandom.Next(1) * Mathf.PI * 2;
                 Vector2 dir = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
-                Vector2 candidate = spawncenter + dir * Random.Range(radius, 2*radius);
+                Vector2 candidate = spawncenter + dir * pseudoRandom.Next(radius, 2*radius);
                 if (isValid(candidate, sampleRegionSize, cellSize, radius, points, grid))
                 {
                     points.Add(candidate);
