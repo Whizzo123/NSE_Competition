@@ -20,8 +20,10 @@ public class VoodooPoisonTrap : Trap
         if(Physics.Raycast(placingPlayer.transform.position, Vector3.down, out hit, float.MaxValue, ground))
         {
             spawnPos = placingPlayer.transform.position;
-            BoltNetwork.Instantiate(BoltPrefabs.VoodooPoisonTrap, spawnPos, Quaternion.identity).GetState<IVoodooPoisonTrap>().PlacingPlayer = placingPlayer.entity;
+            Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            BoltNetwork.Instantiate(BoltPrefabs.VoodooPoisonTrap, spawnPos, spawnRotation).GetState<IVoodooPoisonTrap>().PlacingPlayer = placingPlayer.entity;
             base.Use();
+            Debug.LogError("Voodoo PLACE");
         }        
     }
 

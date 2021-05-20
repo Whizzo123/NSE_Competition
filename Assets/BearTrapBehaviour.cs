@@ -6,8 +6,10 @@ using Bolt;
 public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
 {
     private PlayerController trappedPlayer;
-    public float trapDuration;
+
+    public float trapDuration = 5;
     private float currentDuration;
+    
     private bool sprung;
     private bool disabled;
 
@@ -46,6 +48,7 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
     public void Disable()
     {
         closedTrap.SetActive(false);
+        openTrap.SetActive(false);
     }
 
     public void Close()

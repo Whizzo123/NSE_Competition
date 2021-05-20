@@ -251,6 +251,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
                 {
                     direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+                    ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
+                    if (this.state.Poisoned)
+                    {
+                        direction *= -1;
+                    }
                     if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
                     {
                         var request = ChangeAnimatorMovementParameter.Create();
@@ -381,6 +386,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             {
                 HitDown();
             }
+
         }
     }
 

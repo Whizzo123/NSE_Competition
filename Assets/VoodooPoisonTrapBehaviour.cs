@@ -72,6 +72,7 @@ public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
                     request.Trap = entity;
                     request.Send();
                     disabled = true;
+                    Debug.LogError("Voodoo END");
                 }
             }
         }
