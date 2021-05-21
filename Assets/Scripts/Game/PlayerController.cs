@@ -8,7 +8,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     #region Variables
     [Header("Stored Interactables")]
     //Stored interactables
-    private ArtefactBehaviour targetedArtefact;
+    private List<ArtefactBehaviour> targetedArtefacts;
     private Stash gameStash;
     private PlayerController targetedPlayerToStealFrom;
     private AbilityPickup targetedAbilityPickup;
@@ -59,7 +59,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// </summary>
     public override void Attached()
     {
-
+        targetedArtefacts = new List<ArtefactBehaviour>();
         state.SetTransforms(state.PlayerTransform, transform);
         SetLoadoutReleased(false);
         abilityInventory = new AbilityInventory(this);
@@ -251,6 +251,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
                 {
                     direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+                    ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
+                    if (this.state.Poisoned)
+                    {
+                        direction *= -1;
+                    }
                     if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
                     {
                         var request = ChangeAnimatorMovementParameter.Create();
@@ -278,12 +283,20 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             #region Artefact interaction
             if (Input.GetKeyDown(KeyCode.E))
             {
-                if (targetedArtefact != null)
+                Debug.LogError("Artefact count " + targetedArtefacts.Count);
+                if (targetedArtefacts.Count != 0)
                 {
-                    Debug.Log("Picking up Artefact");
-                    targetedArtefact.Pickup(this);
-                    FindObjectOfType<AudioManager>().PlaySound(targetedArtefact.GetRarity().ToString());
-                    targetedArtefact = null;
+                    Debug.Log("Picking up Artefacts");
+                   // targetedArtefact.Pickup(this);
+
+                        // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
+                        foreach (ArtefactBehaviour item in targetedArtefacts)
+                        {
+                        item.Pickup(this);
+                        FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
+                        }
+
+                    targetedArtefacts.Clear();
                 }
                 else if (gameStash != null && InventoryNotEmpty())
                 {
@@ -381,6 +394,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             {
                 HitDown();
             }
+
         }
     }
 
@@ -530,8 +544,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         {
             if (collider.gameObject.GetComponent<ArtefactBehaviour>())
             {
-                targetedArtefact = collider.gameObject.GetComponent<ArtefactBehaviour>();
-                Debug.Log("Setting Targeted Artefact: " + targetedArtefact.gameObject.name);
+                targetedArtefacts.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
             }
             else if (collider.gameObject.GetComponent<Stash>())
             {
@@ -554,10 +567,18 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         {
             if (collider != null)
             {
-                if (targetedArtefact != null && collider.gameObject == targetedArtefact.gameObject)
+                if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
                 {
-                    Debug.Log("Clearing Targeted Artefact: " + targetedArtefact.gameObject.name);
-                    targetedArtefact = null;
+                    //Removes specific artefact that we exited.
+                    int i = 0;
+                    foreach (ArtefactBehaviour item in targetedArtefacts)
+                    {
+                        if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
+                        {
+                            targetedArtefacts.RemoveAt(i);
+                        }
+                        i++;
+                    }
                 }
                 else if (gameStash != null && collider.gameObject == gameStash.gameObject)
                 {

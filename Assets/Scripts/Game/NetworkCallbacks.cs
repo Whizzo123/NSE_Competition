@@ -113,23 +113,31 @@ public class NetworkCallbacks : GlobalEventListener
     }
     public override void OnEvent(SpringBearTrap evnt)
     {
+
         if(evnt.Victim.IsOwner)
         {
-            if(!evnt.End)
+            Debug.LogError("envt Victim is owner START");
+            if (!evnt.End)
             {
+                Debug.LogError("evo immobolise");
                 evnt.Victim.GetComponent<PlayerController>().immobilize = true;
             }
             else
             {
+                Debug.LogError("evo !immobolise");
                 evnt.Victim.GetComponent<PlayerController>().immobilize = false;
             }
         }
-        if(evnt.End)
+        Debug.LogError("evo end");
+        if (evnt.End)
         {
+            Debug.LogError("evnt end");
             evnt.Trap.GetComponent<BearTrapBehaviour>().Disable();
+            evnt.Trap.GetComponent<SphereCollider>().enabled = false;
         }
         else
         {
+            Debug.LogError("Close");
             evnt.Trap.GetComponent<BearTrapBehaviour>().Close();
         }
     }
@@ -138,7 +146,8 @@ public class NetworkCallbacks : GlobalEventListener
     {
         if(evnt.Target.IsOwner)
         {
-            if(!evnt.End)
+            Debug.LogError("Voodoo START");
+            if (!evnt.End)
             {
                 evnt.Target.GetComponent<PlayerController>().state.Poisoned = true;
             }
@@ -147,7 +156,8 @@ public class NetworkCallbacks : GlobalEventListener
                 evnt.Target.GetComponent<PlayerController>().state.Poisoned = false;
             }
         }
-        if(evnt.End)
+        Debug.LogError("Voodoo EVNT END");
+        if (evnt.End)
         {
             evnt.Trap.GetComponent<VoodooPoisonTrapBehaviour>().Disable();
         }
