@@ -19,9 +19,10 @@ public class GenerateAllGen : MonoBehaviour
     {
             for (int i = 0; i < 5; i++)
             {
+                yield return new WaitForSeconds(2);
                 RandSeed(i);
                 //mapGens[i].GetComponent<MapGenerator>().GenerateEverything(seed);
-                yield return new WaitForSeconds(2);
+
             }
     }
 
