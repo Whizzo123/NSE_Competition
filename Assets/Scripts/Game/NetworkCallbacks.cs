@@ -7,6 +7,7 @@ using System.Linq;
 [BoltGlobalBehaviour("GameScene")]
 public class NetworkCallbacks : GlobalEventListener
 {
+    #region Artefact
     public override void OnEvent(ArtefactDisable evnt)
     {
         BoltLog.Info("Called OnEvent ArtefactDisable");
@@ -19,6 +20,10 @@ public class NetworkCallbacks : GlobalEventListener
         evnt.artefact.gameObject.GetComponent<SphereCollider>().enabled = true;
         evnt.artefact.gameObject.GetComponent<MeshRenderer>().enabled = true;
     }
+
+    #endregion
+
+    #region AbilityPickup/Score/Inventory/Loadout
     public override void OnEvent(AbilityPickupDisable evnt)
     {
         BoltLog.Info("Called OnEvent AbilityPickupDisable");
@@ -57,6 +62,10 @@ public class NetworkCallbacks : GlobalEventListener
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
         PlayerController.localPlayer.SetLoadoutReleased(true);
     }
+
+    #endregion
+
+
     public override void OnEvent(StunEnemyPlayer evnt)
     {
         BoltLog.Info("Called OnEvent StunEnemyPlayer");
@@ -69,7 +78,7 @@ public class NetworkCallbacks : GlobalEventListener
                 if (spd != null)
                     spd.SetOppositeDebuffActivated(true);
                 evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 1f;
-                Instantiate(Resources.Load("SlowBombExplosion_PA", typeof(GameObject)) as GameObject, evnt.Target.transform.position, Quaternion.identity);
+                //Instantiate(Resources.Load("SlowBombExplosion_PA", typeof(GameObject)) as GameObject, evnt.Target.transform.position, Quaternion.identity);//Instantiates it on all other machines besides the thrower
             }
             else
             {
@@ -149,10 +158,12 @@ public class NetworkCallbacks : GlobalEventListener
             Debug.LogError("Voodoo START");
             if (!evnt.End)
             {
+                Debug.LogError("Voodoo POISON");
                 evnt.Target.GetComponent<PlayerController>().state.Poisoned = true;
             }
             else
             {
+                Debug.LogError("Voodoo NOTPOISON");
                 evnt.Target.GetComponent<PlayerController>().state.Poisoned = false;
             }
         }
@@ -160,6 +171,7 @@ public class NetworkCallbacks : GlobalEventListener
         if (evnt.End)
         {
             evnt.Trap.GetComponent<VoodooPoisonTrapBehaviour>().Disable();
+            //evnt.Trap.GetComponent<SphereCollider>().enabled = false;
         }
         else
         {

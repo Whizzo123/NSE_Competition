@@ -17,13 +17,15 @@ public class VoodooPoisonTrap : Trap
     {
         RaycastHit hit;
         Vector3 spawnPos = Vector3.zero;
-        if(Physics.Raycast(placingPlayer.transform.position, Vector3.down, out hit, float.MaxValue, ground))
+        if(Physics.Raycast(placingPlayer.transform.position, Vector3.down, out hit, 30, ground))
         {
-            spawnPos = placingPlayer.transform.position;
-            Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            spawnPos = hit.point;
+            Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
+            spawnRotation *= Quaternion.Euler(-90, 0, 0);
+
             BoltNetwork.Instantiate(BoltPrefabs.VoodooPoisonTrap, spawnPos, spawnRotation).GetState<IVoodooPoisonTrap>().PlacingPlayer = placingPlayer.entity;
             base.Use();
-            Debug.LogError("Voodoo PLACE");
+
         }        
     }
 

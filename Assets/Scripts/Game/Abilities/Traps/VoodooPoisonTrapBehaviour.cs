@@ -7,8 +7,10 @@ using Bolt;
 public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
 {
     private PlayerController trappedPlayer;
-    public float trapDuration;
+
+    public float trapDuration = 5;
     private float currentDuration;
+    
     private bool sprung;
     private bool disabled;
 
@@ -46,12 +48,17 @@ public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
 
     public void Disable()
     {
+        closedTrap.SetActive(false);
+        openTrap.SetActive(false);
         GetComponent<MeshRenderer>().enabled = false;
+        GetComponent<SphereCollider>().enabled = false;
     }
 
     public void Close()
     {
         GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
+        openTrap.SetActive(false);
+        closedTrap.SetActive(true);
     }
 
     public override void SimulateOwner()
