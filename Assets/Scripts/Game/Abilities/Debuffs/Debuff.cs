@@ -101,6 +101,7 @@ public class Debuff : Ability
 
     protected PlayerController FindClosestPlayer()
     {
+        //Ask Joe to explain this bit of code
         float shortestDistance = float.MaxValue;
         PlayerController closestPlayer = null;
 

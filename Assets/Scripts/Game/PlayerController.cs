@@ -254,8 +254,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
                     if (this.state.Poisoned)
                     {
+                        playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
                         direction *= -1;
                     }
+
                     if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
                     {
                         var request = ChangeAnimatorMovementParameter.Create();

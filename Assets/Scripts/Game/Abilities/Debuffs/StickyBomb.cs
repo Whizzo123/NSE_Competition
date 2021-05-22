@@ -2,8 +2,10 @@
 using UnityEngine;
 
 
-public class StickyBomb : Debuff
+public class StickyBomb : Debuff 
 {
+
+    public BoltEntity particleEffect;
 
     public StickyBomb() : base ("StickyBomb", "Stun an opponent of your choosing to change the tides", 1, AbilityUseTypes.RECHARGE, 30.0f, 20.0f)
     {
@@ -23,6 +25,9 @@ public class StickyBomb : Debuff
         else
         {
             inUse = true;
+            //BoltNetwork.Instantiate(Resources.Load("SlowBombExplosion_PA", typeof(GameObject)) as GameObject, target.transform.position, Quaternion.identity); doesn't do a thing??????
+            particleEffect = BoltNetwork.Instantiate(BoltPrefabs.SlowBombExplosion_PA, target.transform.position, Quaternion.identity);
+
             var request = StunEnemyPlayer.Create();
             request.Target = target.entity;
             request.End = false;
@@ -44,6 +49,7 @@ public class StickyBomb : Debuff
         target = null;
         GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(name, false);
         base.EndEffect();
+        particleEffect.DestroyDelayed(1);
     }
 
     public override Ability Clone()
