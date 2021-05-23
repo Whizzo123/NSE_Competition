@@ -66,6 +66,42 @@ public class LobbyUIManager : GlobalEventListener
         createScreen.OnRandomButtonClick += JoinRandomSession;
         browseScreen.OnClickJoinSession += JoinSessionEvent;
     }
+    /// <summary>
+    /// Called when creating a room on the network
+    /// </summary>
+    private void CreateRoomSession()
+    {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        this.roomName = createScreen.inputField.text;
+        Debug.Log("CreatingRoomSession");
+        //Launches server
+        BoltLauncher.StartServer();
+    }
+    private void SwapToBrowseScreen()
+    {
+        //In order for client to view session list we need to connect them to the network
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        BoltLauncher.StartClient();
+    }
+    private void JoinRandomSession()
+    {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        //Set random join to true
+        randomJoin = true;
+        //Launch the client
+        BoltLauncher.StartClient();
+    }
+    private void JoinSessionEvent(UdpSession session)
+    {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        //Chech whether this is the client should only run on a client
+        if (BoltNetwork.IsClient)
+        {
+            //Join given session we choose from the list
+            BoltMatchmaking.JoinSession(session);
+        }
+    }
+
 
     private void FixedUpdate()
     {
@@ -133,17 +169,7 @@ public class LobbyUIManager : GlobalEventListener
         BoltNetwork.LoadScene(gameSceneName);
     }
 
-    /// <summary>
-    /// Called when creating a room on the network
-    /// </summary>
-    private void CreateRoomSession()
-    {
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        this.roomName = createScreen.inputField.text;
-        Debug.Log("CreatingRoomSession");
-        //Launches server
-        BoltLauncher.StartServer();
-    }
+
 
     /// <summary>
     /// Called once the bolt network has finished starting called whenever either BoltLauncher.StartServer() or BoltLauncher.StartClient() is done
@@ -174,32 +200,7 @@ public class LobbyUIManager : GlobalEventListener
         }
     }
 
-    private void SwapToBrowseScreen()
-    {
-        //In order for client to view session list we need to connect them to the network
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        BoltLauncher.StartClient();
-    }
 
-    private void JoinRandomSession()
-    {
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        //Set random join to true
-        randomJoin = true;
-        //Launch the client
-        BoltLauncher.StartClient();
-    }
-
-    private void JoinSessionEvent(UdpSession session)
-    {
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        //Chech whether this is the client should only run on a client
-        if (BoltNetwork.IsClient)
-        {
-            //Join given session we choose from the list
-            BoltMatchmaking.JoinSession(session);
-        }
-    }
 
     private UIScreens FindScreenByName(string name)
     {

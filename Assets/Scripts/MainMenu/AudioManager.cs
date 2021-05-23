@@ -14,9 +14,9 @@ public class AudioManager : MonoBehaviour
     public Slider musicVolume;
     public Slider soundVolume;
 
-    public float mVol = 1;
-    public float sVol = 1;
-    public float masVol = 1;
+    public float mVol;
+    public float sVol;
+    public float masVol;
 
     [System.Serializable]
     public class AudioClips
@@ -60,35 +60,15 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        mVol = 1;
-        sVol = 1;
-        masVol = 1;
+        //mVol = 0.5f;
+        //sVol = 0.7f;
+        //masVol = 0.7f;
         PlaySound("MusicMenu");
 
     }
 
-    /// <summary>
-    /// Plays sound "audioName"
-    /// </summary>
-    /// <param name="audioName"></param>
-    public void PlaySound(string audioName)
-    {
-        AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == audioName);
-        if (audioFound != null)
-        {
-            audioFound.audioSource.Play();
-        }
-    }
 
-    public void PlaySoundOnly(string audioName)
-    {
-        AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == audioName);
-        if (audioFound != null && !audioFound.audioSource.isPlaying)
-        {
-            audioFound.audioSource.Play();
-        }
-    }
-
+    #region VOLUME_CONTROL
     /// <summary>
     /// Sets music volume, best to use slider ui to set
     /// </summary>
@@ -138,10 +118,34 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
+    #endregion
+
+    #region PlaySFX
+    /// <summary>
+    /// Plays sound "audioName"
+    /// </summary>
+    /// <param name="audioName"></param>
+    public void PlaySound(string audioName)
+    {
+        AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == audioName);
+        if (audioFound != null)
+        {
+            audioFound.audioSource.Play();
+        }
+    }
+
+    public void PlaySoundOnly(string audioName)
+    {
+        AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == audioName);
+        if (audioFound != null && !audioFound.audioSource.isPlaying)
+        {
+            audioFound.audioSource.Play();
+        }
+    }
+
     ///<summary>
     ///Starts music for the level if track name is "MusicGame" Stops any "MusicMenu"
     ///</summary>
-
     public void ActivateGameMusic()
     {
         AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == "MusicMenu");
@@ -173,6 +177,8 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    #endregion
+
     /// <summary>
     /// Stops all audio from playing
     /// </summary>
@@ -192,7 +198,17 @@ public class AudioManager : MonoBehaviour
             audioFound.audioSource.Stop();
         }
     }
+
+
+
+
+
+
+
+
     public GameObject panel;
+
+
     public void TurnOn()
     {
         panel.SetActive(true);
@@ -201,6 +217,6 @@ public class AudioManager : MonoBehaviour
     public void TurnOff()
     {
         panel.SetActive(false);
-        SceneManager.LoadScene("TitleScene");
+        //SceneManager.LoadScene("TitleScene");
     }
 }
