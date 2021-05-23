@@ -60,11 +60,13 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        //mVol = 0.5f;
-        //sVol = 0.7f;
-        //masVol = 0.7f;
+        mVol = 0.5f;
+        sVol = 0.7f;
+        masVol = 0.7f;
         PlaySound("MusicMenu");
-
+        MusicVolume(0.5f);
+        SoundVolume(0.5f);
+        MasterVolume(0.5f);
     }
 
 
@@ -102,7 +104,7 @@ public class AudioManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Changes sound and music volume. Must find a way to show something is a music track rather than using audio.loop
+    /// Changes sound and music volume. //Must find a way to show something is a music track rather than using audio.loop
     /// </summary>
     public void ChangeVol()
     {
