@@ -3,6 +3,7 @@ using UnityEngine;
 using Bolt;
 using UnityEngine.UI;
 using System;
+using UnityEngine.SceneManagement;
 
 public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 {
@@ -70,10 +71,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
     }
     public override void OnEvent(LobbyPlayerKick evnt)
     {
-		if (entity.IsOwner)
-		{
-			BoltNetwork.Destroy(this.gameObject);
-		}
+		BoltNetwork.Destroy(this.gameObject);
 		BoltNetwork.Shutdown();
     }
 
@@ -236,4 +234,5 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 			nameInput.interactable = entity.IsControlled;
 		}
 	}
+
 }

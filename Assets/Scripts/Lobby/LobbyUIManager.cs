@@ -6,6 +6,8 @@ using Bolt;
 using Bolt.Matchmaking;
 using UdpKit;
 
+using UnityEngine.SceneManagement;
+
 public class LobbyUIManager : GlobalEventListener
 {
     #region Variables
@@ -306,8 +308,35 @@ public class LobbyUIManager : GlobalEventListener
             }
         }
     }
+    
 
+    public void BackToTitleScreen()
+    {
+        //Disconnect
+        //entity.owner is the host
+        foreach (var entity in BoltNetwork.Entities)
+        {
+            
+            if (entity.IsControllerOrOwner)
+            {
+                Debug.LogError("Bolt DESTROY");
+                BoltNetwork.Destroy(entity.gameObject);
+                BoltNetwork.Shutdown();
+            }
+        }
+        for (int i = 0; i < screens.Length; i++)
+        {
+            //If not on create screen return to create screen, otherwise go to TitleScene
+            if (screens[i].screenName == "Create" && screens[i].screen.activeInHierarchy)
+            {
+                SceneManager.LoadScene("TitleScene");
+                return;
+            }
+        }
+        ChangeScreenTo("Create");
+    }
 }
+
 
 [Serializable]
 public struct UIScreens

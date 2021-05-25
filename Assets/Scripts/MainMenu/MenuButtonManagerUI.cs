@@ -31,6 +31,7 @@ public class MenuButtonManagerUI : MonoBehaviour
     public void TitleScreen()
     {
         SceneManager.LoadScene("TitleScene");
+
         //BoltNetwork should be destroyed here. However this is also used in the title screen, where boltnetwork is not active.
     }
 

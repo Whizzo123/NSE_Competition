@@ -219,6 +219,6 @@ public class AudioManager : MonoBehaviour
     public void TurnOff()
     {
         panel.SetActive(false);
-        //SceneManager.LoadScene("TitleScene");
+        SceneManager.LoadScene("TitleScene");
     }
 }
