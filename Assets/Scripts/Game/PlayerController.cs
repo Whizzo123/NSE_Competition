@@ -320,7 +320,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 if (targetedPlayerToStealFrom != null)
                 {
                     BoltLog.Info("Has a target");
-                    if (targetedPlayerToStealFrom.IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false)
+                    if (IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false && targetedPlayerToStealFrom.InventoryNotEmpty())
                     {
                         BoltLog.Info("Attempting steal");
                         InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
@@ -339,6 +339,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                         request.ItemName = randomArtefact.ItemName;
                         request.ItemPoints = randomArtefact.ItemPoints;
                         request.Send();
+                    }
+                    else
+                    {
+                        FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
                     }
                 }
             }
