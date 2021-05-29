@@ -29,7 +29,7 @@ public class LobbyUIManager : GlobalEventListener
     public float prematchCountdown = 5.0f;
 
     private bool randomJoin;
-    private bool isCountdown = false;
+    public bool isCountdown = false;
 
     public GameObject playerLobbyPrefab;
 
@@ -132,6 +132,8 @@ public class LobbyUIManager : GlobalEventListener
             {
                 isCountdown = true;
                 StartCoroutine(ServerCountdownCoroutine());
+                //Set connection to private
+                //BoltMatchmaking.CurrentSession.ConnectionsMax;
             }
         }
     }
@@ -183,6 +185,8 @@ public class LobbyUIManager : GlobalEventListener
         {
             //If we are the server create the session using the room name
             BoltMatchmaking.CreateSession(sessionID: roomName);
+
+            //Add a way to create a private session
         }
         else if(BoltNetwork.IsClient)
         {
@@ -263,6 +267,7 @@ public class LobbyUIManager : GlobalEventListener
             //If entity is controlled a.k.a this code is running on client machine that owns this player object
             if (entity.IsControlled)
             {
+                
                 lobbyPlayer.SetupPlayer();
             }
             //If this is being run on another client machine or the server
@@ -307,33 +312,84 @@ public class LobbyUIManager : GlobalEventListener
                 player.RemovePlayer();
             }
         }
+
+
     }
     
 
     public void BackToTitleScreen()
     {
-        //Disconnect
-        //entity.owner is the host
+        #region Just...justletmekeepthispain
+        /*
+        Disconnect
+
+        So the issue is that We can't delete anything which is attached. This only happens when we re not host, if we are not hosting and we
+        leave the lobby, it will not get rid of the LobbyPlayer UI.
+        BoltNetwork.Destroy(FindObjectOfType<LobbyPlayer>().gameObject);
+        LobbyPlayer[] t = FindObjectsOfType<LobbyPlayer>();
+        foreach (LobbyPlayer lobbyPlayer in t)
+        {
+        if (lobbyPlayer.entity.HasControl)
+        {
+        lobbyPlayer.RemovePlayer();
+         roomScreen.RemovePlayer(lobbyPlayer);
+        BoltNetwork.Destroy(lobbyPlayer.gameObject);//Same as reason above CLient can't destroy the object that the host has created
+
+        }
+        }
+        
+        entity.owner is the host
         foreach (var entity in BoltNetwork.Entities)
         {
-            
-            if (entity.IsControllerOrOwner)
+            if (entity.IsOwner)
             {
-                Debug.LogError("Bolt DESTROY");
-                BoltNetwork.Destroy(entity.gameObject);
-                BoltNetwork.Shutdown();
+                Debug.LogError("OWNER OF: " + entity.gameObject.name + " | HAS CONTROL: " + entity.HasControl + " | NETWORK ID : " + entity.NetworkId);//entity.TakeControl);
+            }
+            else
+            {
+                Debug.LogError("NOT OWNER OF: " + entity.gameObject.name + " | HAS CONTROL: " + entity.HasControl + " | NETWORK ID : " + entity.NetworkId);
             }
         }
+        foreach (GameObject item in BoltNetwork.SceneObjects)
+        {
+          BoltNetwork.Destroy(item);
+        }
+          BoltNetwork.Destroy(entity);
+        var et = entity.GetComponent<LobbyPlayer>();
+         et.RemovePlayer();
+
+        BoltNetwork.Destroy(et.gameObject);
+         }
+        BoltNetwork.Destroy()
+        */
+        #endregion
+
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        //If we are not counting down to play, we will disconnect and/or return to the create screen or/and return to the title
+        if (!isCountdown)
+        {
+
+            //In Lobby
+        if (BoltNetwork.IsConnected || BoltNetwork.IsServer)
+        {
+            BoltNetwork.Shutdown();
+        }
+
         for (int i = 0; i < screens.Length; i++)
         {
             //If not on create screen return to create screen, otherwise go to TitleScene
             if (screens[i].screenName == "Create" && screens[i].screen.activeInHierarchy)
             {
+                BoltNetwork.Shutdown();
                 SceneManager.LoadScene("TitleScene");
                 return;
             }
         }
-        ChangeScreenTo("Create");
+        //Invoke("ChangeScreenTo(\"Create\")", 2);
+
+            ChangeScreenTo("Create");
+        }
+
     }
 }
 

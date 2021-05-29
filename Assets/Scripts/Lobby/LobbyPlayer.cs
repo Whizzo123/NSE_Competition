@@ -71,13 +71,26 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
     }
     public override void OnEvent(LobbyPlayerKick evnt)
     {
+		BoltLog.Info("Kick");
+		foreach (var entity in BoltNetwork.Entities)
+		{
+			if (entity.IsOwner)
+			{
+				Debug.LogError("OWNER OF: " + entity.gameObject.name + " | HAS CONTROL: " + entity.HasControl + " | NETWORK ID : " + entity.NetworkId);//entity.TakeControl);
+			}
+			else
+			{
+				Debug.LogError("NOT OWNER OF: " + entity.gameObject.name + " | HAS CONTROL: " + entity.HasControl + " | NETWORK ID : " + entity.NetworkId);
+			}
+		}
 		BoltNetwork.Destroy(this.gameObject);
 		BoltNetwork.Shutdown();
-    }
+
+	}
 
     public void OnRemovePlayerClick()
     {
-        if (BoltNetwork.IsServer)
+        if (BoltNetwork.IsServer && !FindObjectOfType<LobbyUIManager>().isCountdown)
         {
             LobbyPlayerKick.Create(entity, EntityTargets.OnlyController).Send();
         }

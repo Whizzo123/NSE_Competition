@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Bolt;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 [BoltGlobalBehaviour("GameScene")]
 public class NetworkCallbacks : GlobalEventListener
@@ -331,4 +332,12 @@ public class NetworkCallbacks : GlobalEventListener
     {
         FindObjectOfType<CanvasUIManager>().loadoutTimeText.text = "" + evnt.Time;
     }
+
+    public override void OnEvent(ReturnEveryoneToTitle evnt)
+    {
+        BoltNetwork.Shutdown();
+        //SceneLoadLocalBegin("TitleScene");
+        SceneManager.LoadScene("TitleScene");
+    }
+
 }
