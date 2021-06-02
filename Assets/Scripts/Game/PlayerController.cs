@@ -559,6 +559,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             else if (collider.gameObject.GetComponent<PlayerController>())
             {
                 targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
+                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
             }
             else if (collider.gameObject.GetComponent<AbilityPickup>())
             {
@@ -593,6 +594,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 else if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
                 {
                     targetedPlayerToStealFrom = null;
+                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
                 else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
                 {

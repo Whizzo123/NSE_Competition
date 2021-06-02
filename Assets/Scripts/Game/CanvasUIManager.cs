@@ -12,6 +12,7 @@ public class CanvasUIManager : MonoBehaviour
     public static GameObject playerNameTextPrefab;
     public GameObject artefactPickupPopup;
     public GameObject popupMessage;
+    public GameObject hintMessage;
     public PlayerInventoryUI inventoryUI;
     public ScoreboardUI scoreboardUI;
     public float popupShowTime;
@@ -30,6 +31,17 @@ public class CanvasUIManager : MonoBehaviour
         artefactPickupPopup.SetActive(true);
         artefactPickupPopup.GetComponent<ArtefactPickupPopupUI>().SetMessage(artefact);
         StartCoroutine(PopupCountdown());
+    }
+
+    public void ShowHintMessage(string message)
+    {
+        hintMessage.SetActive(true);
+        hintMessage.GetComponent<Text>().text = message;
+    }
+
+    public void CloseHintMessage()
+    {
+        hintMessage.SetActive(false);
     }
 
     public void PopupMessage(string message)
