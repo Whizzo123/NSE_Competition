@@ -25,7 +25,6 @@ public class CanvasUIManager : MonoBehaviour
     public Text TimeText;
     public Text loadoutTimeText;
 
-
     public void PopupArtefactPickupDisplay(ItemArtefact artefact)
     {
         artefactPickupPopup.SetActive(true);

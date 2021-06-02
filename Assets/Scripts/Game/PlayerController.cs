@@ -305,6 +305,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     gameStash.AddToStashScores(this);
                     FindObjectOfType<AudioManager>().PlaySound("Stash");
                 }
+                else if(gameStash != null && !InventoryNotEmpty())
+                {
+                    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
+                }
                 else if (targetedAbilityPickup != null)
                 {
                     targetedAbilityPickup.PickupAbility(this);
@@ -555,6 +559,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             else if (collider.gameObject.GetComponent<Stash>())
             {
                 gameStash = collider.gameObject.GetComponent<Stash>();
+                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
             }
             else if (collider.gameObject.GetComponent<PlayerController>())
             {
@@ -590,6 +595,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 else if (gameStash != null && collider.gameObject == gameStash.gameObject)
                 {
                     gameStash = null;
+                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
                 else if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
                 {
