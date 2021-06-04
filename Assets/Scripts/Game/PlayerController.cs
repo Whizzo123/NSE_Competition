@@ -288,17 +288,24 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 Debug.LogError("Artefact count " + targetedArtefacts.Count);
                 if (targetedArtefacts.Count != 0)
                 {
-                    Debug.Log("Picking up Artefacts");
-                   // targetedArtefact.Pickup(this);
+                    if (FindEmptyInventorySlot() != -1)
+                    {
+                        Debug.Log("Picking up Artefacts");
+                        // targetedArtefact.Pickup(this);
 
                         // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
                         foreach (ArtefactBehaviour item in targetedArtefacts)
                         {
-                        item.Pickup(this);
-                        FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
+                            item.Pickup(this);
+                            FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         }
 
-                    targetedArtefacts.Clear();
+                        targetedArtefacts.Clear();
+                    }
+                    else
+                    {
+                        FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
+                    }
                 }
                 else if (gameStash != null && InventoryNotEmpty())
                 {
