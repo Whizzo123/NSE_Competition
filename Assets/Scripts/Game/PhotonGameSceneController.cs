@@ -9,9 +9,9 @@ public class PhotonGameSceneController : GlobalEventListener
     private int minPlayers = 2;
     private bool loadoutChoiceComplete;
     //Max time for game to 8 mins - 480
-    private float totalAllottedGameTime = 360;
+    private float totalAllottedGameTime = 300;
     private float currentRunningGameTime = 0;
-    private float readyTime = 15;
+    private float readyTime = 30;
     private float currentReadyTime = 0;
     private int pointGoal = 9999; //10000
     private bool displayedWinScreen = false;
@@ -87,6 +87,8 @@ public class PhotonGameSceneController : GlobalEventListener
                     var request = DisplayWinScreen.Create();
                     request.Send();
                     displayedWinScreen = true;
+
+                    //////////////////////////////////////////////Add in return to title
                 }
             }
         }
@@ -152,6 +154,20 @@ public class PhotonGameSceneController : GlobalEventListener
         var request = DisplayWinScreen.Create();
         request.Send();
         displayedWinScreen = true;
+
+
+        currentRunningGameTime = 5;
+
+        while (currentRunningGameTime > 0)
+        {
+            yield return null;
+
+            currentRunningGameTime -= Time.deltaTime;
+        }
+
+        var end = ReturnEveryoneToTitle.Create();
+        end.Send();
+
     }
 
     private IEnumerator RunWinCountdown()

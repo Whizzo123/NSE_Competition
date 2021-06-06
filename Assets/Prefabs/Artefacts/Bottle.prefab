@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6723603641190923960}
   - component: {fileID: -7142859470176699855}
   - component: {fileID: -6356220220854708457}
-  - component: {fileID: 506850976500299319}
+  - component: {fileID: -4587001002744856315}
   m_Layer: 9
   m_Name: Bottle
   m_TagString: Artefact
@@ -127,8 +127,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0028d2f7b8b6d444698dca294d649af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!135 &506850976500299319
-SphereCollider:
+--- !u!65 &-4587001002744856315
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -138,5 +138,5 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.15892255
-  m_Center: {x: 0, y: 0, z: 0.05892256}
+  m_Size: {x: 2, y: 3, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}

@@ -7028,6 +7028,15 @@
       "Groups": [
         "samples"
       ]
+    },
+    {
+      "$type": "Bolt.Compiler.EventDefinition, bolt.compiler",
+      "Properties": [],
+      "Name": "ReturnEveryoneToTitle",
+      "Guid": "aa3933e3-9bc9-421b-90a7-8cc07cf732f7",
+      "Groups": [
+        "samples"
+      ]
     }
   ],
   "ActiveGroup": "samples"

@@ -6,6 +6,8 @@ using Bolt;
 using Bolt.Matchmaking;
 using UdpKit;
 
+using UnityEngine.SceneManagement;
+
 public class LobbyUIManager : GlobalEventListener
 {
     #region Variables
@@ -18,6 +20,8 @@ public class LobbyUIManager : GlobalEventListener
 
     public string gameSceneName;
     private string roomName;
+    public bool privateLobby = false;
+    private string password = "null";
 
     [Tooltip("Minimum Required Players To Start")]
     [SerializeField] private int minPlayers = 2;
@@ -27,11 +31,19 @@ public class LobbyUIManager : GlobalEventListener
     public float prematchCountdown = 5.0f;
 
     private bool randomJoin;
-    private bool isCountdown = false;
+    public bool isCountdown = false;
+
+
 
     public GameObject playerLobbyPrefab;
 
     #endregion
+
+    public override void BoltStartBegin()
+    {
+        BoltNetwork.RegisterTokenClass<ErrorMessages>();
+        BoltNetwork.RegisterTokenClass<ServerInfo>();
+    }
 
     void Start()
     {
@@ -66,6 +78,42 @@ public class LobbyUIManager : GlobalEventListener
         createScreen.OnRandomButtonClick += JoinRandomSession;
         browseScreen.OnClickJoinSession += JoinSessionEvent;
     }
+    /// <summary>
+    /// Called when creating a room on the network
+    /// </summary>
+    private void CreateRoomSession()
+    {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        this.roomName = createScreen.inputField.text;
+        Debug.Log("CreatingRoomSession");
+        //Launches server
+        BoltLauncher.StartServer();
+    }
+    private void SwapToBrowseScreen()
+    {
+        //In order for client to view session list we need to connect them to the network
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        BoltLauncher.StartClient();
+    }
+    private void JoinRandomSession()
+    {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        //Set random join to true
+        randomJoin = true;
+        //Launch the client
+        BoltLauncher.StartClient();
+    }
+    private void JoinSessionEvent(UdpSession session)
+    {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        //Chech whether this is the client should only run on a client
+        if (BoltNetwork.IsClient)
+        {
+            //Join given session we choose from the list
+            BoltMatchmaking.JoinSession(session);
+        }
+    }
+
 
     private void FixedUpdate()
     {
@@ -92,8 +140,13 @@ public class LobbyUIManager : GlobalEventListener
             //If all players hit are ready and our count of players is above the minimum we need to start a game
             if (allReady && readyCount >= minPlayers)
             {
+                privateLobby = true;
+                UpdateSession();
                 isCountdown = true;
                 StartCoroutine(ServerCountdownCoroutine());
+                //Set connection to private
+                //BoltMatchmaking.CurrentSession.ConnectionsMax;
+                //BoltMatchmaking.
             }
         }
     }
@@ -133,36 +186,46 @@ public class LobbyUIManager : GlobalEventListener
         BoltNetwork.LoadScene(gameSceneName);
     }
 
-    /// <summary>
-    /// Called when creating a room on the network
-    /// </summary>
-    private void CreateRoomSession()
-    {
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        this.roomName = createScreen.inputField.text;
-        Debug.Log("CreatingRoomSession");
-        //Launches server
-        BoltLauncher.StartServer();
-    }
+
+    #region BOLTNETWORK_START_AUTHORISATION_JOIN_REFUSAL
 
     /// <summary>
     /// Called once the bolt network has finished starting called whenever either BoltLauncher.StartServer() or BoltLauncher.StartClient() is done
     /// </summary>
     public override void BoltStartDone()
     {
-        //Once either BoltLauncher.StartServer() or BoltLauncher.StartClient() has run
         if (BoltNetwork.IsServer)
         {
-            //If we are the server create the session using the room name
-            BoltMatchmaking.CreateSession(sessionID: roomName);
+            //Creates a lobby
+
+            //Uncomment for a private lobby
+            ///privateLobby = true;
+            ///password = "F";
+
+            //Sets up a lobby with public parameters
+            var customToken = new ServerInfo();
+            customToken.privateSession = privateLobby;
+            customToken.password = password;
+            
+
+            //Add a button to create a private session with a password
+            //if(privatePressed){ change Custom Token}
+
+
+            BoltMatchmaking.CreateSession(sessionID: roomName, token: customToken);
         }
         else if(BoltNetwork.IsClient)
         {
             //If we are a client connecting decide whether this is a random join or not
             if(randomJoin)
             {
-                //Yes a random join tell Bolt to join a random session
-                BoltMatchmaking.JoinRandomSession();
+                //Joins a random lobby, that is public
+                var customToken = new ServerInfo();
+                customToken.privateSession = privateLobby;
+                customToken.password = password;
+
+                BoltMatchmaking.JoinRandomSession(customToken);
+
             }
             else
             {
@@ -174,32 +237,129 @@ public class LobbyUIManager : GlobalEventListener
         }
     }
 
-    private void SwapToBrowseScreen()
+    void UpdateSession()
     {
-        //In order for client to view session list we need to connect them to the network
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        BoltLauncher.StartClient();
-    }
 
-    private void JoinRandomSession()
-    {
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        //Set random join to true
-        randomJoin = true;
-        //Launch the client
-        BoltLauncher.StartClient();
-    }
-
-    private void JoinSessionEvent(UdpSession session)
-    {
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        //Chech whether this is the client should only run on a client
-        if (BoltNetwork.IsClient)
+        if (BoltNetwork.IsRunning && BoltNetwork.IsServer)
         {
-            //Join given session we choose from the list
-            BoltMatchmaking.JoinSession(session);
+        var updateToken = new ServerInfo();
+        updateToken.privateSession = privateLobby;
+        if (password == "null")
+        {
+            string pass = System.DateTime.Now.ToString();
+            updateToken.password = pass;
+        }
+
+
+            //This createes a visual bug where it adds a player to the lobby screen
+            BoltMatchmaking.UpdateSession(updateToken);
+        }
+        else
+        {
+            BoltLog.Warn("Only the server can update sessions");
         }
     }
+
+    /// <summary>
+    /// If priv == privateLobby, pass == password return true, else false
+    /// </summary>
+    private bool AuthUser(bool priv, string pass)
+    {
+        if (priv == privateLobby)
+        {
+            if (pass == password)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //Called when a client wants to connect, by the host
+    public override void ConnectRequest(UdpEndPoint endpoint, IProtocolToken token)
+    {
+        //This is called in by the host
+        BoltLog.Warn("Connect Request");
+
+        //If the client info sent is the same as the host server info, accept the client else send an error message
+        var userToken = token as ServerInfo;
+        if (userToken != null)
+        {
+            if (AuthUser(userToken.privateSession, userToken.password))
+            {
+                BoltNetwork.Accept(endpoint, userToken);
+                return;
+            }
+        }
+
+        ErrorMessages error = new ErrorMessages();
+        error.Error = "Unknown";
+        
+        if (BoltMatchmaking.CurrentSession.ConnectionsCurrent == BoltMatchmaking.CurrentSession.ConnectionsMax)
+        {
+            error.Error = "The lobby is full";
+        }
+        else if(password != userToken.password)
+        {
+            error.Error = "The password was wrong";
+        }
+        if (isCountdown && privateLobby)
+        {
+            error.Error = "The lobby has now entered the game";
+        }
+        BoltNetwork.Refuse(endpoint, error);
+
+    }
+
+    //Called when the client is refused, by the client
+    public override void ConnectRefused(UdpEndPoint endpoint, IProtocolToken token)
+    {
+        //This is called by the refused client
+        BoltLog.Warn("Connection refused!");
+
+        var authToken = token as ErrorMessages;
+        if (authToken != null)
+        {
+            Debug.LogError(authToken.Error);
+        }
+        BoltNetwork.Shutdown();
+    }
+
+    //Called when either server or client connects
+    public override void Connected(BoltConnection connection)
+    {
+        if (BoltNetwork.IsClient)
+        {
+            BoltLog.Info("Connected Client: {0}", connection);
+            //Create new player object and add it to room
+            LobbyPlayer player = new LobbyPlayer();
+            player.connection = connection;
+            roomScreen.AddPlayer(player);
+            ChangeScreenTo("Room");
+        }
+        else if (BoltNetwork.IsServer)
+        {
+            BoltLog.Info("Connected Server: {0}", connection);
+            //Create player on the server and assign control to local machine
+            BoltEntity player = BoltNetwork.Instantiate(BoltPrefabs.LobbyPlayerInfo);
+            player.AssignControl(connection);
+            BoltLog.Info("Server assign control connection: " + connection.ConnectionId);
+        }
+    }
+
+    //I'm really not sure if these are even called.
+    public static void Accept(UdpEndPoint endpoint, IProtocolToken acceptToken)
+    {
+        Debug.LogError("Accepted");
+    }
+    public static void Refuse(UdpEndPoint endpoint, IProtocolToken refuseToken)
+    {
+        Debug.LogError("Refuse");
+
+    }
+
+    #endregion
 
     private UIScreens FindScreenByName(string name)
     {
@@ -225,27 +385,7 @@ public class LobbyUIManager : GlobalEventListener
         player.TakeControl();
     }
 
-    //Called when either server or client connects
-    public override void Connected(BoltConnection connection)
-    {
-        if (BoltNetwork.IsClient)
-        {
-            BoltLog.Info("Connected Client: {0}", connection);
-            //Create new player object and add it to room
-            LobbyPlayer player = new LobbyPlayer();
-            player.connection = connection;
-            roomScreen.AddPlayer(player);
-            ChangeScreenTo("Room");
-        }
-        else if (BoltNetwork.IsServer)
-        {
-            BoltLog.Info("Connected Server: {0}", connection);
-            //Create player on the server and assign control to local machine
-            BoltEntity player = BoltNetwork.Instantiate(BoltPrefabs.LobbyPlayerInfo);
-            player.AssignControl(connection);
-            BoltLog.Info("Server assign control connection: " + connection.ConnectionId);
-        }
-    }
+
 
     //Called once new gameobject has been instantiated with the bolt entity component added to it
     public override void EntityAttached(BoltEntity entity)
@@ -260,6 +400,7 @@ public class LobbyUIManager : GlobalEventListener
             //If entity is controlled a.k.a this code is running on client machine that owns this player object
             if (entity.IsControlled)
             {
+                
                 lobbyPlayer.SetupPlayer();
             }
             //If this is being run on another client machine or the server
@@ -304,9 +445,87 @@ public class LobbyUIManager : GlobalEventListener
                 player.RemovePlayer();
             }
         }
-    }
 
+
+    }
+    
+
+    public void BackToTitleScreen()
+    {
+        #region Just...justletmekeepthispain
+        /*
+        Disconnect
+
+        So the issue is that We can't delete anything which is attached. This only happens when we re not host, if we are not hosting and we
+        leave the lobby, it will not get rid of the LobbyPlayer UI.
+        BoltNetwork.Destroy(FindObjectOfType<LobbyPlayer>().gameObject);
+        LobbyPlayer[] t = FindObjectsOfType<LobbyPlayer>();
+        foreach (LobbyPlayer lobbyPlayer in t)
+        {
+        if (lobbyPlayer.entity.HasControl)
+        {
+        lobbyPlayer.RemovePlayer();
+         roomScreen.RemovePlayer(lobbyPlayer);
+        BoltNetwork.Destroy(lobbyPlayer.gameObject);//Same as reason above CLient can't destroy the object that the host has created
+
+        }
+        }
+        
+        entity.owner is the host
+        foreach (var entity in BoltNetwork.Entities)
+        {
+            if (entity.IsOwner)
+            {
+                Debug.LogError("OWNER OF: " + entity.gameObject.name + " | HAS CONTROL: " + entity.HasControl + " | NETWORK ID : " + entity.NetworkId);//entity.TakeControl);
+            }
+            else
+            {
+                Debug.LogError("NOT OWNER OF: " + entity.gameObject.name + " | HAS CONTROL: " + entity.HasControl + " | NETWORK ID : " + entity.NetworkId);
+            }
+        }
+        foreach (GameObject item in BoltNetwork.SceneObjects)
+        {
+          BoltNetwork.Destroy(item);
+        }
+          BoltNetwork.Destroy(entity);
+        var et = entity.GetComponent<LobbyPlayer>();
+         et.RemovePlayer();
+
+        BoltNetwork.Destroy(et.gameObject);
+         }
+        BoltNetwork.Destroy()
+        */
+        #endregion
+
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        //If we are not counting down to play, we will disconnect and/or return to the create screen or/and return to the title
+        if (!isCountdown)
+        {
+
+            //In Lobby
+        if (BoltNetwork.IsConnected || BoltNetwork.IsServer)
+        {
+            BoltNetwork.Shutdown();
+        }
+
+        for (int i = 0; i < screens.Length; i++)
+        {
+            //If not on create screen return to create screen, otherwise go to TitleScene
+            if (screens[i].screenName == "Create" && screens[i].screen.activeInHierarchy)
+            {
+                BoltNetwork.Shutdown();
+                SceneManager.LoadScene("TitleScene");
+                return;
+            }
+        }
+        //Invoke("ChangeScreenTo(\"Create\")", 2);
+
+            ChangeScreenTo("Create");
+        }
+
+    }
 }
+
 
 [Serializable]
 public struct UIScreens

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6750587086878281416}
   - component: {fileID: 3250976512454731013}
   - component: {fileID: -8767180296026285004}
-  - component: {fileID: 5903600952239655352}
+  - component: {fileID: -4564324696093435009}
   m_Layer: 9
   m_Name: Ankh
   m_TagString: Artefact
@@ -125,8 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0028d2f7b8b6d444698dca294d649af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!135 &5903600952239655352
-SphereCollider:
+--- !u!65 &-4564324696093435009
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -136,5 +136,5 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.6491024
-  m_Center: {x: -0.009995729, y: 0.5525393, z: 0.030514766}
+  m_Size: {x: 2, y: 3, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
