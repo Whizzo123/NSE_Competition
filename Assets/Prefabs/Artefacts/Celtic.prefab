@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2566907612967869314}
   - component: {fileID: -6170492517272583380}
   - component: {fileID: 552467687243015804}
-  - component: {fileID: -8035858017169412704}
+  - component: {fileID: 4326175156711398971}
   m_Layer: 9
   m_Name: Celtic
   m_TagString: Artefact
@@ -125,8 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0028d2f7b8b6d444698dca294d649af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!135 &-8035858017169412704
-SphereCollider:
+--- !u!65 &4326175156711398971
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -136,5 +136,5 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.1604389
-  m_Center: {x: -0.00056720525, y: 0.030382544, z: -0.0018094894}
+  m_Size: {x: 2, y: 3, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}

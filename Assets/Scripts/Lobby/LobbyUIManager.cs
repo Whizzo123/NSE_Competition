@@ -20,6 +20,8 @@ public class LobbyUIManager : GlobalEventListener
 
     public string gameSceneName;
     private string roomName;
+    public bool privateLobby = false;
+    private string password = "null";
 
     [Tooltip("Minimum Required Players To Start")]
     [SerializeField] private int minPlayers = 2;
@@ -31,9 +33,17 @@ public class LobbyUIManager : GlobalEventListener
     private bool randomJoin;
     public bool isCountdown = false;
 
+
+
     public GameObject playerLobbyPrefab;
 
     #endregion
+
+    public override void BoltStartBegin()
+    {
+        BoltNetwork.RegisterTokenClass<ErrorMessages>();
+        BoltNetwork.RegisterTokenClass<ServerInfo>();
+    }
 
     void Start()
     {
@@ -130,10 +140,13 @@ public class LobbyUIManager : GlobalEventListener
             //If all players hit are ready and our count of players is above the minimum we need to start a game
             if (allReady && readyCount >= minPlayers)
             {
+                privateLobby = true;
+                UpdateSession();
                 isCountdown = true;
                 StartCoroutine(ServerCountdownCoroutine());
                 //Set connection to private
                 //BoltMatchmaking.CurrentSession.ConnectionsMax;
+                //BoltMatchmaking.
             }
         }
     }
@@ -183,18 +196,36 @@ public class LobbyUIManager : GlobalEventListener
         //Once either BoltLauncher.StartServer() or BoltLauncher.StartClient() has run
         if (BoltNetwork.IsServer)
         {
-            //If we are the server create the session using the room name
-            BoltMatchmaking.CreateSession(sessionID: roomName);
 
-            //Add a way to create a private session
+            //Uncomment for a private lobby
+            //privateLobby = true;
+            //password = "F";
+
+            //Sets up a lobby with public parameters
+            var customToken = new ServerInfo();
+            customToken.privateSession = privateLobby;
+            customToken.password = password;
+            
+
+            //Add a button to create a private session with a password
+            //if(privatePressed){ change Custom Token}
+
+
+            //If we are the server create the session using the room name
+            BoltMatchmaking.CreateSession(sessionID: roomName, token: customToken);
         }
         else if(BoltNetwork.IsClient)
         {
             //If we are a client connecting decide whether this is a random join or not
             if(randomJoin)
             {
-                //Yes a random join tell Bolt to join a random session
-                BoltMatchmaking.JoinRandomSession();
+                //Joins a random lobby, that is public
+                var customToken = new ServerInfo();
+                customToken.privateSession = privateLobby;
+                customToken.password = password;
+
+                BoltMatchmaking.JoinRandomSession(customToken);
+
             }
             else
             {
@@ -206,7 +237,100 @@ public class LobbyUIManager : GlobalEventListener
         }
     }
 
+    void UpdateSession()
+    {
+        if (BoltNetwork.IsRunning && BoltNetwork.IsServer)
+        {
+        var updateToken = new ServerInfo();
+        updateToken.privateSession = privateLobby;
+        if (password == "null")
+        {
+            string pass = System.DateTime.Now.ToString();
+            updateToken.password = pass;
+        }
 
+
+
+        BoltMatchmaking.UpdateSession(updateToken);
+        }
+        else
+        {
+            BoltLog.Warn("Only the server can update sessions");
+        }
+    }
+
+
+    private bool AuthUser(bool priv, string pass)
+    {
+        if (priv == privateLobby)
+        {
+            if (pass == password)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public override void ConnectRequest(UdpEndPoint endpoint, IProtocolToken token)
+    {
+        //This is called in by the host
+        BoltLog.Warn("Connect Request");
+
+        var userToken = token as ServerInfo;
+
+        if (userToken != null)
+        {
+            if (AuthUser(userToken.privateSession, userToken.password))
+            {
+                BoltNetwork.Accept(endpoint, userToken);
+                return;
+            }
+        }
+
+        ErrorMessages error = new ErrorMessages();
+        error.Error = "Unknown";
+
+        if (BoltMatchmaking.CurrentSession.ConnectionsCurrent == BoltMatchmaking.CurrentSession.ConnectionsMax)
+        {
+            error.Error = "The lobby is full";
+        }
+        else if(password != userToken.password)
+        {
+            error.Error = "The password was wrong";
+        }
+        if (isCountdown && privateLobby)
+        {
+            error.Error = "The lobby has now entered the game";
+        }
+
+        BoltNetwork.Refuse(endpoint, error);
+
+    }
+
+    public override void ConnectRefused(UdpEndPoint endpoint, IProtocolToken token)
+    {
+        //This is called by the refused client
+        BoltLog.Warn("Connection refused!");
+
+        var authToken = token as ErrorMessages;
+        if (authToken != null)
+        {
+            //BoltLog.Warn("Token: {0}-{1}", authToken.Error);
+            Debug.LogError(authToken.Error);
+        }
+    }
+
+    public static void Accept(UdpEndPoint endpoint, IProtocolToken acceptToken)
+    {
+        Debug.LogError("Accepted");
+    }
+
+    public static void Refuse(UdpEndPoint endpoint, IProtocolToken refuseToken)
+    {
+        Debug.LogError("Refuse");
+    }
 
     private UIScreens FindScreenByName(string name)
     {

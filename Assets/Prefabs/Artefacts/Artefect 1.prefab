@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 3322170139644694050}
   - component: {fileID: 3322170139644694049}
   - component: {fileID: 3322170139644694048}
-  - component: {fileID: 3322170139644694063}
   - component: {fileID: 3322170139644694062}
   - component: {fileID: 6314912429928538868}
+  - component: {fileID: 4680024930843006951}
   m_Layer: 0
   m_Name: Artefect 1
   m_TagString: Untagged
@@ -84,19 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &3322170139644694063
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3322170139644694061}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3322170139644694062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,3 +125,16 @@ MonoBehaviour:
   _entityBehaviourQueryOption: 0
   _entityPriorityCalculatorQueryOption: 1
   _entityReplicationFilterQueryOption: 1
+--- !u!65 &4680024930843006951
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3322170139644694061}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}

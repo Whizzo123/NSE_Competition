@@ -46,8 +46,6 @@ public class BrowseScreenUI : GlobalEventListener
 
         noServerFoundText.SetActive(false);
 
-        var i = 0;
-
         foreach (var pair in sessionList)
         {
             var session = pair.Value;
@@ -58,6 +56,8 @@ public class BrowseScreenUI : GlobalEventListener
             { 
                 if (OnClickJoinSession != null) OnClickJoinSession.Invoke(session); 
             });
+
+           
         }
     }
 }

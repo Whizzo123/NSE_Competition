@@ -12,13 +12,13 @@ public class NetworkCallbacks : GlobalEventListener
     public override void OnEvent(ArtefactDisable evnt)
     {
         BoltLog.Info("Called OnEvent ArtefactDisable");
-        evnt.artefactToDisable.gameObject.GetComponent<SphereCollider>().enabled = false;
+        evnt.artefactToDisable.gameObject.GetComponent<BoxCollider>().enabled = false;
         evnt.artefactToDisable.gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 
     public override void OnEvent(ArtefactEnable evnt)
     {
-        evnt.artefact.gameObject.GetComponent<SphereCollider>().enabled = true;
+        evnt.artefact.gameObject.GetComponent<BoxCollider>().enabled = true;
         evnt.artefact.gameObject.GetComponent<MeshRenderer>().enabled = true;
     }
 
@@ -29,7 +29,7 @@ public class NetworkCallbacks : GlobalEventListener
     {
         BoltLog.Info("Called OnEvent AbilityPickupDisable");
         evnt.AbilityEntity.gameObject.GetComponent<MeshRenderer>().enabled = false;
-        evnt.AbilityEntity.gameObject.GetComponent<SphereCollider>().enabled = false;
+        evnt.AbilityEntity.gameObject.GetComponent<BoxCollider>().enabled = false;
     }
 
     public override void OnEvent(ScoreUpdate evnt)
@@ -203,7 +203,7 @@ public class NetworkCallbacks : GlobalEventListener
             if (item.transform.GetComponent<ArtefactBehaviour>())
             {
                 item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
-                item.transform.gameObject.GetComponent<SphereCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
                 item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
                 /*ab = item.transform.gameObject.GetComponent<ArtefactBehaviour>();
                 var req = ArtefactEnable.Create();
@@ -213,7 +213,7 @@ public class NetworkCallbacks : GlobalEventListener
             }
             else if (item.transform.GetComponent<AbilityPickup>())
             {
-                item.transform.gameObject.GetComponent<SphereCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
                 item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
                 item.transform.GetComponent<AbilityPickup>().enabledForPickup = true;
             }

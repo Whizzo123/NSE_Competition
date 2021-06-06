@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6767751282043283440}
   - component: {fileID: -4149822959941459747}
   - component: {fileID: 7865791788089855507}
-  - component: {fileID: -555304112163448755}
+  - component: {fileID: 2752408079789902713}
   m_Layer: 9
   m_Name: Gem2
   m_TagString: Artefact
@@ -125,8 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0028d2f7b8b6d444698dca294d649af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!135 &-555304112163448755
-SphereCollider:
+--- !u!65 &2752408079789902713
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -136,5 +136,5 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.13785811
-  m_Center: {x: 0.000034078956, y: -0.000012353063, z: -0.005710028}
+  m_Size: {x: 2, y: 3, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
