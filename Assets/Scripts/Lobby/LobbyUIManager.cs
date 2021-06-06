@@ -187,19 +187,20 @@ public class LobbyUIManager : GlobalEventListener
     }
 
 
+    #region BOLTNETWORK_START_AUTHORISATION_JOIN_REFUSAL
 
     /// <summary>
     /// Called once the bolt network has finished starting called whenever either BoltLauncher.StartServer() or BoltLauncher.StartClient() is done
     /// </summary>
     public override void BoltStartDone()
     {
-        //Once either BoltLauncher.StartServer() or BoltLauncher.StartClient() has run
         if (BoltNetwork.IsServer)
         {
+            //Creates a lobby
 
             //Uncomment for a private lobby
-            //privateLobby = true;
-            //password = "F";
+            ///privateLobby = true;
+            ///password = "F";
 
             //Sets up a lobby with public parameters
             var customToken = new ServerInfo();
@@ -211,7 +212,6 @@ public class LobbyUIManager : GlobalEventListener
             //if(privatePressed){ change Custom Token}
 
 
-            //If we are the server create the session using the room name
             BoltMatchmaking.CreateSession(sessionID: roomName, token: customToken);
         }
         else if(BoltNetwork.IsClient)
@@ -239,6 +239,7 @@ public class LobbyUIManager : GlobalEventListener
 
     void UpdateSession()
     {
+
         if (BoltNetwork.IsRunning && BoltNetwork.IsServer)
         {
         var updateToken = new ServerInfo();
@@ -250,8 +251,8 @@ public class LobbyUIManager : GlobalEventListener
         }
 
 
-
-        BoltMatchmaking.UpdateSession(updateToken);
+            //This createes a visual bug where it adds a player to the lobby screen
+            BoltMatchmaking.UpdateSession(updateToken);
         }
         else
         {
@@ -259,7 +260,9 @@ public class LobbyUIManager : GlobalEventListener
         }
     }
 
-
+    /// <summary>
+    /// If priv == privateLobby, pass == password return true, else false
+    /// </summary>
     private bool AuthUser(bool priv, string pass)
     {
         if (priv == privateLobby)
@@ -273,13 +276,14 @@ public class LobbyUIManager : GlobalEventListener
         return false;
     }
 
+    //Called when a client wants to connect, by the host
     public override void ConnectRequest(UdpEndPoint endpoint, IProtocolToken token)
     {
         //This is called in by the host
         BoltLog.Warn("Connect Request");
 
+        //If the client info sent is the same as the host server info, accept the client else send an error message
         var userToken = token as ServerInfo;
-
         if (userToken != null)
         {
             if (AuthUser(userToken.privateSession, userToken.password))
@@ -291,7 +295,7 @@ public class LobbyUIManager : GlobalEventListener
 
         ErrorMessages error = new ErrorMessages();
         error.Error = "Unknown";
-
+        
         if (BoltMatchmaking.CurrentSession.ConnectionsCurrent == BoltMatchmaking.CurrentSession.ConnectionsMax)
         {
             error.Error = "The lobby is full";
@@ -304,11 +308,11 @@ public class LobbyUIManager : GlobalEventListener
         {
             error.Error = "The lobby has now entered the game";
         }
-
         BoltNetwork.Refuse(endpoint, error);
 
     }
 
+    //Called when the client is refused, by the client
     public override void ConnectRefused(UdpEndPoint endpoint, IProtocolToken token)
     {
         //This is called by the refused client
@@ -317,20 +321,45 @@ public class LobbyUIManager : GlobalEventListener
         var authToken = token as ErrorMessages;
         if (authToken != null)
         {
-            //BoltLog.Warn("Token: {0}-{1}", authToken.Error);
             Debug.LogError(authToken.Error);
+        }
+        BoltNetwork.Shutdown();
+    }
+
+    //Called when either server or client connects
+    public override void Connected(BoltConnection connection)
+    {
+        if (BoltNetwork.IsClient)
+        {
+            BoltLog.Info("Connected Client: {0}", connection);
+            //Create new player object and add it to room
+            LobbyPlayer player = new LobbyPlayer();
+            player.connection = connection;
+            roomScreen.AddPlayer(player);
+            ChangeScreenTo("Room");
+        }
+        else if (BoltNetwork.IsServer)
+        {
+            BoltLog.Info("Connected Server: {0}", connection);
+            //Create player on the server and assign control to local machine
+            BoltEntity player = BoltNetwork.Instantiate(BoltPrefabs.LobbyPlayerInfo);
+            player.AssignControl(connection);
+            BoltLog.Info("Server assign control connection: " + connection.ConnectionId);
         }
     }
 
+    //I'm really not sure if these are even called.
     public static void Accept(UdpEndPoint endpoint, IProtocolToken acceptToken)
     {
         Debug.LogError("Accepted");
     }
-
     public static void Refuse(UdpEndPoint endpoint, IProtocolToken refuseToken)
     {
         Debug.LogError("Refuse");
+
     }
+
+    #endregion
 
     private UIScreens FindScreenByName(string name)
     {
@@ -356,27 +385,7 @@ public class LobbyUIManager : GlobalEventListener
         player.TakeControl();
     }
 
-    //Called when either server or client connects
-    public override void Connected(BoltConnection connection)
-    {
-        if (BoltNetwork.IsClient)
-        {
-            BoltLog.Info("Connected Client: {0}", connection);
-            //Create new player object and add it to room
-            LobbyPlayer player = new LobbyPlayer();
-            player.connection = connection;
-            roomScreen.AddPlayer(player);
-            ChangeScreenTo("Room");
-        }
-        else if (BoltNetwork.IsServer)
-        {
-            BoltLog.Info("Connected Server: {0}", connection);
-            //Create player on the server and assign control to local machine
-            BoltEntity player = BoltNetwork.Instantiate(BoltPrefabs.LobbyPlayerInfo);
-            player.AssignControl(connection);
-            BoltLog.Info("Server assign control connection: " + connection.ConnectionId);
-        }
-    }
+
 
     //Called once new gameobject has been instantiated with the bolt entity component added to it
     public override void EntityAttached(BoltEntity entity)
