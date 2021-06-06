@@ -288,22 +288,33 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 Debug.LogError("Artefact count " + targetedArtefacts.Count);
                 if (targetedArtefacts.Count != 0)
                 {
-                    Debug.Log("Picking up Artefacts");
-                   // targetedArtefact.Pickup(this);
+                    if (FindEmptyInventorySlot() != -1)
+                    {
+                        Debug.Log("Picking up Artefacts");
+                        // targetedArtefact.Pickup(this);
 
                         // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
                         foreach (ArtefactBehaviour item in targetedArtefacts)
                         {
-                        item.Pickup(this);
-                        FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
+                            item.Pickup(this);
+                            FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         }
 
-                    targetedArtefacts.Clear();
+                        targetedArtefacts.Clear();
+                    }
+                    else
+                    {
+                        FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
+                    }
                 }
                 else if (gameStash != null && InventoryNotEmpty())
                 {
                     gameStash.AddToStashScores(this);
                     FindObjectOfType<AudioManager>().PlaySound("Stash");
+                }
+                else if(gameStash != null && !InventoryNotEmpty())
+                {
+                    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
                 }
                 else if (targetedAbilityPickup != null)
                 {
@@ -320,7 +331,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 if (targetedPlayerToStealFrom != null)
                 {
                     BoltLog.Info("Has a target");
-                    if (targetedPlayerToStealFrom.IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false)
+                    if (IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false && targetedPlayerToStealFrom.InventoryNotEmpty())
                     {
                         BoltLog.Info("Attempting steal");
                         InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
@@ -339,6 +350,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                         request.ItemName = randomArtefact.ItemName;
                         request.ItemPoints = randomArtefact.ItemPoints;
                         request.Send();
+                    }
+                    else
+                    {
+                        FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
                     }
                 }
             }
@@ -551,10 +566,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             else if (collider.gameObject.GetComponent<Stash>())
             {
                 gameStash = collider.gameObject.GetComponent<Stash>();
+                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
             }
             else if (collider.gameObject.GetComponent<PlayerController>())
             {
                 targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
+                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
             }
             else if (collider.gameObject.GetComponent<AbilityPickup>())
             {
@@ -585,10 +602,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 else if (gameStash != null && collider.gameObject == gameStash.gameObject)
                 {
                     gameStash = null;
+                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
                 else if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
                 {
                     targetedPlayerToStealFrom = null;
+                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
                 else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
                 {

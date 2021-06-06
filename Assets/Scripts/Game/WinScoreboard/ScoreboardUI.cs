@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ScoreboardUI : MonoBehaviour
 {
@@ -31,9 +33,30 @@ public class ScoreboardUI : MonoBehaviour
         ScoreboardTabUI tab = GetTab(name);
         tab.EditName(name);
         tab.EditScore(FindObjectOfType<Stash>().FindScoreForPlayer(name));
+        ReshuffleScoreboard();
     }
 
-
+    private void ReshuffleScoreboard()
+    {
+        int siblingIndex = 0;
+        List<ScoreboardTabUI> children = transform.GetComponentsInChildren<ScoreboardTabUI>().ToList<ScoreboardTabUI>();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            int maxScore = 0;
+            int index = 0;
+            for (int j = 0; j < children.Count; j++)
+            {
+                if(Int32.Parse(children[j].playerScore.text) > maxScore)
+                {
+                    maxScore = Int32.Parse(children[j].playerScore.text);
+                    index = j;
+                }
+            }
+            children[index].transform.SetSiblingIndex(siblingIndex);
+            children.RemoveAt(index);
+            siblingIndex++;
+        }
+    }
 
     /// <summary>
     /// Grab uielement for on scoreboard that is linked to player name
