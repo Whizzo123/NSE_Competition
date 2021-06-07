@@ -12,6 +12,7 @@ public class Camouflage : Powerup
 
     public override void Use()
     {
+        BoltNetwork.Instantiate(BoltPrefabs.Invisibility_PA, GetPlayerToEmpower().gameObject.transform.position, Quaternion.identity);
         var request = ToggleCamouflage.Create();
         request.Target = GetPlayerToEmpower().entity;
         request.Toggle = false;
