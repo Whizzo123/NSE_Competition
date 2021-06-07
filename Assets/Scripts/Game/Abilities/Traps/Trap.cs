@@ -3,11 +3,12 @@
 public class Trap : Ability
 {
     protected PlayerController placingPlayer;
+    private int useCount;
 
     public Trap(string abilityName, string abilityDescription, int abilityCost, AbilityUseTypes abilityType, float amountToCharge = 0) 
         : base(abilityName, abilityDescription, abilityCost, abilityType, amountToCharge)
     {
-
+        useCount = 0;
     }
 
     public override void Use()
@@ -17,11 +18,12 @@ public class Trap : Ability
         request.Target = placingPlayer.entity;
         request.Send();
         base.Use();
+        useCount++;
     }
 
     public override void UpdateAbility()
     {
-        if(used)
+        if(used && useCount >= 3)
         {
             //Destroy from inventory
             placingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
