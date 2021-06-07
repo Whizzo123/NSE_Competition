@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Bolt;
 
-public class AbilityPickup : MonoBehaviour
+public class AbilityPickup : EntityBehaviour<IAbilityPickup>
 {
 
     public string abilityName;
@@ -14,19 +15,19 @@ public class AbilityPickup : MonoBehaviour
         this.gameObject.transform.rotation = rotation;
     }
 
-    /*public override void Attached()
+    public override void Attached()
     {
         BoltLog.Info("Attached the ability pickup dude");
         if (entity.gameObject == null)
             BoltLog.Error("Issuse no game object attached to this entity");
-    }*/
+    }
 
 
-    /*public void SetAbilityOnPickup(string abilityName)
+    public void SetAbilityOnPickup(string abilityName)
     {
         this.abilityName = abilityName;    //This line was just for testing right?
         state.AbilityName = abilityName;
-    }*/
+    }
 
     public void PickupAbility(PlayerController player)
     {
@@ -36,11 +37,11 @@ public class AbilityPickup : MonoBehaviour
             Destroy(this);
         }
 
-        /*
+        
         //Send off event to get rid of this thing
         var request = AbilityPickupDisable.Create();
         request.AbilityEntity = this.entity;
-        request.Send();*/
+        request.Send();
     }
 
 
