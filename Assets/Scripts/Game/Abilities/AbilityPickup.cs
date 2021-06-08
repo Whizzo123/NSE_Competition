@@ -19,7 +19,7 @@ public class AbilityPickup : EntityBehaviour<IAbilityPickup>
     {
         BoltLog.Info("Attached the ability pickup dude");
         if (entity.gameObject == null)
-            BoltLog.Error("Issuse no game object attached to this entity");
+            BoltLog.Error("Issue no game object attached to this entity");
     }
 
 

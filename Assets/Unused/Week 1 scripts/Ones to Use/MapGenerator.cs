@@ -73,6 +73,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         if (BoltNetwork.IsServer)
         {
             ArtefactSpawner();
+
         }
     }
 

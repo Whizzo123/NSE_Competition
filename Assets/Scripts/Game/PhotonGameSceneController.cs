@@ -18,6 +18,10 @@ public class PhotonGameSceneController : GlobalEventListener
     private bool inCountdown = false;
     private float winWaitTime = 10;
     private float currentWinWaitTime = 0;
+    private bool abilityPickupsSpawned = false;
+    private float abilitySpawnTime = 30;
+    private float currentAbilitySpawnTime = 0;
+    private int counter = 0;
 
     public override void SceneLoadLocalDone(string scene)
     {
@@ -98,6 +102,15 @@ public class PhotonGameSceneController : GlobalEventListener
             currentWinWaitTime = winWaitTime;
             StartCoroutine(RunWinCountdown());
         }
+
+        if (BoltNetwork.IsServer && !abilityPickupsSpawned)
+        {
+            Debug.LogWarning("Calling method");
+            currentAbilitySpawnTime = abilitySpawnTime;
+            StartCoroutine(RunAbilityPickupSpawnCountdown());
+        }
+        else if (abilityPickupsSpawned)
+            StopCoroutine(RunAbilityPickupSpawnCountdown());
     }
 
     private IEnumerator RunLobbyReadyCountdown()
@@ -125,6 +138,36 @@ public class PhotonGameSceneController : GlobalEventListener
         LoadoutScreenDisable request = LoadoutScreenDisable.Create();
         request.Send();
         loadoutChoiceComplete = true;
+    }
+
+    private IEnumerator RunAbilityPickupSpawnCountdown()
+    {
+        yield return new WaitForSeconds(30);
+        //Do event stuff y -> -3.5
+        if (abilityPickupsSpawned)
+            yield return null;
+        else
+        {
+            SpawnAbilityCharges();
+            counter++;
+            Debug.LogWarning("Counter: " + counter);
+            Debug.LogWarning("ABS:" + abilityPickupsSpawned);
+        }
+        
+    }
+
+    private void SpawnAbilityCharges()
+    {
+        string[] traps = FindObjectOfType<AbilityRegister>().GetTrapList();
+        AbilityPickupSpawn request = AbilityPickupSpawn.Create();
+        request.SpawnLocationOne = FindRandomPointOnCircle(new Vector2(4, -20), 11, Random.Range(0, 360));
+        request.AbilityOneName = traps[Random.Range(0, traps.Length - 1)];
+        request.SpawnLocationTwo = FindRandomPointOnCircle(new Vector2(4, -20), 11, Random.Range(0, 360));
+        request.AbilityTwoName = traps[Random.Range(0, traps.Length - 1)];
+        request.SpawnLocationThree = FindRandomPointOnCircle(new Vector2(4, -20), 11, Random.Range(0, 360));
+        request.AbilityThreeName = traps[Random.Range(0, traps.Length - 1)];
+        request.Send();
+        abilityPickupsSpawned = true;
     }
 
     private IEnumerator RunGameCountdown()
@@ -188,5 +231,13 @@ public class PhotonGameSceneController : GlobalEventListener
             }
         }
         BoltNetwork.LoadScene("GameScene");
+    }
+
+    private Vector2 FindRandomPointOnCircle(Vector2 centerCirclePoint, float circleRadius, int angle)
+    {
+        float x = circleRadius * Mathf.Cos(angle) + centerCirclePoint.x;
+        float y = circleRadius * Mathf.Sin(angle) + centerCirclePoint.y;
+
+        return new Vector2(x, y);
     }
 }
