@@ -307,6 +307,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                         FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
                     }
                 }
+                else if (targetedAbilityPickup != null)
+                {
+                    targetedAbilityPickup.PickupAbility(this);
+                    targetedAbilityPickup = null;
+                }
                 else if (gameStash != null && InventoryNotEmpty())
                 {
                     gameStash.AddToStashScores(this);
@@ -315,11 +320,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 else if(gameStash != null && !InventoryNotEmpty())
                 {
                     FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
-                }
-                else if (targetedAbilityPickup != null)
-                {
-                    targetedAbilityPickup.PickupAbility(this);
-                    targetedAbilityPickup = null;
                 }
             }
             #endregion

@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Bolt;
 
-public class AbilityPickup : MonoBehaviour
+public class AbilityPickup : EntityBehaviour<IAbilityPickup>
 {
 
     public string abilityName;
-    public bool enabledForPickup = false;
+    public bool enabledForPickup = true;
     private Quaternion rotation = Quaternion.Euler(45, 45, 0);
     public void FixedUpdate()
     {
@@ -14,33 +15,36 @@ public class AbilityPickup : MonoBehaviour
         this.gameObject.transform.rotation = rotation;
     }
 
-    /*public override void Attached()
+    public override void Attached()
     {
         BoltLog.Info("Attached the ability pickup dude");
         if (entity.gameObject == null)
-            BoltLog.Error("Issuse no game object attached to this entity");
-    }*/
+            BoltLog.Error("Issue no game object attached to this entity");
+    }
 
 
-    /*public void SetAbilityOnPickup(string abilityName)
+    public void SetAbilityOnPickup(string abilityName)
     {
+        Debug.LogWarning("Running ability setup");
         this.abilityName = abilityName;    //This line was just for testing right?
         state.AbilityName = abilityName;
-    }*/
+        this.enabledForPickup = true;
+    }
 
     public void PickupAbility(PlayerController player)
     {
         if (enabledForPickup)
         {
+            FindObjectOfType<AbilitySlotBarUI>().AddAbilityToLoadoutBar(abilityName);
             player.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(abilityName));
-            Destroy(this);
+            //Destroy(this);
         }
 
-        /*
+        
         //Send off event to get rid of this thing
         var request = AbilityPickupDisable.Create();
         request.AbilityEntity = this.entity;
-        request.Send();*/
+        request.Send();
     }
 
 

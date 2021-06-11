@@ -24,6 +24,23 @@ public class AbilitySlotBarUI : MonoBehaviour
         }
     }
 
+    // Slots method to grab empty slot or slot to recharge that is called on ability pickup from AbilityPickup.PickupAbility()
+    public void AddAbilityToLoadoutBar(string abilityName)
+    {
+        Trap trap = (Trap)PlayerController.localPlayer.abilityInventory.FindAbility(abilityName);
+        if (trap == null)
+        {
+            foreach (AbilitySlotUI slot in slots)
+            {
+                if (slot.GetAbilityName() == null || slot.GetAbilityName() == string.Empty)
+                {
+                    slot.SetAbilityName(abilityName);
+                    return;
+                }
+            }
+        }
+    }
+
     public void SetSlotChargingState(string name, bool state)
     {
         GetSlot(name).IsCharging(state);

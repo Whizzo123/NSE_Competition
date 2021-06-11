@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 
 public class AbilityRegister : MonoBehaviour
@@ -34,6 +35,11 @@ public class AbilityRegister : MonoBehaviour
         }
 
         return loadoutList;
+    }
+
+    public string[] GetTrapList()
+    {
+        return traps.Keys.ToArray<string>();
     }
 
     public Ability Clone(string name)

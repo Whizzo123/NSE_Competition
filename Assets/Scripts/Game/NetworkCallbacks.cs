@@ -27,9 +27,8 @@ public class NetworkCallbacks : GlobalEventListener
     #region AbilityPickup/Score/Inventory/Loadout
     public override void OnEvent(AbilityPickupDisable evnt)
     {
-        BoltLog.Info("Called OnEvent AbilityPickupDisable");
         evnt.AbilityEntity.gameObject.GetComponent<MeshRenderer>().enabled = false;
-        evnt.AbilityEntity.gameObject.GetComponent<BoxCollider>().enabled = false;
+        evnt.AbilityEntity.gameObject.GetComponent<SphereCollider>().enabled = false;
     }
 
     public override void OnEvent(ScoreUpdate evnt)
@@ -66,6 +65,18 @@ public class NetworkCallbacks : GlobalEventListener
 
     #endregion
 
+    public override void OnEvent(AbilityPickupSpawn evnt)
+    {
+        if (BoltNetwork.IsServer)
+        {
+            BoltEntity entityOne = BoltNetwork.Instantiate(BoltPrefabs.AbilityPickup, new Vector3(evnt.SpawnLocationOne.x, -2f, evnt.SpawnLocationOne.y), Quaternion.identity);
+            entityOne.GetComponent<AbilityPickup>().SetAbilityOnPickup(evnt.AbilityOneName);
+            BoltEntity entityTwo = BoltNetwork.Instantiate(BoltPrefabs.AbilityPickup, new Vector3(evnt.SpawnLocationTwo.x, -2f, evnt.SpawnLocationTwo.y), Quaternion.identity);
+            entityTwo.GetComponent<AbilityPickup>().SetAbilityOnPickup(evnt.AbilityTwoName);
+            BoltEntity entityThree = BoltNetwork.Instantiate(BoltPrefabs.AbilityPickup, new Vector3(evnt.SpawnLocationThree.x, -2f, evnt.SpawnLocationThree.y), Quaternion.identity);
+            entityThree.GetComponent<AbilityPickup>().SetAbilityOnPickup(evnt.AbilityThreeName);
+        }
+    }
 
     public override void OnEvent(StunEnemyPlayer evnt)
     {

@@ -35,4 +35,9 @@ public class Trap : Ability
         placingPlayer = player;
     }
 
+    public void ResetUseCount()
+    {
+        useCount = 0;
+    }
+
 }
