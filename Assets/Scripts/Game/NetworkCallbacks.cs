@@ -27,9 +27,8 @@ public class NetworkCallbacks : GlobalEventListener
     #region AbilityPickup/Score/Inventory/Loadout
     public override void OnEvent(AbilityPickupDisable evnt)
     {
-        BoltLog.Info("Called OnEvent AbilityPickupDisable");
         evnt.AbilityEntity.gameObject.GetComponent<MeshRenderer>().enabled = false;
-        evnt.AbilityEntity.gameObject.GetComponent<BoxCollider>().enabled = false;
+        evnt.AbilityEntity.gameObject.GetComponent<SphereCollider>().enabled = false;
     }
 
     public override void OnEvent(ScoreUpdate evnt)

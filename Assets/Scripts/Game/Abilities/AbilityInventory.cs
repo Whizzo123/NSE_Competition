@@ -71,11 +71,19 @@ public class AbilityInventory
         }
         else if(ability.GetType().IsSubclassOf(typeof(Trap)))
         {
-            Debug.Log("Setting trap player");
-            Trap trap = (Trap)ability;
-            trap.SetInventory(this);
-            trap.SetPlacingPlayer(player);
-            abilities.Add(trap);
+            if (FindAbility(ability.GetAbilityName()) == null)
+            {
+                Debug.Log("Setting trap player");
+                Trap trap = (Trap)ability;
+                trap.SetInventory(this);
+                trap.SetPlacingPlayer(player);
+                abilities.Add(trap);
+            }
+            else
+            {
+                Trap trap = (Trap)FindAbility(ability.GetAbilityName());
+                trap.ResetUseCount();
+            }
         }
         else
         {

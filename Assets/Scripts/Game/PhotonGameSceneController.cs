@@ -149,11 +149,7 @@ public class PhotonGameSceneController : GlobalEventListener
         else
         {
             SpawnAbilityCharges();
-            counter++;
-            Debug.LogWarning("Counter: " + counter);
-            Debug.LogWarning("ABS:" + abilityPickupsSpawned);
         }
-        
     }
 
     private void SpawnAbilityCharges()

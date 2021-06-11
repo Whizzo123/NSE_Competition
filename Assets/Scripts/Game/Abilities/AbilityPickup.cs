@@ -7,7 +7,7 @@ public class AbilityPickup : EntityBehaviour<IAbilityPickup>
 {
 
     public string abilityName;
-    public bool enabledForPickup = false;
+    public bool enabledForPickup = true;
     private Quaternion rotation = Quaternion.Euler(45, 45, 0);
     public void FixedUpdate()
     {
@@ -25,16 +25,19 @@ public class AbilityPickup : EntityBehaviour<IAbilityPickup>
 
     public void SetAbilityOnPickup(string abilityName)
     {
+        Debug.LogWarning("Running ability setup");
         this.abilityName = abilityName;    //This line was just for testing right?
         state.AbilityName = abilityName;
+        this.enabledForPickup = true;
     }
 
     public void PickupAbility(PlayerController player)
     {
         if (enabledForPickup)
         {
+            FindObjectOfType<AbilitySlotBarUI>().AddAbilityToLoadoutBar(abilityName);
             player.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(abilityName));
-            Destroy(this);
+            //Destroy(this);
         }
 
         
