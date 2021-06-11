@@ -12,10 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 588487878, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
   m_Name: BoltProtocolTokenRegistry
   m_EditorClassIdentifier: 
-  protocolTokenRegistry:
-  - DisplayName: ErrorMessages
-    AssemblyName: ErrorMessages, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  - DisplayName: ServerInfo
-    AssemblyName: ServerInfo, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+  protocolTokenRegistry: []
