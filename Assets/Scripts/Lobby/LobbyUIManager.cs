@@ -20,8 +20,10 @@ public class LobbyUIManager : GlobalEventListener
 
     public string gameSceneName;
     private string roomName;
+
     public bool privateLobby = false;
     private string password = "null";
+    private double versionNo = 1.0;
 
     [Tooltip("Minimum Required Players To Start")]
     [SerializeField] private int minPlayers = 2;
@@ -197,22 +199,28 @@ public class LobbyUIManager : GlobalEventListener
         if (BoltNetwork.IsServer)
         {
             //Creates a lobby
+            bool f = false;
+            var g = new Bolt.Photon.PhotonRoomProperties();
+            g.AddRoomProperty("Priv", f, true);
+            //customToken.AddRoomProperty("t", gameType);
+
 
             //Uncomment for a private lobby
-            ///privateLobby = true;
-            ///password = "F";
+            //privateLobby = true;
+            //password = "Fabcd";
 
             //Sets up a lobby with public parameters
             var customToken = new ServerInfo();
             customToken.privateSession = privateLobby;
             customToken.password = password;
-            
+            customToken.versionNumber = versionNo;
 
             //Add a button to create a private session with a password
             //if(privatePressed){ change Custom Token}
 
 
             BoltMatchmaking.CreateSession(sessionID: roomName, token: customToken);
+            
         }
         else if(BoltNetwork.IsClient)
         {
@@ -223,6 +231,7 @@ public class LobbyUIManager : GlobalEventListener
                 var customToken = new ServerInfo();
                 customToken.privateSession = privateLobby;
                 customToken.password = password;
+                customToken.versionNumber = versionNo;
 
                 BoltMatchmaking.JoinRandomSession(customToken);
 
@@ -263,16 +272,19 @@ public class LobbyUIManager : GlobalEventListener
     /// <summary>
     /// If priv == privateLobby, pass == password return true, else false
     /// </summary>
-    private bool AuthUser(bool priv, string pass)
+    private bool AuthUser(bool priv, string pass, double vers)
     {
-        if (priv == privateLobby)
+        if (vers == versionNo)
         {
-            if (pass == password)
+            if (priv == privateLobby)
             {
-                return true;
+                if (pass == password)
+                {
+                    return true;
+                }
             }
         }
-
+        
         return false;
     }
 
@@ -286,7 +298,7 @@ public class LobbyUIManager : GlobalEventListener
         var userToken = token as ServerInfo;
         if (userToken != null)
         {
-            if (AuthUser(userToken.privateSession, userToken.password))
+            if (AuthUser(userToken.privateSession, userToken.password, userToken.versionNumber))
             {
                 BoltNetwork.Accept(endpoint, userToken);
                 return;
@@ -499,28 +511,37 @@ public class LobbyUIManager : GlobalEventListener
 
         FindObjectOfType<AudioManager>().PlaySound("Click");
         //If we are not counting down to play, we will disconnect and/or return to the create screen or/and return to the title
-        if (!isCountdown)
-        {
-
-            //In Lobby
-        if (BoltNetwork.IsConnected || BoltNetwork.IsServer)
-        {
-            BoltNetwork.Shutdown();
-        }
-
+        bool createScreen = false;
         for (int i = 0; i < screens.Length; i++)
         {
             //If not on create screen return to create screen, otherwise go to TitleScene
-            if (screens[i].screenName == "Create" && screens[i].screen.activeInHierarchy)
+            if (screens[i].screenName == "Browse" && screens[i].screen.activeInHierarchy)
             {
-                BoltNetwork.Shutdown();
-                SceneManager.LoadScene("TitleScene");
-                return;
+                createScreen = true;
             }
         }
-        //Invoke("ChangeScreenTo(\"Create\")", 2);
+        if (!isCountdown || createScreen)
+        {
 
-            ChangeScreenTo("Create");
+            //In Lobby
+            if (BoltNetwork.IsConnected || BoltNetwork.IsServer)
+            {
+            BoltNetwork.Shutdown();
+            }
+
+            for (int i = 0; i < screens.Length; i++)
+            {
+                //If not on create screen return to create screen, otherwise go to TitleScene
+                if (screens[i].screenName == "Create" && screens[i].screen.activeInHierarchy)
+                {
+                    BoltNetwork.Shutdown();
+                    SceneManager.LoadScene("TitleScene");
+                    return;
+                }
+            }
+            //Invoke("ChangeScreenTo(\"Create\")", 2);
+
+                ChangeScreenTo("Create");
         }
 
     }

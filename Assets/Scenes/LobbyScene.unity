@@ -833,8 +833,10 @@ MonoBehaviour:
   - screenName: Room
     screen: {fileID: 602581311}
   gameSceneName: GameScene
+  privateLobby: 0
   minPlayers: 2
   prematchCountdown: 5
+  isCountdown: 0
   playerLobbyPrefab: {fileID: 795114186693884625, guid: 43edba4bcb587804291afe955648a2fb, type: 3}
 --- !u!1 &601909426
 GameObject:
@@ -2024,6 +2026,7 @@ MonoBehaviour:
   sessionListObjectPrefab: {fileID: 9006002583616740794, guid: 093a02644966be84aa362b6f352fbecf, type: 3}
   noServerFoundText: {fileID: 755229902}
   serverList: {fileID: 65857039}
+  versionNo: 1
 --- !u!1 &1842277867
 GameObject:
   m_ObjectHideFlags: 0
