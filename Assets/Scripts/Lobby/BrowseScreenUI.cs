@@ -6,19 +6,18 @@ using Bolt.Matchmaking;
 using UdpKit;
 using System;
 
-public class BrowseScreenUI : GlobalEventListener
+public class BrowseScreenUI : NetworkConnections
 {
     #region Variables
     public GameObject sessionListObjectPrefab;
     public GameObject noServerFoundText;
     public GameObject serverList;
 
-
-    //Must update here and in LobbyUIManager
-    public double versionNo = 1.0;
-
-    public event Action<UdpSession> OnClickJoinSession;
+    public event Action<UdpSession, IProtocolToken> OnClickJoinSession;
     #endregion 
+
+
+
 
     /// <summary>
     /// Resets UI by destroying the old outdated server list uielements
@@ -33,10 +32,6 @@ public class BrowseScreenUI : GlobalEventListener
         }
     }
 
-    public override void BoltStartBegin()
-    {
-        BoltNetwork.RegisterTokenClass<ServerInfo>();
-    }
 
     /// <summary>
     /// Updated frequently with all servers hosted currently on the bolt network
@@ -63,7 +58,7 @@ public class BrowseScreenUI : GlobalEventListener
             //Grabs the token for the session
             var customToken = udpSession.HostData.ToToken() as ServerInfo;
             //Searches for any lobby that is in the current version.
-            if (customToken.versionNumber == versionNo)
+            if (customToken.versionNumber == versionNo && customToken.joinableSession == true)
             {
                     var ses = session.Value;
                     GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
@@ -71,13 +66,14 @@ public class BrowseScreenUI : GlobalEventListener
                     ServerListRoomUI serverEntryUI = serverEntryGO.GetComponent<ServerListRoomUI>();
                     serverEntryUI.Populate(ses, UnityEngine.Random.ColorHSV(), () =>
                     {
-                        if (OnClickJoinSession != null) OnClickJoinSession.Invoke(ses);
+                        if (OnClickJoinSession != null) OnClickJoinSession.Invoke(ses, customToken);
                     });
             }
 
         }
 
     }
+
 
     #region dedcode
     /*
