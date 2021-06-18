@@ -339,7 +339,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                         int indexToRemove = -1;
                         for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
                         {
-                            if (targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
+                            if (targetedPlayerToStealFrom.state.Inventory[i].ItemName != string.Empty && targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
                             {
                                 indexToRemove = i;
                             }
