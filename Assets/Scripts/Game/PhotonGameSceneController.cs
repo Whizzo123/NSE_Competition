@@ -92,7 +92,7 @@ public class PhotonGameSceneController : GlobalEventListener
                     request.Send();
                     displayedWinScreen = true;
 
-                    //////////////////////////////////////////////Add in return to title
+                    StartCoroutine(WaitThenReturnToTitle(5.0f));
                 }
             }
         }
@@ -194,19 +194,22 @@ public class PhotonGameSceneController : GlobalEventListener
         request.Send();
         displayedWinScreen = true;
 
+        StartCoroutine(WaitThenReturnToTitle(5.0f));
+    }
 
-        currentRunningGameTime = 5;
+    private IEnumerator WaitThenReturnToTitle(float waitTime)
+    {
+        float time = waitTime;
 
-        while (currentRunningGameTime > 0)
+        while (time > 0)
         {
             yield return null;
 
-            currentRunningGameTime -= Time.deltaTime;
+            time -= Time.deltaTime;
         }
 
         var end = ReturnEveryoneToTitle.Create();
         end.Send();
-
     }
 
     private IEnumerator RunWinCountdown()

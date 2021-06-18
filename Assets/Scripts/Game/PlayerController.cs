@@ -282,6 +282,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             }
             #endregion
 
+           // if (Input.GetKey(KeyCode.P))
+           // {
+           //     AddToInventory("NAME", 9999);
+           // }
+
             #region Artefact interaction
             if (Input.GetKeyDown(KeyCode.E))
             {
