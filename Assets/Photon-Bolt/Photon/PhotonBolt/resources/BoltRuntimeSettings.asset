@@ -19,7 +19,7 @@ MonoBehaviour:
     maxEntityPriority: 65536
     maxPropertyPriority: 2048
     scopeMode: 0
-    logTargets: 3
+    logTargets: 1
     disableDejitterBuffer: 0
     clientSendRate: 3
     clientDejitterDelay: 6
@@ -29,7 +29,7 @@ MonoBehaviour:
     serverDejitterDelay: 6
     serverDejitterDelayMin: 3
     serverDejitterDelayMax: 9
-    serverConnectionLimit: 8
+    serverConnectionLimit: 5
     serverConnectionAcceptMode: 1
     commandQueueSize: 60
     commandRedundancy: 6
