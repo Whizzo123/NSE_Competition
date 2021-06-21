@@ -20,6 +20,7 @@ public class AbilityPickup : EntityBehaviour<IAbilityPickup>
         BoltLog.Info("Attached the ability pickup dude");
         if (entity.gameObject == null)
             BoltLog.Error("Issue no game object attached to this entity");
+        enabledForPickup = true;
     }
 
 
@@ -35,8 +36,8 @@ public class AbilityPickup : EntityBehaviour<IAbilityPickup>
     {
         if (enabledForPickup)
         {
-            FindObjectOfType<AbilitySlotBarUI>().AddAbilityToLoadoutBar(abilityName);
-            player.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(abilityName));
+            FindObjectOfType<AbilitySlotBarUI>().AddAbilityToLoadoutBar(state.AbilityName);
+            player.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(state.AbilityName));
             //Destroy(this);
         }
 

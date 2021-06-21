@@ -156,12 +156,12 @@ public class PhotonGameSceneController : GlobalEventListener
     {
         string[] traps = FindObjectOfType<AbilityRegister>().GetTrapList();
         AbilityPickupSpawn request = AbilityPickupSpawn.Create();
-        request.SpawnLocationOne = FindRandomPointOnCircle(new Vector2(4, -20), 11, Random.Range(0, 360));
-        request.AbilityOneName = traps[Random.Range(0, traps.Length - 1)];
-        request.SpawnLocationTwo = FindRandomPointOnCircle(new Vector2(4, -20), 11, Random.Range(0, 360));
-        request.AbilityTwoName = traps[Random.Range(0, traps.Length - 1)];
-        request.SpawnLocationThree = FindRandomPointOnCircle(new Vector2(4, -20), 11, Random.Range(0, 360));
-        request.AbilityThreeName = traps[Random.Range(0, traps.Length - 1)];
+        request.SpawnLocationOne = FindRandomPointOnCircle(new Vector2(4, -20), 14, 90);
+        request.AbilityOneName = traps[Random.Range(0, traps.Length)];
+        request.SpawnLocationTwo = FindRandomPointOnCircle(new Vector2(4, -20), 14, 180);
+        request.AbilityTwoName = traps[Random.Range(0, traps.Length)];
+        request.SpawnLocationThree = FindRandomPointOnCircle(new Vector2(4, -20), 14, 270);
+        request.AbilityThreeName = traps[Random.Range(0, traps.Length)];
         request.Send();
         abilityPickupsSpawned = true;
     }
