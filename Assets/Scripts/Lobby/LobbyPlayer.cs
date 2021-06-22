@@ -4,13 +4,16 @@ using Bolt;
 using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
+using Mirror;
+using Steamworks;
 
-public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
+public class LobbyPlayer : NetworkBehaviour
 {
-    #region Variables
-    public BoltConnection connection;
+	#region Variables
+	[SyncVar(hook = nameof(HandleSteamIdUpdated))]
+	private ulong steamId;
 
-    public InputField nameInput;
+	public Text name;
     public Button readyButton;
     public Button removePlayerButton;
 
@@ -28,10 +31,37 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 
     }
 
+	#region Server
+
+	public void SetSteamId(ulong steamId)
+    {
+		this.steamId = steamId;
+		if (steamId == 0)
+		{
+			name.text = string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100));
+			PlayerPrefs.SetString("username", name.text);
+		}
+    }
+
+	#endregion
+
+	#region Client
+	private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
+	{
+		var cSteamId = new CSteamID(newSteamId);
+
+		name.text = SteamFriends.GetFriendPersonaName(cSteamId);
+		PlayerPrefs.SetString("username", name.text);
+	}
+
+	#endregion
+
+
+
 	/// <summary>
 	/// Called after entity is attached in the network like the unity Start function
 	/// </summary>
-    public override void Attached()
+	/*public override void Attached()
     {
         state.AddCallback("Name", () => nameInput.text = state.Name);
         state.AddCallback("Ready", callback: () => OnClientReady(state.Ready));
@@ -42,12 +72,12 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
             state.Name = string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100));
             state.Ready = isReady = false;
         }
-    }
+    }*/
 
 	/// <summary>
 	/// Like update function only run on the controller computer
 	/// </summary>
-	public override void SimulateController()
+	/*public override void SimulateController()
 	{
 		// Update every 5 frames
 		if (BoltNetwork.Frame % 5 != 0) return;
@@ -57,12 +87,12 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 		input.Ready = isReady;
 
 		entity.QueueInput(input);
-	}
+	}*/
 
 	/// <summary>
 	/// Called when either TakeControl() or AssignControl() is used on an entity
 	/// </summary>
-	public override void ControlGained()
+	/*public override void ControlGained()
     {
         BoltLog.Info("ControlGained");
 
@@ -86,17 +116,17 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 		BoltNetwork.Destroy(this.gameObject);
 		BoltNetwork.Shutdown();
 
-	}
+	}*/
 
-    public void OnRemovePlayerClick()
+	public void OnRemovePlayerClick()
     {
-        if (BoltNetwork.IsServer && !FindObjectOfType<LobbyUIManager>().isCountdown)
+        /*if (BoltNetwork.IsServer && !FindObjectOfType<LobbyUIManager>().isCountdown)
         {
             LobbyPlayerKick.Create(entity, EntityTargets.OnlyController).Send();
-        }
+        }*/
     }
 
-	public override void ExecuteCommand(Command command, bool resetState)
+	/*public override void ExecuteCommand(Command command, bool resetState)
 	{
 		if (!entity.IsOwner) { return; }
 
@@ -107,7 +137,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 			state.Name = lobbyCommand.Input.Name;
 			state.Ready = lobbyCommand.Input.Ready;
 		}
-	}
+	}*/
 
 	/// <summary>
 	/// Sets up player on the client computer
@@ -118,7 +148,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 
         localPlayer = this;
 
-        nameInput.interactable = true;
+        //nameInput.interactable = true;
 
         removePlayerButton.gameObject.SetActive(false);
         removePlayerButton.interactable = false;
@@ -127,23 +157,23 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
         readyButton.interactable = true;
 
         //we switch from simple name display to name input
-        nameInput.interactable = true;
+        //nameInput.interactable = true;
 
-        nameInput.onEndEdit.RemoveAllListeners();
-        nameInput.onEndEdit.AddListener((text => { playerName = text; PlayerPrefs.SetString("username", text); }));
+        //nameInput.onEndEdit.RemoveAllListeners();
+        //nameInput.onEndEdit.AddListener((text => { playerName = text; PlayerPrefs.SetString("username", text); }));
 
         readyButton.onClick.RemoveAllListeners();
         readyButton.onClick.AddListener(OnReadyClicked);
 
-        OnClientReady(state.Ready);
+        //OnClientReady(state.Ready);
     }
 	/// <summary>
 	/// Sets up player on the server computer
 	/// </summary>
     public void SetupOtherPlayer()
     {
-        BoltLog.Info("SetupOtherPlayer");
-		nameInput.interactable = false;
+        //BoltLog.Info("SetupOtherPlayer");
+		//nameInput.interactable = false;
 
         removePlayerButton.gameObject.SetActive(BoltNetwork.IsServer);
         removePlayerButton.interactable = BoltNetwork.IsServer;
@@ -153,7 +183,7 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
         readyButton.transform.GetChild(0).GetComponent<Text>().text = "...";
         readyButton.interactable = false;
 
-        OnClientReady(state.Ready);
+        //OnClientReady(state.Ready);
     }
 
 	/// <summary>
@@ -161,16 +191,12 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 	/// </summary>
 	public void RemovePlayer()
 	{
-		if (entity && entity.IsAttached)
+		/*if (entity && entity.IsAttached)
 		{
 			BoltNetwork.Destroy(gameObject);
-		}
+		}*/
 	}
 
-	public override void Detached()
-	{
-		//            if (OnDetach != null) OnDetach.Invoke(this);
-	}
 	// Utils
 
 	private string GenerateFullName()
@@ -234,17 +260,17 @@ public class LobbyPlayer : EntityEventListener<ILobbyPlayerInfoState>
 			textComponent.text = "READY";
 			//textComponent.color = ReadyColor;
 			readyButton.interactable = false;
-			nameInput.interactable = false;
+			//nameInput.interactable = false;
 		}
 		else
 		{
 			ChangeReadyButtonColor(NotReadyColor);
 
 			Text textComponent = readyButton.transform.GetChild(0).GetComponent<Text>();
-			textComponent.text = entity.IsControlled ? "JOIN" : "...";
+			//textComponent.text = entity.IsControlled ? "JOIN" : "...";
 			//textComponent.color = Color.white;
-			readyButton.interactable = entity.IsControlled;
-			nameInput.interactable = entity.IsControlled;
+			//readyButton.interactable = entity.IsControlled;
+			//nameInput.interactable = entity.IsControlled;
 		}
 	}
 

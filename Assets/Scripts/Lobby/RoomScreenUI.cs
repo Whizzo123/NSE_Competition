@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class RoomScreenUI : MonoBehaviour
+public class RoomScreenUI : NetworkBehaviour
 {
     #region Variables
     public List<LobbyPlayer> players = new List<LobbyPlayer>();

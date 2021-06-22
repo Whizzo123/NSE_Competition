@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Bolt;
-using Bolt.Matchmaking;
-using UdpKit;
 
 using UnityEngine.SceneManagement;
+using Steamworks;
+using Mirror;
 
-public class LobbyUIManager : NetworkConnections
+public class LobbyUIManager : MonoBehaviour
 {
     #region Variables
 
@@ -33,11 +32,31 @@ public class LobbyUIManager : NetworkConnections
 
     public GameObject playerLobbyPrefab;
 
+    private const string HostAddressKey = "HostAddress";
+
+    private MyNetworkManager networkManager;
+
+    public static CSteamID LobbyId { get; private set; }
+
+    private string roomName;
+
+    protected Callback<LobbyCreated_t> lobbyCreated;
+    protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
+    protected Callback<LobbyEnter_t> lobbyEntered;
+
     #endregion
 
     #region START_ACTIONMAPPING
     void Start()
     {
+        networkManager = FindObjectOfType<MyNetworkManager>();
+
+        if (!SteamManager.Initialized) { return; }
+
+        lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
+        gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
+        lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+
         //Setup all the screens for the lobby
         createScreen = FindScreenByName("Create").screen.GetComponent<CreateScreenUI>();
         if(createScreen == null)
@@ -68,7 +87,7 @@ public class LobbyUIManager : NetworkConnections
         createScreen.OnCreateButtonClick += CreateRoomSession;
         createScreen.OnBrowseButtonClick += SwapToBrowseScreen;
         createScreen.OnRandomButtonClick += JoinRandomSession;
-        browseScreen.OnClickJoinSession += JoinSessionEvent;
+        //browseScreen.OnClickJoinSession += JoinSessionEvent;
     }
     /// <summary>
     /// Called when creating a room on the network
@@ -79,8 +98,49 @@ public class LobbyUIManager : NetworkConnections
         roomName = createScreen.inputField.text;
         Debug.Log("CreatingRoomSession");
         //Launches server
-        BoltLauncher.StartServer();
+        //BoltLauncher.StartServer();
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, networkManager.maxConnections);
     }
+
+    private void OnLobbyCreated(LobbyCreated_t callback)
+    {
+        if(callback.m_eResult != EResult.k_EResultOK)
+        {
+            Debug.LogError("Lobby could not be created");
+            return;
+        }
+
+        LobbyId = new CSteamID(callback.m_ulSteamIDLobby);
+
+        networkManager.StartHost();
+
+        SteamMatchmaking.SetLobbyData(LobbyId, HostAddressKey, SteamUser.GetSteamID().ToString());
+    }
+
+    private void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback)
+    {
+        SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
+    }
+
+    private void OnLobbyEntered(LobbyEnter_t callback)
+    {
+        ChangeScreenTo("Room");
+        GameObject playerInfo = Instantiate(playerLobbyPrefab);
+        NetworkServer.Spawn(playerInfo);
+        Debug.LogError("LobbyId: " + LobbyId);
+        CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex(LobbyUIManager.LobbyId, FindObjectsOfType<LobbyPlayer>().Length - 1);
+        playerInfo.GetComponent<LobbyPlayer>().SetSteamId(steamId.m_SteamID);
+        //Use this commented version of the line above when testing on same computer to avoid issues with similar usernames as it pulls from steam no matter what editor or build
+        //playerInfo.GetComponent<LobbyPlayer>().SetSteamId(0);
+        roomScreen.AddPlayer(playerInfo.GetComponent<LobbyPlayer>());
+        if(NetworkServer.active) { return; }
+
+        string hostAddress = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey);
+
+        networkManager.networkAddress = hostAddress;
+        networkManager.StartClient();
+    }
+
     private void SwapToBrowseScreen()
     {
         //In order for client to view session list we need to connect them to the network
@@ -95,7 +155,7 @@ public class LobbyUIManager : NetworkConnections
         //Launch the client
         BoltLauncher.StartClient();
     }
-    private void JoinSessionEvent(UdpSession session, IProtocolToken token)
+    /*private void JoinSessionEvent(UdpSession session, IProtocolToken token)
     {
         FindObjectOfType<AudioManager>().PlaySound("Click");
         //Chech whether this is the client should only run on a client
@@ -104,7 +164,7 @@ public class LobbyUIManager : NetworkConnections
             //Join given session we choose from the list
             BoltMatchmaking.JoinSession(session,token);
         }
-    }
+    }*/
     #endregion
 
     private void FixedUpdate()
@@ -132,9 +192,9 @@ public class LobbyUIManager : NetworkConnections
             //If all players hit are ready and our count of players is above the minimum we need to start a game
             if (allReady && readyCount >= minPlayers)
             {
-                UnjoinableNetwork();
+                //UnjoinableNetwork();
                 isCountdown = true;
-                StartCoroutine(ServerCountdownCoroutine());
+                //StartCoroutine(ServerCountdownCoroutine());
             }
         }
     }
@@ -159,24 +219,25 @@ public class LobbyUIManager : NetworkConnections
             {
                 floorTime = newFloorTime;
                 //Create lobbycountdown event to update everyone's time
-                countdown = LobbyCountdown.Create(GlobalTargets.Everyone);
-                countdown.Time = floorTime;
-                countdown.Send();
+              // countdown = LobbyCountdown.Create(GlobalTargets.Everyone);
+               // countdown.Time = floorTime;
+               // countdown.Send();
             }
         }
         //Once we are basically at zero send a final one
-        countdown = LobbyCountdown.Create(GlobalTargets.Everyone);
-        countdown.Time = 0;
-        countdown.Send();
+        //countdown = LobbyCountdown.Create(GlobalTargets.Everyone);
+       // countdown.Time = 0;
+        //countdown.Send();
         //Tell network to load game scene for everyone
         BoltNetwork.LoadScene(gameSceneName);
     }
+    
 
     #region LOBBYCREATION_AND_RANDOMJOIN_AND_UPDATESESSION
     /// <summary>
     /// Called once the bolt network has finished starting called whenever either BoltLauncher.StartServer() or BoltLauncher.StartClient() is done
     /// </summary>
-    public override void BoltStartDone()
+   /* public override void BoltStartDone()
     {
         if (BoltNetwork.IsServer){ CreateLobby(joinableLobby ,roomName ,privateLobby ,password ); }
         else if (BoltNetwork.IsClient)
@@ -189,12 +250,12 @@ public class LobbyUIManager : NetworkConnections
             //Reset random join to false
             randomJoin = false;
         }
-    }
+    }*/
 
     /// <summary>
     /// Creates a lobby with the parameter details
     /// </summary>
-    public void CreateLobby(bool joinable, string lobbyName, bool priv, string pass)
+   /* public void CreateLobby(bool joinable, string lobbyName, bool priv, string pass)
     {
         roomName = lobbyName;
         privateLobby = priv;
@@ -212,9 +273,9 @@ public class LobbyUIManager : NetworkConnections
         customToken.versionNumber = versionNo;
 
         BoltMatchmaking.CreateSession(sessionID: lobbyName, token: customToken);
-    }
+    }*/
     //Run when the session is created 
-    public override void SessionCreatedOrUpdated(UdpSession session)
+   /* public override void SessionCreatedOrUpdated(UdpSession session)
     {
         Debug.Log("Inside SessionCreatedOrUpdated");
         //Change the screen to room
@@ -236,13 +297,13 @@ public class LobbyUIManager : NetworkConnections
         customToken.versionNumber = versionNo;
 
         BoltMatchmaking.JoinRandomSession(customToken);
-    }
+    }*/
 
 
     /// <summary>
     /// Lobby becomes unjoinable and unlisted.
     /// </summary>
-    public void UnjoinableNetwork()
+    /*public void UnjoinableNetwork()
     {
         if (BoltNetwork.IsRunning && BoltNetwork.IsServer)
         {
@@ -261,11 +322,11 @@ public class LobbyUIManager : NetworkConnections
             BoltMatchmaking.UpdateSession(updateToken);
 
         }
-    }
+    }*/
     /// <summary>
     /// Updates session details. This is for in case we allow that in the future.
     /// </summary>
-    public void UpdateSession(bool joinable, bool priv, string pass)
+    /*public void UpdateSession(bool joinable, bool priv, string pass)
     {
         if (BoltNetwork.IsRunning && BoltNetwork.IsServer)
         {
@@ -288,12 +349,12 @@ public class LobbyUIManager : NetworkConnections
             //This creates a visual bug where it adds a player to the lobby screen
             BoltMatchmaking.UpdateSession(updateToken);
         }
-    }
+    }*/
     #endregion
 
     #region CONNECTIONHANDLING
     //Called when either server or client connects. This should only happen in LobbyUIManager
-    public override void Connected(BoltConnection connection)
+    /*public override void Connected(BoltConnection connection)
     {
         if (BoltNetwork.IsClient)
         {
@@ -312,16 +373,16 @@ public class LobbyUIManager : NetworkConnections
             player.AssignControl(connection);
             BoltLog.Info("Server assign control connection: " + connection.ConnectionId);
         }
-    }
+    }*/
 
     //Overriden from NetworkConnections
-    public override void EntityDetached(BoltEntity entity)
+    /*public override void EntityDetached(BoltEntity entity)
     {
         var lobbyPlayer = entity.gameObject.GetComponent<LobbyPlayer>();
         roomScreen.RemovePlayer(lobbyPlayer);
-    }
+    }*/
     //Called on disconnect, Overriden from NetworkConnections
-    public override void Disconnected(BoltConnection connection)
+   /* public override void Disconnected(BoltConnection connection)
     {
         foreach (var entity in BoltNetwork.Entities)
         {
@@ -335,9 +396,9 @@ public class LobbyUIManager : NetworkConnections
                 player.RemovePlayer();
             }
         }
-    }
+    }*/
     //Called once new gameobject has been instantiated with the bolt entity component added to it, Overriden from NetworkConnections
-    public override void EntityAttached(BoltEntity entity)
+    /*public override void EntityAttached(BoltEntity entity)
     {
         //Grab the lobby player component from the gameobject
         LobbyPlayer lobbyPlayer = entity.gameObject.GetComponent<LobbyPlayer>();
@@ -358,7 +419,7 @@ public class LobbyUIManager : NetworkConnections
                 lobbyPlayer.SetupOtherPlayer();
             }
         }
-    }
+    }*/
     #endregion
 
     public void BackToTitleScreen()
