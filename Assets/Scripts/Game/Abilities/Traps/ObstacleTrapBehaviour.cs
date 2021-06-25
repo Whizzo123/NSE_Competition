@@ -5,7 +5,7 @@ using UnityEngine;
 using Bolt;
 
 
-public class ObstacleTrapBehaviour : EntityBehaviour<IObstacleTrap>
+public class ObstacleTrapBehaviour :MonoBehaviour
 {
     private PlayerController trappedPlayer;
 
@@ -18,14 +18,14 @@ public class ObstacleTrapBehaviour : EntityBehaviour<IObstacleTrap>
     public GameObject openTrap;
     public GameObject closedTrap;
 
-    public override void Attached()
+   /* public override void Attached()
     {
         currentDuration = 0;
         sprung = false;
         disabled = false;
-    }
+    }*/
 
-    public void OnTriggerEnter(Collider other)
+   /* public void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.GetComponent<PlayerController>() && other.isTrigger == false)
         {
@@ -35,17 +35,17 @@ public class ObstacleTrapBehaviour : EntityBehaviour<IObstacleTrap>
                 SpringTrap();
             }
         }
-    }
+    }*/
 
     private void SpringTrap()
     {
         //FindObjectOfType<AudioManager>().PlaySound("ObstacleTrapSprung");
-        var request = SpringObstacleTrap.Create();
+        /*var request = SpringObstacleTrap.Create();
         request.Victim = trappedPlayer.entity;
         request.End = false;
         request.Trap = entity;
         request.Send();
-        sprung = true;
+        sprung = true;*/
     }
 
     public void Disable()

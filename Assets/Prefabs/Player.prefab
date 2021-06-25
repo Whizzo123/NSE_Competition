@@ -1625,8 +1625,8 @@ GameObject:
   - component: {fileID: 8921563345967218691}
   - component: {fileID: 4684549018310827129}
   - component: {fileID: 4794411963869771262}
-  - component: {fileID: 2468293122141348917}
-  - component: {fileID: -4301213370910514555}
+  - component: {fileID: 6593909278188048680}
+  - component: {fileID: 1137848910681300163}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1742,7 +1742,7 @@ CapsuleCollider:
   m_Height: 2.7
   m_Direction: 1
   m_Center: {x: 0.05, y: -0.42, z: 0.2}
---- !u!114 &2468293122141348917
+--- !u!114 &6593909278188048680
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1759,7 +1759,7 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &-4301213370910514555
+--- !u!114 &1137848910681300163
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1772,7 +1772,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
-  syncInterval: 0.076
+  syncInterval: 0.1
   clientAuthority: 0
   localPositionSensitivity: 0.01
   localRotationSensitivity: 0.01
