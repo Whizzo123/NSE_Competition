@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Bolt;
+using Mirror;
 
-[BoltGlobalBehaviour("GameScene")]
-public class PhotonGameSceneController : GlobalEventListener
+public class GameSceneManager : NetworkBehaviour
 {
 
     private int minPlayers = 2;
@@ -23,44 +22,42 @@ public class PhotonGameSceneController : GlobalEventListener
     private float currentAbilitySpawnTime = 0;
     private int counter = 0;
 
-    public override void SceneLoadLocalDone(string scene)
+
+    void Start()
     {
         FindObjectOfType<AudioManager>().ActivateGameMusic();
         PlayerController.Spawn();
         //FindObjectOfType<PlayerTestSuite>().InitializeTest();
-        if (BoltNetwork.IsServer)
+        if (hasAuthority)
         {
             currentReadyTime = readyTime;
             StartCoroutine(RunLobbyReadyCountdown());
         }
-    }
 
-    void Start()
-    {
         loadoutChoiceComplete = false;
         displayedWinScreen = false;
         inCountdown = false;
-        if (BoltNetwork.IsServer)
+        if (hasAuthority)
         {
-            BoltEntity stash = BoltNetwork.Instantiate(BoltPrefabs.Stash);
+            GameObject stash = Instantiate(Resources.Load("Biomes/Stash", typeof(GameObject))) as GameObject);
             stash.transform.position = new Vector3(4.24f , 0.57f, -18.93f);
-            stash.TakeControl();
+            NetworkServer.Spawn(stash);
         }
     }
 
     void FixedUpdate()
     {
-        if (BoltNetwork.IsServer && loadoutChoiceComplete == false)
+        if (hasAuthority && loadoutChoiceComplete == false)
         {
             var allReady = true;
             var readyCount = 0;
 
-            foreach (var entity in BoltNetwork.Entities)
+            foreach (var entity in NetworkServer.connections.Values)
             {
-                if (entity.StateIs<IGamePlayerState>() == false) continue;
+                if (entity.clientOwnedObjects.Contains(NetworkIdentity.FindObjectOfType<PlayerController>().netIdentity) == false) continue;
 
-                var playerController = entity.GetState<IGamePlayerState>();
-                allReady &= playerController.LoadoutReady;
+                PlayerController playerController = entity.clientOwnedObjects.Contains(NetworkIdentity.FindObjectOfType<PlayerController>();////////////////////////////
+                allReady &= playerController.;
 
                 if (allReady == false) break;
                 readyCount++;
@@ -208,8 +205,9 @@ public class PhotonGameSceneController : GlobalEventListener
             time -= Time.deltaTime;
         }
 
-        var end = ReturnEveryoneToTitle.Create();
-        end.Send();
+        //var end = ReturnEveryoneToTitle.Create();
+        //end.Send();
+        ServerChangeScene("");
     }
 
     private IEnumerator RunWinCountdown()

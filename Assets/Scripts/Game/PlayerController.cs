@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Bolt;
+using Mirror;
 
-public class PlayerController : EntityBehaviour<IGamePlayerState>
+
+public class PlayerController : NetworkBehaviour
 {
     #region Variables
     [Header("Stored Interactables")]
@@ -54,46 +55,41 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
     #endregion
 
-    /// <summary>
-    /// Called when entity attached to network 
-    /// </summary>
-    public override void Attached()
+
+    public override void OnStartAuthority()
     {
         targetedArtefacts = new List<ArtefactBehaviour>();
-        state.SetTransforms(state.PlayerTransform, transform);
+        //state.SetTransforms(state.PlayerTransform, transform);
         SetLoadoutReleased(false);
         abilityInventory = new AbilityInventory(this);
         immobilize = false;
         timeForStunAfterSteal = 10.0f;
-        //Set state transform to be equal to current transform
-        if (entity.IsOwner)
-        {
-            state.Speed = speed;
-            state.RayLength = lengthOfSphere;
-            state.LoadoutReady = false;
-            state.HasBeenStolenFrom = false;
-            state.Paralyzed = false;
-            for (int i = 0; i < state.Inventory.Length; i++)
-            {
-                state.Inventory[i].ItemName = "";
-                state.Inventory[i].ItemPoints = 0;
-            }
+        ////Set state transform to be equal to current transform
+        //    state.Speed = speed;
+        //    state.RayLength = lengthOfSphere;
+        //    state.LoadoutReady = false;
+        //    state.HasBeenStolenFrom = false;
+        //    state.Paralyzed = false;
+        //    for (int i = 0; i < state.Inventory.Length; i++)
+        //    {
+        //        state.Inventory[i].ItemName = "";
+        //        state.Inventory[i].ItemPoints = 0;
+        //    }
             //playerCharacterController = this.gameObject.GetComponent<CharacterController>();
-            /*
-            Instantiate(cam, transform.position, Quaternion.identity);
-            Instantiate(vCam,transform.position, Quaternion.identity);*/
             vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
-            //vCam.transform.position = transform.position;
             vCam.LookAt = this.gameObject.transform;
             vCam.Follow = this.gameObject.transform;
             vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
-        }
-        if (!entity.IsOwner)
-        {
-            //Disable other players cameras so that we don't accidentally get assigned to another players camera
-            if (playerCamera != null)
-                playerCamera.gameObject.SetActive(false);
-        }
+        //}
+        //if (!entity.IsOwner)
+        //{
+        //    //Disable other players cameras so that we don't accidentally get assigned to another players camera
+        //    if (playerCamera != null)
+        //        playerCamera.gameObject.SetActive(false);
+        //}
+        localPlayer = this;
+        playerCamera = FindObjectOfType<Camera>();
+        playerCharacterController = this.gameObject.GetComponent<CharacterController>();
     }
 
     #region ArtefactInventory
@@ -102,24 +98,24 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// </summary>
     /// <param name="artefactName"></param>
     /// <param name="artefactPoints"></param>
-    public void AddToInventory(string artefactName, int artefactPoints)
-    {
-        ItemArtefact item = new ItemArtefact();
-        item.name = artefactName;
-        item.points = artefactPoints;
-        int emptySlot = FindEmptyInventorySlot();
-        if (emptySlot > -1)
-        {
-            state.Inventory[emptySlot].ItemName = artefactName;
-            state.Inventory[emptySlot].ItemPoints = artefactPoints;
-            FindObjectOfType<CanvasUIManager>().PopupArtefactPickupDisplay(item);
-            FindObjectOfType<CanvasUIManager>().AddToInventoryScreen(item);
-        }
-        else
-        {
-            BoltLog.Error("Inventory is full");
-        }
-    }
+    //public void AddToInventory(string artefactName, int artefactPoints)
+    //{
+    //    ItemArtefact item = new ItemArtefact();
+    //    item.name = artefactName;
+    //    item.points = artefactPoints;
+    //    int emptySlot = FindEmptyInventorySlot();
+    //    if (emptySlot > -1)
+    //    {
+    //        state.Inventory[emptySlot].ItemName = artefactName;
+    //        state.Inventory[emptySlot].ItemPoints = artefactPoints;
+    //        FindObjectOfType<CanvasUIManager>().PopupArtefactPickupDisplay(item);
+    //        FindObjectOfType<CanvasUIManager>().AddToInventoryScreen(item);
+    //    }
+    //    else
+    //    {
+    //        BoltLog.Error("Inventory is full");
+    //    }
+    //}
 
     /// <summary>
     /// Called in order to remove from artefact from inventory
@@ -127,90 +123,80 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// <param name="index"></param>
     /// <param name="name"></param>
     /// <param name="points"></param>
-    public void RemoveFromInventory(int index, string name, int points)
-    {
-        state.Inventory[index].ItemName = "";
-        state.Inventory[index].ItemPoints = 0;
-        ItemArtefact itemArtefact;
-        itemArtefact.name = name;
-        itemArtefact.points = points;
-        FindObjectOfType<CanvasUIManager>().RemoveFromInventoryScreen(itemArtefact);
-    }
+    //public void RemoveFromInventory(int index, string name, int points)
+    //{
+    //    state.Inventory[index].ItemName = "";
+    //    state.Inventory[index].ItemPoints = 0;
+    //    ItemArtefact itemArtefact;
+    //    itemArtefact.name = name;
+    //    itemArtefact.points = points;
+    //    FindObjectOfType<CanvasUIManager>().RemoveFromInventoryScreen(itemArtefact);
+    //}
 
     /// <summary>
     /// Find empty inventory slot from player inventory
     /// </summary>
     /// <returns></returns>
-    private int FindEmptyInventorySlot()
-    {
-        for (int i = 0; i < state.Inventory.Length; i++)
-        {
-            if (state.Inventory[i].ItemName == "")
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
+    //private int FindEmptyInventorySlot()
+    //{
+    //    for (int i = 0; i < state.Inventory.Length; i++)
+    //    {
+    //        if (state.Inventory[i].ItemName == "")
+    //        {
+    //            return i;
+    //        }
+    //    }
+    //    return -1;
+    //}
 
     //Remove all items from inventory
-    public void ClearInventory()
-    {
-        FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
-        for (int i = 0; i < state.Inventory.Length; i++)
-        {
-            state.Inventory[i].ItemName = "";
-            state.Inventory[i].ItemPoints = 0;
-        }
-    }
+    //public void ClearInventory()
+    //{
+    //    FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
+    //    for (int i = 0; i < state.Inventory.Length; i++)
+    //    {
+    //        state.Inventory[i].ItemName = "";
+    //        state.Inventory[i].ItemPoints = 0;
+    //    }
+    //}
 
     /// <summary>
     /// Check to see whether inventory has any empty slots
     /// </summary>
     /// <returns></returns>
-    public bool IsInventoryEmpty()
-    {
-        for (int i = 0; i < state.Inventory.Length; i++)
-        {
-            if (state.Inventory[i].ItemName == "")
-            {
-                return true;
-            }
-        }
+    //public bool IsInventoryEmpty()
+    //{
+    //    for (int i = 0; i < state.Inventory.Length; i++)
+    //    {
+    //        if (state.Inventory[i].ItemName == "")
+    //        {
+    //            return true;
+    //        }
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
 
     /// <summary>
     /// Just grab the first item in the player inventory
     /// </summary>
     /// <returns></returns>
-    public InventoryItem GrabRandomItem()
-    {
-        return state.Inventory[0];
-    }
+    //public InventoryItem GrabRandomItem()
+    //{
+    //    return state.Inventory[0];
+    //}
     #endregion 
 
-    public override void ControlGained()
-    {
-        localPlayer = this;
-        playerCamera = FindObjectOfType<Camera>();
-        playerCharacterController = this.gameObject.GetComponent<CharacterController>();
-    }
+    //public bool InventoryNotEmpty()
+    //{
+    //    for (int i = 0; i < state.Inventory.Length; i++)
+    //    {
+    //        if (state.Inventory[i].ItemPoints > 0) return true;
+    //    }
+    //    return false;
+    //}
 
-    public bool InventoryNotEmpty()
-    {
-        for (int i = 0; i < state.Inventory.Length; i++)
-        {
-            if (state.Inventory[i].ItemPoints > 0) return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Called on every update of the owner computer a.k.a computer that created this entity
-    /// </summary>
-    public override void SimulateOwner()
+    public void Update()
     {
         abilityInventory.Update();
 
@@ -220,7 +206,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
             playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
             playerNameText.SetActive(true);
-            playerNameText.GetComponent<Text>().text = state.Name;
+            playerNameText.GetComponent<Text>().text = "temp";
         }
 
         if (loadoutReleased)
@@ -252,32 +238,32 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 {
                     direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
                     ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
-                    if (this.state.Poisoned)
+                    if (true)//poisoned?
                     {
                         playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
                         direction *= -1;
                     }
 
-                    if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
-                    {
-                        var request = ChangeAnimatorMovementParameter.Create();
-                        request.Target = entity;
-                        request.Value = true;
-                        request.Send();
-                    }
+                    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
+                    //{
+                    //    var request = ChangeAnimatorMovementParameter.Create();
+                    //    request.Target = entity;
+                    //    request.Value = true;
+                    //    request.Send();
+                    //}
                 }
                 else
                 {
-                    if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
-                    {
-                        var request = ChangeAnimatorMovementParameter.Create();
-                        request.Target = entity;
-                        request.Value = false;
-                        request.Send();
-                    }
+                    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
+                    //{
+                    //    var request = ChangeAnimatorMovementParameter.Create();
+                    //    request.Target = entity;
+                    //    request.Value = false;
+                    //    request.Send();
+                    //}
                 }
                 //this.GetComponent<Rigidbody>().velocity = playerFallingVelocity;
-                playerCharacterController.Move(playerMovement * state.Speed * BoltNetwork.FrameDeltaTime);
+                playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
                 PlayerRotation();
             }
             #endregion
@@ -290,104 +276,104 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             #region Artefact interaction
             if (Input.GetKeyDown(KeyCode.E))
             {
-                Debug.LogError("Artefact count " + targetedArtefacts.Count);
-                if (targetedArtefacts.Count != 0)
-                {
-                    if (FindEmptyInventorySlot() != -1)
-                    {
-                        Debug.Log("Picking up Artefacts");
-                        // targetedArtefact.Pickup(this);
+                //Debug.LogError("Artefact count " + targetedArtefacts.Count);
+                //if (targetedArtefacts.Count != 0)
+                //{
+                //    if (FindEmptyInventorySlot() != -1)
+                //    {
+                //        Debug.Log("Picking up Artefacts");
+                //        // targetedArtefact.Pickup(this);
 
-                        // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
-                        foreach (ArtefactBehaviour item in targetedArtefacts)
-                        {
-                            item.Pickup(this);
-                            FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
-                        }
+                //        // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
+                //        foreach (ArtefactBehaviour item in targetedArtefacts)
+                //        {
+                //            item.Pickup(this);
+                //            FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
+                //        }
 
-                        targetedArtefacts.Clear();
-                    }
-                    else
-                    {
-                        FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
-                    }
-                }
-                else if (targetedAbilityPickup != null)
-                {
-                    targetedAbilityPickup.PickupAbility(this);
-                    targetedAbilityPickup = null;
-                }
-                else if (gameStash != null && InventoryNotEmpty())
-                {
-                    gameStash.AddToStashScores(this);
-                    FindObjectOfType<AudioManager>().PlaySound("Stash");
-                }
-                else if(gameStash != null && !InventoryNotEmpty())
-                {
-                    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
-                }
+                //        targetedArtefacts.Clear();
+                //    }
+                //    else
+                //    {
+                //        FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
+                //    }
+                //}
+                //else if (targetedAbilityPickup != null)
+                //{
+                //    targetedAbilityPickup.PickupAbility(this);
+                //    targetedAbilityPickup = null;
+                //}
+                //else if (gameStash != null && InventoryNotEmpty())
+                //{
+                //    gameStash.AddToStashScores(this);
+                //    FindObjectOfType<AudioManager>().PlaySound("Stash");
+                //}
+                //else if(gameStash != null && !InventoryNotEmpty())
+                //{
+                //    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
+                //}
             }
             #endregion
 
             #region Stealing
-            if (Input.GetKeyDown(KeyCode.F) && !state.HasBeenStolenFrom)
-            {
-                BoltLog.Info("F pressed");
-                if (targetedPlayerToStealFrom != null)
-                {
-                    BoltLog.Info("Has a target");
-                    if (IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false && targetedPlayerToStealFrom.InventoryNotEmpty())
-                    {
-                        BoltLog.Info("Attempting steal");
-                        InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
-                        AddToInventory(randomArtefact.ItemName, randomArtefact.ItemPoints);
-                        int indexToRemove = -1;
-                        for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
-                        {
-                            if (targetedPlayerToStealFrom.state.Inventory[i].ItemName != string.Empty && targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
-                            {
-                                indexToRemove = i;
-                            }
-                        }
-                        var request = InventoryRemove.Create();
-                        request.ItemIndex = indexToRemove;
-                        request.InventoryEntity = targetedPlayerToStealFrom.entity;
-                        request.ItemName = randomArtefact.ItemName;
-                        request.ItemPoints = randomArtefact.ItemPoints;
-                        request.Send();
-                    }
-                    else
-                    {
-                        FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
-                    }
-                }
-            }
+            //if (Input.GetKeyDown(KeyCode.F) && !state.HasBeenStolenFrom)
+            //{
+            //    BoltLog.Info("F pressed");
+            //    if (targetedPlayerToStealFrom != null)
+            //    {
+            //        BoltLog.Info("Has a target");
+            //        if (IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false && targetedPlayerToStealFrom.InventoryNotEmpty())
+            //        {
+            //            BoltLog.Info("Attempting steal");
+            //            InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
+            //            AddToInventory(randomArtefact.ItemName, randomArtefact.ItemPoints);
+            //            int indexToRemove = -1;
+            //            for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
+            //            {
+            //                if (targetedPlayerToStealFrom.state.Inventory[i].ItemName != string.Empty && targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
+            //                {
+            //                    indexToRemove = i;
+            //                }
+            //            }
+            //            var request = InventoryRemove.Create();
+            //            request.ItemIndex = indexToRemove;
+            //            request.InventoryEntity = targetedPlayerToStealFrom.entity;
+            //            request.ItemName = randomArtefact.ItemName;
+            //            request.ItemPoints = randomArtefact.ItemPoints;
+            //            request.Send();
+            //        }
+            //        else
+            //        {
+            //            FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
+            //        }
+            //    }
+            //}
 
-            if (state.HasBeenStolenFrom)
-            {
-                if (currentStunAfterTimer >= timeForStunAfterSteal)
-                {
-                    currentStunAfterTimer = 0;
-                    state.HasBeenStolenFrom = false;
-                    var request = StunEnemyPlayer.Create();
-                    request.Target = entity;
-                    request.End = true;
-                    request.Send();
-                }
-                else
-                {
-                    currentStunAfterTimer += Time.deltaTime;
-                }
-            }
+            //if (state.HasBeenStolenFrom)
+            //{
+            //    if (currentStunAfterTimer >= timeForStunAfterSteal)
+            //    {
+            //        currentStunAfterTimer = 0;
+            //        state.HasBeenStolenFrom = false;
+            //        var request = StunEnemyPlayer.Create();
+            //        request.Target = entity;
+            //        request.End = true;
+            //        request.Send();
+            //    }
+            //    else
+            //    {
+            //        currentStunAfterTimer += Time.deltaTime;
+            //    }
+            //}
             #endregion
 
             #region Obstacle Interaction
-            if (Input.GetKey(KeyCode.Space) && wait == false && state.Paralyzed == false)
+            if (Input.GetKey(KeyCode.Space) && wait == false )//&& state.Paralyzed == false)
             {
-                var request = FireAnimatorCutTriggerParameter.Create();
-                request.Target = entity;
-                request.Send();
-                wait = true;
+                //var request = FireAnimatorCutTriggerParameter.Create();
+                //request.Target = entity;
+                //request.Send();
+                //wait = true;
                 StartCoroutine(Hit());
             }
             #endregion
@@ -449,10 +435,10 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             {
                 Destroy(item.transform.gameObject);
             }
-            var request = ObstacleDisable.Create();
-            request.position = transform.position;
-            request.forward = transform.forward;
-            request.Send();
+            //var request = ObstacleDisable.Create();
+            //request.position = transform.position;
+            //request.forward = transform.forward;
+            //request.Send();
         }
     }
 
@@ -462,11 +448,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// <param name="playerName"></param>
     private void Setup(string playerName)
     {
-        if(entity.IsOwner)
-        {
-            BoltLog.Info("Setup: " + playerName);
-            state.Name = playerName;
-        }
+        //if(entity.IsOwner)
+        //{
+        //    BoltLog.Info("Setup: " + playerName);
+        //    state.Name = playerName;
+        //}
     }
 
     /// <summary>
@@ -475,29 +461,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// <param name="value"></param>
     public void SetLoadoutReleased(bool value)
     {
-        //Debug.LogError("LOADOUT RELEASED");
         loadoutReleased = value;
         if (GameObject.Find("_wamp_water") && value == true)
         {
             GameObject.Find("_wamp_water").GetComponent<MeshCollider>().enabled = false;
         }
-
-        /*if (loadoutReleased == true && firstTime == 0)
-        {
-            Debug.LogError("WE HAVE LOADOUT RELEASED");
-            firstTime++;
-            GenerateAllGen maps = FindObjectOfType<GenerateAllGen>();
-            /*foreach (MapGenerator item in mapGens)
-            {
-                item.GenerateAbilities(abilityInventory);
-                Debug.LogError("WE ARE CALLING MAPS");
-            }//
-            for (int i = 0; i < maps.mapGens.Length; i++)
-            {
-                Debug.LogError("WE ARE CALLING MAPS");
-                maps.mapGens[i].GetComponent<MapGenerator>().GenerateAbilities(abilityInventory);
-            }
-        }*/
     }
 
     /// <summary>
@@ -522,7 +490,6 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         if (PlayerPrefs.GetString("username") != null)
         {
             playerController.Setup(PlayerPrefs.GetString("username"));
-            BoltLog.Info("Player Username is: " + PlayerPrefs.GetString("username"));
         }
         else
         {
@@ -562,64 +529,64 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (entity.IsOwner)
-        {
-            if (collider.gameObject.GetComponent<ArtefactBehaviour>())
-            {
-                targetedArtefacts.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
-            }
-            else if (collider.gameObject.GetComponent<Stash>())
-            {
-                gameStash = collider.gameObject.GetComponent<Stash>();
-                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
-            }
-            else if (collider.gameObject.GetComponent<PlayerController>())
-            {
-                targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
-                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
-            }
-            else if (collider.gameObject.GetComponent<AbilityPickup>())
-            {
-                targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
-            }
-        }
+        //if (entity.IsOwner)
+        //{
+        //    if (collider.gameObject.GetComponent<ArtefactBehaviour>())
+        //    {
+        //        targetedArtefacts.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
+        //    }
+        //    else if (collider.gameObject.GetComponent<Stash>())
+        //    {
+        //        gameStash = collider.gameObject.GetComponent<Stash>();
+        //        FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
+        //    }
+        //    else if (collider.gameObject.GetComponent<PlayerController>())
+        //    {
+        //        targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
+        //        FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
+        //    }
+        //    else if (collider.gameObject.GetComponent<AbilityPickup>())
+        //    {
+        //        targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
+        //    }
+        //}
     }
 
     public void OnTriggerExit(Collider collider)
     {
-        if (entity.IsOwner)
-        {
-            if (collider != null)
-            {
-                if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
-                {
-                    //Removes specific artefact that we exited.
-                    int i = 0;
-                    foreach (ArtefactBehaviour item in targetedArtefacts)
-                    {
-                        if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
-                        {
-                            targetedArtefacts.RemoveAt(i);
-                        }
-                        i++;
-                    }
-                }
-                else if (gameStash != null && collider.gameObject == gameStash.gameObject)
-                {
-                    gameStash = null;
-                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
-                }
-                else if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
-                {
-                    targetedPlayerToStealFrom = null;
-                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
-                }
-                else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
-                {
-                    targetedAbilityPickup = null;
-                }
-            }
-        }
+        //if (entity.IsOwner)
+        //{
+        //    if (collider != null)
+        //    {
+        //        if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
+        //        {
+        //            //Removes specific artefact that we exited.
+        //            int i = 0;
+        //            foreach (ArtefactBehaviour item in targetedArtefacts)
+        //            {
+        //                if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
+        //                {
+        //                    targetedArtefacts.RemoveAt(i);
+        //                }
+        //                i++;
+        //            }
+        //        }
+        //        else if (gameStash != null && collider.gameObject == gameStash.gameObject)
+        //        {
+        //            gameStash = null;
+        //            FindObjectOfType<CanvasUIManager>().CloseHintMessage();
+        //        }
+        //        else if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
+        //        {
+        //            targetedPlayerToStealFrom = null;
+        //            FindObjectOfType<CanvasUIManager>().CloseHintMessage();
+        //        }
+        //        else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
+        //        {
+        //            targetedAbilityPickup = null;
+        //        }
+        //    }
+        //}
     }
 
     #endregion

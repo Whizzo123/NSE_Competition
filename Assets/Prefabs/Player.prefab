@@ -1621,11 +1621,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7811146946738992400}
   - component: {fileID: 7811146946738992404}
-  - component: {fileID: 7811146946738992401}
   - component: {fileID: 1889028440207431689}
   - component: {fileID: 8921563345967218691}
   - component: {fileID: 4684549018310827129}
   - component: {fileID: 4794411963869771262}
+  - component: {fileID: 2468293122141348917}
+  - component: {fileID: -4301213370910514555}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1680,35 +1681,6 @@ MonoBehaviour:
   vCam: {fileID: 8073864731859778527, guid: 00eba60cefa011d4e9636e781d77a83c, type: 3}
   cam: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
   offset: {x: 0, y: 10, z: 10}
---- !u!114 &7811146946738992401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7811146946738992411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sceneGuid: 
-  _serializerGuid: 33585ba3-0e56-45e1-ae42-f8ad2897e993
-  _prefabId: 4
-  _updateRate: 1
-  _autoFreezeProxyFrames: 0
-  _clientPredicted: 1
-  _allowInstantiateOnClient: 1
-  _persistThroughSceneLoads: 0
-  _sceneObjectDestroyOnDetach: 1
-  _sceneObjectAutoAttach: 1
-  _alwaysProxy: 0
-  _detachOnDisable: 1
-  _allowFirstReplicationWhenFrozen: 0
-  _autoRemoveChildEntities: 0
-  _entityBehaviourQueryOption: 0
-  _entityPriorityCalculatorQueryOption: 1
-  _entityReplicationFilterQueryOption: 1
 --- !u!54 &1889028440207431689
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1770,6 +1742,46 @@ CapsuleCollider:
   m_Height: 2.7
   m_Direction: 1
   m_Center: {x: 0.05, y: -0.42, z: 0.2}
+--- !u!114 &2468293122141348917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0
+--- !u!114 &-4301213370910514555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.076
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  compressRotation: 0
+  interpolateScale: 1
+  interpolateRotation: 1
+  interpolatePosition: 1
+  syncScale: 1
 --- !u!1 &7841634150651579168
 GameObject:
   m_ObjectHideFlags: 0
