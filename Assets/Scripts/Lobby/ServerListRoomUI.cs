@@ -43,10 +43,10 @@ public class ServerListRoomUI : MonoBehaviour
         OnJoinRoomClicked += () => JoinSteamLobby(info.lobbyID);
     }
 
-    public void Populate(long serverID, Color backgroundColor)
+    public void Populate(ServerResponse response, Color backgroundColor)
     {
-        roomNameText.text = serverID.ToString();
-        OnJoinRoomClicked += () => JoinMirrorLobby(lobbyUIManager.discoveredServers[serverID]);
+        roomNameText.text = response.EndPoint.Address.ToString();
+        OnJoinRoomClicked += () => JoinMirrorLobby(lobbyUIManager.discoveredServers[response.serverId]);
     }
 
     private void JoinSteamLobby(CSteamID lobbyID)

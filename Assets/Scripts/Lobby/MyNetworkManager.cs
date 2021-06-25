@@ -65,6 +65,7 @@ public class MyNetworkManager : NetworkManager
             bool isLeader = RoomPlayers.Count == 0;
 
             lobbyPlayerInstance.IsLeader = isLeader;
+
             if (LobbyUIManager.useSteamMatchmaking)
             {
                 CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex(LobbyUIManager.LobbyId, RoomPlayers.Count);

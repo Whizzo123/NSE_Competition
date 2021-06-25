@@ -90,7 +90,7 @@ public class BrowseScreenUI : MonoBehaviour
                 {
                     GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
                     ServerListRoomUI serverEntryUI = serverEntryGO.GetComponent<ServerListRoomUI>();
-                    serverEntryUI.Populate(serverID, UnityEngine.Random.ColorHSV());
+                    serverEntryUI.Populate(servers[serverID], UnityEngine.Random.ColorHSV());
                 }
                 currentWaitTime = waitTime;
             }

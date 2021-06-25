@@ -13,6 +13,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     [SerializeField] private Text[] playerNameTexts = new Text[5];
     [SerializeField] private Text[] playerReadyTexts = new Text[5];
     [SerializeField] private Button startGameButton = null;
+    [SerializeField] private Button[] removeButtons = new Button[5];
 
     [SyncVar(hook = nameof(HandleDisplayNameChanged))]
     public string DisplayName = "Loading...";
@@ -71,8 +72,12 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     public override void OnStartAuthority()
     {
         CmdSetDisplayName(string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100)));
-
         lobbyUI.SetActive(true);
+        if (isLeader)
+            EnableRemoveButtons();
+        else
+            DisableRemoveButtons();
+
     }
 
     public override void OnStartClient()
@@ -118,6 +123,33 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         {
             playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
             playerReadyTexts[i].text = Room.RoomPlayers[i].IsReady ? "<color=green>Ready</color>" : "<color=red>Not Ready</color>";
+        }
+    }
+
+    public void EnableRemoveButtons()
+    {
+        removeButtons[0].gameObject.SetActive(false);
+        for (int i = 1; i < removeButtons.Length; i++)
+        {
+            removeButtons[i].gameObject.SetActive(true);
+        }
+        removeButtons[1].onClick.AddListener(() => KickPlayer(1));
+        removeButtons[2].onClick.AddListener(() => KickPlayer(2));
+        removeButtons[3].onClick.AddListener(() => KickPlayer(3));
+        removeButtons[4].onClick.AddListener(() => KickPlayer(4));
+    }
+
+    public void KickPlayer(int index)
+    {
+        if(Room.RoomPlayers[index] != null)
+            Room.RoomPlayers[index].connectionToClient.Disconnect();
+    }
+
+    public void DisableRemoveButtons()
+    {
+        for (int i = 0; i < removeButtons.Length; i++)
+        {
+            removeButtons[i].gameObject.SetActive(false);
         }
     }
 
