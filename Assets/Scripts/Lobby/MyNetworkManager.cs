@@ -101,7 +101,7 @@ public class MyNetworkManager : NetworkManager
     public override void ServerChangeScene(string newSceneName)
     {
         Debug.Log("ServerChangeScene");
-        if(SceneManager.GetActiveScene().name == menuScene && newSceneName.StartsWith("Game"))
+        if(SceneManager.GetActiveScene().name == "LobbyScene" && newSceneName.StartsWith("Game"))
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
