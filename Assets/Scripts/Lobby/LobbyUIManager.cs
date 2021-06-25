@@ -6,6 +6,7 @@ using System;
 using UnityEngine.SceneManagement;
 using Steamworks;
 using Mirror;
+using Mirror.Discovery;
 
 public class LobbyUIManager : MonoBehaviour
 {
@@ -16,7 +17,10 @@ public class LobbyUIManager : MonoBehaviour
 
     private CreateScreenUI createScreen;
     private BrowseScreenUI browseScreen;
-    private RoomScreenUI roomScreen;
+    public RoomScreenUI roomScreen;
+
+    public Canvas BrowseCreateCanvas;
+    public Canvas RoomCanvas;
 
     public string gameSceneName;
 
@@ -27,14 +31,22 @@ public class LobbyUIManager : MonoBehaviour
     [SerializeField]
     public float prematchCountdown = 5.0f;
 
+    [Tooltip("Do we use Steam for matchmaking or not?")]
+    [SerializeField]
+    public static bool useSteamMatchmaking = false;
+
     private bool randomJoin;
     public bool isCountdown = false;
 
     public GameObject playerLobbyPrefab;
 
     private const string HostAddressKey = "HostAddress";
+    private const string LobbyNameKey = "LobbyName";
 
     private MyNetworkManager networkManager;
+    private NetworkDiscovery networkDiscovery;
+
+    public readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
 
     public static CSteamID LobbyId { get; private set; }
 
@@ -43,6 +55,7 @@ public class LobbyUIManager : MonoBehaviour
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
+    protected Callback<LobbyMatchList_t> lobbyMatchList;
 
     #endregion
 
@@ -50,12 +63,10 @@ public class LobbyUIManager : MonoBehaviour
     void Start()
     {
         networkManager = FindObjectOfType<MyNetworkManager>();
-
-        if (!SteamManager.Initialized) { return; }
-
-        lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
-        gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
-        lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+        networkDiscovery = FindObjectOfType<NetworkDiscovery>();
+        networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
+        if (useSteamMatchmaking)
+            InitializeSteam();
 
         //Setup all the screens for the lobby
         createScreen = FindScreenByName("Create").screen.GetComponent<CreateScreenUI>();
@@ -68,7 +79,7 @@ public class LobbyUIManager : MonoBehaviour
         {
             Debug.LogError("Failed to find the browse screen");
         }
-        roomScreen = FindScreenByName("Room").screen.GetComponent<RoomScreenUI>();
+        //roomScreen = RoomCanvas.GetComponent<RoomScreenUI>();
         if(roomScreen == null)
         {
             Debug.LogError("Failed to find the room screen");
@@ -76,9 +87,8 @@ public class LobbyUIManager : MonoBehaviour
         //Set random join to false by default
         randomJoin = false;
         StartUI();
-
-        
     }
+
     /// <summary>
     /// Sets up click handlers for the menu buttons
     /// </summary>
@@ -89,22 +99,21 @@ public class LobbyUIManager : MonoBehaviour
         createScreen.OnRandomButtonClick += JoinRandomSession;
         //browseScreen.OnClickJoinSession += JoinSessionEvent;
     }
-    /// <summary>
-    /// Called when creating a room on the network
-    /// </summary>
-    private void CreateRoomSession()
+
+    #region SteamLobbyLogic
+    private void InitializeSteam()
     {
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        roomName = createScreen.inputField.text;
-        Debug.Log("CreatingRoomSession");
-        //Launches server
-        //BoltLauncher.StartServer();
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, networkManager.maxConnections);
+        if (!SteamManager.Initialized) { return; }
+
+        lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
+        gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
+        lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+        lobbyMatchList = Callback<LobbyMatchList_t>.Create(OnLobbyMatchListGrab);
     }
 
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
-        if(callback.m_eResult != EResult.k_EResultOK)
+        if (callback.m_eResult != EResult.k_EResultOK)
         {
             Debug.LogError("Lobby could not be created");
             return;
@@ -115,6 +124,7 @@ public class LobbyUIManager : MonoBehaviour
         networkManager.StartHost();
 
         SteamMatchmaking.SetLobbyData(LobbyId, HostAddressKey, SteamUser.GetSteamID().ToString());
+        SteamMatchmaking.SetLobbyData(LobbyId, LobbyNameKey, roomName);
     }
 
     private void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback)
@@ -125,28 +135,89 @@ public class LobbyUIManager : MonoBehaviour
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
         ChangeScreenTo("Room");
-        GameObject playerInfo = Instantiate(playerLobbyPrefab);
-        NetworkServer.Spawn(playerInfo);
+        LobbyId = new CSteamID(callback.m_ulSteamIDLobby);
         Debug.LogError("LobbyId: " + LobbyId);
-        CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex(LobbyUIManager.LobbyId, FindObjectsOfType<LobbyPlayer>().Length - 1);
-        playerInfo.GetComponent<LobbyPlayer>().SetSteamId(steamId.m_SteamID);
-        //Use this commented version of the line above when testing on same computer to avoid issues with similar usernames as it pulls from steam no matter what editor or build
-        //playerInfo.GetComponent<LobbyPlayer>().SetSteamId(0);
-        roomScreen.AddPlayer(playerInfo.GetComponent<LobbyPlayer>());
-        if(NetworkServer.active) { return; }
+        if (NetworkServer.active) { return; }
 
-        string hostAddress = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey);
+        string hostAddress = SteamMatchmaking.GetLobbyData(LobbyId, HostAddressKey);
 
         networkManager.networkAddress = hostAddress;
+        Debug.LogError("NetworkAddress: " + hostAddress);
         networkManager.StartClient();
+    }
+
+    private void OnLobbyMatchListGrab(LobbyMatchList_t callback)
+    {
+        Debug.Log("Callback number: " + callback.m_nLobbiesMatching);
+        List<LobbyInfo> lobbies = new List<LobbyInfo>();
+        for (int i = 0; i < callback.m_nLobbiesMatching; i++)
+        {
+            CSteamID lobbyId = SteamMatchmaking.GetLobbyByIndex(i);
+            if (SteamMatchmaking.GetLobbyData(lobbyId, LobbyNameKey) != "")
+            {
+                LobbyInfo info = new LobbyInfo();
+                info.lobbyID = lobbyId;
+                info.lobbyName = SteamMatchmaking.GetLobbyData(lobbyId, LobbyNameKey);
+                info.playerCount = SteamMatchmaking.GetNumLobbyMembers(lobbyId);
+                lobbies.Add(info);
+                Debug.Log("LobbyID: " + lobbyId);
+            }
+        }
+        browseScreen.SessionListUpdated(lobbies);
+    }
+    #endregion
+
+
+    /// <summary>
+    /// Called when creating a room on the network
+    /// </summary>
+    private void CreateRoomSession()
+    {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        roomName = createScreen.inputField.text;
+        Debug.Log("CreatingRoomSession");
+
+        if (useSteamMatchmaking)
+            SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, networkManager.maxConnections);
+        else
+            CreateMirrorLobby();
+    }
+
+    private void CreateMirrorLobby()
+    {
+        BrowseCreateCanvas.gameObject.SetActive(false);
+        networkManager.StartHost();
+        networkDiscovery.AdvertiseServer();
     }
 
     private void SwapToBrowseScreen()
     {
         //In order for client to view session list we need to connect them to the network
         FindObjectOfType<AudioManager>().PlaySound("Click");
-        BoltLauncher.StartClient();
+        //BoltLauncher.StartClient();
+        ChangeScreenTo("Browse");
+        if(useSteamMatchmaking)
+            SteamMatchmaking.RequestLobbyList();
+        else
+        {
+            networkDiscovery.StartDiscovery();
+        }
     }
+
+    public void OnDiscoveredServer(ServerResponse info)
+    {
+        // Note that you can check the versioning to decide if you can connect to the server or not using this method
+        Debug.Log("ServerID: " + info.serverId);
+        Debug.Log("Uri: " + info.uri.Host);
+        Debug.Log("IPEndPoint: " + info.EndPoint.ToString());
+        discoveredServers[info.serverId] = info;
+    }
+
+    void Connect(ServerResponse info)
+    {
+        networkManager.StartClient(info.uri);
+    }
+
     private void JoinRandomSession()
     {
         FindObjectOfType<AudioManager>().PlaySound("Click");
@@ -520,13 +591,19 @@ public class LobbyUIManager : MonoBehaviour
         Debug.LogError("Name: " + name + " does not belong to any UIScreen object");
         return new UIScreens();
     }
-    private void ChangeScreenTo(string name)
+    public void ChangeScreenTo(string name)
     {
         for (int i = 0; i < screens.Length; i++)
         {
+            if(screens[i].screen == null) { return; }
             screens[i].screen.SetActive(false);
             if(screens[i].screenName == name)
             {
+                if(screens[i].screenName == "Room")
+                {
+                    RoomCanvas.gameObject.SetActive(true);
+                    BrowseCreateCanvas.gameObject.SetActive(false);
+                }
                 screens[i].screen.SetActive(true);
             }
         }

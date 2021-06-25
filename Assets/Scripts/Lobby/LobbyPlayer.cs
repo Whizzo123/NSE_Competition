@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using Mirror;
 using Steamworks;
 
+
 public class LobbyPlayer : NetworkBehaviour
 {
 	#region Variables
@@ -31,6 +32,9 @@ public class LobbyPlayer : NetworkBehaviour
 
     }
 
+	//Can sync the UI by using commands but only finds that player object if connection is assigned so we need to assign that connection in the creating of the LobbyPlayer which in that 
+	//case will need to be shifted to the NetworkManager script
+
 	#region Server
 
 	public void SetSteamId(ulong steamId)
@@ -48,15 +52,25 @@ public class LobbyPlayer : NetworkBehaviour
 	#region Client
 	private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
 	{
-		var cSteamId = new CSteamID(newSteamId);
+		CSteamID cSteamId = new CSteamID(newSteamId);
 
 		name.text = SteamFriends.GetFriendPersonaName(cSteamId);
 		PlayerPrefs.SetString("username", name.text);
 	}
 
-	#endregion
+    #endregion
 
+    public override void OnStartAuthority()
+    {
+		CmdSetTransform();
+	}
 
+	[Command]
+	public void CmdSetTransform()
+    {
+		this.transform.SetParent(GameObject.Find("PlayersList").transform);
+		GameObject.Find("RoomCanvas").AddComponent<NetworkTransformChild>().target = FindObjectOfType<RoomScreenUI>().playersList.transform;
+	}
 
 	/// <summary>
 	/// Called after entity is attached in the network like the unity Start function
@@ -138,6 +152,12 @@ public class LobbyPlayer : NetworkBehaviour
 			state.Ready = lobbyCommand.Input.Ready;
 		}
 	}*/
+
+	[Command]
+	private void CmdSetPlayerDisplayName(string displayName)
+    {
+
+    }
 
 	/// <summary>
 	/// Sets up player on the client computer

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class RoomScreenUI : NetworkBehaviour
+public class RoomScreenUI : MonoBehaviour
 {
     #region Variables
     public List<LobbyPlayer> players = new List<LobbyPlayer>();
@@ -35,9 +35,15 @@ public class RoomScreenUI : NetworkBehaviour
 
         players.Add(player);
 
-        player.gameObject.transform.SetParent(playersList.transform, false);
+        //player.gameObject.transform.SetParent(playersList.transform, false);
+    }
 
-
+    public void UpdateDisplay()
+    {
+        foreach (LobbyPlayer player in players)
+        {
+           // player.name = player.
+        }
     }
 
     /// <summary>

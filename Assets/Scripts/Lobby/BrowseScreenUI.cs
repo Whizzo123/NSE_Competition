@@ -5,18 +5,28 @@ using Bolt;
 using Bolt.Matchmaking;
 using UdpKit;
 using System;
+using Steamworks;
+using Mirror.Discovery;
 
-public class BrowseScreenUI : NetworkConnections
+public class BrowseScreenUI : MonoBehaviour
 {
     #region Variables
     public GameObject sessionListObjectPrefab;
     public GameObject noServerFoundText;
     public GameObject serverList;
 
-    public event Action<UdpSession, IProtocolToken> OnClickJoinSession;
+    public event Action<LobbyInfo> OnClickJoinSession;
+
+    private LobbyUIManager lobbyUIManager;
+
+    private float waitTime = 5f;
+    private float currentWaitTime = 0f;
     #endregion 
 
-
+    private void Start()
+    {
+        lobbyUIManager = FindObjectOfType<LobbyUIManager>();
+    }
 
 
     /// <summary>
@@ -37,13 +47,13 @@ public class BrowseScreenUI : NetworkConnections
     /// Updated frequently with all servers hosted currently on the bolt network
     /// </summary>
     /// <param name="sessionList"></param>
-    public override void SessionListUpdated(Map<Guid, UdpSession> sessionList)
+    public void SessionListUpdated(List<LobbyInfo> lobbies)
     {
         Debug.Log("Recieved session list update");
 
         ResetUI();
 
-        if (sessionList.Count == 0)
+        if (lobbies.Count == 0)
         {
             noServerFoundText.SetActive(true);
             return;
@@ -51,27 +61,44 @@ public class BrowseScreenUI : NetworkConnections
 
         noServerFoundText.SetActive(false);
 
-            foreach (var session in sessionList)
+            foreach (LobbyInfo info in lobbies)
             {
-                UdpSession udpSession = session.Value as UdpSession;
+                //Searches for any lobby that is in the current version.
+                GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
 
-            //Grabs the token for the session
-            var customToken = udpSession.HostData.ToToken() as ServerInfo;
-            //Searches for any lobby that is in the current version.
-            if (customToken.versionNumber == versionNo && customToken.joinableSession == true)
-            {
-                    var ses = session.Value;
-                    GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
-
-                    ServerListRoomUI serverEntryUI = serverEntryGO.GetComponent<ServerListRoomUI>();
-                    serverEntryUI.Populate(ses, UnityEngine.Random.ColorHSV(), () =>
-                    {
-                        if (OnClickJoinSession != null) OnClickJoinSession.Invoke(ses, customToken);
-                    });
+                ServerListRoomUI serverEntryUI = serverEntryGO.GetComponent<ServerListRoomUI>();
+                serverEntryUI.Populate(info, UnityEngine.Random.ColorHSV());
             }
+    }
 
+    private void Update()
+    {
+        if (!LobbyUIManager.useSteamMatchmaking)
+        {
+            if (currentWaitTime <= 0)
+            {
+                Dictionary<long, ServerResponse> servers = lobbyUIManager.discoveredServers;
+                ResetUI();
+                if(servers.Count == 0)
+                {
+                    noServerFoundText.SetActive(true);
+                    return;
+                }
+
+                noServerFoundText.SetActive(false);
+                foreach (long serverID in servers.Keys)
+                {
+                    GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
+                    ServerListRoomUI serverEntryUI = serverEntryGO.GetComponent<ServerListRoomUI>();
+                    serverEntryUI.Populate(serverID, UnityEngine.Random.ColorHSV());
+                }
+                currentWaitTime = waitTime;
+            }
+            else
+            {
+                currentWaitTime -= Time.deltaTime;
+            }
         }
-
     }
 
 
@@ -146,4 +173,11 @@ public class BrowseScreenUI : NetworkConnections
     //    }
     //}
     #endregion
+}
+
+public struct LobbyInfo
+{
+    public CSteamID lobbyID;
+    public string lobbyName;
+    public int playerCount;
 }
