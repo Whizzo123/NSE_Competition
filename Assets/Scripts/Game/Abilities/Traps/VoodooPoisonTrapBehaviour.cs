@@ -28,18 +28,18 @@ public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
     {
         if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
         {
-            if(collider.gameObject.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Name != state.PlacingPlayer.GetState<IGamePlayerState>().Name)
-            {
+            //if(collider.gameObject.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Name != state.PlacingPlayer.GetState<IGamePlayerState>().Name)
+           // {
                 trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                 SpringTrap();
-            }
+           // }
         }
     }
 
     private void SpringTrap()
     {
         var request = PoisonPlayer.Create();
-        request.Target = trappedPlayer.entity;
+       // request.Target = trappedPlayer.entity;
         request.End = false;
         request.Trap = entity;
         request.Send();
@@ -74,7 +74,7 @@ public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
                 else
                 {
                     var request = PoisonPlayer.Create();
-                    request.Target = trappedPlayer.entity;
+                   // request.Target = trappedPlayer.entity;
                     request.End = true;
                     request.Trap = entity;
                     request.Send();

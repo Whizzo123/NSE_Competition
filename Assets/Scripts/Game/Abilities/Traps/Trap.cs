@@ -15,7 +15,7 @@ public class Trap : Ability
     {
         //Do animaton
         var request = FireAnimatorPutDownTrigger.Create();
-        request.Target = placingPlayer.entity;
+        //request.Target = placingPlayer.entity;
         request.Send();
         base.Use();
         useCount++;

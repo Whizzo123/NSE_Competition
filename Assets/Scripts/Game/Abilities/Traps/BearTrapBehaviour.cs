@@ -26,11 +26,11 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
     {
         if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
         {
-            if (collider.gameObject.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Name != state.PlacingPlayer.GetState<IGamePlayerState>().Name)
-            {
+            //if (collider.gameObject.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Name != state.PlacingPlayer.GetState<IGamePlayerState>().Name)
+           // {
                 trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                 SpringTrap();
-            }
+           // }
         }
     }
 
@@ -38,7 +38,7 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
     {
         FindObjectOfType<AudioManager>().PlaySound("BearTrapClose");
         var request = SpringBearTrap.Create();
-        request.Victim = trappedPlayer.entity;
+        //request.Victim = trappedPlayer.entity;
         request.End = false;
         request.Trap = entity;
         request.Send();
@@ -70,7 +70,7 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
                 else
                 {
                     var request = SpringBearTrap.Create();
-                    request.Victim = trappedPlayer.entity;
+                   // request.Victim = trappedPlayer.entity;
                     request.End = true;
                     request.Trap = entity;
                     request.Send();

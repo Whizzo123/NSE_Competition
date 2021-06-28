@@ -47,7 +47,7 @@ public class NetworkCallbacks : GlobalEventListener
         if (evnt.InventoryEntity.IsOwner)
         {
             evnt.InventoryEntity.GetComponent<PlayerController>().RemoveFromInventory(evnt.ItemIndex, evnt.ItemName, evnt.ItemPoints);
-            evnt.InventoryEntity.GetComponent<PlayerController>().state.HasBeenStolenFrom = true;
+            //evnt.InventoryEntity.GetComponent<PlayerController>().state.HasBeenStolenFrom = true;
             var request = StunEnemyPlayer.Create();
             request.Target = evnt.InventoryEntity;
             request.End = false;
@@ -89,7 +89,7 @@ public class NetworkCallbacks : GlobalEventListener
                 SpeedBoost spd = (SpeedBoost)evnt.Target.GetComponent<PlayerController>().abilityInventory.FindAbility("Speed");
                 if (spd != null)
                     spd.SetOppositeDebuffActivated(true);
-                evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 1f;
+                //evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 1f;
                 //Instantiate(Resources.Load("SlowBombExplosion_PA", typeof(GameObject)) as GameObject, evnt.Target.transform.position, Quaternion.identity);//Instantiates it on all other machines besides the thrower
             }
             else
@@ -98,7 +98,7 @@ public class NetworkCallbacks : GlobalEventListener
                 SpeedBoost spd = (SpeedBoost)evnt.Target.GetComponent<PlayerController>().abilityInventory.FindAbility("Speed");
                 if (spd != null)
                     spd.SetOppositeDebuffActivated(false);
-                evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = FindObjectOfType<PlayerController>().speed;
+                //evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = FindObjectOfType<PlayerController>().speed;
             }
         }
     }
@@ -171,12 +171,12 @@ public class NetworkCallbacks : GlobalEventListener
             if (!evnt.End)
             {
                 Debug.LogError("Voodoo POISON");
-                evnt.Target.GetComponent<PlayerController>().state.Poisoned = true;
+                //evnt.Target.GetComponent<PlayerController>().state.Poisoned = true;
             }
             else
             {
                 Debug.LogError("Voodoo NOTPOISON");
-                evnt.Target.GetComponent<PlayerController>().state.Poisoned = false;
+                //evnt.Target.GetComponent<PlayerController>().state.Poisoned = false;
             }
         }
         Debug.LogError("Voodoo EVNT END");

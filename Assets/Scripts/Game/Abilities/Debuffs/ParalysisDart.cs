@@ -24,7 +24,7 @@ public class ParalysisDart : Debuff
         {
             inUse = true;
             var request = ParalyzePlayerEvent.Create();
-            request.Target = castingPlayer.entity;
+            //request.Target = castingPlayer.entity;
             request.End = false;
             request.Send();
             GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
@@ -37,7 +37,7 @@ public class ParalysisDart : Debuff
     {
         inUse = false;
         var request = ParalyzePlayerEvent.Create();
-        request.Target = castingPlayer.entity;
+        //request.Target = castingPlayer.entity;
         request.End = true;
         request.Send();
         target = null;

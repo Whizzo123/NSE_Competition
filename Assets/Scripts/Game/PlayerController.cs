@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Bolt;
+using Mirror;
 
-public class PlayerController : EntityBehaviour<IGamePlayerState>
+public class PlayerController : NetworkBehaviour
 {
     #region Variables
     [Header("Stored Interactables")]
@@ -57,9 +57,16 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// <summary>
     /// Called when entity attached to network 
     /// </summary>
-    public override void Attached()
+    /// 
+
+    public override void OnStartClient()
     {
-        targetedArtefacts = new List<ArtefactBehaviour>();
+        DontDestroyOnLoad(gameObject);
+    }
+
+    //public override void Attached()
+    //{
+        /*targetedArtefacts = new List<ArtefactBehaviour>();
         state.SetTransforms(state.PlayerTransform, transform);
         SetLoadoutReleased(false);
         abilityInventory = new AbilityInventory(this);
@@ -79,9 +86,9 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                 state.Inventory[i].ItemPoints = 0;
             }
             //playerCharacterController = this.gameObject.GetComponent<CharacterController>();
-            /*
+            
             Instantiate(cam, transform.position, Quaternion.identity);
-            Instantiate(vCam,transform.position, Quaternion.identity);*/
+            Instantiate(vCam,transform.position, Quaternion.identity);
             vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
             //vCam.transform.position = transform.position;
             vCam.LookAt = this.gameObject.transform;
@@ -93,8 +100,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             //Disable other players cameras so that we don't accidentally get assigned to another players camera
             if (playerCamera != null)
                 playerCamera.gameObject.SetActive(false);
-        }
-    }
+        }*/
+    //}
 
     #region ArtefactInventory
     /// <summary>
@@ -110,14 +117,14 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
         int emptySlot = FindEmptyInventorySlot();
         if (emptySlot > -1)
         {
-            state.Inventory[emptySlot].ItemName = artefactName;
-            state.Inventory[emptySlot].ItemPoints = artefactPoints;
+            //state.Inventory[emptySlot].ItemName = artefactName;
+            //state.Inventory[emptySlot].ItemPoints = artefactPoints;
             FindObjectOfType<CanvasUIManager>().PopupArtefactPickupDisplay(item);
             FindObjectOfType<CanvasUIManager>().AddToInventoryScreen(item);
         }
         else
         {
-            BoltLog.Error("Inventory is full");
+            //BoltLog.Error("Inventory is full");
         }
     }
 
@@ -129,8 +136,8 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// <param name="points"></param>
     public void RemoveFromInventory(int index, string name, int points)
     {
-        state.Inventory[index].ItemName = "";
-        state.Inventory[index].ItemPoints = 0;
+       // state.Inventory[index].ItemName = "";
+       // state.Inventory[index].ItemPoints = 0;
         ItemArtefact itemArtefact;
         itemArtefact.name = name;
         itemArtefact.points = points;
@@ -143,13 +150,13 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// <returns></returns>
     private int FindEmptyInventorySlot()
     {
-        for (int i = 0; i < state.Inventory.Length; i++)
+        /*for (int i = 0; i < state.Inventory.Length; i++)
         {
             if (state.Inventory[i].ItemName == "")
             {
                 return i;
             }
-        }
+        }*/
         return -1;
     }
 
@@ -157,11 +164,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     public void ClearInventory()
     {
         FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
-        for (int i = 0; i < state.Inventory.Length; i++)
+       /* for (int i = 0; i < state.Inventory.Length; i++)
         {
             state.Inventory[i].ItemName = "";
             state.Inventory[i].ItemPoints = 0;
-        }
+        }*/
     }
 
     /// <summary>
@@ -170,13 +177,13 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// <returns></returns>
     public bool IsInventoryEmpty()
     {
-        for (int i = 0; i < state.Inventory.Length; i++)
+        /*for (int i = 0; i < state.Inventory.Length; i++)
         {
             if (state.Inventory[i].ItemName == "")
             {
                 return true;
             }
-        }
+        }*/
 
         return false;
     }
@@ -185,32 +192,32 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// Just grab the first item in the player inventory
     /// </summary>
     /// <returns></returns>
-    public InventoryItem GrabRandomItem()
+    /*public InventoryItem GrabRandomItem()
     {
         return state.Inventory[0];
-    }
+    }*/
     #endregion 
 
-    public override void ControlGained()
+   /* public override void ControlGained()
     {
         localPlayer = this;
         playerCamera = FindObjectOfType<Camera>();
         playerCharacterController = this.gameObject.GetComponent<CharacterController>();
-    }
+    }*/
 
     public bool InventoryNotEmpty()
     {
-        for (int i = 0; i < state.Inventory.Length; i++)
+        /*for (int i = 0; i < state.Inventory.Length; i++)
         {
             if (state.Inventory[i].ItemPoints > 0) return true;
-        }
+        }*/
         return false;
     }
 
     /// <summary>
     /// Called on every update of the owner computer a.k.a computer that created this entity
     /// </summary>
-    public override void SimulateOwner()
+   /* public override void SimulateOwner()
     {
         abilityInventory.Update();
 
@@ -418,7 +425,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             }
 
         }
-    }
+    }*/
 
 
     private void HitDown()
@@ -462,11 +469,11 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
     /// <param name="playerName"></param>
     private void Setup(string playerName)
     {
-        if(entity.IsOwner)
+        /*if(entity.IsOwner)
         {
             BoltLog.Info("Setup: " + playerName);
             state.Name = playerName;
-        }
+        }*/
     }
 
     /// <summary>
@@ -562,7 +569,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (entity.IsOwner)
+        /*if (entity.IsOwner)
         {
             if (collider.gameObject.GetComponent<ArtefactBehaviour>())
             {
@@ -582,12 +589,12 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
             {
                 targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
             }
-        }
+        }*/
     }
 
     public void OnTriggerExit(Collider collider)
     {
-        if (entity.IsOwner)
+       /* if (entity.IsOwner)
         {
             if (collider != null)
             {
@@ -619,7 +626,7 @@ public class PlayerController : EntityBehaviour<IGamePlayerState>
                     targetedAbilityPickup = null;
                 }
             }
-        }
+        }*/
     }
 
     #endregion
