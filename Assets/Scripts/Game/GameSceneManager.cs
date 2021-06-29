@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Bolt;
+using Mirror;
 
-[BoltGlobalBehaviour("GameScene")]
-public class PhotonGameSceneController : GlobalEventListener
+public class GameSceneManager : NetworkBehaviour
 {
 
     private int minPlayers = 2;
@@ -23,95 +22,93 @@ public class PhotonGameSceneController : GlobalEventListener
     private float currentAbilitySpawnTime = 0;
     private int counter = 0;
 
-    public override void SceneLoadLocalDone(string scene)
+
+    void Start()
     {
         FindObjectOfType<AudioManager>().ActivateGameMusic();
         PlayerController.Spawn();
         //FindObjectOfType<PlayerTestSuite>().InitializeTest();
-        if (BoltNetwork.IsServer)
+        if (hasAuthority)
         {
             currentReadyTime = readyTime;
             StartCoroutine(RunLobbyReadyCountdown());
         }
-    }
 
-    void Start()
-    {
         loadoutChoiceComplete = false;
         displayedWinScreen = false;
         inCountdown = false;
-        if (BoltNetwork.IsServer)
+        if (hasAuthority)
         {
-            BoltEntity stash = BoltNetwork.Instantiate(BoltPrefabs.Stash);
+            GameObject stash = Instantiate(Resources.Load("Biomes/Stash", typeof(GameObject)) as GameObject);
             stash.transform.position = new Vector3(4.24f , 0.57f, -18.93f);
-            stash.TakeControl();
+            NetworkServer.Spawn(stash);
         }
     }
 
     void FixedUpdate()
     {
-        if (BoltNetwork.IsServer && loadoutChoiceComplete == false)
+        if (hasAuthority && loadoutChoiceComplete == false)
         {
             var allReady = true;
             var readyCount = 0;
 
-            foreach (var entity in BoltNetwork.Entities)
+            foreach (var entity in NetworkServer.connections.Values)
             {
-                if (entity.StateIs<IGamePlayerState>() == false) continue;
+                if (entity.clientOwnedObjects.Contains(NetworkIdentity.FindObjectOfType<PlayerController>().netIdentity) == false) continue;
 
-                var playerController = entity.GetState<IGamePlayerState>();
-                allReady &= playerController.LoadoutReady;
+                //PlayerController playerController = NetworkIdentity.FindObjectOfType<PlayerController>();////////////////////////////
+                //allReady &= playerController.;
 
                 if (allReady == false) break;
                 readyCount++;
             }
-
-            if (allReady && readyCount >= minPlayers)
-            {
-                //Disable loadout screens
-                var request = LoadoutScreenDisable.Create();
-                request.Send();
-                loadoutChoiceComplete = true;
-            }
         }
-        if(BoltNetwork.IsServer && !displayedWinScreen && loadoutChoiceComplete)
-        {
-            if (inCountdown == false)
-            {
-                inCountdown = true;
-                currentRunningGameTime = totalAllottedGameTime;
-                StartCoroutine(RunGameCountdown());
-            }
-            NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
-            foreach (StashedScore score in scores)
-            {
-                if (score.Score > pointGoal)
-                {
-                    //End game
-                    var request = DisplayWinScreen.Create();
-                    request.Send();
-                    displayedWinScreen = true;
+            //    if (allReady && readyCount >= minPlayers)
+            //    {
+            //        //Disable loadout screens
+            //        var request = LoadoutScreenDisable.Create();
+            //        request.Send();
+            //        loadoutChoiceComplete = true;
+            //    }
+            //}
+            //if(BoltNetwork.IsServer && !displayedWinScreen && loadoutChoiceComplete)
+            //{
+            //    if (inCountdown == false)
+            //    {
+            //        inCountdown = true;
+            //        currentRunningGameTime = totalAllottedGameTime;
+            //        StartCoroutine(RunGameCountdown());
+            //    }
+            //    NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
+            //    foreach (StashedScore score in scores)
+            //    {
+            //        if (score.Score > pointGoal)
+            //        {
+            //            //End game
+            //            var request = DisplayWinScreen.Create();
+            //            request.Send();
+            //            displayedWinScreen = true;
 
-                    StartCoroutine(WaitThenReturnToTitle(5.0f));
-                }
-            }
-        }
+            //            StartCoroutine(WaitThenReturnToTitle(5.0f));
+            //        }
+            //    }
+            //}
 
-        if(BoltNetwork.IsServer && displayedWinScreen)
-        {
-            currentWinWaitTime = winWaitTime;
-            StartCoroutine(RunWinCountdown());
-        }
+            //if(BoltNetwork.IsServer && displayedWinScreen)
+            //{
+            //    currentWinWaitTime = winWaitTime;
+            //    StartCoroutine(RunWinCountdown());
+            //}
 
-        if (BoltNetwork.IsServer && !abilityPickupsSpawned)
-        {
-            Debug.LogWarning("Calling method");
-            currentAbilitySpawnTime = abilitySpawnTime;
-            StartCoroutine(RunAbilityPickupSpawnCountdown());
+            //if (BoltNetwork.IsServer && !abilityPickupsSpawned)
+            //{
+            //    Debug.LogWarning("Calling method");
+            //    currentAbilitySpawnTime = abilitySpawnTime;
+            //    StartCoroutine(RunAbilityPickupSpawnCountdown());
+            //}
+            //else if (abilityPickupsSpawned)
+            //    StopCoroutine(RunAbilityPickupSpawnCountdown());
         }
-        else if (abilityPickupsSpawned)
-            StopCoroutine(RunAbilityPickupSpawnCountdown());
-    }
 
     private IEnumerator RunLobbyReadyCountdown()
     {
@@ -208,8 +205,9 @@ public class PhotonGameSceneController : GlobalEventListener
             time -= Time.deltaTime;
         }
 
-        var end = ReturnEveryoneToTitle.Create();
-        end.Send();
+        //var end = ReturnEveryoneToTitle.Create();
+        //end.Send();
+        //ServerChangeScene("");
     }
 
     private IEnumerator RunWinCountdown()

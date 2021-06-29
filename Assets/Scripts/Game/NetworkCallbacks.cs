@@ -46,8 +46,8 @@ public class NetworkCallbacks : GlobalEventListener
         BoltLog.Info("Called OnEvent InventoryRemove");
         if (evnt.InventoryEntity.IsOwner)
         {
-            evnt.InventoryEntity.GetComponent<PlayerController>().RemoveFromInventory(evnt.ItemIndex, evnt.ItemName, evnt.ItemPoints);
-            //evnt.InventoryEntity.GetComponent<PlayerController>().state.HasBeenStolenFrom = true;
+           // evnt.InventoryEntity.GetComponent<PlayerController>().RemoveFromInventory(evnt.ItemIndex, evnt.ItemName, evnt.ItemPoints);
+           // evnt.InventoryEntity.GetComponent<PlayerController>().state.HasBeenStolenFrom = true;
             var request = StunEnemyPlayer.Create();
             request.Target = evnt.InventoryEntity;
             request.End = false;
@@ -60,7 +60,7 @@ public class NetworkCallbacks : GlobalEventListener
         BoltLog.Info("Called OnEvent LoadoutScreenDisable");
         FindObjectOfType<AbilitySlotBarUI>().LoadInAbilitiesFromLoadout(FindObjectOfType<LoadoutBarUI>().GetLoadoutForAbilitySlotBar());
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
-        PlayerController.localPlayer.SetLoadoutReleased(true);
+       // PlayerController.localPlayer.SetLoadoutReleased(true);
     }
 
     #endregion

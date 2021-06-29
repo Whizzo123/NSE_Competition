@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 28ee0c5934fde4a4380eea24e3bb1ec8
+  - enabled: 1
+    path: Assets/Scenes/MirrorTest.unity
+    guid: 093839a3c0fd7354194772a9b27afe3f
   m_configObjects: {}

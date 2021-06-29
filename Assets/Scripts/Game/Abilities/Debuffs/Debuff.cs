@@ -107,7 +107,7 @@ public class Debuff : Ability
 
         foreach(BoltEntity entity in BoltNetwork.Entities)
         {
-            //if (entity.StateIs<IGamePlayerState>() == false || entity == castingPlayer.entity) continue;
+           //if (entity.StateIs<IGamePlayerState>() == false || entity == castingPlayer.entity) continue;
             float newDistance = GetDistance(entity.GetComponent<PlayerController>().gameObject.transform.position,
                 castingPlayer.gameObject.transform.position);
             if (newDistance < shortestDistance)

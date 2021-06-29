@@ -29,10 +29,10 @@ public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
         if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
         {
             //if(collider.gameObject.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Name != state.PlacingPlayer.GetState<IGamePlayerState>().Name)
-           // {
+            {
                 trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                 SpringTrap();
-           // }
+            }
         }
     }
 

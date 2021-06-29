@@ -15,18 +15,18 @@ public class SpeedBoost : Powerup
     public override void Use()
     {
         //All logic here
-        /*if (GetPlayerToEmpower().state.Speed != boostToSpeed && oppositeDebuffActivated == false)
+        //if (GetPlayerToEmpower().state.Speed != boostToSpeed && oppositeDebuffActivated == false)
         {
             BoltLog.Info("Setting speed");
-            GetPlayerToEmpower().state.Speed = GetPlayerToEmpower().speed + boostToSpeed;
+            //GetPlayerToEmpower().state.Speed = GetPlayerToEmpower().speed + boostToSpeed;
             inUse = true;
-        }*/
+        }
         base.Use();
     }
 
     protected override void EndEffect()
     {
-        //GetPlayerToEmpower().state.Speed = GetPlayerToEmpower().speed;
+       // GetPlayerToEmpower().state.Speed = GetPlayerToEmpower().speed;
         base.EndEffect();
     }
 

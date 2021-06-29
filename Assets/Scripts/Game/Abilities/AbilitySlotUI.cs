@@ -22,9 +22,9 @@ public class AbilitySlotUI : MonoBehaviour
     {
         BoltLog.Info("Slot clicking");
         //if (!isCharging && PlayerController.localPlayer.state.Mortal == false)
-       // {
-            PlayerController.localPlayer.abilityInventory.ActivateAbility(abilityName);
-        //}
+        {
+            //PlayerController.localPlayer.abilityInventory.ActivateAbility(abilityName);
+        }
     }
 
     public string GetAbilityName()

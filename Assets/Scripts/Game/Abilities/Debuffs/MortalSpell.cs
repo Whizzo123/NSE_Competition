@@ -35,7 +35,7 @@ public class MortalSpell : Debuff
     {
         inUse = false;
         var request = MortalSpellEvent.Create();
-        //request.Target = target.entity;
+       // request.Target = target.entity;
         request.End = true;
         request.Send();
         target = null;

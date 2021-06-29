@@ -23,7 +23,7 @@ public class Camouflage : Powerup
     protected override void EndEffect()
     {
         var request = ToggleCamouflage.Create();
-       // request.Target = GetPlayerToEmpower().entity;
+        //request.Target = GetPlayerToEmpower().entity;
         request.Toggle = true;
         request.Send();
         base.EndEffect();

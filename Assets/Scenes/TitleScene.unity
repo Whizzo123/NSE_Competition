@@ -816,7 +816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel1: {fileID: 0}
-  panel2: {fileID: 2052961288}
+  panel2: {fileID: 0}
 --- !u!1 &1545242724
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,11 +1255,11 @@ MonoBehaviour:
   serverTickRate: 30
   serverBatching: 1
   serverBatchInterval: 0
-  offlineScene: Assets/Scenes/TitleScene.unity
+  offlineScene: 
   onlineScene: 
   transport: {fileID: 1936111595}
   networkAddress: localhost
-  maxConnections: 5
+  maxConnections: 100
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
@@ -1269,10 +1269,10 @@ MonoBehaviour:
   spawnPrefabs:
   - {fileID: 795114186693884625, guid: 43edba4bcb587804291afe955648a2fb, type: 3}
   - {fileID: 7811146946738992411, guid: f1f1c90d42a4179428ca47018e5a7f2c, type: 3}
-  menuScene: Assets/Scenes/LobbyScene.unity
+  menuScene: 
   lobbyPlayerPrefab: {fileID: 2984370565624789861, guid: 43edba4bcb587804291afe955648a2fb, type: 3}
   minPlayers: 2
-  gamePlayerPrefab: {fileID: 7811146946738992404, guid: f1f1c90d42a4179428ca47018e5a7f2c, type: 3}
+  gamePlayerPrefab: {fileID: 0}
   RoomPlayers: []
 --- !u!4 &1936111593
 Transform:

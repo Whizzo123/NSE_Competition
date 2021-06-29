@@ -20,14 +20,14 @@ public class AbilitySlotBarUI : MonoBehaviour
             {
                 if (slots[i].SetAbilityName(loadoutItem)) break; else continue;
             }
-            PlayerController.localPlayer.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(loadoutItem));
+            //PlayerController.localPlayer.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(loadoutItem));
         }
     }
 
     // Slots method to grab empty slot or slot to recharge that is called on ability pickup from AbilityPickup.PickupAbility()
     public void AddAbilityToLoadoutBar(string abilityName)
     {
-        Trap trap = (Trap)PlayerController.localPlayer.abilityInventory.FindAbility(abilityName);
+        Trap trap = null;// = (Trap)PlayerController.localPlayer.abilityInventory.FindAbility(abilityName);
         if (trap == null)
         {
             foreach (AbilitySlotUI slot in slots)
