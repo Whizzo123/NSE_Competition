@@ -236,6 +236,12 @@ MonoBehaviour:
   - {fileID: 8783126670048758226}
   - {fileID: 4033289452947149614}
   startGameButton: {fileID: 8789463743172437202}
+  removeButtons:
+  - {fileID: 1993238719152809973}
+  - {fileID: 992323064845643970}
+  - {fileID: 6378562560044534934}
+  - {fileID: 8674622155545328640}
+  - {fileID: 4659742520388980211}
   DisplayName: Loading...
   IsReady: 0
 --- !u!1 &875918689200468906
@@ -887,9 +893,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 795114186693884625}
         m_TargetAssemblyTypeName: LobbyPlayer, Assembly-CSharp
-        m_MethodName: OnRemovePlayerClick
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -912,7 +918,7 @@ GameObject:
   - component: {fileID: 5108577358213517400}
   - component: {fileID: 4659742520388980211}
   m_Layer: 5
-  m_Name: RemoveButton
+  m_Name: RemoveButton_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1496,7 +1502,7 @@ GameObject:
   - component: {fileID: 6762598993096480786}
   - component: {fileID: 6378562560044534934}
   m_Layer: 5
-  m_Name: RemoveButton
+  m_Name: RemoveButton_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2345,7 +2351,7 @@ GameObject:
   - component: {fileID: 3276554293942512197}
   - component: {fileID: 992323064845643970}
   m_Layer: 5
-  m_Name: RemoveButton
+  m_Name: RemoveButton_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2635,7 +2641,7 @@ GameObject:
   - component: {fileID: 8622800730342081368}
   - component: {fileID: 8674622155545328640}
   m_Layer: 5
-  m_Name: RemoveButton
+  m_Name: RemoveButton_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
