@@ -39,7 +39,7 @@ public class GameSceneManager : NetworkBehaviour
         inCountdown = false;
         if (hasAuthority)
         {
-            GameObject stash = Instantiate(Resources.Load("Biomes/Stash", typeof(GameObject))) as GameObject);
+            GameObject stash = Instantiate(Resources.Load("Biomes/Stash", typeof(GameObject)) as GameObject);
             stash.transform.position = new Vector3(4.24f , 0.57f, -18.93f);
             NetworkServer.Spawn(stash);
         }
@@ -56,59 +56,59 @@ public class GameSceneManager : NetworkBehaviour
             {
                 if (entity.clientOwnedObjects.Contains(NetworkIdentity.FindObjectOfType<PlayerController>().netIdentity) == false) continue;
 
-                PlayerController playerController = entity.clientOwnedObjects.Contains(NetworkIdentity.FindObjectOfType<PlayerController>();////////////////////////////
-                allReady &= playerController.;
+                //PlayerController playerController = NetworkIdentity.FindObjectOfType<PlayerController>();////////////////////////////
+                //allReady &= playerController.;
 
                 if (allReady == false) break;
                 readyCount++;
             }
-
-            if (allReady && readyCount >= minPlayers)
-            {
-                //Disable loadout screens
-                var request = LoadoutScreenDisable.Create();
-                request.Send();
-                loadoutChoiceComplete = true;
-            }
         }
-        if(BoltNetwork.IsServer && !displayedWinScreen && loadoutChoiceComplete)
-        {
-            if (inCountdown == false)
-            {
-                inCountdown = true;
-                currentRunningGameTime = totalAllottedGameTime;
-                StartCoroutine(RunGameCountdown());
-            }
-            NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
-            foreach (StashedScore score in scores)
-            {
-                if (score.Score > pointGoal)
-                {
-                    //End game
-                    var request = DisplayWinScreen.Create();
-                    request.Send();
-                    displayedWinScreen = true;
+            //    if (allReady && readyCount >= minPlayers)
+            //    {
+            //        //Disable loadout screens
+            //        var request = LoadoutScreenDisable.Create();
+            //        request.Send();
+            //        loadoutChoiceComplete = true;
+            //    }
+            //}
+            //if(BoltNetwork.IsServer && !displayedWinScreen && loadoutChoiceComplete)
+            //{
+            //    if (inCountdown == false)
+            //    {
+            //        inCountdown = true;
+            //        currentRunningGameTime = totalAllottedGameTime;
+            //        StartCoroutine(RunGameCountdown());
+            //    }
+            //    NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
+            //    foreach (StashedScore score in scores)
+            //    {
+            //        if (score.Score > pointGoal)
+            //        {
+            //            //End game
+            //            var request = DisplayWinScreen.Create();
+            //            request.Send();
+            //            displayedWinScreen = true;
 
-                    StartCoroutine(WaitThenReturnToTitle(5.0f));
-                }
-            }
-        }
+            //            StartCoroutine(WaitThenReturnToTitle(5.0f));
+            //        }
+            //    }
+            //}
 
-        if(BoltNetwork.IsServer && displayedWinScreen)
-        {
-            currentWinWaitTime = winWaitTime;
-            StartCoroutine(RunWinCountdown());
-        }
+            //if(BoltNetwork.IsServer && displayedWinScreen)
+            //{
+            //    currentWinWaitTime = winWaitTime;
+            //    StartCoroutine(RunWinCountdown());
+            //}
 
-        if (BoltNetwork.IsServer && !abilityPickupsSpawned)
-        {
-            Debug.LogWarning("Calling method");
-            currentAbilitySpawnTime = abilitySpawnTime;
-            StartCoroutine(RunAbilityPickupSpawnCountdown());
+            //if (BoltNetwork.IsServer && !abilityPickupsSpawned)
+            //{
+            //    Debug.LogWarning("Calling method");
+            //    currentAbilitySpawnTime = abilitySpawnTime;
+            //    StartCoroutine(RunAbilityPickupSpawnCountdown());
+            //}
+            //else if (abilityPickupsSpawned)
+            //    StopCoroutine(RunAbilityPickupSpawnCountdown());
         }
-        else if (abilityPickupsSpawned)
-            StopCoroutine(RunAbilityPickupSpawnCountdown());
-    }
 
     private IEnumerator RunLobbyReadyCountdown()
     {
@@ -207,7 +207,7 @@ public class GameSceneManager : NetworkBehaviour
 
         //var end = ReturnEveryoneToTitle.Create();
         //end.Send();
-        ServerChangeScene("");
+        //ServerChangeScene("");
     }
 
     private IEnumerator RunWinCountdown()

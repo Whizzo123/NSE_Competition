@@ -30,7 +30,7 @@ public class ArtefactBehaviour : EntityBehaviour<IArtefactState>
         Debug.Log("Inside pickup avaliable for pickup is set to: " + availableForPickup);
         if (availableForPickup)
         {
-            player.AddToInventory(state.Name, state.Points);
+            //player.AddToInventory(state.Name, state.Points);
             var request = ArtefactDisable.Create();
             request.artefactToDisable = this.entity;
             request.Send();

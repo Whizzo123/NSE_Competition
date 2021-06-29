@@ -29,16 +29,16 @@ public class Stash : EntityBehaviour<IStashState>
     public void AddToStashScores(PlayerController player)
     {
         var request = ScoreUpdate.Create();
-        request.PlayerName = player.state.Name;
+       // request.PlayerName = player.state.Name;
         int score = 0;
-        foreach (InventoryItem item in player.state.Inventory)
+        //foreach (InventoryItem item in player.state.Inventory)
         {
-            score += item.ItemPoints;
+           // score += item.ItemPoints;
         }
         request.Score = score;
         request.StashEntity = entity;
         request.Send();
-        player.ClearInventory();
+       // player.ClearInventory();
     }
 
     /// <summary>

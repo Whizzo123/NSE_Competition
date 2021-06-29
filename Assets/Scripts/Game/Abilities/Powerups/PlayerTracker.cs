@@ -35,7 +35,7 @@ public class PlayerTracker : Powerup
         BoltEntity playerWithHighestStashOnPerson = null;
         foreach (BoltEntity boltEntity in BoltNetwork.Entities)
         {
-            if (boltEntity.StateIs<IGamePlayerState>() == false || boltEntity == GetPlayerToEmpower().entity) continue;
+            //if (boltEntity.StateIs<IGamePlayerState>() == false || boltEntity == GetPlayerToEmpower().entity) continue;
             List<InventoryItem> inventory = boltEntity.GetState<IGamePlayerState>().Inventory.ToList<InventoryItem>();
             int playerInventoryStash = 0;
             foreach (InventoryItem item in inventory)

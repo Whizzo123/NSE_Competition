@@ -22,7 +22,7 @@ public class MortalSpell : Debuff
         {
             inUse = true;
             var request = MortalSpellEvent.Create();
-            request.Target = target.entity;
+            //request.Target = target.entity;
             request.End = false;
             request.Send();
             GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
@@ -35,7 +35,7 @@ public class MortalSpell : Debuff
     {
         inUse = false;
         var request = MortalSpellEvent.Create();
-        request.Target = target.entity;
+       // request.Target = target.entity;
         request.End = true;
         request.Send();
         target = null;

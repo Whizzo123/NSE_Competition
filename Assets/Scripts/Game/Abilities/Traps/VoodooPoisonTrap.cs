@@ -23,7 +23,7 @@ public class VoodooPoisonTrap : Trap
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
             spawnRotation *= Quaternion.Euler(-90, 0, 0);
 
-            BoltNetwork.Instantiate(BoltPrefabs.VoodooPoisonTrap, spawnPos, spawnRotation).GetState<IVoodooPoisonTrap>().PlacingPlayer = placingPlayer.entity;
+            //BoltNetwork.Instantiate(BoltPrefabs.VoodooPoisonTrap, spawnPos, spawnRotation).GetState<IVoodooPoisonTrap>().PlacingPlayer = placingPlayer.entity;
             base.Use();
 
         }        

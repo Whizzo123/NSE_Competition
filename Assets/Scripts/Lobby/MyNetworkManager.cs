@@ -101,16 +101,18 @@ public class MyNetworkManager : NetworkManager
     public override void ServerChangeScene(string newSceneName)
     {
         Debug.Log("ServerChangeScene");
-        if(SceneManager.GetActiveScene().name == "LobbyScene" && newSceneName.StartsWith("Game"))
+        if (newSceneName.Contains("Mirror"))
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
                 var conn = RoomPlayers[i].connectionToClient;
-                var gameplayInstance = Instantiate(gamePlayerPrefab);
+                GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), new Vector3(i * 5, 0, 0), Quaternion.identity);
 
                 NetworkServer.Destroy(conn.identity.gameObject);
 
                 NetworkServer.ReplacePlayerForConnection(conn, gameplayInstance.gameObject);
+                NetworkServer.Spawn(gameplayInstance, conn);
+                Debug.LogError("Spawned player MIRROR");
             }
         }
         base.ServerChangeScene(newSceneName);
@@ -118,6 +120,7 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
+
         base.OnServerSceneChanged(sceneName);
 
         Debug.Log("OnServerSceneChanged");
@@ -156,7 +159,7 @@ public class MyNetworkManager : NetworkManager
         {
             if(!IsReadyToStart()) { return; }
 
-            ServerChangeScene("GameScene");
+            ServerChangeScene("MirrorTest");
         }
     }
 }

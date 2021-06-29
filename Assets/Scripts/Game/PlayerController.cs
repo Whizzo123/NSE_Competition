@@ -34,8 +34,8 @@ public class PlayerController : NetworkBehaviour
     public LayerMask obstacles;
     public LayerMask ground;
     [Space]
-    public static PlayerController localPlayer;
-    private static CharacterController playerCharacterController;//See attached()
+    public PlayerController localPlayer;
+    public CharacterController playerCharacterController;//See attached()
     private Vector3 direction;
     public GameObject playerNameText;
     public Camera playerCamera;
@@ -55,42 +55,52 @@ public class PlayerController : NetworkBehaviour
 
     #endregion
 
+    public void Awake()
+    {
+        DontDestroyOnLoad(this);
+        playerCharacterController = this.gameObject.GetComponent<CharacterController>();
+    }
 
     public override void OnStartAuthority()
     {
-        targetedArtefacts = new List<ArtefactBehaviour>();
-        //state.SetTransforms(state.PlayerTransform, transform);
-        SetLoadoutReleased(false);
-        abilityInventory = new AbilityInventory(this);
-        immobilize = false;
-        timeForStunAfterSteal = 10.0f;
-        ////Set state transform to be equal to current transform
-        //    state.Speed = speed;
-        //    state.RayLength = lengthOfSphere;
-        //    state.LoadoutReady = false;
-        //    state.HasBeenStolenFrom = false;
-        //    state.Paralyzed = false;
-        //    for (int i = 0; i < state.Inventory.Length; i++)
-        //    {
-        //        state.Inventory[i].ItemName = "";
-        //        state.Inventory[i].ItemPoints = 0;
-        //    }
-            //playerCharacterController = this.gameObject.GetComponent<CharacterController>();
-            vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
-            vCam.LookAt = this.gameObject.transform;
-            vCam.Follow = this.gameObject.transform;
-            vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
-        //}
-        //if (!entity.IsOwner)
-        //{
-        //    //Disable other players cameras so that we don't accidentally get assigned to another players camera
-        //    if (playerCamera != null)
-        //        playerCamera.gameObject.SetActive(false);
-        //}
-        localPlayer = this;
-        playerCamera = FindObjectOfType<Camera>();
-        playerCharacterController = this.gameObject.GetComponent<CharacterController>();
+        base.OnStartAuthority();
     }
+    //public override void OnStartAuthority()
+    //{
+    //    targetedArtefacts = new List<ArtefactBehaviour>();
+    //    //state.SetTransforms(state.PlayerTransform, transform);
+    //    SetLoadoutReleased(false);
+    //    abilityInventory = new AbilityInventory(this);
+    //    immobilize = false;
+    //    timeForStunAfterSteal = 10.0f;
+    //    ////Set state transform to be equal to current transform
+    //    //    state.Speed = speed;
+    //    //    state.RayLength = lengthOfSphere;
+    //    //    state.LoadoutReady = false;
+    //    //    state.HasBeenStolenFrom = false;
+    //    //    state.Paralyzed = false;
+    //    //    for (int i = 0; i < state.Inventory.Length; i++)
+    //    //    {
+    //    //        state.Inventory[i].ItemName = "";
+    //    //        state.Inventory[i].ItemPoints = 0;
+    //    //    }
+    //        //playerCharacterController = this.gameObject.GetComponent<CharacterController>();
+    //        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+    //        vCam.LookAt = this.gameObject.transform;
+    //        vCam.Follow = this.gameObject.transform;
+    //        vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
+    //    //}
+    //    //if (!entity.IsOwner)
+    //    //{
+    //    //    //Disable other players cameras so that we don't accidentally get assigned to another players camera
+    //    //    if (playerCamera != null)
+    //    //        playerCamera.gameObject.SetActive(false);
+    //    //}
+    //    localPlayer = this;
+    //    playerCamera = FindObjectOfType<Camera>();
+
+    //    this.gameObject.transform.position = new Vector3(0, 0, 0);
+    //}
 
     #region ArtefactInventory
     /// <summary>
@@ -195,31 +205,32 @@ public class PlayerController : NetworkBehaviour
     //    }
     //    return false;
     //}
-
-    public void Update()
+    [ClientCallback]
+    void Update()
     {
-        abilityInventory.Update();
+        if (!hasAuthority) { return; };
+        //abilityInventory.Update();
 
-        if (playerNameText == null)
-        {
-            playerNameText = Instantiate(Resources.Load<GameObject>("Prefabs/PlayerNameText"));
-            playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
-            playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
-            playerNameText.SetActive(true);
-            playerNameText.GetComponent<Text>().text = "temp";
-        }
+        //if (playerNameText == null)
+        //{
+        //    playerNameText = Instantiate(Resources.Load<GameObject>("Prefabs/PlayerNameText"));
+        //    playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
+        //    playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
+        //    playerNameText.SetActive(true);
+        //    playerNameText.GetComponent<Text>().text = "temp";
+        //}
 
-        if (loadoutReleased)
-        {
-            if (immobilize == false)
-            {
+       // if (loadoutReleased)
+        //{
+           //if (immobilize == false)
+           //{
                 #region Falling
 
                 //Projects a sphere underneath player to check ground layer
                 isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
 
-                //Player recieves a constant y velocity from gravity
-                playerFallingVelocity.y += playerGravity * BoltNetwork.FrameDeltaTime;
+        //Player recieves a constant y velocity from gravity
+        playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
 
                 //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
                 if (isGrounded && playerFallingVelocity.y < 0)
@@ -231,41 +242,41 @@ public class PlayerController : NetworkBehaviour
                 #region Movement
                 playerMovement = new Vector3
                 (Input.GetAxisRaw("Horizontal"),
-                 playerFallingVelocity.y,
+                 0,
                  Input.GetAxisRaw("Vertical")).normalized;
 
-                if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-                {
-                    direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-                    ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
-                    if (true)//poisoned?
-                    {
-                        playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
-                        direction *= -1;
-                    }
+                //if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+                //{
+                //    direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+                //    ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
+                //    if (false)//poisoned?
+                //    {
+                //        playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
+                //        direction *= -1;
+                //    }
 
-                    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
-                    //{
-                    //    var request = ChangeAnimatorMovementParameter.Create();
-                    //    request.Target = entity;
-                    //    request.Value = true;
-                    //    request.Send();
-                    //}
-                }
-                else
-                {
-                    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
-                    //{
-                    //    var request = ChangeAnimatorMovementParameter.Create();
-                    //    request.Target = entity;
-                    //    request.Value = false;
-                    //    request.Send();
-                    //}
-                }
+                //    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
+                //    //{
+                //    //    var request = ChangeAnimatorMovementParameter.Create();
+                //    //    request.Target = entity;
+                //    //    request.Value = true;
+                //    //    request.Send();
+                //    //}
+                //}
+                //else
+                //{
+                //    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
+                //    //{
+                //    //    var request = ChangeAnimatorMovementParameter.Create();
+                //    //    request.Target = entity;
+                //    //    request.Value = false;
+                //    //    request.Send();
+                //    //}
+                //}
                 //this.GetComponent<Rigidbody>().velocity = playerFallingVelocity;
                 playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
-                PlayerRotation();
-            }
+                //PlayerRotation();
+          //  }
             #endregion
 
            // if (Input.GetKey(KeyCode.P))
@@ -379,35 +390,44 @@ public class PlayerController : NetworkBehaviour
             #endregion
 
 
-            if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
-            {
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
-                {
-                    string hitstring = hit.transform.gameObject.layer.ToString();
-                    int layernumber = int.Parse(hitstring);
-                    string lm = LayerMask.LayerToName(layernumber);
-                    if (lm == "SwampGround")
-                    {
-                        FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
-                    }
-                    else
-                    {
-                        FindObjectOfType<AudioManager>().StopSound("SwampGround");
-                    }
-                    FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
-                }
-            }
-            if (playerFallingVelocity.y < -200)
-            {
-                HitDown();
-            }
+            //if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
+            //{
+            //    RaycastHit hit;
+            //    if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
+            //    {
+            //        string hitstring = hit.transform.gameObject.layer.ToString();
+            //        int layernumber = int.Parse(hitstring);
+            //        string lm = LayerMask.LayerToName(layernumber);
+            //        if (lm == "SwampGround")
+            //        {
+            //            FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
+            //        }
+            //        else
+            //        {
+            //            FindObjectOfType<AudioManager>().StopSound("SwampGround");
+            //        }
+            //        FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
+            //    }
+            //}
+            //if (playerFallingVelocity.y < -200)
+            //{
+            //    CmdServerValidateHit();
+            //}
 
-        }
+        //}
     }
 
+    [Command]
+    private void CmdServerValidateHit()
+    {
+        //Validate the logic
+        //We will pass in a transform for this
 
-    private void HitDown()
+        RpcHitDown();
+    }
+
+    [ClientRpc]
+    private void RpcHitDown()
     {
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit[] hit;
@@ -475,25 +495,25 @@ public class PlayerController : NetworkBehaviour
     {
         Vector3 pos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
 
-        BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs.Player, pos, Quaternion.identity);
-        playerEntity.TakeControl();
+        //BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs.Player, pos, Quaternion.identity);
+        //playerEntity.TakeControl();
         //string playerUsername = FindObjectOfType<PlayerData>().GetUsername(playerEntity.Controller);
 
 
         BoltLog.Info("Spawning player");
 
-        PlayerController playerController = playerEntity.GetComponent<PlayerController>();
+        //PlayerController playerController = playerEntity.GetComponent<PlayerController>();
 
        // CanvasUIManager.SpawnPlayerNameTextPrefab(playerController);
 
 
         if (PlayerPrefs.GetString("username") != null)
         {
-            playerController.Setup(PlayerPrefs.GetString("username"));
+            //playerController.Setup(PlayerPrefs.GetString("username"));
         }
         else
         {
-            playerController.Setup("Player #" + Random.Range(1, 100));
+            //playerController.Setup("Player #" + Random.Range(1, 100));
         }
     }
 
