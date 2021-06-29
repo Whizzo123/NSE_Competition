@@ -100,111 +100,7 @@ public class PlayerController : NetworkBehaviour
     //    playerCamera = FindObjectOfType<Camera>();
 
     //    this.gameObject.transform.position = new Vector3(0, 0, 0);
-    //}
-
-    #region ArtefactInventory
-    /// <summary>
-    /// Called in order to add artefact to player inventory
-    /// </summary>
-    /// <param name="artefactName"></param>
-    /// <param name="artefactPoints"></param>
-    //public void AddToInventory(string artefactName, int artefactPoints)
-    //{
-    //    ItemArtefact item = new ItemArtefact();
-    //    item.name = artefactName;
-    //    item.points = artefactPoints;
-    //    int emptySlot = FindEmptyInventorySlot();
-    //    if (emptySlot > -1)
-    //    {
-    //        state.Inventory[emptySlot].ItemName = artefactName;
-    //        state.Inventory[emptySlot].ItemPoints = artefactPoints;
-    //        FindObjectOfType<CanvasUIManager>().PopupArtefactPickupDisplay(item);
-    //        FindObjectOfType<CanvasUIManager>().AddToInventoryScreen(item);
-    //    }
-    //    else
-    //    {
-    //        BoltLog.Error("Inventory is full");
-    //    }
-    //}
-
-    /// <summary>
-    /// Called in order to remove from artefact from inventory
-    /// </summary>
-    /// <param name="index"></param>
-    /// <param name="name"></param>
-    /// <param name="points"></param>
-    //public void RemoveFromInventory(int index, string name, int points)
-    //{
-    //    state.Inventory[index].ItemName = "";
-    //    state.Inventory[index].ItemPoints = 0;
-    //    ItemArtefact itemArtefact;
-    //    itemArtefact.name = name;
-    //    itemArtefact.points = points;
-    //    FindObjectOfType<CanvasUIManager>().RemoveFromInventoryScreen(itemArtefact);
-    //}
-
-    /// <summary>
-    /// Find empty inventory slot from player inventory
-    /// </summary>
-    /// <returns></returns>
-    //private int FindEmptyInventorySlot()
-    //{
-    //    for (int i = 0; i < state.Inventory.Length; i++)
-    //    {
-    //        if (state.Inventory[i].ItemName == "")
-    //        {
-    //            return i;
-    //        }
-    //    }
-    //    return -1;
-    //}
-
-    //Remove all items from inventory
-    //public void ClearInventory()
-    //{
-    //    FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
-    //    for (int i = 0; i < state.Inventory.Length; i++)
-    //    {
-    //        state.Inventory[i].ItemName = "";
-    //        state.Inventory[i].ItemPoints = 0;
-    //    }
-    //}
-
-    /// <summary>
-    /// Check to see whether inventory has any empty slots
-    /// </summary>
-    /// <returns></returns>
-    //public bool IsInventoryEmpty()
-    //{
-    //    for (int i = 0; i < state.Inventory.Length; i++)
-    //    {
-    //        if (state.Inventory[i].ItemName == "")
-    //        {
-    //            return true;
-    //        }
-    //    }
-
-    //    return false;
-    //}
-
-    /// <summary>
-    /// Just grab the first item in the player inventory
-    /// </summary>
-    /// <returns></returns>
-    //public InventoryItem GrabRandomItem()
-    //{
-    //    return state.Inventory[0];
-    //}
-    #endregion 
-
-    //public bool InventoryNotEmpty()
-    //{
-    //    for (int i = 0; i < state.Inventory.Length; i++)
-    //    {
-    //        if (state.Inventory[i].ItemPoints > 0) return true;
-    //    }
-    //    return false;
-    //}
+    //} 
     [ClientCallback]
     void Update()
     {
@@ -692,14 +588,6 @@ public class PlayerController : NetworkBehaviour
         //Player -> _scaleTest -> FULL.002
         transform.GetChild(0).transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = toggle;
     }
-}
-
-        
-
-public struct ItemArtefact
-{
-    public string name;
-    public int points;
 }
 
 
