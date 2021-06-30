@@ -1,17 +1,24 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Mirror;
 
 
+public struct ItemArtefact
+{
+    public string name;
+    public int points;
+}
+
 public class ArtefactInventory : NetworkBehaviour
 {
 
-    [SyncVar]
-    private ItemArtefact[] inventory;
+    readonly SyncList<ItemArtefact> inventory = new SyncList<ItemArtefact>();
 
-    private void Start()
+    void Start()
     {
-        inventory = new ItemArtefact[8];
+
     }
 
     /// <summary>
@@ -37,13 +44,18 @@ public class ArtefactInventory : NetworkBehaviour
         }
     }
 
+    public List<ItemArtefact> GetInventory()
+    {
+        return inventory.ToList<ItemArtefact>();
+    }
+
     /// <summary>
     /// Find empty inventory slot from player inventory
     /// </summary>
     /// <returns></returns>
     private int FindEmptyInventorySlot()
     {
-        for (int i = 0; i < inventory.Length; i++)
+        for (int i = 0; i < inventory.Count; i++)
         {
             if (inventory[i].name == "")
             {
@@ -61,12 +73,14 @@ public class ArtefactInventory : NetworkBehaviour
     /// <param name="points"></param>
     public void RemoveFromInventory(int index, string name, int points)
     {
-        inventory[index].name = "";
-        inventory[index].points = 0;
-        ItemArtefact itemArtefact;
-        itemArtefact.name = name;
-        itemArtefact.points = points;
-        FindObjectOfType<CanvasUIManager>().RemoveFromInventoryScreen(itemArtefact);
+        ItemArtefact itemArtefact = inventory[index];
+        itemArtefact.name = "";
+        itemArtefact.points = 0;
+        inventory[index] = itemArtefact;
+        ItemArtefact screenItemArtefact;
+        screenItemArtefact.name = name;
+        screenItemArtefact.points = points;
+        FindObjectOfType<CanvasUIManager>().RemoveFromInventoryScreen(screenItemArtefact);
     }
     /// <summary>
     /// Remove all items from inventory
@@ -74,10 +88,12 @@ public class ArtefactInventory : NetworkBehaviour
     public void ClearInventory()
     {
         FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
-        for (int i = 0; i < inventory.Length; i++)
+        for (int i = 0; i < inventory.Count; i++)
         {
-            inventory[i].name = "";
-            inventory[i].points = 0;
+            ItemArtefact itemArtefact = inventory[i];
+            itemArtefact.name = "";
+            itemArtefact.points = 0;
+            inventory[i] = itemArtefact;
         }
     }
 
@@ -87,7 +103,7 @@ public class ArtefactInventory : NetworkBehaviour
     /// <returns></returns>
     public bool IsInventoryEmpty()
     {
-        for (int i = 0; i < inventory.Length; i++)
+        for (int i = 0; i < inventory.Count; i++)
         {
             if (inventory[i].name == "")
             {
@@ -109,7 +125,7 @@ public class ArtefactInventory : NetworkBehaviour
 
     public bool InventoryNotEmpty()
     {
-        for (int i = 0; i < inventory.Length; i++)
+        for (int i = 0; i < inventory.Count; i++)
         {
             if (inventory[i].points > 0) return true;
         }
@@ -138,10 +154,4 @@ public class ArtefactInventory : NetworkBehaviour
     //}
     #endregion
 
-}
-
-public struct ItemArtefact
-{
-    public string name;
-    public int points;
 }

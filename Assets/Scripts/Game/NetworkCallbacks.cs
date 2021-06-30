@@ -31,16 +31,6 @@ public class NetworkCallbacks : GlobalEventListener
         evnt.AbilityEntity.gameObject.GetComponent<SphereCollider>().enabled = false;
     }
 
-    public override void OnEvent(ScoreUpdate evnt)
-    {
-        BoltLog.Info("Called OnEvent ScoreUpdate");
-        if(evnt.StashEntity.IsOwner)
-        {
-            evnt.StashEntity.GetComponent<Stash>().UpdateState(evnt.PlayerName, evnt.Score);
-        }
-        FindObjectOfType<CanvasUIManager>().scoreboardUI.UpdateBoard(evnt.PlayerName);
-    }
-
     public override void OnEvent(InventoryRemove evnt)
     {
         BoltLog.Info("Called OnEvent InventoryRemove");
@@ -239,14 +229,14 @@ public class NetworkCallbacks : GlobalEventListener
     public override void OnEvent(DisplayWinScreen evnt)
     {
         BoltLog.Info("Calling DisplayWinScreen event");
-        NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
-        StashedScore[] results = new StashedScore[scores.Length];
-        for (int i = 0; i < results.Length; i++)
-        {
-            results[i] = null;
-        }
-        List<StashedScore> scoreList = scores.ToList<StashedScore>();
-        for(int i = 0; i < scoreList.Count; i++)
+        //NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
+        //StashedScore[] results = new StashedScore[scores.Length];
+        //for (int i = 0; i < results.Length; i++)
+        //{
+          //  results[i] = null;
+        //}
+        //List<StashedScore> scoreList = scores.ToList<StashedScore>();
+        /*for(int i = 0; i < scoreList.Count; i++)
         {
             int lastMaxScore = int.MinValue;
             StashedScore maxScore = null;
@@ -288,7 +278,7 @@ public class NetworkCallbacks : GlobalEventListener
                 Debug.Log("Adding to results: " + results[i].Name + " with score of: " + results[i].Score);
                 FindObjectOfType<CanvasUIManager>().winScreen.AddToContent(results[i].Name, results[i].Score);
             }
-        }
+        }*/
         
     }
 
