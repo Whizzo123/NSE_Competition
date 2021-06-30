@@ -1,25 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Bolt;
+using Mirror;
+using UnityEngine.UI;
 
-
-public class Stash : EntityBehaviour<IStashState>
+public class Stash : NetworkBehaviour
 {
-
+    readonly SyncDictionary<string, int> StashedScores = new SyncDictionary<string, int>();
     /// <summary>
     /// Called when entity attached in network like unity start method
     /// </summary>
-    public override void Attached()
+    public override void OnStartAuthority()
     {
-        if (entity.IsOwner)
-        {
-            for (int i = 0; i < state.StashedScores.Length; i++)
-            {
-                state.StashedScores[i].Name = "";
-                state.StashedScores[i].Score = 0;
-            }
-        }
+
     }
 
     /// <summary>
@@ -28,17 +21,21 @@ public class Stash : EntityBehaviour<IStashState>
     /// <param name="player"></param>
     public void AddToStashScores(PlayerController player)
     {
-        var request = ScoreUpdate.Create();
-       // request.PlayerName = player.state.Name;
         int score = 0;
-        //foreach (InventoryItem item in player.state.Inventory)
+        string playerName = player.playerNameText.GetComponent<Text>().text;
+        foreach (ItemArtefact item in player.GetComponent<ArtefactInventory>().GetInventory())
         {
-           // score += item.ItemPoints;
+            score += item.points;
         }
-        request.Score = score;
-        request.StashEntity = entity;
-        request.Send();
-       // player.ClearInventory();
+        StashedScores[playerName] = score;
+        ScoreUpdate(playerName);
+        player.GetComponent<ArtefactInventory>().ClearInventory();
+    }
+
+    [ClientRpc]
+    private void ScoreUpdate(string playerName)
+    {
+        FindObjectOfType<CanvasUIManager>().scoreboardUI.UpdateBoard(playerName);
     }
 
     /// <summary>
@@ -46,61 +43,21 @@ public class Stash : EntityBehaviour<IStashState>
     /// </summary>
     /// <param name="name"></param>
     /// <param name="points"></param>
-    public void UpdateState(string name, int points)
+    public void UpdateScore(string name, int points)
     {
-        int index = Contains(name);
-        if(index < 0)
+        if(StashedScores.ContainsKey(name))
         {
-            BoltLog.Info("Index was less than zero");
-            for (int i = 0; i < state.StashedScores.Length; i++)
-            {
-                BoltLog.Info("StaashedScore[Name] is: " + state.StashedScores[i].Name);
-                if (state.StashedScores[i].Name == "")
-                {
-                    BoltLog.Info("Found a stashed score index with null");
-                    state.StashedScores[i].Name = name;
-
-                    index = i;
-                    break;
-                }
-            }
-            BoltLog.Info("If haven't found one yet there isn't one so still -1");
-        }
-        if (index < 0)
-            BoltLog.Error("Name does not exist in score list and no space to add it");
-        else
-        {
-             state.StashedScores[index].Score += points;
+            StashedScores[name] += points;
         }
     }
 
     public int FindScoreForPlayer(string name)
     {
-        for (int i = 0; i < state.StashedScores.Length; i++)
+        if(StashedScores.ContainsKey(name))
         {
-            if(state.StashedScores[i].Name == name)
-            {
-                return state.StashedScores[i].Score;
-            }
+            return StashedScores[name];
         }
         Debug.LogError("ERROR: COULDN'T FIND SCORE IN STASH FOR PLAYER: " + name);
         return 0;
-    }
-
-    /// <summary>
-    /// Checks to see if stash contains entry for player name
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    private int Contains(string name)
-    {
-        for (int i = 0; i < state.StashedScores.Length; i++)
-        {
-            if(state.StashedScores[i].Name == name)
-            {
-                return i;
-            }
-        }
-        return -1;
     }
 }
