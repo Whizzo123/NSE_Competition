@@ -229,63 +229,64 @@ public class PlayerController : NetworkBehaviour
                 //Projects a sphere underneath player to check ground layer
                 isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
 
-        //Player recieves a constant y velocity from gravity
-        playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
+                //Player recieves a constant y velocity from gravity
+                playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
 
                 //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
                 if (isGrounded && playerFallingVelocity.y < 0)
                 {
                     playerFallingVelocity.y = -1f;
                 }
-                //playerFallingVelocity.y = -1f;
+                playerFallingVelocity.y = -1f;
+
                 #endregion
+
                 #region Movement
                 playerMovement = new Vector3
                 (Input.GetAxisRaw("Horizontal"),
-                 0,
+                 playerFallingVelocity.y,
                  Input.GetAxisRaw("Vertical")).normalized;
 
-                //if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-                //{
-                //    direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-                //    ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
-                //    if (false)//poisoned?
-                //    {
-                //        playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
-                //        direction *= -1;
-                //    }
 
-                //    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
-                //    //{
-                //    //    var request = ChangeAnimatorMovementParameter.Create();
-                //    //    request.Target = entity;
-                //    //    request.Value = true;
-                //    //    request.Send();
-                //    //}
-                //}
-                //else
-                //{
-                //    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
-                //    //{
-                //    //    var request = ChangeAnimatorMovementParameter.Create();
-                //    //    request.Target = entity;
-                //    //    request.Value = false;
-                //    //    request.Send();
-                //    //}
-                //}
-                //this.GetComponent<Rigidbody>().velocity = playerFallingVelocity;
-                playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
-                //PlayerRotation();
-          //  }
-            #endregion
 
-           // if (Input.GetKey(KeyCode.P))
-           // {
-           //     AddToInventory("NAME", 9999);
-           // }
+        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        {
+            direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+            ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
+            if (false)//poisoned?
+            {
+                playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
+                direction *= -1;
+            }
 
-            #region Artefact interaction
-            if (Input.GetKeyDown(KeyCode.E))
+            //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
+            //{
+            //    var request = ChangeAnimatorMovementParameter.Create();
+            //    request.Target = entity;
+            //    request.Value = true;
+            //    request.Send();
+            //}
+        }
+        else
+        {
+            //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
+            //{
+            //    var request = ChangeAnimatorMovementParameter.Create();
+            //    request.Target = entity;
+            //    request.Value = false;
+            //    request.Send();
+            //}
+        }
+        //this.GetComponent<Rigidbody>().velocity = playerFallingVelocity;
+        playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
+        PlayerRotation();
+
+        //  }
+        #endregion
+
+
+        #region Artefact interaction
+        if (Input.GetKeyDown(KeyCode.E))
             {
                 //Debug.LogError("Artefact count " + targetedArtefacts.Count);
                 //if (targetedArtefacts.Count != 0)
@@ -381,10 +382,6 @@ public class PlayerController : NetworkBehaviour
             #region Obstacle Interaction
             if (Input.GetKey(KeyCode.Space) && wait == false )//&& state.Paralyzed == false)
             {
-                //var request = FireAnimatorCutTriggerParameter.Create();
-                //request.Target = entity;
-                //request.Send();
-                //wait = true;
                 StartCoroutine(Hit());
             }
             #endregion
@@ -416,6 +413,9 @@ public class PlayerController : NetworkBehaviour
 
         //}
     }
+
+
+
 
     [Command]
     private void CmdServerValidateHit()
@@ -521,9 +521,9 @@ public class PlayerController : NetworkBehaviour
     /// Rotates player according to slope and movement direction.
     /// If we wanted the model to remain upright, we can attach this to a child that isn't visible, but has the same parameters as the player(height etc)
     /// </summary>
+    [ClientCallback]
     void PlayerRotation()
     {
-
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
         {
@@ -533,14 +533,13 @@ public class PlayerController : NetworkBehaviour
             Quaternion slopeQuat = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
 
             Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
-            //finalQuat = lookQuat;
+
             if (rotationAngle < 45) 
             {
                 finalQuat = slopeQuat.normalized * lookQuat; //Quaternion rotation of look rotation and slope rotation
                 transform.rotation = finalQuat;
             }
 
-            //transform.GetChild(0).transform.rotation = finalQuat;
         }
 
     }
@@ -617,32 +616,34 @@ public class PlayerController : NetworkBehaviour
     /// Gives a delay to the destroying obstacles function 'HitForward()'.
     /// </summary>
     /// <returns></returns>
+    [ClientCallback]
     System.Collections.IEnumerator Hit()
     {
-        HitFoward();
+        CmdHitForward();
         yield return new WaitForSeconds(waitTime);
         wait = false;
+    }
+
+    [Command]
+    void CmdHitForward()
+    {
+        HitForward();
     }
 
     /// <summary>
     /// Destroys obstacles directly in front of player. This relies on PlayerRotation().
     /// </summary>
-    void HitFoward()
+    [ClientRpc]
+    void HitForward()
     {
-        //Think about changning ray to sphere mayber depending on how the game plays and feels
-        /*RaycastHit hit;
-        Ray ray = new Ray(transform.position, transform.forward);
-        if (Physics.Raycast(ray, out hit, state.RayLength, obstacles))
-        {
-            var request = ObstacleDisable.Create();
-            request.Obstacle = hit.transform.gameObject.GetComponent<BoltEntity>();
-            request.Send();
-        }*/
-        //change transform.forward to transform.getChild(0).transform.forward
         FindObjectOfType<AudioManager>().PlaySound("Cut");
+
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit[] hit;
+
+        //Sends a sphere in front to hit objects
         hit = Physics.SphereCastAll(ray, radiusOfSphere, lengthOfSphere, obstacles);
+
         foreach (RaycastHit item in hit)
         {
             if (item.transform.GetComponent<ArtefactBehaviour>())
@@ -650,11 +651,6 @@ public class PlayerController : NetworkBehaviour
                 item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
                 item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
                 item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
-                /*ab = item.transform.gameObject.GetComponent<ArtefactBehaviour>();
-                var req = ArtefactEnable.Create();
-                req.artefact = ab.entity;
-                req.Send();*/
-                //item.transform.gameObject.GetComponentInChildren<ArtefactBehaviour>().transform.SetParent(null);
             }
             else if (item.transform.GetComponent<AbilityPickup>())
             {
@@ -667,11 +663,9 @@ public class PlayerController : NetworkBehaviour
                 Destroy(item.transform.gameObject);
             }
         }
-        var request = ObstacleDisable.Create();
-        request.position = transform.position;
-        request.forward = transform.forward;
-        request.Send();
+
     }
+
 
     private void OnDrawGizmos()
     {
@@ -679,10 +673,10 @@ public class PlayerController : NetworkBehaviour
         Gizmos.DrawWireSphere(transform.position + (transform.forward * lengthOfSphere), radiusOfSphere);
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, -transform.up + transform.position);
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawLine(transform.position, -transform.up + transform.position);
+        //Gizmos.color = Color.green;
+        //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
     }
 
     #endregion
@@ -724,3 +718,40 @@ public struct ItemArtefact
             #endregion
  */
 #endregion
+
+//////Remember, this was all called from Update() A [ClientCallback], also remember we testing player position. This is updated from the transform, not necessarily the function
+//No tags, if we do something, everyone else sees that
+//[Client] If we do somethingg, everyone else sees that
+//[ClientRpc] Host can call, everyone sees. Host called RocketMan(), host and client saw host do RocketMan. Client tried RocketMan, didn't do anything for host and client.
+//[Command] Anyone can call, only host sees. Client call RocketMan(), client doesn't do RocketMan, but host sees RocketMan on client.
+
+//////Remember, this was all called from Update() A [ClientCallback], we are destroying an object
+//No tags, Host can call, only host sees. Client can call, only client sees
+//[Client] Host can call, only host sees. Client can call, only client sees
+//[ClientRpc] Host can call, everyone sees. 
+//[Command] Anyone can call, only host sees
+//Error message for 2 below, called when server not active
+//[Server] ???KEEP AN EYE, not completely sure. Host can call, only host sees
+//[TargetRpc] ???KEEP AN EYE, not completely sure. Host can call, only host sees
+
+
+
+
+//[Server]
+//Only a server can call the method(throws a warning or an error when called on a client).
+//[ServerCallback]
+//Same as Server but does not throw warning when called on client.
+
+//[Client]
+//Only a Client can call the method(throws a warning or an error when called on the server).
+//[ClientCallback]
+//Same as Client but does not throw warning when called on server.
+
+//[ClientRpc]
+//The server uses a Remote Procedure Call(RPC) to run that function on clients.See also: Remote Actions
+//[TargetRpc]
+// This is an attribute that can be put on methods of NetworkBehaviour classes to allow them to be invoked on clients from a server. Unlike the ClientRpc attribute, 
+//these functions are invoked on one individual target client, not all of the ready clients. See also: Remote Actions
+//[Command]
+//Call this from a client to run this function on the server. Make sure to validate input etc. 
+//It's not possible to call this from a server. Use this as a wrapper around another function, if you want to call it from the server too. 
