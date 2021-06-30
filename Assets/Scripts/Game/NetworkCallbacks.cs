@@ -317,18 +317,6 @@ public class NetworkCallbacks : GlobalEventListener
         }
     }
 
-    public override void OnEvent(SpawnObstacle evnt)
-    {
-        FindObjectOfType<GenerateAllGen>().GenerateCall(evnt.gen, evnt.seedString);
-
-
-        /*MapGenerator[] gens = FindObjectsOfType<MapGenerator>();
-        foreach (MapGenerator item in gens)
-        {
-            item.seed = evnt.seedString;
-        }*/
-    }
-
     public override void OnEvent(LoadoutCountdown evnt)
     {
         FindObjectOfType<CanvasUIManager>().loadoutTimeText.text = "" + evnt.Time;

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using Bolt;
+using Mirror;
+
 /// <summary>
 /// Main idea behind the map generator is cellular automata and a sprinkle of poisson disc sampling.ref.'Proto_Procedural.cs'. 
 /// </summary>
-public class MapGenerator : EntityBehaviour<IGenerator>
+public class MapGenerator : NetworkBehaviour
 {
     #region Globals
     [Header("Map")]
@@ -70,11 +71,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         GenerateIndestructables(pseudoRandom);
         GenerateMap(pseudoRandom);
         ObstacleGeneration();
-        if (BoltNetwork.IsServer)
-        {
-            ArtefactSpawner();
-
-        }
+        ArtefactSpawner();
     }
 
 
@@ -327,7 +324,8 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             {
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
-                Instantiate(ob, hit.point, spawnRotation);
+                GameObject go = Instantiate(ob, hit.point, spawnRotation);
+                NetworkServer.Spawn(go);
                 //BoltNetwork.Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(-90, 0, 0));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
                 /*var request = SpawnObstacle.Create();
                 request.PrefabName = ob.gameObject.name;
@@ -356,8 +354,9 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
         {
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            GameObject go = BoltNetwork.Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
+            GameObject go = Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
             go.GetComponent<ArtefactBehaviour>().PopulateData(go.name, rarity);
+            NetworkServer.Spawn(go);
             return 1;
         }
         else
@@ -440,6 +439,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                 //Transform g = ob.transform; g.localScale *= randScale;
                 GameObject go = Instantiate(ob, hit.point, spawnRotation);
                 go.transform.localScale = new Vector3(randScale, randScale, randScale);
+                NetworkServer.Spawn(go);
             }
 
         }
