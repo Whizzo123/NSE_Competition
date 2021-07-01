@@ -115,12 +115,6 @@ public class NetworkCallbacks : GlobalEventListener
         }
     } 
 
-    public override void OnEvent(ToggleCamouflage evnt)
-    {        
-        if(!evnt.Target.IsOwner)
-            evnt.Target.GetComponent<PlayerController>().ToggleMesh(evnt.Toggle);
-    }
-
     public override void OnEvent(ObstacleDisable evnt)
     {
         /*BoltLog.Info("Called OnEvent ObstacleDisable");

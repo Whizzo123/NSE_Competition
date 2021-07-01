@@ -31,7 +31,6 @@ public class GameSceneManager : NetworkBehaviour
         if (hasAuthority)
         {
             currentReadyTime = readyTime;
-            StartCoroutine(RunLobbyReadyCountdown());
         }
 
         loadoutChoiceComplete = false;
@@ -109,33 +108,6 @@ public class GameSceneManager : NetworkBehaviour
             //else if (abilityPickupsSpawned)
             //    StopCoroutine(RunAbilityPickupSpawnCountdown());
         }
-
-    private IEnumerator RunLobbyReadyCountdown()
-    {
-        var floorTime = Mathf.FloorToInt(readyTime);
-
-        LoadoutCountdown countdown;
-        while(currentReadyTime > 0)
-        {
-            yield return null;
-
-            currentReadyTime -= Time.deltaTime;
-            var newFloorTime = Mathf.FloorToInt(currentReadyTime);
-
-            if(newFloorTime != floorTime)
-            {
-                floorTime = newFloorTime;
-
-                countdown = LoadoutCountdown.Create();
-                countdown.Time = floorTime;
-                countdown.Send();
-            }
-        }
-
-        LoadoutScreenDisable request = LoadoutScreenDisable.Create();
-        request.Send();
-        loadoutChoiceComplete = true;
-    }
 
     private IEnumerator RunAbilityPickupSpawnCountdown()
     {
