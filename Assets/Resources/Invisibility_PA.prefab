@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 154627723060890195}
   - component: {fileID: 66140151911474715}
   - component: {fileID: 65847179837493165}
-  - component: {fileID: 586316351790869837}
+  - component: {fileID: -1042734116803407057}
   m_Layer: 0
   m_Name: Invisibility_PA
   m_TagString: Untagged
@@ -4897,7 +4897,7 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &586316351790869837
+--- !u!114 &-1042734116803407057
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4906,26 +4906,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 156633075207965585}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneGuid: 
-  _serializerGuid: ce2c3a87-596b-4ff5-a7a9-07728fa4355d
-  _prefabId: 20
-  _updateRate: 1
-  _autoFreezeProxyFrames: 0
-  _clientPredicted: 1
-  _allowInstantiateOnClient: 1
-  _persistThroughSceneLoads: 0
-  _sceneObjectDestroyOnDetach: 1
-  _sceneObjectAutoAttach: 1
-  _alwaysProxy: 0
-  _detachOnDisable: 1
-  _allowFirstReplicationWhenFrozen: 0
-  _autoRemoveChildEntities: 0
-  _entityBehaviourQueryOption: 0
-  _entityPriorityCalculatorQueryOption: 1
-  _entityReplicationFilterQueryOption: 1
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1 &157275869294998129
 GameObject:
   m_ObjectHideFlags: 0

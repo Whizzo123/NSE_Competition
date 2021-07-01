@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Mirror;
 
 public class Camouflage : Powerup
 {
@@ -12,20 +13,27 @@ public class Camouflage : Powerup
 
     public override void Use()
     {
-        BoltNetwork.Instantiate(BoltPrefabs.Invisibility_PA, GetPlayerToEmpower().gameObject.transform.position, Quaternion.identity);
-        var request = ToggleCamouflage.Create();
-        //request.Target = GetPlayerToEmpower().entity;
-        request.Toggle = false;
-        request.Send();
+        BoltNetwork.Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Invisibility_PA"),
+            GetPlayerToEmpower().gameObject.transform.position, Quaternion.identity);
+        CmdToggleCamouflage(false);
         inUse = true;
+    }
+
+    [Command]
+    private void CmdToggleCamouflage(bool toggle)
+    {
+        RpcToggleCamouflage(toggle);
+    }
+
+    [ClientRpc]
+    private void RpcToggleCamouflage(bool toggle)
+    {
+        GetPlayerToEmpower().ToggleMesh(toggle);
     }
 
     protected override void EndEffect()
     {
-        var request = ToggleCamouflage.Create();
-        //request.Target = GetPlayerToEmpower().entity;
-        request.Toggle = true;
-        request.Send();
+        CmdToggleCamouflage(true);
         base.EndEffect();
     }
 
