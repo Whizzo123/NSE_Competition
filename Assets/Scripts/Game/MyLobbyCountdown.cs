@@ -45,7 +45,7 @@ public class MyLobbyCountdown : NetworkBehaviour
     {
         FindObjectOfType<AbilitySlotBarUI>().LoadInAbilitiesFromLoadout(FindObjectOfType<LoadoutBarUI>().GetLoadoutForAbilitySlotBar());
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
-        //TODO:- Somehow let local player know that the loadout has been released
+        NetworkClient.localPlayer.GetComponent<PlayerController>().SetLoadoutReleased(true);
     }
 
     [ClientRpc]

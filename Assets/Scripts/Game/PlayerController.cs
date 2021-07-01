@@ -64,6 +64,7 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartAuthority()
     {
         base.OnStartAuthority();
+        abilityInventory = new AbilityInventory(this);
     }
     //public override void OnStartAuthority()
     //{

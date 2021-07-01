@@ -1269,6 +1269,8 @@ MonoBehaviour:
   spawnPrefabs:
   - {fileID: 795114186693884625, guid: 43edba4bcb587804291afe955648a2fb, type: 3}
   - {fileID: 7811146946738992411, guid: f1f1c90d42a4179428ca47018e5a7f2c, type: 3}
+  - {fileID: 5770247344185561094, guid: f06291300b13e1f4b8d1c0d26940d1fe, type: 3}
+  - {fileID: 8310129950516001420, guid: 0807cbbdf4ed7fa41a6706f16f1c4efb, type: 3}
   menuScene: 
   lobbyPlayerPrefab: {fileID: 2984370565624789861, guid: 43edba4bcb587804291afe955648a2fb, type: 3}
   minPlayers: 2

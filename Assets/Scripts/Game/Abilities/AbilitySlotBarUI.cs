@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class AbilitySlotBarUI : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class AbilitySlotBarUI : MonoBehaviour
             {
                 if (slots[i].SetAbilityName(loadoutItem)) break; else continue;
             }
-            //PlayerController.localPlayer.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(loadoutItem));
+            NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(loadoutItem));
         }
     }
 

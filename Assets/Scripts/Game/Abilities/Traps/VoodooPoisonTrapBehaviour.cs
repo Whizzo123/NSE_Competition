@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Bolt;
+using Mirror;
 
 
-public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
+public class VoodooPoisonTrapBehaviour : NetworkBehaviour
 {
     private PlayerController trappedPlayer;
 
@@ -17,7 +17,9 @@ public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
     public GameObject openTrap;
     public GameObject closedTrap;
 
-    public override void Attached()
+    private string placingPlayerName;
+
+    void Start()
     {
         currentDuration = 0;
         sprung = false;
@@ -28,30 +30,37 @@ public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
     {
         if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
         {
-            //if(collider.gameObject.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Name != state.PlacingPlayer.GetState<IGamePlayerState>().Name)
-            {
+            //if(collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+           // {
                 trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                SpringTrap();
-            }
+                CmdSpringTrap();
+            //}
         }
     }
 
-    private void SpringTrap()
+    public void SetPlacingPlayer(PlayerController controller)
     {
-        var request = PoisonPlayer.Create();
-       // request.Target = trappedPlayer.entity;
-        request.End = false;
-        request.Trap = entity;
-        request.Send();
+        //placingPlayerName = controller.playerName;
+    }
+
+    [Command]
+    private void CmdSpringTrap()
+    {
+        RpcSpringTrap();
         sprung = true;
     }
 
-    public void Disable()
+    [ClientRpc]
+    private void RpcSpringTrap()
     {
-        closedTrap.SetActive(false);
-        openTrap.SetActive(false);
-        GetComponent<MeshRenderer>().enabled = false;
-        GetComponent<SphereCollider>().enabled = false;
+        //trappedPlayer.poisoned = true;
+        Close();
+    }
+
+    [ClientRpc]
+    private void RpcFinishTrap()
+    {
+        Destroy(this);
     }
 
     public void Close()
@@ -61,25 +70,26 @@ public class VoodooPoisonTrapBehaviour : EntityBehaviour<IVoodooPoisonTrap>
         closedTrap.SetActive(true);
     }
 
-    public override void SimulateOwner()
+    void Update()
     {
-        if(sprung && !disabled)
+        UpdateTrap();
+    }
+
+    [Server]
+    private void UpdateTrap()
+    {
+        if (sprung)
         {
-            if(trapDuration > -1)
+            if (trapDuration > -1)
             {
-                if(currentDuration < trapDuration)
+                if (currentDuration < trapDuration)
                 {
                     currentDuration += Time.deltaTime;
                 }
                 else
                 {
-                    var request = PoisonPlayer.Create();
-                   // request.Target = trappedPlayer.entity;
-                    request.End = true;
-                    request.Trap = entity;
-                    request.Send();
-                    disabled = true;
-                    Debug.LogError("Voodoo END");
+                    //trappedPlayer.poisoned = false;
+                    RpcFinishTrap();
                 }
             }
         }
