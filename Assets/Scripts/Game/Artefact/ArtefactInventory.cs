@@ -110,7 +110,6 @@ public class ArtefactInventory : NetworkBehaviour
                 return true;
             }
         }
-
         return false;
     }
 
