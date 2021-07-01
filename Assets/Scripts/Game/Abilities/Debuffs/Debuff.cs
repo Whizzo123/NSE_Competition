@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Mirror;
 
 public class Debuff : Ability
 {
@@ -30,11 +31,15 @@ public class Debuff : Ability
     public override void Use()
     {
         //Do animation
-        var request = FireAnimatorThrowTrigger.Create();
-        //request.Target = castingPlayer.entity;
-        request.Send();
+        AnimatorStateInfo state = castingPlayer.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+        if (!state.IsName("Throw"))
+        {
+            castingPlayer.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Throw");
+        }
         base.Use();
     }
+    
+    
 
     public override void UpdateAbility()
     {
@@ -104,16 +109,15 @@ public class Debuff : Ability
         //Ask Joe to explain this bit of code
         float shortestDistance = float.MaxValue;
         PlayerController closestPlayer = null;
-
-        foreach(BoltEntity entity in BoltNetwork.Entities)
+        foreach(PlayerController player in GameObject.FindObjectsOfType<PlayerController>())
         {
-           //if (entity.StateIs<IGamePlayerState>() == false || entity == castingPlayer.entity) continue;
-            float newDistance = GetDistance(entity.GetComponent<PlayerController>().gameObject.transform.position,
-                castingPlayer.gameObject.transform.position);
+            if (player == castingPlayer) continue;
+            float newDistance = GetDistance(player.transform.position,
+                castingPlayer.transform.position);
             if (newDistance < shortestDistance)
             {
                 shortestDistance = newDistance;
-                closestPlayer = entity.GetComponent<PlayerController>();
+                closestPlayer = player;
             }
         }
         return closestPlayer;

@@ -60,61 +60,6 @@ public class NetworkCallbacks : GlobalEventListener
         }
     }
 
-    public override void OnEvent(StunEnemyPlayer evnt)
-    {
-        BoltLog.Info("Called OnEvent StunEnemyPlayer");
-        if (evnt.Target.IsOwner)
-        {
-            if (!evnt.End)
-            {
-                Debug.Log("Slowing");
-                SpeedBoost spd = (SpeedBoost)evnt.Target.GetComponent<PlayerController>().abilityInventory.FindAbility("Speed");
-                if (spd != null)
-                    spd.SetOppositeDebuffActivated(true);
-                //evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 1f;
-                //Instantiate(Resources.Load("SlowBombExplosion_PA", typeof(GameObject)) as GameObject, evnt.Target.transform.position, Quaternion.identity);//Instantiates it on all other machines besides the thrower
-            }
-            else
-            {
-                Debug.Log("quickening");
-                SpeedBoost spd = (SpeedBoost)evnt.Target.GetComponent<PlayerController>().abilityInventory.FindAbility("Speed");
-                if (spd != null)
-                    spd.SetOppositeDebuffActivated(false);
-                //evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = FindObjectOfType<PlayerController>().speed;
-            }
-        }
-    }
-
-    public override void OnEvent(ParalyzePlayerEvent evnt)
-    {
-        if(evnt.Target.IsOwner)
-        {
-            if(!evnt.End)
-            {
-                evnt.Target.GetState<IGamePlayerState>().Paralyzed = true;
-            }
-            else
-            {
-                evnt.Target.GetState<IGamePlayerState>().Paralyzed = false;
-            }
-        }
-    }
-
-    public override void OnEvent(MortalSpellEvent evnt)
-    {
-        if(evnt.Target.IsOwner)
-        {
-            if(!evnt.End)
-            {
-                evnt.Target.GetState<IGamePlayerState>().Mortal = true;
-            }
-            else
-            {
-                evnt.Target.GetState<IGamePlayerState>().Mortal = false;
-            }
-        }
-    } 
-
     public override void OnEvent(ObstacleDisable evnt)
     {
         /*BoltLog.Info("Called OnEvent ObstacleDisable");
@@ -225,24 +170,6 @@ public class NetworkCallbacks : GlobalEventListener
         AnimatorStateInfo state = evnt.Target.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
         if (!state.IsName("StandCut") || !state.IsName("RunCut"))
             evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Cut");
-    }
-
-    public override void OnEvent(FireAnimatorThrowTrigger evnt)
-    {
-        AnimatorStateInfo state = evnt.Target.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
-        if(!state.IsName("Throw"))
-        {
-            evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Throw");
-        }
-    }
-
-    public override void OnEvent(FireAnimatorPutDownTrigger evnt)
-    {
-        AnimatorStateInfo state = evnt.Target.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
-        if (!state.IsName("PutDown"))
-        {
-            evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("PutDown");
-        }
     }
 
     public override void OnEvent(LoadoutCountdown evnt)

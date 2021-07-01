@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
-
+using Mirror;
 
 public class StickyBomb : Debuff 
 {
 
-    public BoltEntity particleEffect;
+    public GameObject stickyBombParticles;
 
     public StickyBomb() : base ("StickyBomb", "Stun an opponent of your choosing to change the tides", 1, AbilityUseTypes.RECHARGE, 30.0f, 20.0f)
     {
@@ -25,31 +25,44 @@ public class StickyBomb : Debuff
         else
         {
             inUse = true;
-            //BoltNetwork.Instantiate(Resources.Load("SlowBombExplosion_PA", typeof(GameObject)) as GameObject, target.transform.position, Quaternion.identity); doesn't do a thing??????
-            particleEffect = BoltNetwork.Instantiate(BoltPrefabs.SlowBombExplosion_PA, target.transform.position, Quaternion.identity);
 
-            var request = StunEnemyPlayer.Create();
-            //request.Target = target.entity;
-            request.End = false;
-            request.Send();
+            stickyBombParticles = GameObject.Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefab =>
+                spawnPrefab.name == "SlowBombExplosion_PA"), target.transform.position, Quaternion.identity);
+            NetworkServer.Spawn(stickyBombParticles);
+
+            Explode(false);
             GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
             GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(name, true);
             base.Use();
         }
     }
 
+    private void Explode(bool finish)
+    {
+            if (!finish)
+            {
+                SpeedBoost spd = (SpeedBoost)target.abilityInventory.FindAbility("Speed");
+                if (spd != null)
+                    spd.SetOppositeDebuffActivated(true);
+                //target.speed = 1f;
+            }
+            else
+            {
+                SpeedBoost spd = (SpeedBoost)target.abilityInventory.FindAbility("Speed");
+                if (spd != null)
+                    spd.SetOppositeDebuffActivated(false);
+                //target.speed = FindObjectOfType<PlayerController>().normalSpeed;
+            }
+    }
+
     public override void EndEffect()
     {
-        Debug.Log("Ending sticky effect");
         inUse = false;
-        var request = StunEnemyPlayer.Create();
-       // request.Target = target.entity;
-        request.End = true;
-        request.Send();
+        Explode(true);
         target = null;
         GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(name, false);
         base.EndEffect();
-        particleEffect.DestroyDelayed(1);
+        NetworkServer.Destroy(stickyBombParticles);
     }
 
     public override Ability Clone()
