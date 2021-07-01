@@ -45,14 +45,6 @@ public class NetworkCallbacks : GlobalEventListener
         }
     }
 
-    public override void OnEvent(LoadoutScreenDisable evnt)
-    {
-        BoltLog.Info("Called OnEvent LoadoutScreenDisable");
-        FindObjectOfType<AbilitySlotBarUI>().LoadInAbilitiesFromLoadout(FindObjectOfType<LoadoutBarUI>().GetLoadoutForAbilitySlotBar());
-        FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
-       // PlayerController.localPlayer.SetLoadoutReleased(true);
-    }
-
     #endregion
 
     public override void OnEvent(AbilityPickupSpawn evnt)
@@ -121,65 +113,7 @@ public class NetworkCallbacks : GlobalEventListener
                 evnt.Target.GetState<IGamePlayerState>().Mortal = false;
             }
         }
-    }
-    public override void OnEvent(SpringBearTrap evnt)
-    {
-
-        if(evnt.Victim.IsOwner)
-        {
-            Debug.LogError("envt Victim is owner START");
-            if (!evnt.End)
-            {
-                Debug.LogError("evo immobolise");
-                evnt.Victim.GetComponent<PlayerController>().immobilize = true;
-            }
-            else
-            {
-                Debug.LogError("evo !immobolise");
-                evnt.Victim.GetComponent<PlayerController>().immobilize = false;
-            }
-        }
-        Debug.LogError("evo end");
-        if (evnt.End)
-        {
-            Debug.LogError("evnt end");
-            evnt.Trap.GetComponent<BearTrapBehaviour>().Disable();
-            evnt.Trap.GetComponent<SphereCollider>().enabled = false;
-        }
-        else
-        {
-            Debug.LogError("Close");
-            evnt.Trap.GetComponent<BearTrapBehaviour>().Close();
-        }
-    }
-
-    public override void OnEvent(PoisonPlayer evnt)
-    {
-        if(evnt.Target.IsOwner)
-        {
-            Debug.LogError("Voodoo START");
-            if (!evnt.End)
-            {
-                Debug.LogError("Voodoo POISON");
-                //evnt.Target.GetComponent<PlayerController>().state.Poisoned = true;
-            }
-            else
-            {
-                Debug.LogError("Voodoo NOTPOISON");
-                //evnt.Target.GetComponent<PlayerController>().state.Poisoned = false;
-            }
-        }
-        Debug.LogError("Voodoo EVNT END");
-        if (evnt.End)
-        {
-            evnt.Trap.GetComponent<VoodooPoisonTrapBehaviour>().Disable();
-            //evnt.Trap.GetComponent<SphereCollider>().enabled = false;
-        }
-        else
-        {
-            evnt.Trap.GetComponent<VoodooPoisonTrapBehaviour>().Close();
-        }
-    }
+    } 
 
     public override void OnEvent(ToggleCamouflage evnt)
     {        

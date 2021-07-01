@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5770247344185561090}
   - component: {fileID: 5770247344185561093}
-  - component: {fileID: 2751611791638242169}
   - component: {fileID: -2556144238126641609}
+  - component: {fileID: 5888295216171427859}
   m_Layer: 0
   m_Name: BearTrap
   m_TagString: Untagged
@@ -48,35 +48,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 4
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2751611791638242169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5770247344185561094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sceneGuid: 
-  _serializerGuid: 696c2fc3-c8e4-456b-88fa-7674dd072746
-  _prefabId: 18
-  _updateRate: 1
-  _autoFreezeProxyFrames: 0
-  _clientPredicted: 1
-  _allowInstantiateOnClient: 1
-  _persistThroughSceneLoads: 0
-  _sceneObjectDestroyOnDetach: 1
-  _sceneObjectAutoAttach: 1
-  _alwaysProxy: 0
-  _detachOnDisable: 1
-  _allowFirstReplicationWhenFrozen: 0
-  _autoRemoveChildEntities: 0
-  _entityBehaviourQueryOption: 0
-  _entityPriorityCalculatorQueryOption: 1
-  _entityReplicationFilterQueryOption: 1
 --- !u!114 &-2556144238126641609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,9 +60,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d060e567b0f50d74a9d027449d2ae906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   trapDuration: 10
   openTrap: {fileID: 420855350297539488}
   closedTrap: {fileID: 529349913482325329}
+--- !u!114 &5888295216171427859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5770247344185561094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1001 &654786009233592049
 PrefabInstance:
   m_ObjectHideFlags: 0
