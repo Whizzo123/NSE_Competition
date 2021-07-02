@@ -1628,6 +1628,7 @@ GameObject:
   - component: {fileID: 6593909278188048680}
   - component: {fileID: 1137848910681300163}
   - component: {fileID: 4694960425385989721}
+  - component: {fileID: -5296290282616439871}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1664,11 +1665,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  speed: 10
   immobilize: 0
   waitTime: 0.569
   playerGravity: -65
   groundDistance: 2.5
+  playerFallingVelocity: {x: 0, y: 0, z: 0}
+  speed: 10
   lengthOfSphere: 2
   radiusOfSphere: 1
   obstacles:
@@ -1679,10 +1681,10 @@ MonoBehaviour:
     m_Bits: 63744
   localPlayer: {fileID: 0}
   playerCharacterController: {fileID: 0}
+  playerAnim: {fileID: 8412895053057340191}
+  nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
   playerNameText: {fileID: 0}
   playerCamera: {fileID: 0}
-  nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
-  playerFallingVelocity: {x: 0, y: 0, z: 0}
   vCam: {fileID: 8073864731859778527, guid: 00eba60cefa011d4e9636e781d77a83c, type: 3}
   cam: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
   offset: {x: 0, y: 10, z: 10}
@@ -1809,6 +1811,22 @@ MonoBehaviour:
   syncAngularVelocity: 0
   clearAngularVelocity: 0
   angularVelocitySensitivity: 0.1
+--- !u!114 &-5296290282616439871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.01
+  clientAuthority: 1
+  animator: {fileID: 8412895053057340191}
 --- !u!1 &7841634150651579168
 GameObject:
   m_ObjectHideFlags: 0

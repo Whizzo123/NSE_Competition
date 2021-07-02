@@ -9,48 +9,62 @@ public class PlayerController : NetworkBehaviour
     #region Variables
     [Header("Stored Interactables")]
     //Stored interactables
-    private List<ArtefactBehaviour> targetedArtefacts;
-    private Stash gameStash;
-    private PlayerController targetedPlayerToStealFrom;
-    private AbilityPickup targetedAbilityPickup;
-    public float speed = 20f;
-    private bool loadoutReleased;
-    public AbilityInventory abilityInventory;
-    public bool immobilize;
-    private float currentStunAfterTimer;
-    private float timeForStunAfterSteal;
+    [Tooltip("The artefacts that are in range for picking up")]private List<ArtefactBehaviour> targetedArtefacts;
+    [Tooltip("NA")]private Stash gameStash;
+    [Tooltip("The player that is currently targeted to steal artefacts from")]private PlayerController targetedPlayerToStealFrom;
+    [Tooltip("In devlopment: The ability pickups that are in range for picking up")]private List<AbilityPickup> targetedAbilityPickup;
+    //Loadout and inventory
+    [Tooltip("Have we exited the loadout menu")]private bool loadoutReleased;
+    [Tooltip("Our abilities that we've selected")]public AbilityInventory abilityInventory;
+
     [Space]
 
     [Header("Player options")]
+    //Tools
     [SerializeField] [Tooltip("Time delay before destroying another obstacle")] [Range(0, 1)] private float waitTime = 0.05f;
-    private bool wait = false;
+    [Tooltip("If the tools are currently on cooldown")] private bool toolWait= false;
+    //Gravity
     [SerializeField] private float playerGravity = -65;
-    [SerializeField] private float groundDistance = 2.5f;
-    public float lengthOfSphere = 2f;
-    public float radiusOfSphere = 1f;
+    [SerializeField] [Tooltip("The distance from the player to the ground to check if they're grounded")] private float groundDistance = 2.5f;
+    [Tooltip("Is the player touching the ground")] private bool isGrounded = true;
+    [SerializeField] [Tooltip("How fast the player is currently falling by y axis")] private Vector3 playerFallingVelocity;
+    //Movement
+    [Tooltip("The speed of the player")] public float speed = 20f;
+    [Tooltip("Direction player is moving in by input, not physics")] private Vector3 direction;
+    [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
+
+    //Sphere
+    [Tooltip("Distance forward from the player for the destruction sphere")] public float lengthOfSphere = 2f;
+    [Tooltip("Radius of the obstacle destruction sphere cast")] public float radiusOfSphere = 1f;
     [Space]
 
     [Header("LayerMasks and Components")]
+    //Layermasks
     public LayerMask obstacles;
     public LayerMask ground;
     [Space]
-    public PlayerController localPlayer;
-    public CharacterController playerCharacterController;//See attached()
-    private Vector3 direction;
-    public GameObject playerNameText;
-    public Camera playerCamera;
-    public GameObject nameTextPrefab;
+    //Player
+    [Tooltip("Our player")] public PlayerController localPlayer;
+    [Tooltip("Character controller reference")] public CharacterController playerCharacterController;//See attached()
+    public Animator playerAnim;
+    
+    [Tooltip("NA")] public GameObject nameTextPrefab;
+    [Tooltip("NA")] public GameObject playerNameText;
+
+    [Tooltip("Camera attatched to the player")] public Camera playerCamera;
+    [Tooltip("NA")] public Cinemachine.CinemachineVirtualCamera vCam;
+    [Tooltip("NA")] public Camera cam;
     [Space]
 
+
+    [Tooltip("NA")] public Vector3 offset = new Vector3(0, 10, 10);
+
     [Header("States")]
-    [SerializeField] private Vector3 playerFallingVelocity;
-    private Vector3 playerMovement = Vector3.zero;
-    private bool isGrounded = true;
-    public Cinemachine.CinemachineVirtualCamera vCam;
-    public Camera cam;
-    public Vector3 offset = new Vector3(0, 10, 10);
-
-
+    //Stuns
+    [Tooltip("Are we immobolised")] public bool immobilize;
+    [Tooltip("Have we been hit by the voodoo trap")] public bool voodooPoisoned;
+    [Tooltip("NA")] private float currentStunAfterTimer;
+    [Tooltip("NA")] private float timeForStunAfterSteal;
 
 
     #endregion
@@ -63,8 +77,35 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
+        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        if (vCam != null)
+        {
+            Invoke("SetCamera", 0);
+        }
+        else
+        {
+            Invoke("SetCamera", 5);
+        }
+
         base.OnStartAuthority();
     }
+    [Client]
+    void SetCamera()
+    {
+        Debug.LogError("Set Camera");
+        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        DontDestroyOnLoad(vCam);
+        vCam.LookAt = this.gameObject.transform;
+        vCam.Follow = this.gameObject.transform;
+        vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
+        if (!hasAuthority)
+        {
+            //Disable other players cameras so that we don't accidentally get assigned to another players camera
+            if (playerCamera != null)
+                playerCamera.gameObject.SetActive(false);
+        }
+    }
+
     //public override void OnStartAuthority()
     //{
     //    targetedArtefacts = new List<ArtefactBehaviour>();
@@ -239,9 +280,9 @@ public class PlayerController : NetworkBehaviour
                 }
                 playerFallingVelocity.y = -1f;
 
-                #endregion
+        #endregion
 
-                #region Movement
+        #region Movement
                 playerMovement = new Vector3
                 (Input.GetAxisRaw("Horizontal"),
                  playerFallingVelocity.y,
@@ -252,6 +293,7 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
             direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+            playerAnim.SetBool("moving", true);
             ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
             if (false)//poisoned?
             {
@@ -259,25 +301,28 @@ public class PlayerController : NetworkBehaviour
                 direction *= -1;
             }
 
-            //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
-            //{
-            //    var request = ChangeAnimatorMovementParameter.Create();
-            //    request.Target = entity;
-            //    request.Value = true;
-            //    request.Send();
-            //}
         }
         else
         {
-            //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
-            //{
-            //    var request = ChangeAnimatorMovementParameter.Create();
-            //    request.Target = entity;
-            //    request.Value = false;
-            //    request.Send();
-            //}
+            playerAnim.SetBool("moving", false);
         }
+
+
+        //Vector3 camF = vCam.transform.forward;
+        //Vector3 camR = cam.transform.right;
+        //camF.y = 0;
+        //camR.y = 0;
+        //camF = camF.normalized;
+        //camR = camR.normalized;
+        //playerMovement = new Vector3(playerMovement.x, playerMovement.y, playerMovement.z);
+        //Vector3 f = (camF * playerMovement.z + camR * playerMovement.x);
+        //f = new Vector3(f.x, playerMovement.y, f.z);
         //this.GetComponent<Rigidbody>().velocity = playerFallingVelocity;
+
+        //Quaternion camAngleAxis = Quaternion.AngleAxis(Input.GetAxisRaw("Mouse X") * 5, Vector3.up);
+        //Vector3 f = Vector3.zero;
+        //f = (transform.forward * Input.GetAxisRaw("Vertical") * speed) + (transform.right * Input.GetAxisRaw("Horizontal") * speed);
+
         playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
         PlayerRotation();
 
@@ -379,11 +424,12 @@ public class PlayerController : NetworkBehaviour
             //}
             #endregion
 
-            #region Obstacle Interaction
-            if (Input.GetKey(KeyCode.Space) && wait == false )//&& state.Paralyzed == false)
-            {
-                StartCoroutine(Hit());
-            }
+        #region Obstacle Interaction
+        if (Input.GetKey(KeyCode.Space) && toolWait== false )//&& state.Paralyzed == false)
+        {
+            playerAnim.SetTrigger("Cut");
+            StartCoroutine(Hit());
+        }
             #endregion
 
 
@@ -621,7 +667,7 @@ public class PlayerController : NetworkBehaviour
     {
         CmdHitForward();
         yield return new WaitForSeconds(waitTime);
-        wait = false;
+        toolWait= false;
     }
 
     [Command]
