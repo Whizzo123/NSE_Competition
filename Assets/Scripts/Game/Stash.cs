@@ -22,7 +22,7 @@ public class Stash : NetworkBehaviour
     public void AddToStashScores(PlayerController player)
     {
         int score = 0;
-        string playerName = player.playerNameText.GetComponent<Text>().text;
+        string playerName = player.playerName;
         foreach (ItemArtefact item in player.GetComponent<ArtefactInventory>().GetInventory())
         {
             score += item.points;

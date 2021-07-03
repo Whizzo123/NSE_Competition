@@ -71,7 +71,11 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        CmdSetDisplayName(string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100)));
+        if (!LobbyUIManager.useSteamMatchmaking)
+        {
+            CmdSetDisplayName(string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100)));
+            PlayerPrefs.SetString("username", DisplayName);
+        }
         lobbyUI.SetActive(true);
         if (isLeader)
             EnableRemoveButtons();

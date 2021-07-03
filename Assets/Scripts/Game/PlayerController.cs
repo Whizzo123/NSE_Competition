@@ -16,6 +16,9 @@ public class PlayerController : NetworkBehaviour
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")]private bool loadoutReleased;
     [Tooltip("Our abilities that we've selected")]public AbilityInventory abilityInventory;
+    private ArtefactInventory artefactInventory;
+    [SyncVar]
+    public string playerName;
 
     [Space]
 
@@ -229,97 +232,94 @@ public class PlayerController : NetworkBehaviour
 
         #region Artefact interaction
         if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (targetedArtefacts.Count != 0)
             {
-                //Debug.LogError("Artefact count " + targetedArtefacts.Count);
-                //if (targetedArtefacts.Count != 0)
-                //{
-                //    if (FindEmptyInventorySlot() != -1)
-                //    {
-                //        Debug.Log("Picking up Artefacts");
-                //        // targetedArtefact.Pickup(this);
-
-                //        // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
-                //        foreach (ArtefactBehaviour item in targetedArtefacts)
-                //        {
-                //            item.Pickup(this);
-                //            FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
-                //        }
-
-                //        targetedArtefacts.Clear();
-                //    }
-                //    else
-                //    {
-                //        FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
-                //    }
-                //}
-                //else if (targetedAbilityPickup != null)
-                //{
-                //    targetedAbilityPickup.PickupAbility(this);
-                //    targetedAbilityPickup = null;
-                //}
-                //else if (gameStash != null && InventoryNotEmpty())
-                //{
-                //    gameStash.AddToStashScores(this);
-                //    FindObjectOfType<AudioManager>().PlaySound("Stash");
-                //}
-                //else if(gameStash != null && !InventoryNotEmpty())
-                //{
-                //    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
-                //}
+                if (artefactInventory.FindEmptyInventorySlot() != -1)
+                {
+                    Debug.Log("Picking up Artefacts");
+                    // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
+                    foreach (ArtefactBehaviour item in targetedArtefacts)
+                    {
+                        artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
+                        FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
+                        NetworkServer.Destroy(item.gameObject);
+                    }
+                    targetedArtefacts.Clear();
+                }
+                else
+                {
+                    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
+                }
             }
-            #endregion
-
-            #region Stealing
-            //if (Input.GetKeyDown(KeyCode.F) && !state.HasBeenStolenFrom)
+            //else if (targetedAbilityPickup != null)
             //{
-            //    BoltLog.Info("F pressed");
-            //    if (targetedPlayerToStealFrom != null)
-            //    {
-            //        BoltLog.Info("Has a target");
-            //        if (IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false && targetedPlayerToStealFrom.InventoryNotEmpty())
-            //        {
-            //            BoltLog.Info("Attempting steal");
-            //            InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
-            //            AddToInventory(randomArtefact.ItemName, randomArtefact.ItemPoints);
-            //            int indexToRemove = -1;
-            //            for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
-            //            {
-            //                if (targetedPlayerToStealFrom.state.Inventory[i].ItemName != string.Empty && targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
-            //                {
-            //                    indexToRemove = i;
-            //                }
-            //            }
-            //            var request = InventoryRemove.Create();
-            //            request.ItemIndex = indexToRemove;
-            //            request.InventoryEntity = targetedPlayerToStealFrom.entity;
-            //            request.ItemName = randomArtefact.ItemName;
-            //            request.ItemPoints = randomArtefact.ItemPoints;
-            //            request.Send();
-            //        }
-            //        else
-            //        {
-            //            FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
-            //        }
-            //    }
+            //    targetedAbilityPickup.PickupAbility(this);
+            //    targetedAbilityPickup = null;
             //}
-
-            //if (state.HasBeenStolenFrom)
+            //else if (gameStash != null && InventoryNotEmpty())
             //{
-            //    if (currentStunAfterTimer >= timeForStunAfterSteal)
-            //    {
-            //        currentStunAfterTimer = 0;
-            //        state.HasBeenStolenFrom = false;
-            //        var request = StunEnemyPlayer.Create();
-            //        request.Target = entity;
-            //        request.End = true;
-            //        request.Send();
-            //    }
-            //    else
-            //    {
-            //        currentStunAfterTimer += Time.deltaTime;
-            //    }
+            //    gameStash.AddToStashScores(this);
+            //    FindObjectOfType<AudioManager>().PlaySound("Stash");
             //}
-            #endregion
+            //else if(gameStash != null && !InventoryNotEmpty())
+            //{
+            //    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
+            //}
+        }
+        #endregion
+
+        #region Stealing
+        //if (Input.GetKeyDown(KeyCode.F) && !state.HasBeenStolenFrom)
+        //{
+        //    BoltLog.Info("F pressed");
+        //    if (targetedPlayerToStealFrom != null)
+        //    {
+        //        BoltLog.Info("Has a target");
+        //        if (IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false && targetedPlayerToStealFrom.InventoryNotEmpty())
+        //        {
+        //            BoltLog.Info("Attempting steal");
+        //            InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
+        //            AddToInventory(randomArtefact.ItemName, randomArtefact.ItemPoints);
+        //            int indexToRemove = -1;
+        //            for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
+        //            {
+        //                if (targetedPlayerToStealFrom.state.Inventory[i].ItemName != string.Empty && targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
+        //                {
+        //                    indexToRemove = i;
+        //                }
+        //            }
+        //            var request = InventoryRemove.Create();
+        //            request.ItemIndex = indexToRemove;
+        //            request.InventoryEntity = targetedPlayerToStealFrom.entity;
+        //            request.ItemName = randomArtefact.ItemName;
+        //            request.ItemPoints = randomArtefact.ItemPoints;
+        //            request.Send();
+        //        }
+        //        else
+        //        {
+        //            FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
+        //        }
+        //    }
+        //}
+
+        //if (state.HasBeenStolenFrom)
+        //{
+        //    if (currentStunAfterTimer >= timeForStunAfterSteal)
+        //    {
+        //        currentStunAfterTimer = 0;
+        //        state.HasBeenStolenFrom = false;
+        //        var request = StunEnemyPlayer.Create();
+        //        request.Target = entity;
+        //        request.End = true;
+        //        request.Send();
+        //    }
+        //    else
+        //    {
+        //        currentStunAfterTimer += Time.deltaTime;
+        //    }
+        //}
+        #endregion
 
         #region Obstacle Interaction
         if (Input.GetKey(KeyCode.Space) && toolWait== false )//&& state.Paralyzed == false)
@@ -629,7 +629,19 @@ public class PlayerController : NetworkBehaviour
         //Player -> _scaleTest -> FULL.002
         transform.GetChild(0).transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = toggle;
     }
+
+    public ArtefactInventory GetArtefactInventory()
+    {
+        return artefactInventory;
+    }
+
+    public void SetArtefactInventory(ArtefactInventory inventory)
+    {
+        artefactInventory = inventory;
+    }
 }
+
+
 
 
 #region deadCode

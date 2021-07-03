@@ -4201,6 +4201,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3208868608744248616, guid: 582274c556be50644a8dc000e29431a4, type: 3}
+      propertyPath: sceneId
+      value: 1868736310
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 582274c556be50644a8dc000e29431a4, type: 3}
 --- !u!1001 &842628540546763061
@@ -4458,14 +4462,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -5575257615335779973, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -4174776528086580895, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: -4174776528086580895, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
       propertyPath: mapGens.Array.data[0]
       value: 
@@ -4486,13 +4482,17 @@ PrefabInstance:
       propertyPath: mapGens.Array.data[4]
       value: 
       objectReference: {fileID: 6070351873577025496}
+    - target: {fileID: 1052702408758393669, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
+      propertyPath: sceneId
+      value: 1268076981
+      objectReference: {fileID: 0}
+    - target: {fileID: 1052702408758393669, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
+      propertyPath: m_AssetId
+      value: d1a72a76f94172f4993772b6d8bc71d2
+      objectReference: {fileID: 0}
     - target: {fileID: 6086093552605373106, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
       propertyPath: m_Name
       value: GeneratorOfAll
-      objectReference: {fileID: 0}
-    - target: {fileID: 6086093552605373106, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8570793288063568150, guid: d1a72a76f94172f4993772b6d8bc71d2, type: 3}
       propertyPath: m_RootOrder
@@ -4551,10 +4551,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SnowGen
       objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371854, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -4599,13 +4595,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371857, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
-      propertyPath: radius
-      value: 12
+    - target: {fileID: 7319373023968235860, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
+      propertyPath: sceneId
+      value: 4109554343
       objectReference: {fileID: 0}
-    - target: {fileID: 7671949710289692790, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
-      propertyPath: _serializerGuid
-      value: f76f12ae-2efd-4c55-a130-2e77b84d87c5
+    - target: {fileID: 7319373023968235860, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
+      propertyPath: m_AssetId
+      value: 008f6762be6ebd94c86d69e6d3c9a220
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 008f6762be6ebd94c86d69e6d3c9a220, type: 3}
@@ -4621,13 +4617,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2392418458894577105, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
+      propertyPath: sceneId
+      value: 755485555
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392418458894577105, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
+      propertyPath: m_AssetId
+      value: bf22480377cb58d4bbfa5a88526acb1a
+      objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371854, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
       propertyPath: m_Name
       value: DesertGen
-      objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371854, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
       propertyPath: m_RootOrder
@@ -4672,14 +4672,6 @@ PrefabInstance:
     - target: {fileID: 4003292575508371856, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371857, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
-      propertyPath: radius
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 7671949710289692790, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
-      propertyPath: _serializerGuid
-      value: f76f12ae-2efd-4c55-a130-2e77b84d87c5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf22480377cb58d4bbfa5a88526acb1a, type: 3}
@@ -4752,13 +4744,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1137443841012112106, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
+      propertyPath: sceneId
+      value: 301766848
+      objectReference: {fileID: 0}
+    - target: {fileID: 1137443841012112106, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
+      propertyPath: m_AssetId
+      value: fdb56df2ce6e307469769fdaaad1877f
+      objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371854, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
       propertyPath: m_Name
       value: JungleGen
-      objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371854, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
       propertyPath: m_RootOrder
@@ -4803,14 +4799,6 @@ PrefabInstance:
     - target: {fileID: 4003292575508371856, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371857, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
-      propertyPath: radius
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 7671949710289692790, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
-      propertyPath: _serializerGuid
-      value: f76f12ae-2efd-4c55-a130-2e77b84d87c5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fdb56df2ce6e307469769fdaaad1877f, type: 3}
@@ -4972,10 +4960,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GrassGen
       objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371854, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -5020,29 +5004,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371857, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
-      propertyPath: width
-      value: 200
+    - target: {fileID: 7480446212225122055, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
+      propertyPath: sceneId
+      value: 3902104841
       objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371857, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
-      propertyPath: height
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371857, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
-      propertyPath: radius
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371857, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
-      propertyPath: regionSize.x
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371857, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
-      propertyPath: regionSize.y
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 7671949710289692790, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
-      propertyPath: _serializerGuid
-      value: f76f12ae-2efd-4c55-a130-2e77b84d87c5
+    - target: {fileID: 7480446212225122055, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
+      propertyPath: m_AssetId
+      value: 99b2ec0abff64d745ba7b50cc13a7119
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
@@ -5061,10 +5029,6 @@ PrefabInstance:
     - target: {fileID: 4003292575508371854, guid: de681e42e64862c40b814d0d38021bec, type: 3}
       propertyPath: m_Name
       value: SwampGen
-      objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371854, guid: de681e42e64862c40b814d0d38021bec, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4003292575508371856, guid: de681e42e64862c40b814d0d38021bec, type: 3}
       propertyPath: m_RootOrder
@@ -5110,13 +5074,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4003292575508371857, guid: de681e42e64862c40b814d0d38021bec, type: 3}
-      propertyPath: radius
-      value: 12
+    - target: {fileID: 8125968174355932853, guid: de681e42e64862c40b814d0d38021bec, type: 3}
+      propertyPath: sceneId
+      value: 2008891029
       objectReference: {fileID: 0}
-    - target: {fileID: 7671949710289692790, guid: de681e42e64862c40b814d0d38021bec, type: 3}
-      propertyPath: _serializerGuid
-      value: f76f12ae-2efd-4c55-a130-2e77b84d87c5
+    - target: {fileID: 8125968174355932853, guid: de681e42e64862c40b814d0d38021bec, type: 3}
+      propertyPath: m_AssetId
+      value: de681e42e64862c40b814d0d38021bec
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de681e42e64862c40b814d0d38021bec, type: 3}

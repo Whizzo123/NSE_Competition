@@ -21,6 +21,15 @@ public class MyNetworkManager : NetworkManager
 
     public List<MirrorRoomPlayerLobby> RoomPlayers = new List<MirrorRoomPlayerLobby>();
 
+    void Start()
+    {
+        GameObject[] prefabs = Resources.LoadAll<GameObject>("NetworkSpawningPrefabs");
+        for (int i = 0; i < prefabs.Length; i++)
+        {
+            spawnPrefabs.Add(prefabs[i]);
+        }
+    }
+
     public override void OnStartServer()
     {
         Debug.Log("OnStartServer");
@@ -112,8 +121,8 @@ public class MyNetworkManager : NetworkManager
                 NetworkServer.Destroy(conn.identity.gameObject);
 
                 NetworkServer.ReplacePlayerForConnection(conn, gameplayInstance.gameObject);
+                gameplayInstance.gameObject.GetComponent<PlayerController>().playerName = PlayerPrefs.GetString("username");
                 NetworkServer.Spawn(gameplayInstance, conn);
-                Debug.LogError("Spawned player MIRROR");
             }
         }
         base.ServerChangeScene(newSceneName);
