@@ -31,16 +31,6 @@ public class NetworkCallbacks : GlobalEventListener
         evnt.AbilityEntity.gameObject.GetComponent<SphereCollider>().enabled = false;
     }
 
-    public override void OnEvent(ScoreUpdate evnt)
-    {
-        BoltLog.Info("Called OnEvent ScoreUpdate");
-        if(evnt.StashEntity.IsOwner)
-        {
-            evnt.StashEntity.GetComponent<Stash>().UpdateState(evnt.PlayerName, evnt.Score);
-        }
-        FindObjectOfType<CanvasUIManager>().scoreboardUI.UpdateBoard(evnt.PlayerName);
-    }
-
     public override void OnEvent(InventoryRemove evnt)
     {
         BoltLog.Info("Called OnEvent InventoryRemove");
@@ -53,14 +43,6 @@ public class NetworkCallbacks : GlobalEventListener
             request.End = false;
             request.Send();
         }
-    }
-
-    public override void OnEvent(LoadoutScreenDisable evnt)
-    {
-        BoltLog.Info("Called OnEvent LoadoutScreenDisable");
-        FindObjectOfType<AbilitySlotBarUI>().LoadInAbilitiesFromLoadout(FindObjectOfType<LoadoutBarUI>().GetLoadoutForAbilitySlotBar());
-        FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
-       // PlayerController.localPlayer.SetLoadoutReleased(true);
     }
 
     #endregion
@@ -76,125 +58,6 @@ public class NetworkCallbacks : GlobalEventListener
             BoltEntity entityThree = BoltNetwork.Instantiate(BoltPrefabs.AbilityPickup, new Vector3(evnt.SpawnLocationThree.x, -2f, evnt.SpawnLocationThree.y), Quaternion.identity);
             entityThree.GetComponent<AbilityPickup>().SetAbilityOnPickup(evnt.AbilityThreeName);
         }
-    }
-
-    public override void OnEvent(StunEnemyPlayer evnt)
-    {
-        BoltLog.Info("Called OnEvent StunEnemyPlayer");
-        if (evnt.Target.IsOwner)
-        {
-            if (!evnt.End)
-            {
-                Debug.Log("Slowing");
-                SpeedBoost spd = (SpeedBoost)evnt.Target.GetComponent<PlayerController>().abilityInventory.FindAbility("Speed");
-                if (spd != null)
-                    spd.SetOppositeDebuffActivated(true);
-                //evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = 1f;
-                //Instantiate(Resources.Load("SlowBombExplosion_PA", typeof(GameObject)) as GameObject, evnt.Target.transform.position, Quaternion.identity);//Instantiates it on all other machines besides the thrower
-            }
-            else
-            {
-                Debug.Log("quickening");
-                SpeedBoost spd = (SpeedBoost)evnt.Target.GetComponent<PlayerController>().abilityInventory.FindAbility("Speed");
-                if (spd != null)
-                    spd.SetOppositeDebuffActivated(false);
-                //evnt.Target.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Speed = FindObjectOfType<PlayerController>().speed;
-            }
-        }
-    }
-
-    public override void OnEvent(ParalyzePlayerEvent evnt)
-    {
-        if(evnt.Target.IsOwner)
-        {
-            if(!evnt.End)
-            {
-                evnt.Target.GetState<IGamePlayerState>().Paralyzed = true;
-            }
-            else
-            {
-                evnt.Target.GetState<IGamePlayerState>().Paralyzed = false;
-            }
-        }
-    }
-
-    public override void OnEvent(MortalSpellEvent evnt)
-    {
-        if(evnt.Target.IsOwner)
-        {
-            if(!evnt.End)
-            {
-                evnt.Target.GetState<IGamePlayerState>().Mortal = true;
-            }
-            else
-            {
-                evnt.Target.GetState<IGamePlayerState>().Mortal = false;
-            }
-        }
-    }
-    public override void OnEvent(SpringBearTrap evnt)
-    {
-
-        if(evnt.Victim.IsOwner)
-        {
-            Debug.LogError("envt Victim is owner START");
-            if (!evnt.End)
-            {
-                Debug.LogError("evo immobolise");
-                evnt.Victim.GetComponent<PlayerController>().immobilize = true;
-            }
-            else
-            {
-                Debug.LogError("evo !immobolise");
-                evnt.Victim.GetComponent<PlayerController>().immobilize = false;
-            }
-        }
-        Debug.LogError("evo end");
-        if (evnt.End)
-        {
-            Debug.LogError("evnt end");
-            evnt.Trap.GetComponent<BearTrapBehaviour>().Disable();
-            evnt.Trap.GetComponent<SphereCollider>().enabled = false;
-        }
-        else
-        {
-            Debug.LogError("Close");
-            evnt.Trap.GetComponent<BearTrapBehaviour>().Close();
-        }
-    }
-
-    public override void OnEvent(PoisonPlayer evnt)
-    {
-        if(evnt.Target.IsOwner)
-        {
-            Debug.LogError("Voodoo START");
-            if (!evnt.End)
-            {
-                Debug.LogError("Voodoo POISON");
-                //evnt.Target.GetComponent<PlayerController>().state.Poisoned = true;
-            }
-            else
-            {
-                Debug.LogError("Voodoo NOTPOISON");
-                //evnt.Target.GetComponent<PlayerController>().state.Poisoned = false;
-            }
-        }
-        Debug.LogError("Voodoo EVNT END");
-        if (evnt.End)
-        {
-            evnt.Trap.GetComponent<VoodooPoisonTrapBehaviour>().Disable();
-            //evnt.Trap.GetComponent<SphereCollider>().enabled = false;
-        }
-        else
-        {
-            evnt.Trap.GetComponent<VoodooPoisonTrapBehaviour>().Close();
-        }
-    }
-
-    public override void OnEvent(ToggleCamouflage evnt)
-    {        
-        if(!evnt.Target.IsOwner)
-            evnt.Target.GetComponent<PlayerController>().ToggleMesh(evnt.Toggle);
     }
 
     public override void OnEvent(ObstacleDisable evnt)
@@ -239,14 +102,14 @@ public class NetworkCallbacks : GlobalEventListener
     public override void OnEvent(DisplayWinScreen evnt)
     {
         BoltLog.Info("Calling DisplayWinScreen event");
-        NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
-        StashedScore[] results = new StashedScore[scores.Length];
-        for (int i = 0; i < results.Length; i++)
-        {
-            results[i] = null;
-        }
-        List<StashedScore> scoreList = scores.ToList<StashedScore>();
-        for(int i = 0; i < scoreList.Count; i++)
+        //NetworkArray_Objects<StashedScore> scores = FindObjectOfType<Stash>().entity.GetState<IStashState>().StashedScores;
+        //StashedScore[] results = new StashedScore[scores.Length];
+        //for (int i = 0; i < results.Length; i++)
+        //{
+          //  results[i] = null;
+        //}
+        //List<StashedScore> scoreList = scores.ToList<StashedScore>();
+        /*for(int i = 0; i < scoreList.Count; i++)
         {
             int lastMaxScore = int.MinValue;
             StashedScore maxScore = null;
@@ -288,7 +151,7 @@ public class NetworkCallbacks : GlobalEventListener
                 Debug.Log("Adding to results: " + results[i].Name + " with score of: " + results[i].Score);
                 FindObjectOfType<CanvasUIManager>().winScreen.AddToContent(results[i].Name, results[i].Score);
             }
-        }
+        }*/
         
     }
 
@@ -307,36 +170,6 @@ public class NetworkCallbacks : GlobalEventListener
         AnimatorStateInfo state = evnt.Target.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
         if (!state.IsName("StandCut") || !state.IsName("RunCut"))
             evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Cut");
-    }
-
-    public override void OnEvent(FireAnimatorThrowTrigger evnt)
-    {
-        AnimatorStateInfo state = evnt.Target.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
-        if(!state.IsName("Throw"))
-        {
-            evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Throw");
-        }
-    }
-
-    public override void OnEvent(FireAnimatorPutDownTrigger evnt)
-    {
-        AnimatorStateInfo state = evnt.Target.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
-        if (!state.IsName("PutDown"))
-        {
-            evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("PutDown");
-        }
-    }
-
-    public override void OnEvent(SpawnObstacle evnt)
-    {
-        FindObjectOfType<GenerateAllGen>().GenerateCall(evnt.gen, evnt.seedString);
-
-
-        /*MapGenerator[] gens = FindObjectsOfType<MapGenerator>();
-        foreach (MapGenerator item in gens)
-        {
-            item.seed = evnt.seedString;
-        }*/
     }
 
     public override void OnEvent(LoadoutCountdown evnt)

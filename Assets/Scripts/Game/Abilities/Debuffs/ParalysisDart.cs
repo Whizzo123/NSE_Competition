@@ -23,23 +23,22 @@ public class ParalysisDart : Debuff
         else
         {
             inUse = true;
-            var request = ParalyzePlayerEvent.Create();
-            //request.Target = castingPlayer.entity;
-            request.End = false;
-            request.Send();
+            Cast(true);
             GameObject.FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
             GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(name, true);
             base.Use();
         }
     }
 
+    private void Cast(bool toggle)
+    {
+        //target.paralyzed = true;
+    }
+
     public override void EndEffect()
     {
         inUse = false;
-        var request = ParalyzePlayerEvent.Create();
-        //request.Target = castingPlayer.entity;
-        request.End = true;
-        request.Send();
+        Cast(false);
         target = null;
         GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(name, false);
         base.EndEffect();

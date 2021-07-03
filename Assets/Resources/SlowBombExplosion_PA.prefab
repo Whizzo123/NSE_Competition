@@ -4698,7 +4698,7 @@ GameObject:
   - component: {fileID: 7765812813474559677}
   - component: {fileID: 7598961877086500953}
   - component: {fileID: 7568718168023856359}
-  - component: {fileID: -8131083197228764610}
+  - component: {fileID: 9152763750611822460}
   m_Layer: 0
   m_Name: SlowBombExplosion_PA
   m_TagString: Untagged
@@ -9434,7 +9434,7 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &-8131083197228764610
+--- !u!114 &9152763750611822460
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9443,26 +9443,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 7766472845033128527}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneGuid: 
-  _serializerGuid: ce2c3a87-596b-4ff5-a7a9-07728fa4355d
-  _prefabId: 21
-  _updateRate: 1
-  _autoFreezeProxyFrames: 0
-  _clientPredicted: 1
-  _allowInstantiateOnClient: 1
-  _persistThroughSceneLoads: 0
-  _sceneObjectDestroyOnDetach: 1
-  _sceneObjectAutoAttach: 1
-  _alwaysProxy: 0
-  _detachOnDisable: 1
-  _allowFirstReplicationWhenFrozen: 0
-  _autoRemoveChildEntities: 0
-  _entityBehaviourQueryOption: 0
-  _entityPriorityCalculatorQueryOption: 1
-  _entityReplicationFilterQueryOption: 1
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1 &7766472846948334265
 GameObject:
   m_ObjectHideFlags: 0

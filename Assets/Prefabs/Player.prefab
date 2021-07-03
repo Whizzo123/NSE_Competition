@@ -1621,6 +1621,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7811146946738992400}
   - component: {fileID: 7811146946738992404}
+  - component: {fileID: 4071522212128209381}
   - component: {fileID: 1889028440207431689}
   - component: {fileID: 8921563345967218691}
   - component: {fileID: 4684549018310827129}
@@ -1688,6 +1689,20 @@ MonoBehaviour:
   vCam: {fileID: 8073864731859778527, guid: 00eba60cefa011d4e9636e781d77a83c, type: 3}
   cam: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
   offset: {x: 0, y: 10, z: 10}
+--- !u!114 &4071522212128209381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34cc736a4b5923d4cb52ce82048ea8ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!54 &1889028440207431689
 Rigidbody:
   m_ObjectHideFlags: 0
