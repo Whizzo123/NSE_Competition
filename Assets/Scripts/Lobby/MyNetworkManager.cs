@@ -111,7 +111,7 @@ public class MyNetworkManager : NetworkManager
     public override void ServerChangeScene(string newSceneName)
     {
         Debug.Log("ServerChangeScene");
-        if (newSceneName.Contains("Mirror"))
+        if (newSceneName.Contains("Game"))
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
@@ -169,7 +169,7 @@ public class MyNetworkManager : NetworkManager
         {
             if(!IsReadyToStart()) { return; }
 
-            ServerChangeScene("MirrorTest");
+            ServerChangeScene("GameScene");
         }
     }
 }

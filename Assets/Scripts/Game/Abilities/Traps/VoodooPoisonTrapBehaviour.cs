@@ -30,17 +30,17 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     {
         if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
         {
-            //if(collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
-           // {
+            if(collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+            {
                 trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                 CmdSpringTrap();
-            //}
+            }
         }
     }
 
     public void SetPlacingPlayer(PlayerController controller)
     {
-        //placingPlayerName = controller.playerName;
+        placingPlayerName = controller.playerName;
     }
 
     [Command]
@@ -53,7 +53,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     [ClientRpc]
     private void RpcSpringTrap()
     {
-        //trappedPlayer.poisoned = true;
+        trappedPlayer.SetVoodooPoisoned(true);
         Close();
     }
 
@@ -88,7 +88,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 }
                 else
                 {
-                    //trappedPlayer.poisoned = false;
+                    trappedPlayer.SetVoodooPoisoned(false);
                     RpcFinishTrap();
                 }
             }

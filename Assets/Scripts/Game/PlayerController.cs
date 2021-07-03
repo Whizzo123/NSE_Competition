@@ -2,37 +2,39 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
-
+using UnityEngine.SceneManagement;
 
 public class PlayerController : NetworkBehaviour
 {
     #region Variables
     [Header("Stored Interactables")]
     //Stored interactables
-    [Tooltip("The artefacts that are in range for picking up")]private List<ArtefactBehaviour> targetedArtefacts;
-    [Tooltip("NA")]private Stash gameStash;
-    [Tooltip("The player that is currently targeted to steal artefacts from")]private PlayerController targetedPlayerToStealFrom;
-    [Tooltip("In devlopment: The ability pickups that are in range for picking up")]private List<AbilityPickup> targetedAbilityPickup;
+    [Tooltip("The artefacts that are in range for picking up")] private List<ArtefactBehaviour> targetedArtefacts;
+    [Tooltip("NA")] private Stash gameStash;
+    [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
+    [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
     //Loadout and inventory
-    [Tooltip("Have we exited the loadout menu")]private bool loadoutReleased;
-    [Tooltip("Our abilities that we've selected")]public AbilityInventory abilityInventory;
+    [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
+    [Tooltip("Our abilities that we've selected")] public AbilityInventory abilityInventory;
     private ArtefactInventory artefactInventory;
     [SyncVar]
     public string playerName;
+
 
     [Space]
 
     [Header("Player options")]
     //Tools
     [SerializeField] [Tooltip("Time delay before destroying another obstacle")] [Range(0, 1)] private float waitTime = 0.05f;
-    [Tooltip("If the tools are currently on cooldown")] private bool toolWait= false;
+    [Tooltip("If the tools are currently on cooldown")] private bool toolWait = false;
     //Gravity
     [SerializeField] private float playerGravity = -65;
     [SerializeField] [Tooltip("The distance from the player to the ground to check if they're grounded")] private float groundDistance = 2.5f;
     [Tooltip("Is the player touching the ground")] private bool isGrounded = true;
     [SerializeField] [Tooltip("How fast the player is currently falling by y axis")] private Vector3 playerFallingVelocity;
     //Movement
-    [Tooltip("The speed of the player")] public float speed = 20f;
+    [Tooltip("The current speed of the player")] [SyncVar] public float speed = 20f;
+    [Tooltip("The original speed of the player")] public float normalSpeed = 20f;
     [Tooltip("Direction player is moving in by input, not physics")] private Vector3 direction;
     [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
 
@@ -47,10 +49,9 @@ public class PlayerController : NetworkBehaviour
     public LayerMask ground;
     [Space]
     //Player
-    [Tooltip("Our player")] public PlayerController localPlayer;
     [Tooltip("Character controller reference")] public CharacterController playerCharacterController;//See attached()
     public Animator playerAnim;
-    
+
     [Tooltip("NA")] public GameObject nameTextPrefab;
     [Tooltip("NA")] public GameObject playerNameText;
 
@@ -64,10 +65,14 @@ public class PlayerController : NetworkBehaviour
 
     [Header("States")]
     //Stuns
-    [Tooltip("Are we immobolised")] public bool immobilize;
-    [Tooltip("Have we been hit by the voodoo trap")] public bool voodooPoisoned;
+    [Tooltip("Are we immobolised")] [SyncVar] private bool immobilize;
+    [Tooltip("Have we been hit by the voodoo trap")] [SyncVar] private bool voodooPoisoned;
+    [Tooltip("Can we use abilities?")] [SyncVar] private bool mortal;
     [Tooltip("NA")] private float currentStunAfterTimer;
-    [Tooltip("NA")] private float timeForStunAfterSteal;
+    [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal = 10.0f;
+
+    //Other Variables
+    [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom;
 
 
     #endregion
@@ -92,7 +97,12 @@ public class PlayerController : NetworkBehaviour
 
         base.OnStartAuthority();
         abilityInventory = new AbilityInventory(this);
+        targetedArtefacts = new List<ArtefactBehaviour>();
+        immobilize = false;
+        hasBeenStolenFrom = false;
+        SetLoadoutReleased(false);
     }
+
     [Client]
     void SetCamera()
     {
@@ -109,62 +119,26 @@ public class PlayerController : NetworkBehaviour
                 playerCamera.gameObject.SetActive(false);
         }
     }
-
-    //public override void OnStartAuthority()
-    //{
-    //    targetedArtefacts = new List<ArtefactBehaviour>();
-    //    //state.SetTransforms(state.PlayerTransform, transform);
-    //    SetLoadoutReleased(false);
-    //    abilityInventory = new AbilityInventory(this);
-    //    immobilize = false;
-    //    timeForStunAfterSteal = 10.0f;
-    //    ////Set state transform to be equal to current transform
-    //    //    state.Speed = speed;
-    //    //    state.RayLength = lengthOfSphere;
-    //    //    state.LoadoutReady = false;
-    //    //    state.HasBeenStolenFrom = false;
-    //    //    state.Paralyzed = false;
-    //    //    for (int i = 0; i < state.Inventory.Length; i++)
-    //    //    {
-    //    //        state.Inventory[i].ItemName = "";
-    //    //        state.Inventory[i].ItemPoints = 0;
-    //    //    }
-    //        //playerCharacterController = this.gameObject.GetComponent<CharacterController>();
-    //        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
-    //        vCam.LookAt = this.gameObject.transform;
-    //        vCam.Follow = this.gameObject.transform;
-    //        vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
-    //    //}
-    //    //if (!entity.IsOwner)
-    //    //{
-    //    //    //Disable other players cameras so that we don't accidentally get assigned to another players camera
-    //    //    if (playerCamera != null)
-    //    //        playerCamera.gameObject.SetActive(false);
-    //    //}
-    //    localPlayer = this;
-    //    playerCamera = FindObjectOfType<Camera>();
-
-    //    this.gameObject.transform.position = new Vector3(0, 0, 0);
-    //} 
     [ClientCallback]
     void Update()
     {
         if (!hasAuthority) { return; };
-        //abilityInventory.Update();
+        abilityInventory.Update();
 
-        //if (playerNameText == null)
-        //{
-        //    playerNameText = Instantiate(Resources.Load<GameObject>("Prefabs/PlayerNameText"));
-        //    playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
-        //    playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
-        //    playerNameText.SetActive(true);
-        //    playerNameText.GetComponent<Text>().text = "temp";
-        //}
+        if (playerNameText == null && SceneManager.GetActiveScene().name == "GameScene")
+        {
+            playerName = PlayerPrefs.GetString("username");
+            playerNameText = Instantiate(Resources.Load<GameObject>("Prefabs/PlayerNameText"));
+            playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
+            playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
+            playerNameText.SetActive(true);
+            playerNameText.GetComponent<Text>().text = playerName;
+        }
 
-       // if (loadoutReleased)
-        //{
-           //if (immobilize == false)
-           //{
+        if (loadoutReleased)
+        {
+            if (immobilize == false)
+            {
                 #region Falling
 
                 //Projects a sphere underneath player to check ground layer
@@ -180,54 +154,32 @@ public class PlayerController : NetworkBehaviour
                 }
                 playerFallingVelocity.y = -1f;
 
-        #endregion
+                #endregion
 
-        #region Movement
-                playerMovement = new Vector3
-                (Input.GetAxisRaw("Horizontal"),
-                 playerFallingVelocity.y,
-                 Input.GetAxisRaw("Vertical")).normalized;
-
-
-
-        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-        {
-            direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-            playerAnim.SetBool("moving", true);
-            ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
-            if (false)//poisoned?
-            {
-                playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
-                direction *= -1;
+                #region Movement
+                playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), playerFallingVelocity.y, Input.GetAxisRaw("Vertical")).normalized;
+                if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+                {
+                    direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+                    playerAnim.SetBool("moving", true);
+                    if (voodooPoisoned)
+                    {
+                        playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
+                        direction *= -1;
+                    }
+                }
+                else
+                {
+                    playerAnim.SetBool("moving", false);
+                }
+                playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
+                PlayerRotation();
+                #endregion
             }
-
-        }
-        else
-        {
-            playerAnim.SetBool("moving", false);
+            else
+                playerAnim.SetBool("moving", false);
         }
 
-
-        //Vector3 camF = vCam.transform.forward;
-        //Vector3 camR = cam.transform.right;
-        //camF.y = 0;
-        //camR.y = 0;
-        //camF = camF.normalized;
-        //camR = camR.normalized;
-        //playerMovement = new Vector3(playerMovement.x, playerMovement.y, playerMovement.z);
-        //Vector3 f = (camF * playerMovement.z + camR * playerMovement.x);
-        //f = new Vector3(f.x, playerMovement.y, f.z);
-        //this.GetComponent<Rigidbody>().velocity = playerFallingVelocity;
-
-        //Quaternion camAngleAxis = Quaternion.AngleAxis(Input.GetAxisRaw("Mouse X") * 5, Vector3.up);
-        //Vector3 f = Vector3.zero;
-        //f = (transform.forward * Input.GetAxisRaw("Vertical") * speed) + (transform.right * Input.GetAxisRaw("Horizontal") * speed);
-
-        playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
-        PlayerRotation();
-
-        //  }
-        #endregion
 
 
         #region Artefact interaction
@@ -252,11 +204,11 @@ public class PlayerController : NetworkBehaviour
                     FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
                 }
             }
-            //else if (targetedAbilityPickup != null)
-            //{
-            //    targetedAbilityPickup.PickupAbility(this);
-            //    targetedAbilityPickup = null;
-            //}
+            else if (targetedAbilityPickup != null)
+            {
+                targetedAbilityPickup.PickupAbility(this);
+                targetedAbilityPickup = null;
+            }
             //else if (gameStash != null && InventoryNotEmpty())
             //{
             //    gameStash.AddToStashScores(this);
@@ -638,6 +590,36 @@ public class PlayerController : NetworkBehaviour
     public void SetArtefactInventory(ArtefactInventory inventory)
     {
         artefactInventory = inventory;
+    }
+
+    public bool IsImmobilized()
+    {
+        return immobilize;
+    }
+
+    public void SetImmobilized(bool immobilize)
+    {
+        this.immobilize = immobilize;
+    }
+
+    public bool IsVoodooPoisoned()
+    {
+        return voodooPoisoned;
+    }
+
+    public void SetVoodooPoisoned(bool poisoned)
+    {
+        voodooPoisoned = poisoned;
+    }
+
+    public bool IsMortal()
+    {
+        return mortal;
+    }
+
+    public void SetMortal(bool mortal)
+    {
+        this.mortal = mortal;
     }
 }
 

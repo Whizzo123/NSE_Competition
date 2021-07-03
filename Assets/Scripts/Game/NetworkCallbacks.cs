@@ -8,28 +8,8 @@ using UnityEngine.SceneManagement;
 [BoltGlobalBehaviour("GameScene")]
 public class NetworkCallbacks : GlobalEventListener
 {
-    #region Artefact
-    public override void OnEvent(ArtefactDisable evnt)
-    {
-        BoltLog.Info("Called OnEvent ArtefactDisable");
-        evnt.artefactToDisable.gameObject.GetComponent<BoxCollider>().enabled = false;
-        evnt.artefactToDisable.gameObject.GetComponent<MeshRenderer>().enabled = false;
-    }
 
-    public override void OnEvent(ArtefactEnable evnt)
-    {
-        evnt.artefact.gameObject.GetComponent<BoxCollider>().enabled = true;
-        evnt.artefact.gameObject.GetComponent<MeshRenderer>().enabled = true;
-    }
 
-    #endregion
-
-    #region AbilityPickup/Score/Inventory/Loadout
-    public override void OnEvent(AbilityPickupDisable evnt)
-    {
-        evnt.AbilityEntity.gameObject.GetComponent<MeshRenderer>().enabled = false;
-        evnt.AbilityEntity.gameObject.GetComponent<SphereCollider>().enabled = false;
-    }
 
     public override void OnEvent(InventoryRemove evnt)
     {
@@ -44,8 +24,6 @@ public class NetworkCallbacks : GlobalEventListener
             request.Send();
         }
     }
-
-    #endregion
 
     public override void OnEvent(AbilityPickupSpawn evnt)
     {
