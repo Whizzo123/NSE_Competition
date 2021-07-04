@@ -16,27 +16,35 @@ public class ArtefactBehaviour : NetworkBehaviour
     [SyncVar]
     private bool avaliableForPickup;
 
+    void Start()
+    {
+        GetComponent<MeshRenderer>().enabled = false;
+    }
+
     public override void OnStartAuthority()
     {
+        Debug.Log("OnStartAuthority");
         avaliableForPickup = false;
     }
 
     public void EnableForPickup()
     {
         avaliableForPickup = true;
-        CmdEnableRenderer();
+        CmdToggleRenderer(true);
     }
 
     [Command]
-    private void CmdEnableRenderer()
+    private void CmdToggleRenderer(bool toggle)
     {
-        RpcEnableRenderer();
+        RpcToggleRenderer(toggle);
+        GetComponent<MeshRenderer>().enabled = toggle;
     }
 
     [ClientRpc]
-    private void RpcEnableRenderer()
+    private void RpcToggleRenderer(bool toggle)
     {
-        GetComponent<MeshRenderer>().enabled = true;
+        GetComponent<MeshRenderer>().enabled = toggle;
+        Debug.Log("RpcToggleRenderer: " + toggle);
     }
 
     public void PopulateData(string dataName, ArtefactRarity rarity)

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
@@ -59,5 +60,15 @@ public class Stash : NetworkBehaviour
         }
         Debug.LogError("ERROR: COULDN'T FIND SCORE IN STASH FOR PLAYER: " + name);
         return 0;
+    }
+
+    public Dictionary<string, int> GetStashedScores()
+    {
+        Dictionary<string, int> toReturn = new Dictionary<string, int>();
+        foreach (string key in StashedScores.Keys)
+        {
+            toReturn.Add(key, StashedScores[key]);
+        }
+        return toReturn;
     }
 }

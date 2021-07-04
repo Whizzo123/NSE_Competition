@@ -52,7 +52,6 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         if (steamId == 0)
         {
             CmdSetDisplayName(string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100)));
-            PlayerPrefs.SetString("username", DisplayName);
         }
     }
 
@@ -64,7 +63,6 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         CSteamID cSteamId = new CSteamID(newSteamId);
 
         CmdSetDisplayName(SteamFriends.GetFriendPersonaName(cSteamId));
-        PlayerPrefs.SetString("username", DisplayName);
     }
 
     #endregion
@@ -73,8 +71,8 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     {
         if (!LobbyUIManager.useSteamMatchmaking)
         {
-            CmdSetDisplayName(string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100)));
-            PlayerPrefs.SetString("username", DisplayName);
+            string name = string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100));
+            CmdSetDisplayName(name);
         }
         lobbyUI.SetActive(true);
         if (isLeader)

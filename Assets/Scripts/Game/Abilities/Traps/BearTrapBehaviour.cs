@@ -30,6 +30,7 @@ public class BearTrapBehaviour : NetworkBehaviour
             {
                 trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                 trappedPlayer.SetImmobilized(true);
+                trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
                 CmdSpringTrap();
             }
         }

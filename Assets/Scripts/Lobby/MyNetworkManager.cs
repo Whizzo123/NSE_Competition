@@ -110,18 +110,16 @@ public class MyNetworkManager : NetworkManager
 
     public override void ServerChangeScene(string newSceneName)
     {
-        Debug.Log("ServerChangeScene");
         if (newSceneName.Contains("Game"))
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
                 var conn = RoomPlayers[i].connectionToClient;
-                GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), new Vector3(i * 5, 0, 0), Quaternion.identity);
-
+                Vector3 spawnPos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
+                GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), spawnPos, Quaternion.identity);
+                gameplayInstance.GetComponent<PlayerController>().playerName = RoomPlayers[i].DisplayName;
                 NetworkServer.Destroy(conn.identity.gameObject);
-
                 NetworkServer.ReplacePlayerForConnection(conn, gameplayInstance.gameObject);
-                gameplayInstance.gameObject.GetComponent<PlayerController>().playerName = PlayerPrefs.GetString("username");
                 NetworkServer.Spawn(gameplayInstance, conn);
             }
         }

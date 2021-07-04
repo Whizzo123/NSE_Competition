@@ -127,7 +127,6 @@ public class PlayerController : NetworkBehaviour
 
         if (playerNameText == null && SceneManager.GetActiveScene().name == "GameScene")
         {
-            playerName = PlayerPrefs.GetString("username");
             playerNameText = Instantiate(Resources.Load<GameObject>("Prefabs/PlayerNameText"));
             playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
             playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
