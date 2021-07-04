@@ -34,7 +34,7 @@ public class ArtefactInventory : NetworkBehaviour
         int emptySlot = FindEmptyInventorySlot();
         if (emptySlot > -1)
         {
-            inventory[emptySlot] = item;
+            CmdAddToInventory(item);
             FindObjectOfType<CanvasUIManager>().PopupArtefactPickupDisplay(item);
             FindObjectOfType<CanvasUIManager>().AddToInventoryScreen(item);
         }
@@ -42,6 +42,15 @@ public class ArtefactInventory : NetworkBehaviour
         {
            Debug.LogError("Inventory is full");
         }
+    }
+
+    /// <summary>
+    /// As synclists can only be modified on the server this command has to be called to add items to inventory
+    /// </summary>
+    [Command]
+    private void CmdAddToInventory(ItemArtefact item)
+    {
+        inventory.Add(item);
     }
 
     public List<ItemArtefact> GetInventory()
@@ -55,14 +64,10 @@ public class ArtefactInventory : NetworkBehaviour
     /// <returns></returns>
     public int FindEmptyInventorySlot()
     {
-        for (int i = 0; i < inventory.Count; i++)
-        {
-            if (inventory[i].name == "")
-            {
-                return i;
-            }
-        }
-        return -1;
+        if (inventory.Count >= 8)
+            return -1;
+        else
+            return 0;
     }
 
     /// <summary>
@@ -93,8 +98,14 @@ public class ArtefactInventory : NetworkBehaviour
             ItemArtefact itemArtefact = inventory[i];
             itemArtefact.name = "";
             itemArtefact.points = 0;
-            inventory[i] = itemArtefact;
+            CmdAddToInventoryAtIndex(i, itemArtefact);
         }
+    }
+
+    [Command]
+    private void CmdAddToInventoryAtIndex(int index, ItemArtefact artefact)
+    {
+        inventory[index] = artefact;
     }
 
     /// <summary>

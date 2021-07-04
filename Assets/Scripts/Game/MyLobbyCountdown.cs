@@ -22,6 +22,7 @@ public class MyLobbyCountdown : NetworkBehaviour
     void Start()
     {
         currentLobbyTime = lobbyTime;
+        currentGameTime = gameTime;
         StartCoroutine(Countdown());
     }
 

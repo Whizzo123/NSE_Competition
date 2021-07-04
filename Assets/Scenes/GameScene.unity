@@ -1441,7 +1441,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  countdownTime: 35
+  lobbyTime: 35
+  gameTime: 350
 --- !u!4 &872072825
 Transform:
   m_ObjectHideFlags: 0

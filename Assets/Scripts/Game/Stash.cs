@@ -20,7 +20,8 @@ public class Stash : NetworkBehaviour
     /// Called when adding to stash from player inventory
     /// </summary>
     /// <param name="player"></param>
-    public void AddToStashScores(PlayerController player)
+    [Command(requiresAuthority = false)]
+    public void CmdAddToStashScores(PlayerController player)
     {
         int score = 0;
         string playerName = player.playerName;
@@ -30,6 +31,12 @@ public class Stash : NetworkBehaviour
         }
         StashedScores[playerName] = score;
         ScoreUpdate(playerName);
+        RpcClearInventory(player);
+    }
+
+    [ClientRpc]
+    private void RpcClearInventory(PlayerController player)
+    {
         player.GetComponent<ArtefactInventory>().ClearInventory();
     }
 
