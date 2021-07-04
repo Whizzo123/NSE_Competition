@@ -78,10 +78,7 @@ public class ArtefactInventory : NetworkBehaviour
     /// <param name="points"></param>
     public void RemoveFromInventory(int index, string name, int points)
     {
-        ItemArtefact itemArtefact = inventory[index];
-        itemArtefact.name = "";
-        itemArtefact.points = 0;
-        inventory[index] = itemArtefact;
+        CmdInventoryRemoveAt(index);
         ItemArtefact screenItemArtefact;
         screenItemArtefact.name = name;
         screenItemArtefact.points = points;
@@ -93,19 +90,19 @@ public class ArtefactInventory : NetworkBehaviour
     public void ClearInventory()
     {
         FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
-        for (int i = 0; i < inventory.Count; i++)
-        {
-            ItemArtefact itemArtefact = inventory[i];
-            itemArtefact.name = "";
-            itemArtefact.points = 0;
-            CmdAddToInventoryAtIndex(i, itemArtefact);
-        }
+        CmdResetInventory();
     }
 
     [Command]
-    private void CmdAddToInventoryAtIndex(int index, ItemArtefact artefact)
+    private void CmdInventoryRemoveAt(int index)
     {
-        inventory[index] = artefact;
+        inventory.RemoveAt(index);
+    }
+
+    [Command]
+    private void CmdResetInventory()
+    {
+        inventory.Clear();
     }
 
     /// <summary>

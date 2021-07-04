@@ -9,7 +9,7 @@ public class PlayerController : NetworkBehaviour
     #region Variables
     [Header("Stored Interactables")]
     //Stored interactables
-    [Tooltip("The artefacts that are in range for picking up")] private List<ArtefactBehaviour> targetedArtefacts;
+    [Tooltip("The artefacts that are in range for picking up")] readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
     [Tooltip("NA")] private Stash gameStash;
     [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
@@ -96,7 +96,6 @@ public class PlayerController : NetworkBehaviour
         }
         abilityInventory = new AbilityInventory(this);
         artefactInventory = GetComponent<ArtefactInventory>();
-        targetedArtefacts = new List<ArtefactBehaviour>();
         immobilize = false;
         hasBeenStolenFrom = false;
         SetLoadoutReleased(false);
@@ -196,7 +195,7 @@ public class PlayerController : NetworkBehaviour
                         FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         NetworkServer.Destroy(item.gameObject);
                     }
-                    targetedArtefacts.Clear();
+                    CmdClearTargetArtefacts();
                 }
                 else
                 {
@@ -308,7 +307,11 @@ public class PlayerController : NetworkBehaviour
         //}
     }
 
-
+    [Command]
+    private void CmdClearTargetArtefacts()
+    {
+        targetedArtefacts.Clear();
+    }
 
 
     [Command]
@@ -393,7 +396,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (collider.gameObject.GetComponent<ArtefactBehaviour>())
         {
-            targetedArtefacts.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
         }
         else if (collider.gameObject.GetComponent<Stash>())
         {
@@ -425,7 +428,7 @@ public class PlayerController : NetworkBehaviour
                 {
                     if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
                     {
-                        targetedArtefacts.RemoveAt(i);
+                        CmdTargetArtefactsRemoveAt(i);
                     }
                     i++;
                 }
@@ -519,6 +522,19 @@ public class PlayerController : NetworkBehaviour
     }
 
     #endregion
+
+
+    [Command]
+    private void CmdAddToTargetedArtefacts(ArtefactBehaviour artefact)
+    {
+        targetedArtefacts.Add(artefact);
+    }
+
+    [Command]
+    private void CmdTargetArtefactsRemoveAt(int index)
+    {
+        targetedArtefacts.RemoveAt(index);
+    }
 
     public void ToggleMesh(bool toggle)
     {
