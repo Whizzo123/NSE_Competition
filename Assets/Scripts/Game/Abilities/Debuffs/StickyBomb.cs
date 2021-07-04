@@ -44,14 +44,14 @@ public class StickyBomb : Debuff
                 SpeedBoost spd = (SpeedBoost)target.abilityInventory.FindAbility("Speed");
                 if (spd != null)
                     spd.SetOppositeDebuffActivated(true);
-                //target.speed = 1f;
+                target.speed = 1f;
             }
             else
             {
                 SpeedBoost spd = (SpeedBoost)target.abilityInventory.FindAbility("Speed");
                 if (spd != null)
                     spd.SetOppositeDebuffActivated(false);
-                //target.speed = FindObjectOfType<PlayerController>().normalSpeed;
+                target.speed = GameObject.FindObjectOfType<PlayerController>().normalSpeed;
             }
     }
 

@@ -2,55 +2,77 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
-
+using UnityEngine.SceneManagement;
 
 public class PlayerController : NetworkBehaviour
 {
     #region Variables
     [Header("Stored Interactables")]
     //Stored interactables
-    private List<ArtefactBehaviour> targetedArtefacts;
-    private Stash gameStash;
-    private PlayerController targetedPlayerToStealFrom;
-    private AbilityPickup targetedAbilityPickup;
-    public float speed = 20f;
-    private bool loadoutReleased;
-    public AbilityInventory abilityInventory;
-    public bool immobilize;
-    private float currentStunAfterTimer;
-    private float timeForStunAfterSteal;
+    [Tooltip("The artefacts that are in range for picking up")] private List<ArtefactBehaviour> targetedArtefacts;
+    [Tooltip("NA")] private Stash gameStash;
+    [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
+    [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
+    //Loadout and inventory
+    [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
+    [Tooltip("Our abilities that we've selected")] public AbilityInventory abilityInventory;
+    private ArtefactInventory artefactInventory;
+    [SyncVar]
+    public string playerName;
+
+
     [Space]
 
     [Header("Player options")]
+    //Tools
     [SerializeField] [Tooltip("Time delay before destroying another obstacle")] [Range(0, 1)] private float waitTime = 0.05f;
-    private bool wait = false;
+    [Tooltip("If the tools are currently on cooldown")] private bool toolWait = false;
+    //Gravity
     [SerializeField] private float playerGravity = -65;
-    [SerializeField] private float groundDistance = 2.5f;
-    public float lengthOfSphere = 2f;
-    public float radiusOfSphere = 1f;
+    [SerializeField] [Tooltip("The distance from the player to the ground to check if they're grounded")] private float groundDistance = 2.5f;
+    [Tooltip("Is the player touching the ground")] private bool isGrounded = true;
+    [SerializeField] [Tooltip("How fast the player is currently falling by y axis")] private Vector3 playerFallingVelocity;
+    //Movement
+    [Tooltip("The current speed of the player")] [SyncVar] public float speed = 20f;
+    [Tooltip("The original speed of the player")] public float normalSpeed = 20f;
+    [Tooltip("Direction player is moving in by input, not physics")] private Vector3 direction;
+    [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
+
+    //Sphere
+    [Tooltip("Distance forward from the player for the destruction sphere")] public float lengthOfSphere = 2f;
+    [Tooltip("Radius of the obstacle destruction sphere cast")] public float radiusOfSphere = 1f;
     [Space]
 
     [Header("LayerMasks and Components")]
+    //Layermasks
     public LayerMask obstacles;
     public LayerMask ground;
     [Space]
-    public PlayerController localPlayer;
-    public CharacterController playerCharacterController;//See attached()
-    private Vector3 direction;
-    public GameObject playerNameText;
-    public Camera playerCamera;
-    public GameObject nameTextPrefab;
+    //Player
+    [Tooltip("Character controller reference")] public CharacterController playerCharacterController;//See attached()
+    public Animator playerAnim;
+
+    [Tooltip("NA")] public GameObject nameTextPrefab;
+    [Tooltip("NA")] public GameObject playerNameText;
+
+    [Tooltip("Camera attatched to the player")] public Camera playerCamera;
+    [Tooltip("NA")] public Cinemachine.CinemachineVirtualCamera vCam;
+    [Tooltip("NA")] public Camera cam;
     [Space]
 
+
+    [Tooltip("NA")] public Vector3 offset = new Vector3(0, 10, 10);
+
     [Header("States")]
-    [SerializeField] private Vector3 playerFallingVelocity;
-    private Vector3 playerMovement = Vector3.zero;
-    private bool isGrounded = true;
-    public Cinemachine.CinemachineVirtualCamera vCam;
-    public Camera cam;
-    public Vector3 offset = new Vector3(0, 10, 10);
+    //Stuns
+    [Tooltip("Are we immobolised")] [SyncVar] private bool immobilize;
+    [Tooltip("Have we been hit by the voodoo trap")] [SyncVar] private bool voodooPoisoned;
+    [Tooltip("Can we use abilities?")] [SyncVar] private bool mortal;
+    [Tooltip("NA")] private float currentStunAfterTimer;
+    [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal = 10.0f;
 
-
+    //Other Variables
+    [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom;
 
 
     #endregion
@@ -63,228 +85,200 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        base.OnStartAuthority();
+        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        if (vCam != null)
+        {
+            Invoke("SetCamera", 0);
+        }
+        else
+        {
+            Invoke("SetCamera", 5);
+        }
         abilityInventory = new AbilityInventory(this);
+        artefactInventory = GetComponent<ArtefactInventory>();
+        targetedArtefacts = new List<ArtefactBehaviour>();
+        immobilize = false;
+        hasBeenStolenFrom = false;
+        SetLoadoutReleased(false);
+        base.OnStartAuthority();
     }
-    //public override void OnStartAuthority()
-    //{
-    //    targetedArtefacts = new List<ArtefactBehaviour>();
-    //    //state.SetTransforms(state.PlayerTransform, transform);
-    //    SetLoadoutReleased(false);
-    //    abilityInventory = new AbilityInventory(this);
-    //    immobilize = false;
-    //    timeForStunAfterSteal = 10.0f;
-    //    ////Set state transform to be equal to current transform
-    //    //    state.Speed = speed;
-    //    //    state.RayLength = lengthOfSphere;
-    //    //    state.LoadoutReady = false;
-    //    //    state.HasBeenStolenFrom = false;
-    //    //    state.Paralyzed = false;
-    //    //    for (int i = 0; i < state.Inventory.Length; i++)
-    //    //    {
-    //    //        state.Inventory[i].ItemName = "";
-    //    //        state.Inventory[i].ItemPoints = 0;
-    //    //    }
-    //        //playerCharacterController = this.gameObject.GetComponent<CharacterController>();
-    //        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
-    //        vCam.LookAt = this.gameObject.transform;
-    //        vCam.Follow = this.gameObject.transform;
-    //        vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
-    //    //}
-    //    //if (!entity.IsOwner)
-    //    //{
-    //    //    //Disable other players cameras so that we don't accidentally get assigned to another players camera
-    //    //    if (playerCamera != null)
-    //    //        playerCamera.gameObject.SetActive(false);
-    //    //}
-    //    localPlayer = this;
-    //    playerCamera = FindObjectOfType<Camera>();
 
-    //    this.gameObject.transform.position = new Vector3(0, 0, 0);
-    //} 
+    [Client]
+    void SetCamera()
+    {
+        Debug.LogError("Set Camera");
+        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        DontDestroyOnLoad(vCam);
+        vCam.LookAt = this.gameObject.transform;
+        vCam.Follow = this.gameObject.transform;
+        vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
+        if (!hasAuthority)
+        {
+            //Disable other players cameras so that we don't accidentally get assigned to another players camera
+            if (playerCamera != null)
+                playerCamera.gameObject.SetActive(false);
+        }
+    }
     [ClientCallback]
     void Update()
     {
         if (!hasAuthority) { return; };
-        //abilityInventory.Update();
+        abilityInventory.Update();
 
-        //if (playerNameText == null)
-        //{
-        //    playerNameText = Instantiate(Resources.Load<GameObject>("Prefabs/PlayerNameText"));
-        //    playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
-        //    playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
-        //    playerNameText.SetActive(true);
-        //    playerNameText.GetComponent<Text>().text = "temp";
-        //}
+        if (playerNameText == null && SceneManager.GetActiveScene().name == "GameScene")
+        {
+            playerNameText = Instantiate(Resources.Load<GameObject>("Prefabs/PlayerNameText"));
+            playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
+            playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
+            playerNameText.SetActive(true);
+            playerNameText.GetComponent<Text>().text = playerName;
+        }
 
-       // if (loadoutReleased)
-        //{
-           //if (immobilize == false)
-           //{
+        if (loadoutReleased)
+        {
+            if (immobilize == false)
+            {
                 #region Falling
 
                 //Projects a sphere underneath player to check ground layer
                 isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
 
-        //Player recieves a constant y velocity from gravity
-        playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
+                //Player recieves a constant y velocity from gravity
+                playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
 
                 //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
                 if (isGrounded && playerFallingVelocity.y < 0)
                 {
                     playerFallingVelocity.y = -1f;
                 }
-                //playerFallingVelocity.y = -1f;
+                playerFallingVelocity.y = -1f;
+
                 #endregion
+
                 #region Movement
-                playerMovement = new Vector3
-                (Input.GetAxisRaw("Horizontal"),
-                 0,
-                 Input.GetAxisRaw("Vertical")).normalized;
-
-                //if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-                //{
-                //    direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-                //    ///////////////////////////////////////////////////////////////////Poison effect, place somewhere else?
-                //    if (false)//poisoned?
-                //    {
-                //        playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
-                //        direction *= -1;
-                //    }
-
-                //    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == false)
-                //    //{
-                //    //    var request = ChangeAnimatorMovementParameter.Create();
-                //    //    request.Target = entity;
-                //    //    request.Value = true;
-                //    //    request.Send();
-                //    //}
-                //}
-                //else
-                //{
-                //    //if (transform.GetChild(0).GetComponent<Animator>().GetBool("moving") == true)
-                //    //{
-                //    //    var request = ChangeAnimatorMovementParameter.Create();
-                //    //    request.Target = entity;
-                //    //    request.Value = false;
-                //    //    request.Send();
-                //    //}
-                //}
-                //this.GetComponent<Rigidbody>().velocity = playerFallingVelocity;
+                playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), playerFallingVelocity.y, Input.GetAxisRaw("Vertical")).normalized;
+                if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+                {
+                    direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+                    playerAnim.SetBool("moving", true);
+                    if (voodooPoisoned)
+                    {
+                        playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
+                        direction *= -1;
+                    }
+                }
+                else
+                {
+                    playerAnim.SetBool("moving", false);
+                }
                 playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
-                //PlayerRotation();
-          //  }
-            #endregion
-
-           // if (Input.GetKey(KeyCode.P))
-           // {
-           //     AddToInventory("NAME", 9999);
-           // }
-
-            #region Artefact interaction
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                //Debug.LogError("Artefact count " + targetedArtefacts.Count);
-                //if (targetedArtefacts.Count != 0)
-                //{
-                //    if (FindEmptyInventorySlot() != -1)
-                //    {
-                //        Debug.Log("Picking up Artefacts");
-                //        // targetedArtefact.Pickup(this);
-
-                //        // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
-                //        foreach (ArtefactBehaviour item in targetedArtefacts)
-                //        {
-                //            item.Pickup(this);
-                //            FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
-                //        }
-
-                //        targetedArtefacts.Clear();
-                //    }
-                //    else
-                //    {
-                //        FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
-                //    }
-                //}
-                //else if (targetedAbilityPickup != null)
-                //{
-                //    targetedAbilityPickup.PickupAbility(this);
-                //    targetedAbilityPickup = null;
-                //}
-                //else if (gameStash != null && InventoryNotEmpty())
-                //{
-                //    gameStash.AddToStashScores(this);
-                //    FindObjectOfType<AudioManager>().PlaySound("Stash");
-                //}
-                //else if(gameStash != null && !InventoryNotEmpty())
-                //{
-                //    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
-                //}
+                PlayerRotation();
+                #endregion
             }
-            #endregion
+            else
+                playerAnim.SetBool("moving", false);
+        }
 
-            #region Stealing
-            //if (Input.GetKeyDown(KeyCode.F) && !state.HasBeenStolenFrom)
-            //{
-            //    BoltLog.Info("F pressed");
-            //    if (targetedPlayerToStealFrom != null)
-            //    {
-            //        BoltLog.Info("Has a target");
-            //        if (IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false && targetedPlayerToStealFrom.InventoryNotEmpty())
-            //        {
-            //            BoltLog.Info("Attempting steal");
-            //            InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
-            //            AddToInventory(randomArtefact.ItemName, randomArtefact.ItemPoints);
-            //            int indexToRemove = -1;
-            //            for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
-            //            {
-            //                if (targetedPlayerToStealFrom.state.Inventory[i].ItemName != string.Empty && targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
-            //                {
-            //                    indexToRemove = i;
-            //                }
-            //            }
-            //            var request = InventoryRemove.Create();
-            //            request.ItemIndex = indexToRemove;
-            //            request.InventoryEntity = targetedPlayerToStealFrom.entity;
-            //            request.ItemName = randomArtefact.ItemName;
-            //            request.ItemPoints = randomArtefact.ItemPoints;
-            //            request.Send();
-            //        }
-            //        else
-            //        {
-            //            FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
-            //        }
-            //    }
-            //}
 
-            //if (state.HasBeenStolenFrom)
-            //{
-            //    if (currentStunAfterTimer >= timeForStunAfterSteal)
-            //    {
-            //        currentStunAfterTimer = 0;
-            //        state.HasBeenStolenFrom = false;
-            //        var request = StunEnemyPlayer.Create();
-            //        request.Target = entity;
-            //        request.End = true;
-            //        request.Send();
-            //    }
-            //    else
-            //    {
-            //        currentStunAfterTimer += Time.deltaTime;
-            //    }
-            //}
-            #endregion
 
-            #region Obstacle Interaction
-            if (Input.GetKey(KeyCode.Space) && wait == false )//&& state.Paralyzed == false)
+        #region Artefact interaction
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (targetedArtefacts.Count != 0)
             {
-                //var request = FireAnimatorCutTriggerParameter.Create();
-                //request.Target = entity;
-                //request.Send();
-                //wait = true;
-                StartCoroutine(Hit());
+                if (artefactInventory.FindEmptyInventorySlot() != -1)
+                {
+                    Debug.Log("Picking up Artefacts");
+                    // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
+                    foreach (ArtefactBehaviour item in targetedArtefacts)
+                    {
+                        artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
+                        FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
+                        NetworkServer.Destroy(item.gameObject);
+                    }
+                    targetedArtefacts.Clear();
+                }
+                else
+                {
+                    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
+                }
             }
-            #endregion
+            else if (targetedAbilityPickup != null)
+            {
+                targetedAbilityPickup.PickupAbility(this);
+                targetedAbilityPickup = null;
+            }
+            else if (gameStash != null && artefactInventory.InventoryNotEmpty())
+            {
+                gameStash.CmdAddToStashScores(this);
+                FindObjectOfType<AudioManager>().PlaySound("Stash");
+            }
+            else if(gameStash != null && !artefactInventory.InventoryNotEmpty())
+            {
+                FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
+            }
+        }
+        #endregion
+
+        #region Stealing
+        //if (Input.GetKeyDown(KeyCode.F) && !state.HasBeenStolenFrom)
+        //{
+        //    BoltLog.Info("F pressed");
+        //    if (targetedPlayerToStealFrom != null)
+        //    {
+        //        BoltLog.Info("Has a target");
+        //        if (IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false && targetedPlayerToStealFrom.InventoryNotEmpty())
+        //        {
+        //            BoltLog.Info("Attempting steal");
+        //            InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
+        //            AddToInventory(randomArtefact.ItemName, randomArtefact.ItemPoints);
+        //            int indexToRemove = -1;
+        //            for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
+        //            {
+        //                if (targetedPlayerToStealFrom.state.Inventory[i].ItemName != string.Empty && targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
+        //                {
+        //                    indexToRemove = i;
+        //                }
+        //            }
+        //            var request = InventoryRemove.Create();
+        //            request.ItemIndex = indexToRemove;
+        //            request.InventoryEntity = targetedPlayerToStealFrom.entity;
+        //            request.ItemName = randomArtefact.ItemName;
+        //            request.ItemPoints = randomArtefact.ItemPoints;
+        //            request.Send();
+        //        }
+        //        else
+        //        {
+        //            FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
+        //        }
+        //    }
+        //}
+
+        //if (state.HasBeenStolenFrom)
+        //{
+        //    if (currentStunAfterTimer >= timeForStunAfterSteal)
+        //    {
+        //        currentStunAfterTimer = 0;
+        //        state.HasBeenStolenFrom = false;
+        //        var request = StunEnemyPlayer.Create();
+        //        request.Target = entity;
+        //        request.End = true;
+        //        request.Send();
+        //    }
+        //    else
+        //    {
+        //        currentStunAfterTimer += Time.deltaTime;
+        //    }
+        //}
+        #endregion
+
+        #region Obstacle Interaction
+        if (Input.GetKey(KeyCode.Space) && toolWait== false )//&& state.Paralyzed == false)
+        {
+            playerAnim.SetTrigger("Cut");
+            StartCoroutine(Hit());
+        }
+        #endregion
 
 
             //if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
@@ -314,6 +308,9 @@ public class PlayerController : NetworkBehaviour
         //}
     }
 
+
+
+
     [Command]
     private void CmdServerValidateHit()
     {
@@ -336,11 +333,6 @@ public class PlayerController : NetworkBehaviour
                 item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
                 item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
                 item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
-                /*ab = item.transform.gameObject.GetComponent<ArtefactBehaviour>();
-                var req = ArtefactEnable.Create();
-                req.artefact = ab.entity;
-                req.Send();*/
-                //item.transform.gameObject.GetComponentInChildren<ArtefactBehaviour>().transform.SetParent(null);
             }
             else if (item.transform.GetComponent<AbilityPickup>())
             {
@@ -352,24 +344,7 @@ public class PlayerController : NetworkBehaviour
             {
                 Destroy(item.transform.gameObject);
             }
-            //var request = ObstacleDisable.Create();
-            //request.position = transform.position;
-            //request.forward = transform.forward;
-            //request.Send();
         }
-    }
-
-    /// <summary>
-    /// Sets player name to state
-    /// </summary>
-    /// <param name="playerName"></param>
-    private void Setup(string playerName)
-    {
-        //if(entity.IsOwner)
-        //{
-        //    BoltLog.Info("Setup: " + playerName);
-        //    state.Name = playerName;
-        //}
     }
 
     /// <summary>
@@ -386,41 +361,12 @@ public class PlayerController : NetworkBehaviour
     }
 
     /// <summary>
-    /// Used to spawn in gameobject for player
-    /// </summary>
-    public static void Spawn()
-    {
-        Vector3 pos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
-
-        //BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs.Player, pos, Quaternion.identity);
-        //playerEntity.TakeControl();
-        //string playerUsername = FindObjectOfType<PlayerData>().GetUsername(playerEntity.Controller);
-
-
-        BoltLog.Info("Spawning player");
-
-        //PlayerController playerController = playerEntity.GetComponent<PlayerController>();
-
-       // CanvasUIManager.SpawnPlayerNameTextPrefab(playerController);
-
-
-        if (PlayerPrefs.GetString("username") != null)
-        {
-            //playerController.Setup(PlayerPrefs.GetString("username"));
-        }
-        else
-        {
-            //playerController.Setup("Player #" + Random.Range(1, 100));
-        }
-    }
-
-    /// <summary>
     /// Rotates player according to slope and movement direction.
     /// If we wanted the model to remain upright, we can attach this to a child that isn't visible, but has the same parameters as the player(height etc)
     /// </summary>
+    [ClientCallback]
     void PlayerRotation()
     {
-
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
         {
@@ -430,14 +376,13 @@ public class PlayerController : NetworkBehaviour
             Quaternion slopeQuat = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
 
             Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
-            //finalQuat = lookQuat;
+
             if (rotationAngle < 45) 
             {
                 finalQuat = slopeQuat.normalized * lookQuat; //Quaternion rotation of look rotation and slope rotation
                 transform.rotation = finalQuat;
             }
 
-            //transform.GetChild(0).transform.rotation = finalQuat;
         }
 
     }
@@ -446,64 +391,60 @@ public class PlayerController : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        //if (entity.IsOwner)
-        //{
-        //    if (collider.gameObject.GetComponent<ArtefactBehaviour>())
-        //    {
-        //        targetedArtefacts.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
-        //    }
-        //    else if (collider.gameObject.GetComponent<Stash>())
-        //    {
-        //        gameStash = collider.gameObject.GetComponent<Stash>();
-        //        FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
-        //    }
-        //    else if (collider.gameObject.GetComponent<PlayerController>())
-        //    {
-        //        targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
-        //        FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
-        //    }
-        //    else if (collider.gameObject.GetComponent<AbilityPickup>())
-        //    {
-        //        targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
-        //    }
-        //}
+        if (collider.gameObject.GetComponent<ArtefactBehaviour>())
+        {
+            targetedArtefacts.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
+        }
+        else if (collider.gameObject.GetComponent<Stash>())
+        {
+            gameStash = collider.gameObject.GetComponent<Stash>();
+            if(FindObjectOfType<CanvasUIManager>() != null)
+                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
+        }
+        else if (collider.gameObject.GetComponent<PlayerController>())
+        {
+            targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
+            if (FindObjectOfType<CanvasUIManager>() != null)
+                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
+        }
+        else if (collider.gameObject.GetComponent<AbilityPickup>())
+        {
+            targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
+        }
     }
 
     public void OnTriggerExit(Collider collider)
     {
-        //if (entity.IsOwner)
-        //{
-        //    if (collider != null)
-        //    {
-        //        if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
-        //        {
-        //            //Removes specific artefact that we exited.
-        //            int i = 0;
-        //            foreach (ArtefactBehaviour item in targetedArtefacts)
-        //            {
-        //                if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
-        //                {
-        //                    targetedArtefacts.RemoveAt(i);
-        //                }
-        //                i++;
-        //            }
-        //        }
-        //        else if (gameStash != null && collider.gameObject == gameStash.gameObject)
-        //        {
-        //            gameStash = null;
-        //            FindObjectOfType<CanvasUIManager>().CloseHintMessage();
-        //        }
-        //        else if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
-        //        {
-        //            targetedPlayerToStealFrom = null;
-        //            FindObjectOfType<CanvasUIManager>().CloseHintMessage();
-        //        }
-        //        else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
-        //        {
-        //            targetedAbilityPickup = null;
-        //        }
-        //    }
-        //}
+        if (collider != null)
+        {
+            if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
+            {
+                //Removes specific artefact that we exited.
+                int i = 0;
+                foreach (ArtefactBehaviour item in targetedArtefacts)
+                {
+                    if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
+                    {
+                        targetedArtefacts.RemoveAt(i);
+                    }
+                    i++;
+                }
+            }
+            else if (gameStash != null && collider.gameObject == gameStash.gameObject)
+            {
+                gameStash = null;
+                FindObjectOfType<CanvasUIManager>().CloseHintMessage();
+            }
+            else if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
+            {
+                targetedPlayerToStealFrom = null;
+                FindObjectOfType<CanvasUIManager>().CloseHintMessage();
+            }
+            else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
+            {
+                targetedAbilityPickup = null;
+            }
+        }
     }
 
     #endregion
@@ -514,32 +455,34 @@ public class PlayerController : NetworkBehaviour
     /// Gives a delay to the destroying obstacles function 'HitForward()'.
     /// </summary>
     /// <returns></returns>
+    [ClientCallback]
     System.Collections.IEnumerator Hit()
     {
-        HitFoward();
+        CmdHitForward();
         yield return new WaitForSeconds(waitTime);
-        wait = false;
+        toolWait= false;
+    }
+
+    [Command]
+    void CmdHitForward()
+    {
+        HitForward();
     }
 
     /// <summary>
     /// Destroys obstacles directly in front of player. This relies on PlayerRotation().
     /// </summary>
-    void HitFoward()
+    [ClientRpc]
+    void HitForward()
     {
-        //Think about changning ray to sphere mayber depending on how the game plays and feels
-        /*RaycastHit hit;
-        Ray ray = new Ray(transform.position, transform.forward);
-        if (Physics.Raycast(ray, out hit, state.RayLength, obstacles))
-        {
-            var request = ObstacleDisable.Create();
-            request.Obstacle = hit.transform.gameObject.GetComponent<BoltEntity>();
-            request.Send();
-        }*/
-        //change transform.forward to transform.getChild(0).transform.forward
         FindObjectOfType<AudioManager>().PlaySound("Cut");
+
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit[] hit;
+
+        //Sends a sphere in front to hit objects
         hit = Physics.SphereCastAll(ray, radiusOfSphere, lengthOfSphere, obstacles);
+
         foreach (RaycastHit item in hit)
         {
             if (item.transform.GetComponent<ArtefactBehaviour>())
@@ -547,11 +490,6 @@ public class PlayerController : NetworkBehaviour
                 item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
                 item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
                 item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
-                /*ab = item.transform.gameObject.GetComponent<ArtefactBehaviour>();
-                var req = ArtefactEnable.Create();
-                req.artefact = ab.entity;
-                req.Send();*/
-                //item.transform.gameObject.GetComponentInChildren<ArtefactBehaviour>().transform.SetParent(null);
             }
             else if (item.transform.GetComponent<AbilityPickup>())
             {
@@ -564,11 +502,9 @@ public class PlayerController : NetworkBehaviour
                 Destroy(item.transform.gameObject);
             }
         }
-        var request = ObstacleDisable.Create();
-        request.position = transform.position;
-        request.forward = transform.forward;
-        request.Send();
+
     }
+
 
     private void OnDrawGizmos()
     {
@@ -576,10 +512,10 @@ public class PlayerController : NetworkBehaviour
         Gizmos.DrawWireSphere(transform.position + (transform.forward * lengthOfSphere), radiusOfSphere);
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, -transform.up + transform.position);
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawLine(transform.position, -transform.up + transform.position);
+        //Gizmos.color = Color.green;
+        //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
     }
 
     #endregion
@@ -589,7 +525,49 @@ public class PlayerController : NetworkBehaviour
         //Player -> _scaleTest -> FULL.002
         transform.GetChild(0).transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = toggle;
     }
+
+    public ArtefactInventory GetArtefactInventory()
+    {
+        return artefactInventory;
+    }
+
+    public void SetArtefactInventory(ArtefactInventory inventory)
+    {
+        artefactInventory = inventory;
+    }
+
+    public bool IsImmobilized()
+    {
+        return immobilize;
+    }
+
+    public void SetImmobilized(bool immobilize)
+    {
+        this.immobilize = immobilize;
+    }
+
+    public bool IsVoodooPoisoned()
+    {
+        return voodooPoisoned;
+    }
+
+    public void SetVoodooPoisoned(bool poisoned)
+    {
+        voodooPoisoned = poisoned;
+    }
+
+    public bool IsMortal()
+    {
+        return mortal;
+    }
+
+    public void SetMortal(bool mortal)
+    {
+        this.mortal = mortal;
+    }
 }
+
+
 
 
 #region deadCode
@@ -613,3 +591,40 @@ public class PlayerController : NetworkBehaviour
             #endregion
  */
 #endregion
+
+//////Remember, this was all called from Update() A [ClientCallback], also remember we testing player position. This is updated from the transform, not necessarily the function
+//No tags, if we do something, everyone else sees that
+//[Client] If we do somethingg, everyone else sees that
+//[ClientRpc] Host can call, everyone sees. Host called RocketMan(), host and client saw host do RocketMan. Client tried RocketMan, didn't do anything for host and client.
+//[Command] Anyone can call, only host sees. Client call RocketMan(), client doesn't do RocketMan, but host sees RocketMan on client.
+
+//////Remember, this was all called from Update() A [ClientCallback], we are destroying an object
+//No tags, Host can call, only host sees. Client can call, only client sees
+//[Client] Host can call, only host sees. Client can call, only client sees
+//[ClientRpc] Host can call, everyone sees. 
+//[Command] Anyone can call, only host sees
+//Error message for 2 below, called when server not active
+//[Server] ???KEEP AN EYE, not completely sure. Host can call, only host sees
+//[TargetRpc] ???KEEP AN EYE, not completely sure. Host can call, only host sees
+
+
+
+
+//[Server]
+//Only a server can call the method(throws a warning or an error when called on a client).
+//[ServerCallback]
+//Same as Server but does not throw warning when called on client.
+
+//[Client]
+//Only a Client can call the method(throws a warning or an error when called on the server).
+//[ClientCallback]
+//Same as Client but does not throw warning when called on server.
+
+//[ClientRpc]
+//The server uses a Remote Procedure Call(RPC) to run that function on clients.See also: Remote Actions
+//[TargetRpc]
+// This is an attribute that can be put on methods of NetworkBehaviour classes to allow them to be invoked on clients from a server. Unlike the ClientRpc attribute, 
+//these functions are invoked on one individual target client, not all of the ready clients. See also: Remote Actions
+//[Command]
+//Call this from a client to run this function on the server. Make sure to validate input etc. 
+//It's not possible to call this from a server. Use this as a wrapper around another function, if you want to call it from the server too. 

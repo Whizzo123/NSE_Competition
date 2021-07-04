@@ -21,6 +21,15 @@ public class MyNetworkManager : NetworkManager
 
     public List<MirrorRoomPlayerLobby> RoomPlayers = new List<MirrorRoomPlayerLobby>();
 
+    void Start()
+    {
+        GameObject[] prefabs = Resources.LoadAll<GameObject>("NetworkSpawningPrefabs");
+        for (int i = 0; i < prefabs.Length; i++)
+        {
+            spawnPrefabs.Add(prefabs[i]);
+        }
+    }
+
     public override void OnStartServer()
     {
         Debug.Log("OnStartServer");
@@ -101,19 +110,17 @@ public class MyNetworkManager : NetworkManager
 
     public override void ServerChangeScene(string newSceneName)
     {
-        Debug.Log("ServerChangeScene");
-        if (newSceneName.Contains("Mirror"))
+        if (newSceneName.Contains("Game"))
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
                 var conn = RoomPlayers[i].connectionToClient;
-                GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), new Vector3(i * 5, 0, 0), Quaternion.identity);
-
+                Vector3 spawnPos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
+                GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), spawnPos, Quaternion.identity);
+                gameplayInstance.GetComponent<PlayerController>().playerName = RoomPlayers[i].DisplayName;
                 NetworkServer.Destroy(conn.identity.gameObject);
-
                 NetworkServer.ReplacePlayerForConnection(conn, gameplayInstance.gameObject);
                 NetworkServer.Spawn(gameplayInstance, conn);
-                Debug.LogError("Spawned player MIRROR");
             }
         }
         base.ServerChangeScene(newSceneName);
@@ -160,7 +167,7 @@ public class MyNetworkManager : NetworkManager
         {
             if(!IsReadyToStart()) { return; }
 
-            ServerChangeScene("MirrorTest");
+            ServerChangeScene("GameScene");
         }
     }
 }

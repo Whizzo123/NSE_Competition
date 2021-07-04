@@ -1,60 +1,83 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Bolt;
+using Mirror;
 
 public enum ArtefactRarity { Common, Rare, Exotic}
 
-public class ArtefactBehaviour : EntityBehaviour<IArtefactState>
+public class ArtefactBehaviour : NetworkBehaviour
 {
-
+    [SyncVar]
     private string artefactName;
+    [SyncVar]
     private int points;
+    [SyncVar]
     private ArtefactRarity rarity;
-    private bool availableForPickup;
+    [SyncVar]
+    private bool avaliableForPickup;
 
-
-    public override void Attached()
+    void Start()
     {
-        if (entity.IsOwner)
-        {
-            state.Name = artefactName;
-            state.Points = points;
-        }
-        availableForPickup = false;
+        GetComponent<MeshRenderer>().enabled = false;
+    }
+
+    public override void OnStartAuthority()
+    {
+        Debug.Log("OnStartAuthority");
+        avaliableForPickup = false;
     }
 
     public void EnableForPickup()
     {
-        availableForPickup = true;
-        //GetComponent<MeshRenderer>().enabled = true;
+        avaliableForPickup = true;
+        CmdToggleRenderer(true);
+    }
+
+    [Command]
+    private void CmdToggleRenderer(bool toggle)
+    {
+        RpcToggleRenderer(toggle);
+        GetComponent<MeshRenderer>().enabled = toggle;
+    }
+
+    [ClientRpc]
+    private void RpcToggleRenderer(bool toggle)
+    {
+        GetComponent<MeshRenderer>().enabled = toggle;
+        Debug.Log("RpcToggleRenderer: " + toggle);
     }
 
     public void PopulateData(string dataName, ArtefactRarity rarity)
     {
-        state.Name = dataName;
         artefactName = dataName;
-        int dataPoints = 0;
         this.rarity = rarity;
         switch(rarity)
         {
             case ArtefactRarity.Common:
-                dataPoints = 200;
+                points = 200;
                 break;
             case ArtefactRarity.Rare:
-                dataPoints = 1000;
+                points = 1000;
                 break;
             case ArtefactRarity.Exotic:
-                dataPoints = 5000;
+                points = 5000;
                 break;
         }
-        state.Points = dataPoints;
-        points = dataPoints;
     }
 
     public ArtefactRarity GetRarity()
     {
         return rarity;
+    }
+
+    public string GetArtefactName()
+    {
+        return artefactName;
+    }
+
+    public int GetPoints()
+    {
+        return points;
     }
 
 }

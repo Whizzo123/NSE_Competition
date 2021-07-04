@@ -26,7 +26,6 @@ public class GameSceneManager : NetworkBehaviour
     void Start()
     {
         FindObjectOfType<AudioManager>().ActivateGameMusic();
-        PlayerController.Spawn();
         //FindObjectOfType<PlayerTestSuite>().InitializeTest();
         if (hasAuthority)
         {

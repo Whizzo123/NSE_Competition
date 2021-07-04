@@ -15,11 +15,11 @@ public class SpeedBoost : Powerup
     public override void Use()
     {
         //All logic here
-        //if (GetPlayerToEmpower().speed != boostToSpeed && oppositeDebuffActivated == false)
-        //{
-            //GetPlayerToEmpower().speed = GetPlayerToEmpower().normalSpeed + boostToSpeed;
+        if (GetPlayerToEmpower().speed != boostToSpeed && oppositeDebuffActivated == false)
+        {
+            GetPlayerToEmpower().speed = GetPlayerToEmpower().normalSpeed + boostToSpeed;
             inUse = true;
-        //}
+        }
         base.Use();
     }
 

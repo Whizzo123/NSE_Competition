@@ -26,18 +26,19 @@ public class BearTrapBehaviour : NetworkBehaviour
     {
         if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
         {
-            //if(collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
-            // {
+            if(collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+            {
                 trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                trappedPlayer.immobilize = true;
+                trappedPlayer.SetImmobilized(true);
+                trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
                 CmdSpringTrap();
-            //}
+            }
         }
     }
 
     public void SetPlacingPlayer(PlayerController controller)
     {
-        //placingPlayerName = controller.playerName;
+        placingPlayerName = controller.playerName;
     }
 
     [Command]
@@ -90,7 +91,7 @@ public class BearTrapBehaviour : NetworkBehaviour
                 }
                 else
                 {
-                    trappedPlayer.immobilize = false;
+                    trappedPlayer.SetImmobilized(false);
                     RpcFinishTrap();
                 }
             }

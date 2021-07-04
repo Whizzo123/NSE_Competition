@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
@@ -19,16 +20,23 @@ public class Stash : NetworkBehaviour
     /// Called when adding to stash from player inventory
     /// </summary>
     /// <param name="player"></param>
-    public void AddToStashScores(PlayerController player)
+    [Command(requiresAuthority = false)]
+    public void CmdAddToStashScores(PlayerController player)
     {
         int score = 0;
-        string playerName = player.playerNameText.GetComponent<Text>().text;
+        string playerName = player.playerName;
         foreach (ItemArtefact item in player.GetComponent<ArtefactInventory>().GetInventory())
         {
             score += item.points;
         }
         StashedScores[playerName] = score;
         ScoreUpdate(playerName);
+        RpcClearInventory(player);
+    }
+
+    [ClientRpc]
+    private void RpcClearInventory(PlayerController player)
+    {
         player.GetComponent<ArtefactInventory>().ClearInventory();
     }
 
@@ -59,5 +67,15 @@ public class Stash : NetworkBehaviour
         }
         Debug.LogError("ERROR: COULDN'T FIND SCORE IN STASH FOR PLAYER: " + name);
         return 0;
+    }
+
+    public Dictionary<string, int> GetStashedScores()
+    {
+        Dictionary<string, int> toReturn = new Dictionary<string, int>();
+        foreach (string key in StashedScores.Keys)
+        {
+            toReturn.Add(key, StashedScores[key]);
+        }
+        return toReturn;
     }
 }
