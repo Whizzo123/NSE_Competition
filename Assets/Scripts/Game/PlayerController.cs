@@ -279,32 +279,29 @@ public class PlayerController : NetworkBehaviour
         }
         #endregion
 
-
-            //if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
-            //{
-            //    RaycastHit hit;
-            //    if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
-            //    {
-            //        string hitstring = hit.transform.gameObject.layer.ToString();
-            //        int layernumber = int.Parse(hitstring);
-            //        string lm = LayerMask.LayerToName(layernumber);
-            //        if (lm == "SwampGround")
-            //        {
-            //            FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
-            //        }
-            //        else
-            //        {
-            //            FindObjectOfType<AudioManager>().StopSound("SwampGround");
-            //        }
-            //        FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
-            //    }
-            //}
-            //if (playerFallingVelocity.y < -200)
-            //{
-            //    CmdServerValidateHit();
-            //}
-
-        //}
+        if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
+            {
+                string hitstring = hit.transform.gameObject.layer.ToString();
+                int layernumber = int.Parse(hitstring);
+                string lm = LayerMask.LayerToName(layernumber);
+                if (lm == "SwampGround")
+                {
+                    FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
+                }
+                else
+                {
+                    FindObjectOfType<AudioManager>().StopSound("SwampGround");
+                }
+                FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
+            }
+        }
+        if (playerFallingVelocity.y < -200)
+        {
+            CmdServerValidateHit();
+        }
     }
 
     [Command]

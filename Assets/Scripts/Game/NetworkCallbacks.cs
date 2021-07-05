@@ -50,11 +50,6 @@ public class NetworkCallbacks : GlobalEventListener
             evnt.Target.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Cut");
     }
 
-    public override void OnEvent(LoadoutCountdown evnt)
-    {
-        FindObjectOfType<CanvasUIManager>().loadoutTimeText.text = "" + evnt.Time;
-    }
-
     public override void OnEvent(ReturnEveryoneToTitle evnt)
     {
         BoltNetwork.Shutdown();

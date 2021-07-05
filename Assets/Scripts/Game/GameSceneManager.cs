@@ -18,7 +18,7 @@ public class GameSceneManager : NetworkBehaviour
         FindObjectOfType<AudioManager>().ActivateGameMusic();
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         if(FindObjectOfType<Stash>().HasPlayerReachedWinningPointsThreshold() && !endedGame)
         {
