@@ -23,8 +23,10 @@ public class Stash : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdAddToStashScores(PlayerController player)
     {
-        int score = 0;
         string playerName = player.playerName;
+        int score = 0;
+        if (StashedScores.ContainsKey(playerName))
+            score = StashedScores[playerName];
         foreach (ItemArtefact item in player.GetComponent<ArtefactInventory>().GetInventory())
         {
             score += item.points;

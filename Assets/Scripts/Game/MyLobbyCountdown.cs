@@ -96,8 +96,9 @@ public class MyLobbyCountdown : NetworkBehaviour
     private void EndGame()
     {
         Dictionary<string, int> scores = FindObjectOfType<Stash>().GetStashedScores();
+        int countOfScoringPlayers = scores.Count;
         LeaderboardScore[] results = new LeaderboardScore[scores.Count];
-        for (int i = 0; i < scores.Count; i++)
+        for (int i = 0; i < countOfScoringPlayers; i++)
         {
             int lastMaxScore = int.MinValue;
             string highestScoring = null;
@@ -119,6 +120,7 @@ public class MyLobbyCountdown : NetworkBehaviour
                     if (results[j].name == null || results[j].name == string.Empty)
                     {
                         Debug.Log("Adding into results: " + highestScoring);
+                        results[j].name = highestScoring;
                         results[j].score = FindObjectOfType<Stash>().FindScoreForPlayer(highestScoring);
                         break;
                     }
