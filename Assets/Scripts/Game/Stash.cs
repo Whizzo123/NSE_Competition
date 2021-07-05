@@ -8,6 +8,9 @@ using UnityEngine.UI;
 public class Stash : NetworkBehaviour
 {
     readonly SyncDictionary<string, int> StashedScores = new SyncDictionary<string, int>();
+
+    public int winningPointsThreshold;
+
     /// <summary>
     /// Called when entity attached in network like unity start method
     /// </summary>
@@ -59,6 +62,19 @@ public class Stash : NetworkBehaviour
         {
             StashedScores[name] += points;
         }
+    }
+
+    public bool HasPlayerReachedWinningPointsThreshold()
+    {
+        if (StashedScores.Count > 0)
+        {
+            foreach (string playerName in StashedScores.Keys)
+            {
+                if (StashedScores[playerName] >= winningPointsThreshold)
+                    return true;
+            }
+        }
+        return false;
     }
 
     public int FindScoreForPlayer(string name)

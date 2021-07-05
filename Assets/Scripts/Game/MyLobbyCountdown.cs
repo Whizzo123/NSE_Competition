@@ -139,4 +139,10 @@ public class MyLobbyCountdown : NetworkBehaviour
             FindObjectOfType<CanvasUIManager>().winScreen.AddToContent(results[i].name, results[i].score);
         }
     }
+
+    [Command(requiresAuthority = false)]
+    public void CmdCallGameToFinish()
+    {
+        EndGame();
+    }
 }

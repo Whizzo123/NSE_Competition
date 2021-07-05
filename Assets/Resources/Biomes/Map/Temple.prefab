@@ -113,6 +113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  winningPointsThreshold: 10000
 --- !u!114 &3208868608744248616
 MonoBehaviour:
   m_ObjectHideFlags: 0
