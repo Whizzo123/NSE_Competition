@@ -582,7 +582,14 @@ public class PlayerController : NetworkBehaviour
     public void CmdSpawnBearTrap(Vector3 spawnPos, PlayerController placingPlayer)
     {
         GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "BearTrap"), spawnPos, Quaternion.identity);
-        go.GetComponent<BearTrapBehaviour>().CmdSetPlacingPlayer(placingPlayer);
+        go.GetComponent<BearTrapBehaviour>().SetPlacingPlayer(placingPlayer);
+        NetworkServer.Spawn(go);
+    }
+    [Command]
+    public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerController placingPlayer)
+    {
+        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, Quaternion.identity);
+        go.GetComponent<VoodooPoisonTrapBehaviour>().SetPlacingPlayer(placingPlayer);
         NetworkServer.Spawn(go);
     }
 }
