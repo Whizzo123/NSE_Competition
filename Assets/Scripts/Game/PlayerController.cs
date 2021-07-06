@@ -578,6 +578,13 @@ public class PlayerController : NetworkBehaviour
     {
         this.mortal = mortal;
     }
+    [Command]
+    public void CmdSpawnBearTrap(Vector3 spawnPos, PlayerController placingPlayer)
+    {
+        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "BearTrap"), spawnPos, Quaternion.identity);
+        go.GetComponent<BearTrapBehaviour>().CmdSetPlacingPlayer(placingPlayer);
+        NetworkServer.Spawn(go);
+    }
 }
 
 

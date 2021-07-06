@@ -77,6 +77,10 @@ public class AbilityInventory
                 Trap trap = (Trap)ability;
                 trap.SetInventory(this);
                 trap.SetPlacingPlayer(player);
+                if(player == null)
+                {
+                    Debug.LogError("MAYDAY MAYDAY player is null");
+                }
                 abilities.Add(trap);
             }
             else

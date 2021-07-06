@@ -15,6 +15,7 @@ public class BearTrapBehaviour : NetworkBehaviour
     public GameObject openTrap;
     public GameObject closedTrap;
 
+    [SyncVar]
     private string placingPlayerName;
 
     void Start()
@@ -22,26 +23,33 @@ public class BearTrapBehaviour : NetworkBehaviour
         currentDuration = 0;
         sprung = false;
     }
+
     public void OnTriggerEnter(Collider collider)
     {
-        if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
-        {
-            if(collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+        if (placingPlayerName != null)
+        { 
+            if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
             {
-                trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                trappedPlayer.SetImmobilized(true);
-                trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
-                CmdSpringTrap();
+                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+                {
+                    Debug.Log("BearTrapBehaviour: OnTriggerEnter() - PlacingPlayerName _ " + placingPlayerName);
+                    Debug.Log("BearTrapBehaviour: OnTriggerEnter() - collider.playerName _ " + collider.gameObject.GetComponent<PlayerController>().playerName);
+                    trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
+                    trappedPlayer.SetImmobilized(true);
+                    trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
+                    CmdSpringTrap();
+                }
             }
         }
     }
 
-    public void SetPlacingPlayer(PlayerController controller)
+    public void CmdSetPlacingPlayer(PlayerController controller)
     {
+        Debug.Log("BearTrapBehaviour: SetPlacingPlayer - controller.playerName _ " + controller.playerName);
         placingPlayerName = controller.playerName;
     }
 
-    [Command]
+    [Command (requiresAuthority = false)]
     private void CmdSpringTrap()
     {
         FindObjectOfType<AudioManager>().PlaySound("BearTrapClose");
@@ -78,7 +86,7 @@ public class BearTrapBehaviour : NetworkBehaviour
         UpdateTrap();
     }
 
-    [Server]
+    [ServerCallback]
     private void UpdateTrap()
     {
         if (sprung)

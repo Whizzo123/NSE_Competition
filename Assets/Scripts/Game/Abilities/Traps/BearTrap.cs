@@ -25,9 +25,7 @@ public class BearTrap : Trap
 
         //Spawn and sound
         Debug.Log("Spawn pos: " + spawnPos);
-        GameObject go = Object.Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "BearTrap"), spawnPos, Quaternion.identity);
-        go.GetComponent<BearTrapBehaviour>().SetPlacingPlayer(placingPlayer);
-        NetworkServer.Spawn(go);
+        placingPlayer.CmdSpawnBearTrap(spawnPos, placingPlayer);
         base.Use();
         GameObject.FindObjectOfType<AudioManager>().PlaySound("BearTrapOpening");
     }
