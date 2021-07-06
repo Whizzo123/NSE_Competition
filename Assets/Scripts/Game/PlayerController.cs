@@ -16,7 +16,7 @@ public class PlayerController : NetworkBehaviour
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
     [Tooltip("Our abilities that we've selected")] public AbilityInventory abilityInventory;
-    private ArtefactInventory artefactInventory;
+    [SyncVar]private ArtefactInventory artefactInventory;
     [SyncVar]
     public string playerName;
 
@@ -95,11 +95,17 @@ public class PlayerController : NetworkBehaviour
             Invoke("SetCamera", 5);
         }
         abilityInventory = new AbilityInventory(this);
+        CmdSetupPlayer();
+        SetLoadoutReleased(false);
+        base.OnStartAuthority();
+    }
+
+    [Command]
+    private void CmdSetupPlayer()
+    {
         artefactInventory = GetComponent<ArtefactInventory>();
         immobilize = false;
         hasBeenStolenFrom = false;
-        SetLoadoutReleased(false);
-        base.OnStartAuthority();
     }
 
     [Client]
@@ -220,55 +226,52 @@ public class PlayerController : NetworkBehaviour
         #endregion
 
         #region Stealing
-        //if (Input.GetKeyDown(KeyCode.F) && !state.HasBeenStolenFrom)
-        //{
-        //    BoltLog.Info("F pressed");
-        //    if (targetedPlayerToStealFrom != null)
-        //    {
-        //        BoltLog.Info("Has a target");
-        //        if (IsInventoryEmpty() && targetedPlayerToStealFrom.state.HasBeenStolenFrom == false && targetedPlayerToStealFrom.InventoryNotEmpty())
-        //        {
-        //            BoltLog.Info("Attempting steal");
-        //            InventoryItem randomArtefact = targetedPlayerToStealFrom.GrabRandomItem();
-        //            AddToInventory(randomArtefact.ItemName, randomArtefact.ItemPoints);
-        //            int indexToRemove = -1;
-        //            for (int i = 0; i < targetedPlayerToStealFrom.state.Inventory.Length; i++)
-        //            {
-        //                if (targetedPlayerToStealFrom.state.Inventory[i].ItemName != string.Empty && targetedPlayerToStealFrom.state.Inventory[i].ItemName == randomArtefact.ItemName)
-        //                {
-        //                    indexToRemove = i;
-        //                }
-        //            }
-        //            var request = InventoryRemove.Create();
-        //            request.ItemIndex = indexToRemove;
-        //            request.InventoryEntity = targetedPlayerToStealFrom.entity;
-        //            request.ItemName = randomArtefact.ItemName;
-        //            request.ItemPoints = randomArtefact.ItemPoints;
-        //            request.Send();
-        //        }
-        //        else
-        //        {
-        //            FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
-        //        }
-        //    }
-        //}
+        if (Input.GetKeyDown(KeyCode.F))// && !state.HasBeenStolenFrom)
+        {
+            Debug.LogError(artefactInventory.GetAllArtefactNames());
+            if (targetedPlayerToStealFrom != null)
+            {
+                if (artefactInventory.AvailableInventorySlot() && targetedPlayerToStealFrom.GrabArtefactInventory().InventoryNotEmpty())
+                {
+                    //We are not full, they are no longer stunned and have artefacts, we steal
 
-        //if (state.HasBeenStolenFrom)
-        //{
-        //    if (currentStunAfterTimer >= timeForStunAfterSteal)
-        //    {
-        //        currentStunAfterTimer = 0;
-        //        state.HasBeenStolenFrom = false;
-        //        var request = StunEnemyPlayer.Create();
-        //        request.Target = entity;
-        //        request.End = true;
-        //        request.Send();
-        //    }
-        //    else
-        //    {
-        //        currentStunAfterTimer += Time.deltaTime;
-        //    }
-        //}
+                    //Add to our inventory
+                    ItemArtefact randomArtefact = targetedPlayerToStealFrom.GetArtefactInventory().GrabRandomItem();
+                    artefactInventory.AddToInventory(randomArtefact.name, randomArtefact.points);
+
+                    //remove from enemy inventory
+                    for (int indexToRemove = 0; indexToRemove < targetedPlayerToStealFrom.GetArtefactInventory().GetInventory().Count; indexToRemove++)
+                    {
+                        if (targetedPlayerToStealFrom.GetArtefactInventory().GetInventory()[indexToRemove].name != string.Empty && targetedPlayerToStealFrom.GetArtefactInventory().GetInventory()[indexToRemove].name == randomArtefact.name)
+                        {
+                            targetedPlayerToStealFrom.GetArtefactInventory().RemoveFromInventory(indexToRemove, randomArtefact.name, randomArtefact.points);
+                            targetedPlayerToStealFrom.SetImmobilized(true);
+                            break;
+           
+                        }
+                    }
+                }
+                else
+                {
+                    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
+
+                }
+            }
+        }
+
+        if (hasBeenStolenFrom)
+        {
+            if (currentStunAfterTimer >= timeForStunAfterSteal)
+            {
+                currentStunAfterTimer = 0;
+                hasBeenStolenFrom = false;
+                SetImmobilized(false);
+            }
+            else
+            {
+                currentStunAfterTimer += Time.deltaTime;
+            }
+        }
         #endregion
 
         #region Obstacle Interaction
@@ -303,6 +306,12 @@ public class PlayerController : NetworkBehaviour
             CmdServerValidateHit();
         }
     }
+
+    ArtefactInventory GrabArtefactInventory()
+    {
+        return artefactInventory;
+    }
+
 
     [Command]
     private void CmdClearTargetArtefacts()
@@ -394,6 +403,8 @@ public class PlayerController : NetworkBehaviour
         if (collider.gameObject.GetComponent<ArtefactBehaviour>())
         {
             CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            if (FindObjectOfType<CanvasUIManager>() != null)
+                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
         }
         else if (collider.gameObject.GetComponent<Stash>())
         {
@@ -401,16 +412,17 @@ public class PlayerController : NetworkBehaviour
             if(FindObjectOfType<CanvasUIManager>() != null)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
         }
-        else if (collider.gameObject.GetComponent<PlayerController>())
+        else if (collider.gameObject.GetComponent<AbilityPickup>())
+        {
+            targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
+        }
+        if (collider.gameObject.GetComponent<PlayerController>())
         {
             targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
             if (FindObjectOfType<CanvasUIManager>() != null)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
         }
-        else if (collider.gameObject.GetComponent<AbilityPickup>())
-        {
-            targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
-        }
+
     }
 
     public void OnTriggerExit(Collider collider)
@@ -429,20 +441,24 @@ public class PlayerController : NetworkBehaviour
                     }
                     i++;
                 }
+                if (targetedArtefacts.Count == 0)
+                {
+                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
+                }
             }
             else if (gameStash != null && collider.gameObject == gameStash.gameObject)
             {
                 gameStash = null;
                 FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
-            else if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
-            {
-                targetedPlayerToStealFrom = null;
-                FindObjectOfType<CanvasUIManager>().CloseHintMessage();
-            }
             else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
             {
                 targetedAbilityPickup = null;
+            }
+            if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
+            {
+                targetedPlayerToStealFrom = null;
+                FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
         }
     }
