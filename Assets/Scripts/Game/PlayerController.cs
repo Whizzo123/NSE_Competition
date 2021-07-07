@@ -33,8 +33,8 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Is the player touching the ground")] private bool isGrounded = true;
     [SerializeField] [Tooltip("How fast the player is currently falling by y axis")] private Vector3 playerFallingVelocity;
     //Movement
-    [Tooltip("The current speed of the player")] [SyncVar] public float speed = 20f;
-    [Tooltip("The original speed of the player")] public float normalSpeed = 20f;
+    [Tooltip("The current speed of the player")] [SyncVar] public float speed = 10f;
+    [Tooltip("The original speed of the player")] public float normalSpeed = 10f;
     [Tooltip("Direction player is moving in by input, not physics")] private Vector3 direction;
     [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
 
@@ -94,7 +94,6 @@ public class PlayerController : NetworkBehaviour
         {
             Invoke("SetCamera", 5);
         }
-        abilityInventory = new AbilityInventory(this);
         CmdSetupPlayer();
         SetLoadoutReleased(false);
         base.OnStartAuthority();
@@ -103,10 +102,12 @@ public class PlayerController : NetworkBehaviour
     [Command]
     private void CmdSetupPlayer()
     {
+        abilityInventory = new AbilityInventory(this);
         artefactInventory = GetComponent<ArtefactInventory>();
         immobilize = false;
         hasBeenStolenFrom = false;
     }
+
 
     [Client]
     void SetCamera()
@@ -562,6 +563,13 @@ public class PlayerController : NetworkBehaviour
         return artefactInventory;
     }
 
+    [Command(requiresAuthority = false)]
+    public void CmdModifySpeed(float newSpeed)
+    {
+        Debug.Log("Modifying Speed: " + playerName);
+        speed = newSpeed;
+    }
+
     public void SetArtefactInventory(ArtefactInventory inventory)
     {
         artefactInventory = inventory;
@@ -571,10 +579,10 @@ public class PlayerController : NetworkBehaviour
     {
         return immobilize;
     }
-
-    public void SetImmobilized(bool immobilize)
+    [Command]
+    public void CmdSetImmobilized(bool value)
     {
-        this.immobilize = immobilize;
+        immobilize = value;
     }
 
     public bool IsVoodooPoisoned()
@@ -612,7 +620,6 @@ public class PlayerController : NetworkBehaviour
     }
 
 
-
     [ClientCallback]
     public void DestroyGameObject(GameObject go)
     {
@@ -622,6 +629,14 @@ public class PlayerController : NetworkBehaviour
     public void CmdDestroyGameObject(GameObject go)
     {
         NetworkServer.Destroy(go);
+    }
+    [Command]
+    public void CmdSpawnStickyBombParticles(Vector3 spawnPos, float effectDuration)
+    {
+        GameObject stickyBombParticles = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefab => spawnPrefab.name == "SlowBombExplosion_PA"), spawnPos, Quaternion.identity);
+        stickyBombParticles.GetComponent<StickyBombBehaviour>().effectDuration = effectDuration;
+        stickyBombParticles.GetComponent<StickyBombBehaviour>().tick = true;
+        NetworkServer.Spawn(stickyBombParticles);
     }
 }
 

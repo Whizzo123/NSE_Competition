@@ -33,7 +33,7 @@ public class BearTrapBehaviour : NetworkBehaviour
                 if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
                 {
                     trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                    trappedPlayer.SetImmobilized(true);
+                    trappedPlayer.CmdSetImmobilized(true);
                     trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
                     CmdSpringTrap();
                 }
@@ -87,7 +87,7 @@ public class BearTrapBehaviour : NetworkBehaviour
                 }
                 else
                 {
-                    trappedPlayer.SetImmobilized(false);
+                    trappedPlayer.CmdSetImmobilized(false);
                     NetworkServer.Destroy(this.gameObject);
                 }
             }

@@ -1,25 +1,56 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using Mirror;
 
 public class AbilityInventory
 {
-
     private PlayerController player;
+    
+    readonly SyncList<Ability> abilities = new SyncList<Ability>();
 
-    private List<Ability> abilities;
-
-    private List<Ability> removeList;
+    readonly SyncList<Ability> removeList = new SyncList<Ability>();
 
     public List<Ability> getAbilities()
     {
-        return abilities;
+        return abilities.ToList<Ability>();
     }
+
+    public AbilityInventory()
+    {
+
+    }
+
+    [Command]
+    private void CmdAddToAbilities(Ability ability)
+    {
+        abilities.Add(ability);
+    }
+
+    [Command]
+    private void CmdRemoveFromAbilities(Ability ability)
+    {
+        abilities.Remove(ability);
+    }
+
+
+    [Command]
+    private void CmdAddToRemoveList(Ability ability)
+    {
+        removeList.Add(ability);
+    }
+
+    [Command]
+    private void CmdRemoveFromRemoveList(Ability ability)
+    {
+        removeList.Remove(ability);
+    }
+
 
     public AbilityInventory(PlayerController playerOwningInventory)
     {
         player = playerOwningInventory;
-        abilities = new List<Ability>();
     }
 
     public void Update()
@@ -28,9 +59,9 @@ public class AbilityInventory
         {
             foreach (Ability ability in removeList)
             {
-                abilities.Remove(ability);
+                CmdRemoveFromAbilities(ability);
             }
-            removeList = null;
+            removeList.Clear();
         }
         foreach (Ability ability in abilities)
         {
@@ -58,16 +89,16 @@ public class AbilityInventory
         if(ability.GetType().IsSubclassOf(typeof(Powerup)))
         {
             Powerup powerup = (Powerup)ability;
-            powerup.SetPlayerToEmpower(player);
+            powerup.SetPlayerToEmpower(NetworkClient.localPlayer.GetComponent<PlayerController>());
             powerup.SetInventory(this);
-            abilities.Add(powerup);
+            CmdAddToAbilities(powerup);
         }
         else if(ability.GetType().IsSubclassOf(typeof(Debuff)))
         {
             Debuff debuff = (Debuff)ability;
-            debuff.SetCastingPlayer(player);
+            debuff.SetCastingPlayer(NetworkClient.localPlayer.GetComponent<PlayerController>());
             debuff.SetInventory(this);
-            abilities.Add(debuff);
+            CmdAddToAbilities(debuff);
         }
         else if(ability.GetType().IsSubclassOf(typeof(Trap)))
         {
@@ -76,12 +107,8 @@ public class AbilityInventory
                 Debug.Log("Setting trap player");
                 Trap trap = (Trap)ability;
                 trap.SetInventory(this);
-                trap.SetPlacingPlayer(player);
-                if(player == null)
-                {
-                    Debug.LogError("MAYDAY MAYDAY player is null");
-                }
-                abilities.Add(trap);
+                trap.SetPlacingPlayer(NetworkClient.localPlayer.GetComponent<PlayerController>());
+                CmdAddToAbilities(trap);
             }
             else
             {
@@ -110,8 +137,8 @@ public class AbilityInventory
 
     public void RemoveAbilityFromInventory(Ability ability)
     {
-        removeList = new List<Ability>();
-        removeList.Add(ability);
+        removeList.Clear();
+        CmdAddToRemoveList(ability);
         GameObject.FindObjectOfType<AbilitySlotBarUI>().RemoveItemFromBar(ability.GetAbilityName());
     }
 
