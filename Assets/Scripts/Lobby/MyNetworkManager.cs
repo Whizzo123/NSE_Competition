@@ -128,10 +128,21 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
-
+        ChangeMusic();
         base.OnServerSceneChanged(sceneName);
 
         Debug.Log("OnServerSceneChanged");
+    }
+
+    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
+    {
+        ChangeMusic();
+        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
+    }
+
+    void ChangeMusic()
+    {
+        FindObjectOfType<AudioManager>().ActivateGameMusic();
     }
 
     public override void OnServerReady(NetworkConnection conn)
@@ -166,8 +177,10 @@ public class MyNetworkManager : NetworkManager
         if(SceneManager.GetActiveScene().name == "LobbyScene")
         {
             if(!IsReadyToStart()) { return; }
-
             ServerChangeScene("GameScene");
         }
     }
+
+
+
 }
