@@ -815,8 +815,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8c5e037d3f6b4408aa24705b76471d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panel1: {fileID: 0}
-  panel2: {fileID: 0}
+  panel1: {fileID: 1725839858}
+  panel2: {fileID: 2052961288}
 --- !u!1 &1545242724
 GameObject:
   m_ObjectHideFlags: 0
@@ -1135,6 +1135,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1167186341, guid: a5f83320ef8a46647b663d222dc2ae04, type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6212990517960320916, guid: a5f83320ef8a46647b663d222dc2ae04, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1184,12 +1188,16 @@ PrefabInstance:
       value: AudioManager
       objectReference: {fileID: 0}
     - target: {fileID: 6212990517960320919, guid: a5f83320ef8a46647b663d222dc2ae04, type: 3}
+      propertyPath: sVol
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6212990517960320919, guid: a5f83320ef8a46647b663d222dc2ae04, type: 3}
       propertyPath: panel
       value: 
       objectReference: {fileID: 1725839858}
     - target: {fileID: 6212990517960320919, guid: a5f83320ef8a46647b663d222dc2ae04, type: 3}
       propertyPath: masVol
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6212990517960320919, guid: a5f83320ef8a46647b663d222dc2ae04, type: 3}
       propertyPath: m_Enabled
