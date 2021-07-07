@@ -22,9 +22,7 @@ public class VoodooPoisonTrap : Trap
             spawnPos = hit.point;
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
             spawnRotation *= Quaternion.Euler(-90, 0, 0);
-            GameObject go = Object.Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, Quaternion.identity);
-            go.GetComponent<BearTrapBehaviour>().CmdSetPlacingPlayer(placingPlayer);
-            NetworkServer.Spawn(go);
+            placingPlayer.CmdSpawnVoodooTrap(spawnPos, placingPlayer);
             base.Use();
 
         }        

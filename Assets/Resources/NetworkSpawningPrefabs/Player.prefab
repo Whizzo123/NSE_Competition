@@ -1666,12 +1666,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  immobilize: 0
+  playerName: 
   waitTime: 0.569
   playerGravity: -65
   groundDistance: 2.5
   playerFallingVelocity: {x: 0, y: 0, z: 0}
   speed: 10
+  normalSpeed: 10
   lengthOfSphere: 2
   radiusOfSphere: 1
   obstacles:
@@ -1680,7 +1681,6 @@ MonoBehaviour:
   ground:
     serializedVersion: 2
     m_Bits: 63744
-  localPlayer: {fileID: 0}
   playerCharacterController: {fileID: 0}
   playerAnim: {fileID: 8412895053057340191}
   nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
@@ -1689,6 +1689,7 @@ MonoBehaviour:
   vCam: {fileID: 8073864731859778527, guid: 00eba60cefa011d4e9636e781d77a83c, type: 3}
   cam: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
   offset: {x: 0, y: 10, z: 10}
+  timeForStunAfterSteal: 10
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -17,6 +17,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     public GameObject openTrap;
     public GameObject closedTrap;
 
+    [SyncVar]
     private string placingPlayerName;
 
     void Start()
@@ -28,12 +29,16 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
+        if (placingPlayerName != null)
         {
-            if(collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+            if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
             {
-                trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                CmdSpringTrap();
+                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+                {
+                    trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
+                    trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
+                    CmdSpringTrap();
+                }
             }
         }
     }
@@ -43,7 +48,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
         placingPlayerName = controller.playerName;
     }
 
-    [Command]
+    [Command (requiresAuthority = false)]
     private void CmdSpringTrap()
     {
         RpcSpringTrap();
@@ -55,12 +60,6 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     {
         trappedPlayer.SetVoodooPoisoned(true);
         Close();
-    }
-
-    [ClientRpc]
-    private void RpcFinishTrap()
-    {
-        Destroy(this);
     }
 
     public void Close()
@@ -89,7 +88,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 else
                 {
                     trappedPlayer.SetVoodooPoisoned(false);
-                    RpcFinishTrap();
+                    NetworkServer.Destroy(this.gameObject);
                 }
             }
         }

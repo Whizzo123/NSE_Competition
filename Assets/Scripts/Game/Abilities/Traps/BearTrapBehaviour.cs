@@ -32,10 +32,8 @@ public class BearTrapBehaviour : NetworkBehaviour
             {
                 if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
                 {
-                    Debug.Log("BearTrapBehaviour: OnTriggerEnter() - PlacingPlayerName _ " + placingPlayerName);
-                    Debug.Log("BearTrapBehaviour: OnTriggerEnter() - collider.playerName _ " + collider.gameObject.GetComponent<PlayerController>().playerName);
                     trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                    trappedPlayer.SetImmobilized(true);
+                    trappedPlayer.CmdSetImmobilized(true);
                     trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
                     CmdSpringTrap();
                 }
@@ -43,9 +41,8 @@ public class BearTrapBehaviour : NetworkBehaviour
         }
     }
 
-    public void CmdSetPlacingPlayer(PlayerController controller)
+    public void SetPlacingPlayer(PlayerController controller)
     {
-        Debug.Log("BearTrapBehaviour: SetPlacingPlayer - controller.playerName _ " + controller.playerName);
         placingPlayerName = controller.playerName;
     }
 
@@ -64,15 +61,6 @@ public class BearTrapBehaviour : NetworkBehaviour
     private void RpcSpringBearTrap()
     {  
         Close();
-    }
-
-    /// <summary>
-    /// Cal from server to all clients to finish the trap by releasing player and destroying itself
-    /// </summary>
-    [ClientRpc]
-    private void RpcFinishTrap()
-    {
-        Destroy(this);
     }
 
     public void Close()
@@ -99,8 +87,8 @@ public class BearTrapBehaviour : NetworkBehaviour
                 }
                 else
                 {
-                    trappedPlayer.SetImmobilized(false);
-                    RpcFinishTrap();
+                    trappedPlayer.CmdSetImmobilized(false);
+                    NetworkServer.Destroy(this.gameObject);
                 }
             }
         }
