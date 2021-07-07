@@ -38,6 +38,7 @@ public class ArtefactInventory : NetworkBehaviour
             CmdAddToInventory(item);
             FindObjectOfType<CanvasUIManager>().PopupArtefactPickupDisplay(item);
             FindObjectOfType<CanvasUIManager>().AddToInventoryScreen(item);
+            
         }
         else
         {
@@ -53,6 +54,9 @@ public class ArtefactInventory : NetworkBehaviour
     {
         inventory.Add(item);
     }
+
+    
+
 
     public List<ItemArtefact> GetInventory()
     {

@@ -199,7 +199,7 @@ public class PlayerController : NetworkBehaviour
                     {
                         artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
                         FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
-                        NetworkServer.Destroy(item.gameObject);
+                        DestroyGameObject(item.gameObject);
                     }
                     CmdClearTargetArtefacts();
                 }
@@ -405,6 +405,7 @@ public class PlayerController : NetworkBehaviour
             CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
             if (FindObjectOfType<CanvasUIManager>() != null)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
+ 
         }
         else if (collider.gameObject.GetComponent<Stash>())
         {
@@ -474,6 +475,7 @@ public class PlayerController : NetworkBehaviour
     [ClientCallback]
     System.Collections.IEnumerator Hit()
     {
+        toolWait = true;
         CmdHitForward();
         yield return new WaitForSeconds(waitTime);
         toolWait= false;
@@ -607,6 +609,19 @@ public class PlayerController : NetworkBehaviour
         GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, Quaternion.identity);
         go.GetComponent<VoodooPoisonTrapBehaviour>().SetPlacingPlayer(placingPlayer);
         NetworkServer.Spawn(go);
+    }
+
+
+
+    [ClientCallback]
+    public void DestroyGameObject(GameObject go)
+    {
+        CmdDestroyGameObject(go);
+    }
+    [Command(requiresAuthority = false)]
+    public void CmdDestroyGameObject(GameObject go)
+    {
+        NetworkServer.Destroy(go);
     }
 }
 
