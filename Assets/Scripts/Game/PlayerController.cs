@@ -15,7 +15,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
-    [Tooltip("Our abilities that we've selected")] public AbilityInventory abilityInventory;
+    [Tooltip("Our abilities that we've selected")] [SyncVar]public AbilityInventory abilityInventory;
     private ArtefactInventory artefactInventory;
     [SyncVar]
     public string playerName;
@@ -33,8 +33,8 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Is the player touching the ground")] private bool isGrounded = true;
     [SerializeField] [Tooltip("How fast the player is currently falling by y axis")] private Vector3 playerFallingVelocity;
     //Movement
-    [Tooltip("The current speed of the player")] [SyncVar] public float speed = 20f;
-    [Tooltip("The original speed of the player")] public float normalSpeed = 20f;
+    [Tooltip("The current speed of the player")] [SyncVar] public float speed = 10f;
+    [Tooltip("The original speed of the player")] public float normalSpeed = 10f;
     [Tooltip("Direction player is moving in by input, not physics")] private Vector3 direction;
     [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
 
@@ -94,12 +94,18 @@ public class PlayerController : NetworkBehaviour
         {
             Invoke("SetCamera", 5);
         }
-        abilityInventory = new AbilityInventory(this);
+        CmdSettingAbilityInventory();
         artefactInventory = GetComponent<ArtefactInventory>();
         immobilize = false;
         hasBeenStolenFrom = false;
         SetLoadoutReleased(false);
         base.OnStartAuthority();
+    }
+
+    [Command]
+    private void CmdSettingAbilityInventory()
+    {
+        abilityInventory = new AbilityInventory(this);
     }
 
     [Client]
@@ -544,6 +550,13 @@ public class PlayerController : NetworkBehaviour
         return artefactInventory;
     }
 
+    [Command(requiresAuthority = false)]
+    public void CmdModifySpeed(float newSpeed)
+    {
+        Debug.Log("Modifying Speed: " + playerName);
+        speed = newSpeed;
+    }
+
     public void SetArtefactInventory(ArtefactInventory inventory)
     {
         artefactInventory = inventory;
@@ -553,10 +566,10 @@ public class PlayerController : NetworkBehaviour
     {
         return immobilize;
     }
-
-    public void SetImmobilized(bool immobilize)
+    [Command]
+    public void CmdSetImmobilized(bool value)
     {
-        this.immobilize = immobilize;
+        immobilize = value;
     }
 
     public bool IsVoodooPoisoned()
@@ -591,6 +604,14 @@ public class PlayerController : NetworkBehaviour
         GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, Quaternion.identity);
         go.GetComponent<VoodooPoisonTrapBehaviour>().SetPlacingPlayer(placingPlayer);
         NetworkServer.Spawn(go);
+    }
+    [Command]
+    public void CmdSpawnStickyBombParticles(Vector3 spawnPos, float effectDuration)
+    {
+        GameObject stickyBombParticles = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefab => spawnPrefab.name == "SlowBombExplosion_PA"), spawnPos, Quaternion.identity);
+        stickyBombParticles.GetComponent<StickyBombBehaviour>().effectDuration = effectDuration;
+        stickyBombParticles.GetComponent<StickyBombBehaviour>().tick = true;
+        NetworkServer.Spawn(stickyBombParticles);
     }
 }
 
