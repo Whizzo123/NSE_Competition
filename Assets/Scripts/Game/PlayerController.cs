@@ -118,6 +118,7 @@ public class PlayerController : NetworkBehaviour
         vCam.LookAt = this.gameObject.transform;
         vCam.Follow = this.gameObject.transform;
         vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
+        playerCamera = Camera.main;
         if (!hasAuthority)
         {
             //Disable other players cameras so that we don't accidentally get assigned to another players camera

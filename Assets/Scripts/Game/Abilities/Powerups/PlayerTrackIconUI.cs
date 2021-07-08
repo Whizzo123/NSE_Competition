@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
 
 public class PlayerTrackIconUI : MonoBehaviour
 {
@@ -23,10 +24,10 @@ public class PlayerTrackIconUI : MonoBehaviour
         //Do stuff to have icon move around screen
         if(target != null)
         {
-            //Vector2 screenPos = //PlayerController.localPlayer.playerCamera.WorldToScreenPoint(target.transform.position);
-            //screenPos.x = Mathf.Clamp(screenPos.x, 0 + widthOffset, Screen.width - widthOffset);
-            //screenPos.y = Mathf.Clamp(screenPos.y, 0 + heightOffset, Screen.height - heightOffset);
-          //  transform.position = screenPos;
+            Vector2 screenPos = NetworkClient.localPlayer.GetComponent<PlayerController>().playerCamera.WorldToScreenPoint(target.transform.position);
+            screenPos.x = Mathf.Clamp(screenPos.x, 0 + widthOffset, Screen.width - widthOffset);
+            screenPos.y = Mathf.Clamp(screenPos.y, 0 + heightOffset, Screen.height - heightOffset);
+            transform.position = screenPos;
         }
     }
 
