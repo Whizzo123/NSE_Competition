@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3826093038153287091}
   - component: {fileID: 203865272225147880}
   - component: {fileID: 8140954325068921890}
-  - component: {fileID: 6209905177451669789}
+  - component: {fileID: -2282950471051770364}
   m_Layer: 0
   m_Name: AbilityPickup
   m_TagString: Untagged
@@ -111,9 +111,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  abilityName: 
-  enabledForPickup: 0
---- !u!114 &6209905177451669789
+--- !u!114 &-2282950471051770364
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,23 +120,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1470354629708351191}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneGuid: 
-  _serializerGuid: f2b4441f-9fdc-41d8-8140-d7bdb82f6a9a
-  _prefabId: 6
-  _updateRate: 1
-  _autoFreezeProxyFrames: 0
-  _clientPredicted: 1
-  _allowInstantiateOnClient: 1
-  _persistThroughSceneLoads: 0
-  _sceneObjectDestroyOnDetach: 1
-  _sceneObjectAutoAttach: 1
-  _alwaysProxy: 0
-  _detachOnDisable: 0
-  _allowFirstReplicationWhenFrozen: 0
-  _autoRemoveChildEntities: 0
-  _entityBehaviourQueryOption: 0
-  _entityPriorityCalculatorQueryOption: 1
-  _entityReplicationFilterQueryOption: 1
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0

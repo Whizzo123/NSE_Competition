@@ -348,7 +348,7 @@ public class PlayerController : NetworkBehaviour
             {
                 item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
                 item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
-                item.transform.GetComponent<AbilityPickup>().enabledForPickup = true;
+                item.transform.GetComponent<AbilityPickup>().CmdSetEnabledForPickup(true);
             }
             else
             {
@@ -514,7 +514,7 @@ public class PlayerController : NetworkBehaviour
             {
                 item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
                 item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
-                item.transform.GetComponent<AbilityPickup>().enabledForPickup = true;
+                item.transform.GetComponent<AbilityPickup>().CmdSetEnabledForPickup(true);
             }
             else
             {

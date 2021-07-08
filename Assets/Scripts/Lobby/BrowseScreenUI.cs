@@ -71,7 +71,7 @@ public class BrowseScreenUI : MonoBehaviour
         }
     }
 
-    private void Update()
+    void Update()
     {
         if (!LobbyUIManager.useSteamMatchmaking)
         {
