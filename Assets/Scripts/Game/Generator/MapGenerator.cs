@@ -326,12 +326,6 @@ public class MapGenerator : NetworkBehaviour
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
                 GameObject go = Instantiate(ob, hit.point, spawnRotation);
                 NetworkServer.Spawn(go);
-                //BoltNetwork.Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(-90, 0, 0));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
-                /*var request = SpawnObstacle.Create();
-                request.PrefabName = ob.gameObject.name;
-                request.spawnPoint = hit.point;
-                request.rotation = spawnRotation;
-                request.Send();*/
                 return false;
             }
         }
@@ -364,41 +358,6 @@ public class MapGenerator : NetworkBehaviour
             
             return 0;
         }
-
-        /*RaycastHit[] hits;
-        hits = Physics.RaycastAll(spawnPos, Vector3.down, raycastDistance);
-        string g = "NOT SPAWNED ON ";
-        foreach (RaycastHit item in hits)
-        {
-            if (item.transform.name == null)
-            {
-                g = g + "NULL";
-            }
-            else
-            {
-                g = g + item.transform.name + " on " + ground.ToString() + " AND ";
-            }
-        }
-        g = g + " END";
-        Debug.LogError(g); RaycastHit[] hits;
-        hits = Physics.RaycastAll(spawnPos, Vector3.down, raycastDistance, obsground);
-
-        foreach (RaycastHit item in hits)
-        {
-
-        }
-        Debug.LogWarning("SPAWNED");*/
-        //else
-        //{
-        // Debug.LogError("NotSpawning " + ob.name + " artefact at obstacle");
-        //}
-
-        //}
-        //else
-        //{
-        //Debug.LogError("NotSpawning " + ob.name + " artefact at ground");
-        //}
-        ///////////////Destroy(this.gameobject);
     }
 
     /// <summary>
@@ -434,9 +393,7 @@ public class MapGenerator : NetworkBehaviour
                     spawnRotation *= randYRotation;
                 }
                 int randScale = ran.Next(1, 5);
-                //ob.transform.localScale *= randScale;
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
-                //Transform g = ob.transform; g.localScale *= randScale;
                 GameObject go = Instantiate(ob, hit.point, spawnRotation);
                 go.transform.localScale = new Vector3(randScale, randScale, randScale);
                 NetworkServer.Spawn(go);
@@ -447,102 +404,4 @@ public class MapGenerator : NetworkBehaviour
     }
     #endregion
 
-    #region DeadCode
-    /*
-    private void OnDrawGizmos()
-    {
-        if (map != null)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
-                    //Vector3 pos = new Vector3(-width / 2 + x + 0.5f, 0, -height / 2 + y + 0.5f);
-                    Vector3 pos = new Vector3(x * spawnPosScale, 0, y * spawnPosScale);
-                    Gizmos.DrawCube(pos, Vector3.one);
-                }
-            }
-        }
-    }*/
-    #endregion
-
-
-    /*public void GenerateAbilities(AbilityInventory abilityInventoryFromPlayer)
-    {
-        List<GameObject> abilitiesToSpawn = new List<GameObject>();
-        
-        List<Ability> abilitiesFromInventory = abilityInventoryFromPlayer.getAbilities();
-        
-        foreach (Ability item in abilitiesFromInventory)
-        {
-            //item.GetGameobject of some sort?
-            if (item.GetUseType() == AbilityUseTypes.ONE_TIME)
-            {
-                for (int i = 0; i < abilityChargesToSpawn.Length; i++)
-                {
-                    if (abilityChargesToSpawn[i].GetComponent<AbilityPickup>().abilityName == item.GetAbilityName())
-                    {
-                        abilitiesToSpawn.Add(abilityChargesToSpawn[i]);
-                    }
-                }
-            }
-        }
-        //Debug.LogError(abilitiesToSpawn.Length);
-        Debug.LogError("ABILITIES DONE");
-        //This code is based upon the artefact spawning code
-        int iterations = 0;
-        int totalAbilitiesSpawned = 0;
-
-        //If all abilities haven't been spawned, go through loop again, iteration increases which then increases the chance to spawn artefacts.
-        while (abilityAmountToSpawn < totalAbilitiesSpawned)
-        {
-            iterations++;
-            for (int x = 1; x < width; x++)
-            {
-                for (int y = 1; y < height; y++)
-                {
-                    //if : Abilites spawning chance  &&  map[] = 0  &&  all artefacts have spawned
-                    if (map[x, y] == 0 && (UnityEngine.Random.Range(0, width * height) <= abilityAmountToSpawn * iterations) && totalAbilitiesSpawned < abilityAmountToSpawn)
-                    {
-                        Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, y * spawnPosScale) + transform.position;
-                        //Hones in on last artefact types to spawn
-                        int ran = UnityEngine.Random.Range(0, abilitiesToSpawn.Count);
-                        //Artefact can't spawn in same place twice or where there are artefacts.
-                        totalAbilitiesSpawned += AbilitySpawner(abilitiesToSpawn[ran], spawnPosition);
-                        map[x, y] = 1;
-                    }
-                    else if (totalAbilitiesSpawned >= abilityAmountToSpawn)
-                    {
-                        //If all artefacts spawned exit loop
-                        Debug.LogError("Finished loop with" + iterations + " iterations " + totalAbilitiesSpawned + " spawned ");
-                        y = height + 1;
-                        x = height + 1;
-                        break;
-                    }
-                }
-            }
-
-        }
-}
-
-    int AbilitySpawner(GameObject ob, Vector3 spawnPos)
-    {
-        Debug.LogError("ABILITY SPAWNER CALLED");
-        //If ground is hit, spawn ability
-        RaycastHit hit;
-        if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
-        {
-            Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
-            Debug.LogError("SPAWNED AN ABILITY");
-            return 1;
-        }
-        else
-        {
-
-            return 0;
-        }
-
-    }*/
 }
