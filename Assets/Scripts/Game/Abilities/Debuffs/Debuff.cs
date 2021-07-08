@@ -48,7 +48,6 @@ public class Debuff : Ability
         {
             if (currentDuration < effectDuration)
             {
-                Debug.Log("Current duration");
                 currentDuration += Time.deltaTime;
                 if (currentDuration > effectDuration)
                     currentDuration = effectDuration;
@@ -81,7 +80,6 @@ public class Debuff : Ability
             {
                 if (currentDuration < effectDuration)
                 {
-                    Debug.Log("Current duration");
                     currentDuration += Time.deltaTime;
                     if (currentDuration > effectDuration)
                         currentDuration = effectDuration;

@@ -30,7 +30,7 @@ public class MortalSpell : Debuff
 
     private void Cast(bool toggle)
     {
-        target.SetMortal(toggle);
+        target.CmdSetMortal(toggle);
     }
 
     public override void EndEffect()

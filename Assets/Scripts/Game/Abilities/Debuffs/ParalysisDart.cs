@@ -32,7 +32,7 @@ public class ParalysisDart : Debuff
 
     private void Cast(bool toggle)
     {
-        target.CmdSetImmobilized(true);
+        target.CmdSetImmobilized(toggle);
     }
 
     public override void EndEffect()

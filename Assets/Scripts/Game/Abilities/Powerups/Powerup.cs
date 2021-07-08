@@ -27,7 +27,6 @@ public class Powerup : Ability
                 //Do stuff to do with duration of effect
                 if (currentDuration < effectDuration)
                 {
-                    Debug.Log("Current Duration: " + currentDuration);
                     currentDuration += Time.deltaTime;
                     if (currentDuration > effectDuration)
                         currentDuration = effectDuration;
@@ -44,7 +43,6 @@ public class Powerup : Ability
                     currentCharge += Time.deltaTime;
                     if (currentCharge > fullCharge)
                     {
-                        Debug.Log("CurrentCharge: " + currentCharge);
                         currentCharge = fullCharge;
                         GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, false);
                     }

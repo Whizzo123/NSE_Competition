@@ -15,7 +15,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
-    [Tooltip("Our abilities that we've selected")] public AbilityInventory abilityInventory;
+    [Tooltip("Our abilities that we've selected")] [SyncVar]public AbilityInventory abilityInventory;
     [SyncVar]private ArtefactInventory artefactInventory;
     [SyncVar]
     public string playerName;
@@ -118,6 +118,7 @@ public class PlayerController : NetworkBehaviour
         vCam.LookAt = this.gameObject.transform;
         vCam.Follow = this.gameObject.transform;
         vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
+        playerCamera = Camera.main;
         if (!hasAuthority)
         {
             //Disable other players cameras so that we don't accidentally get assigned to another players camera
@@ -246,9 +247,8 @@ public class PlayerController : NetworkBehaviour
                         if (targetedPlayerToStealFrom.GetArtefactInventory().GetInventory()[indexToRemove].name != string.Empty && targetedPlayerToStealFrom.GetArtefactInventory().GetInventory()[indexToRemove].name == randomArtefact.name)
                         {
                             targetedPlayerToStealFrom.GetArtefactInventory().RemoveFromInventory(indexToRemove, randomArtefact.name, randomArtefact.points);
-                            targetedPlayerToStealFrom.SetImmobilized(true);
+                            targetedPlayerToStealFrom.CmdSetImmobilized(true);
                             break;
-           
                         }
                     }
                 }
@@ -266,7 +266,7 @@ public class PlayerController : NetworkBehaviour
             {
                 currentStunAfterTimer = 0;
                 hasBeenStolenFrom = false;
-                SetImmobilized(false);
+                CmdSetImmobilized(false);
             }
             else
             {
@@ -566,7 +566,7 @@ public class PlayerController : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdModifySpeed(float newSpeed)
     {
-        Debug.Log("Modifying Speed: " + playerName);
+        //Debug.Log("Modifying Speed: " + playerName);
         speed = newSpeed;
     }
 
@@ -579,7 +579,7 @@ public class PlayerController : NetworkBehaviour
     {
         return immobilize;
     }
-    [Command]
+    [Command (requiresAuthority = false)]
     public void CmdSetImmobilized(bool value)
     {
         immobilize = value;
@@ -599,8 +599,8 @@ public class PlayerController : NetworkBehaviour
     {
         return mortal;
     }
-
-    public void SetMortal(bool mortal)
+    [Command(requiresAuthority = false)]
+    public void CmdSetMortal(bool mortal)
     {
         this.mortal = mortal;
     }
@@ -637,6 +637,32 @@ public class PlayerController : NetworkBehaviour
         stickyBombParticles.GetComponent<StickyBombBehaviour>().effectDuration = effectDuration;
         stickyBombParticles.GetComponent<StickyBombBehaviour>().tick = true;
         NetworkServer.Spawn(stickyBombParticles);
+    }
+    [Command]
+    public void CmdSpawnCamouflageParticles(Vector3 spawnPos)
+    {
+        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Invisibility_PA"),
+            spawnPos, Quaternion.identity);
+        NetworkServer.Spawn(go);
+    }
+    [Command]
+    public void CmdToggleCamouflage(bool toggle, PlayerController player)
+    {
+        Debug.Log("CmdToggleCamouflage: local player: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
+        //GetPlayerToEmpower().ToggleMesh(toggle);
+        RpcToggleCamouflage(toggle, player);
+    }
+    [ClientRpc]
+    private void RpcToggleCamouflage(bool toggle, PlayerController player)
+    {
+        Debug.Log("ClientRpc call toggling camouflage for: " + player.playerName);
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>() != player)
+        {
+            Debug.Log("RpcToggleCamouflage the ClientRpc is hitting another player: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
+            player.ToggleMesh(toggle);
+        }
+        else
+            Debug.Log("RpcToggleCamouflage the ClientRpc is hitting client called: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
     }
 }
 

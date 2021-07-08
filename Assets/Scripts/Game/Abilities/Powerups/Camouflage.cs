@@ -13,27 +13,15 @@ public class Camouflage : Powerup
 
     public override void Use()
     {
-        BoltNetwork.Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Invisibility_PA"),
-            GetPlayerToEmpower().gameObject.transform.position, Quaternion.identity);
-        CmdToggleCamouflage(false);
+        Vector3 spawnPos = GetPlayerToEmpower().gameObject.transform.position;
+        GetPlayerToEmpower().CmdSpawnCamouflageParticles(spawnPos);
+        GetPlayerToEmpower().CmdToggleCamouflage(false, GetPlayerToEmpower());
         inUse = true;
-    }
-
-    [Command]
-    private void CmdToggleCamouflage(bool toggle)
-    {
-        RpcToggleCamouflage(toggle);
-    }
-
-    [ClientRpc]
-    private void RpcToggleCamouflage(bool toggle)
-    {
-        GetPlayerToEmpower().ToggleMesh(toggle);
     }
 
     protected override void EndEffect()
     {
-        CmdToggleCamouflage(true);
+        GetPlayerToEmpower().CmdToggleCamouflage(true, GetPlayerToEmpower());
         base.EndEffect();
     }
 
