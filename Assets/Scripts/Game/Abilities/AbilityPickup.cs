@@ -5,9 +5,10 @@ using Mirror;
 
 public class AbilityPickup : NetworkBehaviour
 {
-
-    public string abilityName;
-    public bool enabledForPickup = true;
+    [SyncVar]
+    private string abilityName;
+    [SyncVar]
+    private bool enabledForPickup;
     private Quaternion rotation = Quaternion.Euler(45, 45, 0);
     public void FixedUpdate()
     {
@@ -18,14 +19,36 @@ public class AbilityPickup : NetworkBehaviour
     public override void OnStartAuthority()
     {
         base.OnStartAuthority();
-        enabledForPickup = true;
+        CmdSetEnabledForPickup(true);
     }
 
 
     public void SetAbilityOnPickup(string name)
     {
-        abilityName = name; 
-        enabledForPickup = true;
+        CmdSetAbilityName(name);
+        CmdSetEnabledForPickup(true);
+    }
+
+    public string GetAbilityName()
+    {
+        return abilityName;
+    }
+
+    public bool IsEnabledForPickup()
+    {
+        return enabledForPickup;
+    }
+
+    [Command (requiresAuthority = false)]
+    public void CmdSetAbilityName(string name)
+    {
+        abilityName = name;
+    }
+
+    [Command (requiresAuthority = false)]
+    public void CmdSetEnabledForPickup(bool value)
+    {
+        enabledForPickup = value;
     }
 
     public void PickupAbility(PlayerController player)

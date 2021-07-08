@@ -4,13 +4,10 @@ using Mirror;
 
 public class GameSceneManager : NetworkBehaviour
 {
-
-    private bool abilityPickupsSpawned = false;
-    private float abilitySpawnTime = 30;
-    private float currentAbilitySpawnTime = 0;
-    private int counter = 0;
     [SyncVar]
     private bool endedGame = false;
+    [SyncVar]
+    private bool pickupSpawnCounting = false;
 
 
     void Start()
@@ -25,32 +22,39 @@ public class GameSceneManager : NetworkBehaviour
             endedGame = true;
             FindObjectOfType<MyLobbyCountdown>().CmdCallGameToFinish();
         }
+        if(FindObjectOfType<AbilityPickup>() == null)
+        {
+            if (!pickupSpawnCounting)
+            {
+                Debug.Log("RunningCoroutine");
+                pickupSpawnCounting = true;
+                StartCoroutine(RunAbilityPickupSpawnCountdown());
+            }
+        }
     }
 
     private IEnumerator RunAbilityPickupSpawnCountdown()
     {
         yield return new WaitForSeconds(30);
-        //Do event stuff y -> -3.5
-        if (abilityPickupsSpawned)
-            yield return null;
-        else
-        {
-            SpawnAbilityCharges();
-        }
+
+        SpawnAbilityCharges();
     }
 
     private void SpawnAbilityCharges()
     {
+        Debug.Log("Spawning Ability Charges");
         string[] traps = FindObjectOfType<AbilityRegister>().GetTrapList();
-        AbilityPickupSpawn request = AbilityPickupSpawn.Create();
-        request.SpawnLocationOne = FindRandomPointOnCircle(new Vector2(4, -20), 14, 90);
-        request.AbilityOneName = traps[Random.Range(0, traps.Length)];
-        request.SpawnLocationTwo = FindRandomPointOnCircle(new Vector2(4, -20), 14, 180);
-        request.AbilityTwoName = traps[Random.Range(0, traps.Length)];
-        request.SpawnLocationThree = FindRandomPointOnCircle(new Vector2(4, -20), 14, 270);
-        request.AbilityThreeName = traps[Random.Range(0, traps.Length)];
-        request.Send();
-        abilityPickupsSpawned = true;
+        SpawnCharge(FindRandomPointOnCircle(new Vector2(4, -20), 14, 90), traps[Random.Range(0, traps.Length)]);
+        SpawnCharge(FindRandomPointOnCircle(new Vector2(4, -20), 14, 180), traps[Random.Range(0, traps.Length)]);
+        SpawnCharge(FindRandomPointOnCircle(new Vector2(4, -20), 14, 270), traps[Random.Range(0, traps.Length)]);
+    }
+
+    private void SpawnCharge(Vector3 spawnPos, string trapName)
+    {
+        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefab => spawnPrefab.name == "AbilityPickup"),
+            new Vector3(spawnPos.x, -2f, spawnPos.y), Quaternion.identity);
+        NetworkServer.Spawn(go);
+        go.GetComponent<AbilityPickup>().SetAbilityOnPickup(trapName);
     }
 
     private Vector2 FindRandomPointOnCircle(Vector2 centerCirclePoint, float circleRadius, int angle)
