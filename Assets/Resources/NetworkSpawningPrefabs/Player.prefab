@@ -1690,6 +1690,8 @@ MonoBehaviour:
   cam: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
   offset: {x: 0, y: 10, z: 10}
   timeForStunAfterSteal: 10
+  devMode: 0
+  devCam: {fileID: 22159899250329015, guid: 73b92ca893da92447ae9bf658bf9355c, type: 3}
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0
