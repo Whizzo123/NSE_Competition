@@ -31,14 +31,14 @@ public class MyNetworkManager : NetworkManager
         {
             spawnPrefabs.Add(prefabs[i]);
         }
-        if(useSteamMatchmaking)
-        {
-            transport = GetComponent<FizzySteamworks>();
-        }
-        else
-        {
-            transport = GetComponent<TelepathyTransport>();
-        }
+        //if(useSteamMatchmaking)
+        //{
+        //    transport = GetComponent<FizzySteamworks>();
+        //}
+        //else
+        //{
+        //    transport = GetComponent<TelepathyTransport>();
+        //}
     }
 
     public override void OnStartServer()

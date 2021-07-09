@@ -1525,33 +1525,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
-      propertyPath: spawnPrefabs.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
-      propertyPath: spawnPrefabs.Array.data[0]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
-      propertyPath: spawnPrefabs.Array.data[1]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
-      propertyPath: spawnPrefabs.Array.data[2]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
-      propertyPath: spawnPrefabs.Array.data[3]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
-      propertyPath: spawnPrefabs.Array.data[4]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
-      propertyPath: spawnPrefabs.Array.data[5]
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
