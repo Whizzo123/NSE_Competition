@@ -203,7 +203,7 @@ public class PlayerController : NetworkBehaviour
                         {
                             Debug.LogError("Pressing E and Attempting to pick up however this item in targetedArtefacts is null");
                         }
-                        if(artefactInventory)
+                        if(artefactInventory == null)
                         {
                             Debug.LogError("Pressing E and Attempting to pick up however the artefact inventory is null");
                         }
