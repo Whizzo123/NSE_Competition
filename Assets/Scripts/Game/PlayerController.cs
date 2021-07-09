@@ -191,6 +191,7 @@ public class PlayerController : NetworkBehaviour
         #region Artefact interaction
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Debug.Log("PlayerController: Pressing E targetedArtefacts.Count: " + targetedArtefacts.Count);
             if (targetedArtefacts.Count != 0)
             {
                 if (artefactInventory.FindEmptyInventorySlot() != -1)
