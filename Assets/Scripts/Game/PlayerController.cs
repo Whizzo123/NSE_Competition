@@ -74,7 +74,10 @@ public class PlayerController : NetworkBehaviour
     //Other Variables
     [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom = false;
 
-
+    [Space]
+    [Header("DevMode")]
+    [Tooltip("Devmode allows us to disconnect ourselves from the player")] public bool devMode;
+    [Tooltip("Free look camera")] public GameObject devCam;
     #endregion
 
     public void Awake()
@@ -112,7 +115,6 @@ public class PlayerController : NetworkBehaviour
     [Client]
     void SetCamera()
     {
-        Debug.LogError("Set Camera");
         vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
         DontDestroyOnLoad(vCam);
         vCam.LookAt = this.gameObject.transform;
@@ -125,11 +127,42 @@ public class PlayerController : NetworkBehaviour
             if (playerCamera != null)
                 playerCamera.gameObject.SetActive(false);
         }
+        if (devCam == null)
+        {
+            //REMINDER, you can't find the object if they are not in the same section ie dontdestroysection
+            devCam = GameObject.Find("DevCam");
+            Debug.LogError(devCam);
+            devCam.SetActive(true);
+        }
+        else
+        {
+            devCam = Instantiate(devCam);
+            devCam.SetActive(true);
+        }
+    }
+
+    private void DevModeOn()
+    {
+        vCam.enabled = !devMode;
+        cam.enabled = !devMode;
+        playerCamera.enabled = !devMode;
+        devCam.SetActive(devMode);
+        FindObjectOfType<Canvas>().enabled = !devMode;
     }
     [ClientCallback]
     void Update()
     {
+
+
         if (!hasAuthority) { return; };
+
+        #region DEVMODE
+        if (Input.GetKey(KeyCode.P)) { devMode = true;}
+        if (Input.GetKey(KeyCode.O)){devMode = false;}
+        DevModeOn();
+        if (devMode){return;}
+        #endregion
+
         abilityInventory.Update();
 
         if (playerNameText == null && SceneManager.GetActiveScene().name == "GameScene")
@@ -143,6 +176,8 @@ public class PlayerController : NetworkBehaviour
 
         if (loadoutReleased)
         {
+
+
             if (immobilize == false)
             {
                 #region Falling
