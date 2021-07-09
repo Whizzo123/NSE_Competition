@@ -545,7 +545,7 @@ public class PlayerController : NetworkBehaviour
     #endregion
 
 
-    [Command]
+    [Command (requiresAuthority = false)]
     private void CmdAddToTargetedArtefacts(ArtefactBehaviour artefact)
     {
         targetedArtefacts.Add(artefact);
