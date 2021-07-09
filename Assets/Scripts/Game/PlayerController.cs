@@ -199,6 +199,14 @@ public class PlayerController : NetworkBehaviour
                     // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
                     foreach (ArtefactBehaviour item in targetedArtefacts)
                     {
+                        if(item == null)
+                        {
+                            Debug.LogError("Pressing E and Attempting to pick up however this item in targetedArtefacts is null");
+                        }
+                        if(artefactInventory)
+                        {
+                            Debug.LogError("Pressing E and Attempting to pick up however the artefact inventory is null");
+                        }
                         artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
                         FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         DestroyGameObject(item.gameObject);
