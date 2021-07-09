@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Mirror.FizzySteam;
 using Steamworks;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +16,8 @@ public class MyNetworkManager : NetworkManager
     [SerializeField] public int minPlayers;
     [Header("Game")]
     [SerializeField] private PlayerController gamePlayerPrefab = null;
+    [Tooltip("Do we use Steam for matchmaking or not?")]
+    [SerializeField] public bool useSteamMatchmaking;
 
 
     //List<LobbyPlayer> RoomPlayers = new List<LobbyPlayer>();
@@ -28,6 +31,14 @@ public class MyNetworkManager : NetworkManager
         {
             spawnPrefabs.Add(prefabs[i]);
         }
+        //if(useSteamMatchmaking)
+        //{
+        //    transport = GetComponent<FizzySteamworks>();
+        //}
+        //else
+        //{
+        //    transport = GetComponent<TelepathyTransport>();
+        //}
     }
 
     public override void OnStartServer()
@@ -75,7 +86,7 @@ public class MyNetworkManager : NetworkManager
 
             lobbyPlayerInstance.IsLeader = isLeader;
 
-            if (LobbyUIManager.useSteamMatchmaking)
+            if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             {
                 CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex(LobbyUIManager.LobbyId, RoomPlayers.Count);
                 lobbyPlayerInstance.SetSteamId(steamId.m_SteamID);

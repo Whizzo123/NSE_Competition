@@ -126,7 +126,7 @@ public class ArtefactInventory : NetworkBehaviour
     /// </summary>
     public bool InventoryNotEmpty()
     {
-        if (inventory.Count < 8)
+        if (inventory.Count > 0)
         {
             return true;
         }

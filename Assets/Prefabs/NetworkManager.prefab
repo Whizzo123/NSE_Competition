@@ -56,7 +56,7 @@ MonoBehaviour:
   serverBatchInterval: 0
   offlineScene: 
   onlineScene: 
-  transport: {fileID: 5581680211952789228}
+  transport: {fileID: 5581680211952789216}
   networkAddress: localhost
   maxConnections: 100
   disconnectInactiveConnections: 0
@@ -65,17 +65,12 @@ MonoBehaviour:
   playerPrefab: {fileID: 3014976917208410842, guid: b08b2cfc57c04f84e805399c55176a75, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
-  spawnPrefabs:
-  - {fileID: 795114186693884625, guid: 43edba4bcb587804291afe955648a2fb, type: 3}
-  - {fileID: 7811146946738992411, guid: f1f1c90d42a4179428ca47018e5a7f2c, type: 3}
-  - {fileID: 5770247344185561094, guid: f06291300b13e1f4b8d1c0d26940d1fe, type: 3}
-  - {fileID: 8310129950516001420, guid: 0807cbbdf4ed7fa41a6706f16f1c4efb, type: 3}
-  - {fileID: 156633075207965585, guid: 8c203de406a7b1246bb6099b6fd93700, type: 3}
-  - {fileID: 7766472845033128527, guid: bf01741f83a28384da02522cdd7ef976, type: 3}
+  spawnPrefabs: []
   menuScene: 
   lobbyPlayerPrefab: {fileID: 2984370565624789861, guid: 43edba4bcb587804291afe955648a2fb, type: 3}
   minPlayers: 2
   gamePlayerPrefab: {fileID: 0}
+  useSteamMatchmaking: 1
   RoomPlayers: []
 --- !u!114 &5581680211952789216
 MonoBehaviour:

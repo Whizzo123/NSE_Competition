@@ -61,19 +61,19 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
     {
         CSteamID cSteamId = new CSteamID(newSteamId);
-
-        CmdSetDisplayName(SteamFriends.GetFriendPersonaName(cSteamId));
     }
 
     #endregion
 
     public override void OnStartAuthority()
     {
-        if (!LobbyUIManager.useSteamMatchmaking)
+        if (!FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
         {
             string name = string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100));
             CmdSetDisplayName(name);
         }
+        else
+            CmdSetDisplayName(SteamFriends.GetFriendPersonaName(new CSteamID(steamId)));
         lobbyUI.SetActive(true);
         if (isLeader)
             EnableRemoveButtons();

@@ -30,9 +30,7 @@ public class LobbyUIManager : MonoBehaviour
     [SerializeField]
     public float prematchCountdown = 5.0f;
 
-    [Tooltip("Do we use Steam for matchmaking or not?")]
-    [SerializeField]
-    public static bool useSteamMatchmaking = false;
+
 
     private bool randomJoin;
 
@@ -61,7 +59,7 @@ public class LobbyUIManager : MonoBehaviour
         networkManager = FindObjectOfType<MyNetworkManager>();
         networkDiscovery = FindObjectOfType<NetworkDiscovery>();
         networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
-        if (useSteamMatchmaking)
+        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             InitializeSteam();
 
         //Setup all the screens for the lobby
@@ -186,7 +184,7 @@ public class LobbyUIManager : MonoBehaviour
         roomName = createScreen.inputField.text;
         Debug.Log("CreatingRoomSession");
 
-        if (useSteamMatchmaking)
+        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, networkManager.maxConnections);
         else
             CreateMirrorLobby();
@@ -197,7 +195,7 @@ public class LobbyUIManager : MonoBehaviour
         //In order for client to view session list we need to connect them to the network
         FindObjectOfType<AudioManager>().PlaySound("Click");
         ChangeScreenTo("Browse");
-        if(useSteamMatchmaking)
+        if(FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             SteamMatchmaking.RequestLobbyList();
         else
             networkDiscovery.StartDiscovery();
