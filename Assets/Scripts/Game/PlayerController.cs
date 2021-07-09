@@ -447,12 +447,14 @@ public class PlayerController : NetworkBehaviour
         {
             if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
             {
+                Debug.Log("PlayerController OnTriggerExit Inside if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())");
                 //Removes specific artefact that we exited.
                 int i = 0;
                 foreach (ArtefactBehaviour item in targetedArtefacts)
                 {
                     if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
                     {
+                        Debug.Log("PlayerController OnTriggerExit Removing from list");
                         CmdTargetArtefactsRemoveAt(item);
                     }
                     i++;
