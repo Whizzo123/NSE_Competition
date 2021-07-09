@@ -72,7 +72,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal = 10.0f;
 
     //Other Variables
-    [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom;
+    [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom = false;
 
 
     #endregion
@@ -248,6 +248,7 @@ public class PlayerController : NetworkBehaviour
                         {
                             targetedPlayerToStealFrom.GetArtefactInventory().RemoveFromInventory(indexToRemove, randomArtefact.name, randomArtefact.points);
                             targetedPlayerToStealFrom.CmdSetImmobilized(true);
+                            targetedPlayerToStealFrom.CmdSetHasBeenStolenFrom(true);
                             break;
                         }
                     }
@@ -265,7 +266,7 @@ public class PlayerController : NetworkBehaviour
             if (currentStunAfterTimer >= timeForStunAfterSteal)
             {
                 currentStunAfterTimer = 0;
-                hasBeenStolenFrom = false;
+                CmdSetHasBeenStolenFrom(false);
                 CmdSetImmobilized(false);
             }
             else
@@ -607,6 +608,11 @@ public class PlayerController : NetworkBehaviour
     public void CmdSetMortal(bool mortal)
     {
         this.mortal = mortal;
+    }
+    [Command (requiresAuthority = false)]
+    public void CmdSetHasBeenStolenFrom(bool value)
+    {
+        hasBeenStolenFrom = value;
     }
     [Command]
     public void CmdSpawnBearTrap(Vector3 spawnPos, PlayerController placingPlayer)
