@@ -265,6 +265,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 292591921}
   m_CullTransparentMesh: 0
+--- !u!114 &313139179 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5581680211952789228, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
+  m_PrefabInstance: {fileID: 5581680210558013703}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &349784520
 GameObject:
   m_ObjectHideFlags: 0
@@ -1523,6 +1534,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5581680211952789230, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
+      propertyPath: transport
+      value: 
+      objectReference: {fileID: 313139179}
+    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
+      propertyPath: useSteamMatchmaking
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -213,6 +213,7 @@ public class PlayerController : NetworkBehaviour
                         DestroyGameObject(item.gameObject);
                     }
                     CmdClearTargetArtefacts();
+                    Debug.Log("PlayerController ClearTargetedArtefacts Count: " + targetedArtefacts.Count);
                 }
                 else
                 {
@@ -556,7 +557,7 @@ public class PlayerController : NetworkBehaviour
     #endregion
 
 
-    [Command (requiresAuthority = false)]
+    [Command]
     private void CmdAddToTargetedArtefacts(ArtefactBehaviour artefact)
     {
         targetedArtefacts.Add(artefact);
