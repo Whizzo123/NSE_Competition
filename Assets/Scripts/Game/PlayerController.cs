@@ -401,14 +401,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.GetComponent<ArtefactBehaviour>())
-        {
-            CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
-            if (FindObjectOfType<CanvasUIManager>() != null)
-                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
- 
-        }
-        else if (collider.gameObject.GetComponent<Stash>())
+        if (collider.gameObject.GetComponent<Stash>())
         {
             gameStash = collider.gameObject.GetComponent<Stash>();
             if(FindObjectOfType<CanvasUIManager>() != null)
@@ -425,6 +418,17 @@ public class PlayerController : NetworkBehaviour
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
         }
 
+    }
+
+    public void OnTriggerStay(Collider collider)
+    {
+        if (collider.gameObject.GetComponent<ArtefactBehaviour>() && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup()
+            && targetedArtefacts.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false)
+        {
+            CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            if (FindObjectOfType<CanvasUIManager>() != null)
+                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
+        }
     }
 
     public void OnTriggerExit(Collider collider)

@@ -14,7 +14,7 @@ public class ArtefactBehaviour : NetworkBehaviour
     [SyncVar]
     private ArtefactRarity rarity;
     [SyncVar]
-    private bool avaliableForPickup;
+    public bool avaliableForPickup = false;
 
     void Start()
     {
@@ -23,13 +23,12 @@ public class ArtefactBehaviour : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        Debug.Log("OnStartAuthority");
-        avaliableForPickup = false;
+
     }
 
     public void EnableForPickup()
     {
-        avaliableForPickup = true;
+        CmdSetAvaliableForPickup(true);
         CmdToggleRenderer(true);
     }
 
@@ -65,6 +64,12 @@ public class ArtefactBehaviour : NetworkBehaviour
         }
     }
 
+    [Command(requiresAuthority = false)]
+    private void CmdSetAvaliableForPickup(bool value)
+    {
+        avaliableForPickup = value;
+    }
+
     public ArtefactRarity GetRarity()
     {
         return rarity;
@@ -80,4 +85,8 @@ public class ArtefactBehaviour : NetworkBehaviour
         return points;
     }
 
+    public bool IsAvaliableForPickup()
+    {
+        return avaliableForPickup;
+    }
 }
