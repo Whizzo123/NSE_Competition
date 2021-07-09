@@ -431,15 +431,28 @@ public class PlayerController : NetworkBehaviour
 
     }
 
+    public List<ArtefactBehaviour> tempArtefactStorage;
+
     public void OnTriggerStay(Collider collider)
     {
+
+        if (collider.gameObject.GetComponent<ArtefactBehaviour>() && tempArtefactStorage.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup())
+        {
+            tempArtefactStorage.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
+        }
+
+
         if (collider.gameObject.GetComponent<ArtefactBehaviour>() && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup()
             && targetedArtefacts.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false)
         {
-            CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            Debug.LogError("This has been executed");
+
             if (FindObjectOfType<CanvasUIManager>() != null)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
         }
+
+
     }
 
     public void OnTriggerExit(Collider collider)
@@ -456,7 +469,9 @@ public class PlayerController : NetworkBehaviour
                     if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
                     {
                         Debug.Log("PlayerController OnTriggerExit Removing from list");
+                        tempArtefactStorage.Remove(item);
                         CmdTargetArtefactsRemoveAt(item);
+
                     }
                     i++;
                 }
