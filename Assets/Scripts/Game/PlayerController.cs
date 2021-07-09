@@ -72,7 +72,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal = 10.0f;
 
     //Other Variables
-    [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom;
+    [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom = false;
 
 
     #endregion
@@ -248,6 +248,7 @@ public class PlayerController : NetworkBehaviour
                         {
                             targetedPlayerToStealFrom.GetArtefactInventory().RemoveFromInventory(indexToRemove, randomArtefact.name, randomArtefact.points);
                             targetedPlayerToStealFrom.CmdSetImmobilized(true);
+                            targetedPlayerToStealFrom.CmdSetHasBeenStolenFrom(true);
                             break;
                         }
                     }
@@ -265,7 +266,7 @@ public class PlayerController : NetworkBehaviour
             if (currentStunAfterTimer >= timeForStunAfterSteal)
             {
                 currentStunAfterTimer = 0;
-                hasBeenStolenFrom = false;
+                CmdSetHasBeenStolenFrom(false);
                 CmdSetImmobilized(false);
             }
             else
@@ -401,14 +402,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.GetComponent<ArtefactBehaviour>())
-        {
-            CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
-            if (FindObjectOfType<CanvasUIManager>() != null)
-                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
- 
-        }
-        else if (collider.gameObject.GetComponent<Stash>())
+        if (collider.gameObject.GetComponent<Stash>())
         {
             gameStash = collider.gameObject.GetComponent<Stash>();
             if(FindObjectOfType<CanvasUIManager>() != null)
@@ -425,6 +419,17 @@ public class PlayerController : NetworkBehaviour
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
         }
 
+    }
+
+    public void OnTriggerStay(Collider collider)
+    {
+        if (collider.gameObject.GetComponent<ArtefactBehaviour>() && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup()
+            && targetedArtefacts.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false)
+        {
+            CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            if (FindObjectOfType<CanvasUIManager>() != null)
+                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
+        }
     }
 
     public void OnTriggerExit(Collider collider)
@@ -540,7 +545,7 @@ public class PlayerController : NetworkBehaviour
     #endregion
 
 
-    [Command]
+    [Command (requiresAuthority = false)]
     private void CmdAddToTargetedArtefacts(ArtefactBehaviour artefact)
     {
         targetedArtefacts.Add(artefact);
@@ -603,6 +608,11 @@ public class PlayerController : NetworkBehaviour
     public void CmdSetMortal(bool mortal)
     {
         this.mortal = mortal;
+    }
+    [Command (requiresAuthority = false)]
+    public void CmdSetHasBeenStolenFrom(bool value)
+    {
+        hasBeenStolenFrom = value;
     }
     [Command]
     public void CmdSpawnBearTrap(Vector3 spawnPos, PlayerController placingPlayer)
