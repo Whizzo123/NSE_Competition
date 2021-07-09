@@ -73,7 +73,7 @@ public class BrowseScreenUI : MonoBehaviour
 
     void Update()
     {
-        if (!LobbyUIManager.useSteamMatchmaking)
+        if (!FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
         {
             if (currentWaitTime <= 0)
             {
