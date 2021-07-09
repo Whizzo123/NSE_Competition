@@ -444,7 +444,7 @@ public class PlayerController : NetworkBehaviour
                 {
                     if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
                     {
-                        CmdTargetArtefactsRemoveAt(i);
+                        CmdTargetArtefactsRemoveAt(item);
                     }
                     i++;
                 }
@@ -552,9 +552,9 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Command]
-    private void CmdTargetArtefactsRemoveAt(int index)
+    private void CmdTargetArtefactsRemoveAt(ArtefactBehaviour artefact)
     {
-        targetedArtefacts.RemoveAt(index);
+        targetedArtefacts.Remove(artefact);
     }
 
     public void ToggleMesh(bool toggle)
