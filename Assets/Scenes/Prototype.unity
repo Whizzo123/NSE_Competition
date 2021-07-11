@@ -123,6 +123,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &33706608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 33706610}
+  - component: {fileID: 33706609}
+  m_Layer: 0
+  m_Name: ProtoProcedural
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &33706609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 33706608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75138adfcf368a9428b7ac52122e6236, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 7
+  regionSize: {x: 50, y: 50}
+--- !u!4 &33706610
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 33706608}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 22.748503, y: 11.394373, z: -11.082811}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 23
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &35863423
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -271,6 +316,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7480446212225122055, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
+      propertyPath: sceneId
+      value: 4186421466
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
 --- !u!1 &361637561
@@ -302,6 +351,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75138adfcf368a9428b7ac52122e6236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 7
+  regionSize: {x: 200, y: 200}
 --- !u!4 &361637563
 Transform:
   m_ObjectHideFlags: 0
@@ -323,6 +374,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6593909278188048680, guid: f1f1c90d42a4179428ca47018e5a7f2c, type: 3}
+      propertyPath: sceneId
+      value: 3398977043
+      objectReference: {fileID: 0}
     - target: {fileID: 7811146946738992400, guid: f1f1c90d42a4179428ca47018e5a7f2c, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -900,6 +955,10 @@ PrefabInstance:
     - target: {fileID: 4003292575508371857, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
       propertyPath: indestructables.m_Bits
       value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 7480446212225122055, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
+      propertyPath: sceneId
+      value: 2166804858
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99b2ec0abff64d745ba7b50cc13a7119, type: 3}
@@ -1661,6 +1720,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1042734116803407057, guid: 8c203de406a7b1246bb6099b6fd93700, type: 3}
+      propertyPath: sceneId
+      value: 3749851755
+      objectReference: {fileID: 0}
     - target: {fileID: 66140151911474715, guid: 8c203de406a7b1246bb6099b6fd93700, type: 3}
       propertyPath: SubModule.subEmitters.Array.data[0].emitter
       value: 

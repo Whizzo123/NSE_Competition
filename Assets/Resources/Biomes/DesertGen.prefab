@@ -67,7 +67,7 @@ MonoBehaviour:
   - {fileID: 555891148239531055, guid: 5ec270499adae6e45ae1f084ae6cc752, type: 3}
   - {fileID: 5082642165031501281, guid: a1b22fb9e91ea4646b8256fd9f0388d7, type: 3}
   - {fileID: 5043106855782285013, guid: 8949b83891c18d146b93173ca95ce756, type: 3}
-  seed: 
+  seed: 0
   useRandomSeed: 1
   randomFillPercent: 45
   mapSmoothing: 3
@@ -84,9 +84,9 @@ MonoBehaviour:
   rareIndestructables:
   - {fileID: 4079003387046216654, guid: d4f9c44f1a672d640b28362d8d109d08, type: 3}
   commonCommonality: 7
-  radius: 13
+  radius: 12
   regionSize: {x: 200, y: 200}
-  rejectionSamples: 20
+  rejectionSamples: 30
   abilityAmountToSpawn: 20
   abilityChargesToSpawn:
   - {fileID: 1215457902705733312, guid: dd9f2b11c42d2a240af278dfd6aa6c95, type: 3}
@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  serverOnly: 1
+  serverOnly: 0
   visible: 0
   m_AssetId: 
   hasSpawned: 0

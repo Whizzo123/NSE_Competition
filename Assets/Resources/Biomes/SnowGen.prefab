@@ -65,7 +65,7 @@ MonoBehaviour:
   obstacles:
   - {fileID: 2688836191104013220, guid: d3afd9d013043a94fab5d7d3d258d5f6, type: 3}
   - {fileID: 185835751915258432, guid: 0a5fccc016a715040a13aec993bbc1b2, type: 3}
-  seed: 
+  seed: 0
   useRandomSeed: 1
   randomFillPercent: 45
   mapSmoothing: 3
@@ -82,7 +82,7 @@ MonoBehaviour:
   rareIndestructables:
   - {fileID: 2249814389572057584, guid: 2f56eb921f6abb64d912f067234e2928, type: 3}
   commonCommonality: 7
-  radius: 12
+  radius: 17
   regionSize: {x: 200, y: 200}
   rejectionSamples: 20
   abilityAmountToSpawn: 20
@@ -104,7 +104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  serverOnly: 1
+  serverOnly: 0
   visible: 0
   m_AssetId: 
   hasSpawned: 0
