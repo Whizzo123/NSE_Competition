@@ -571,17 +571,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 881915959}
   m_CullTransparentMesh: 0
---- !u!114 &1137613433 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5581680211952789216, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
-  m_PrefabInstance: {fileID: 5581680210558013703}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea368fb6f27ec2f40a40e20977992b9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1512429044
 GameObject:
   m_ObjectHideFlags: 0
@@ -1134,6 +1123,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &1652117376 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5581680211952789228, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
+  m_PrefabInstance: {fileID: 5581680210558013703}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1725839858 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1469723503, guid: a5f83320ef8a46647b663d222dc2ae04, type: 3}
@@ -1539,10 +1539,10 @@ PrefabInstance:
     - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
       propertyPath: transport
       value: 
-      objectReference: {fileID: 1137613433}
+      objectReference: {fileID: 1652117376}
     - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
       propertyPath: useSteamMatchmaking
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}

@@ -23,14 +23,14 @@ public static class Proto_Procedural
         spawnPoint.Add(sampleRegionSize / 2);
         while(spawnPoint.Count > 0)
         {
-            int spawnIndex = pseudoRandom.Next(0, spawnPoint.Count);
+            int spawnIndex = pseudoRandom.Next(0, spawnPoint.Count);//Random.Range(0, spawnPoint.Count);
             Vector2 spawncenter = spawnPoint[spawnIndex];
             bool candidateAccepted = false;
             for (int i = 0; i < numSamplesBeforeRejection; i++)
             {
-                float angle = pseudoRandom.Next(1) * Mathf.PI * 2;
+                float angle = pseudoRandom.Next() * Mathf.PI * 2;//Random.value * Mathf.PI * 2; <---------------- This was the culprit, psuedoRandom(1)
                 Vector2 dir = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
-                Vector2 candidate = spawncenter + dir * pseudoRandom.Next(radius, 2*radius);
+                Vector2 candidate = spawncenter + dir * pseudoRandom.Next(radius, 2 * radius);//Random.Range(radius, 2 * radius);
                 if (isValid(candidate, sampleRegionSize, cellSize, radius, points, grid))
                 {
                     points.Add(candidate);
@@ -62,7 +62,7 @@ public static class Proto_Procedural
 
             for (int x = searchStartX; x <= searchEndX; x++)
             {
-                for (int y  = searchStartY; y  < searchEndY; y ++)
+                for (int y  = searchStartY; y  <= searchEndY; y ++)
                 {
                     int pointIndex = grid[x, y] - 1;
                     if (pointIndex != -1)

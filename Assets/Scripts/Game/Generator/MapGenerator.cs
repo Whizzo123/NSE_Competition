@@ -18,7 +18,7 @@ public class MapGenerator : NetworkBehaviour
 
     [Header("Spawner Attributes")]
     [SerializeField] [Tooltip("Distance spawner is from the ground")] private float raycastDistance = 100f;
-    [SerializeField] [Tooltip("The angle of the slope where objects won't spawn")] [Range(1, 90)] private float slopeAngle = 30f;
+    [SerializeField] [Tooltip("The angle of the slope where objects won't spawn")] [Range(1, 90)] private float slopeAngle = 35f;
     [SerializeField] private LayerMask ground;
     [SerializeField] private LayerMask indestructables;
     [SerializeField] private LayerMask obstaclesLayer;
@@ -26,8 +26,9 @@ public class MapGenerator : NetworkBehaviour
     [Space]
 
     [Header(" --------- Obstacles")]
+
     [SerializeField] [Tooltip("Obstacle game objects can have infinite amount")] private GameObject[] obstacles;
-    [SerializeField] [Tooltip("Type in seed to generate specific seed pattern")] public string seed;
+    [SerializeField] [Tooltip("Type in seed to generate specific seed pattern")][SyncVar] public string seed = "";
     [SerializeField] private bool useRandomSeed;
     [Range(0, 100)]
     [SerializeField] [Tooltip("Percentace of the block to be filled")] private int randomFillPercent = 45;
@@ -56,21 +57,44 @@ public class MapGenerator : NetworkBehaviour
     [SerializeField] [Tooltip("Amount of ability charges to spawn per biome")] private int abilityAmountToSpawn;
     [SerializeField] [Tooltip("Ability charges to spawn")] private GameObject[] abilityChargesToSpawn;
 
+
+
     #endregion
 
+    //[ClientRpc]
+    //public void ChangeSeed(string newSeed)
+    //{
+    //    seed = newSeed;
+    //}
 
+
+
+    System.Random f;
     /// <summary>
     /// Generates All the obstacles in the map, 
     /// </summary> 
-    public void GenerateEverything(string seedFromGenAll)
+    [ClientRpc]
+    public void GenerateEverything()
     {
-        seed = seedFromGenAll;
+
+        //Debug.LogWarning("The seed is: " + seed);
+        //Debug.LogWarning("pseudoRandom : " + seed.GetStableHashCode());
         //Can't use Random.Range if we want to specify seed, and UnityEngine.Random will affect repeated uses of random that are connected
-        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+        System.Random pseudoRandom = new System.Random(seed.GetStableHashCode());
+        f = pseudoRandom;
 
         GenerateIndestructables(pseudoRandom);
+        StartCoroutine(rest());
+
+    }
+
+    IEnumerator rest()
+    {
+
+       yield return new WaitForSeconds(3);
+        System.Random pseudoRandom = f;
         GenerateMap(pseudoRandom);
-        ObstacleGeneration();
+        ObstacleGeneration(pseudoRandom);
         ArtefactSpawner();
     }
 
@@ -178,9 +202,9 @@ public class MapGenerator : NetworkBehaviour
     /// <summary>
     /// Spreads 'obstacles'.ref.MapGenerator on map if map cell is 0.
     /// </summary>
-    void ObstacleGeneration()
+    void ObstacleGeneration(System.Random pseudoRandom)
     {
-
+       // Debug.LogWarning("Map.length obst :" + map.Length);
         for (int x = 0; x < width; x++)
         {
                 for (int z = 0; z < height; z++)
@@ -190,9 +214,10 @@ public class MapGenerator : NetworkBehaviour
                         //Spawn random Obstacle via' ObstacleSpawner()'
                         Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, z *spawnPosScale) + transform.position;
                         //If anything is obstructing the spawning, it will make the map = 1
-                        if (ObstacleSpawner((obstacles[UnityEngine.Random.Range(0, obstacles.Length)]), spawnPosition))
+                        if (ObstacleSpawner(obstacles[pseudoRandom.Next(obstacles.Length)], spawnPosition))
                         {
                             map[x, z] = 1;
+                       // Debug.LogWarning("Map has been changed to 1 : " + map[x, z] + " is on " + x + " : " + z);
                         }
 
                     }
@@ -200,12 +225,14 @@ public class MapGenerator : NetworkBehaviour
                 }
 
         }
+       // Debug.LogWarning("Map.length after :" + map.Length);
 
     }
 
     /// <summary>
     /// Spreads artefacts randomly around map grid.
     /// </summary>
+    [Server]
     void ArtefactSpawner()
     {
         int itemsSpawned = 0;//total artefacts spawned
@@ -274,17 +301,17 @@ public class MapGenerator : NetworkBehaviour
     {
         //Call static procedural generation method and return spawnPoints
         points = Proto_Procedural.GenerateGrids(pseudoRandom, radius, regionSize, rejectionSamples);
-        foreach (Vector3 vector3 in points)
+        foreach (Vector2 vector2 in points)
         {
             //Spawn the spawners and either rare or common indestructables
-            Vector3 spawnPosition = new Vector3(vector3.x, 0, vector3.y) + transform.position;
-            if (UnityEngine.Random.Range(0, 10) > commonCommonality)
+            Vector3 spawnPosition = new Vector3(vector2.x, 0, vector2.y) + transform.position;
+            if (pseudoRandom.Next(10) > commonCommonality)
             {
-                IndestructableSpawner(rareIndestructables[UnityEngine.Random.Range(0, rareIndestructables.Length)], spawnPosition, pseudoRandom);
+                IndestructableSpawner(rareIndestructables[pseudoRandom.Next(rareIndestructables.Length)], spawnPosition, pseudoRandom);
             }
             else
             {
-                IndestructableSpawner(commonIndestructables[UnityEngine.Random.Range(0, commonIndestructables.Length)], spawnPosition, pseudoRandom);
+                IndestructableSpawner(commonIndestructables[pseudoRandom.Next(commonIndestructables.Length)], spawnPosition, pseudoRandom);
             }
 
         }
@@ -301,10 +328,20 @@ public class MapGenerator : NetworkBehaviour
     {
         //If indestructable object is found, return true.
         RaycastHit hit;
-        if (Physics.Raycast(spawnPos, Vector3.down, raycastDistance, indestructables))
+        if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, indestructables))
         {
+           // Instantiate(Resources.Load<GameObject>("Sphere") as GameObject, hit.point, Quaternion.identity);
             return true;
         }
+        //RaycastHit[] hit2;
+        //hit2 = Physics.RaycastAll(spawnPos, Vector3.down, raycastDistance);
+        //foreach (RaycastHit item in hit2)
+        //{
+        //    if (item.collider.gameObject.tag.StartsWith("indestr"))
+        //    {
+
+        //    }
+        //}
         LayerMask lm = ground;
         if (lm.value == LayerMask.GetMask("SwampGround"))
         {
@@ -318,6 +355,7 @@ public class MapGenerator : NetworkBehaviour
             float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(dot product)
             if (rotationAngle > slopeAngle)
             {
+                //Instantiate(Resources.Load<GameObject>("Sphere2") as GameObject, hit.point, Quaternion.identity);
                 return true;
             }
             else //Spawn obstacles and return false;
@@ -325,7 +363,7 @@ public class MapGenerator : NetworkBehaviour
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
                 GameObject go = Instantiate(ob, hit.point, spawnRotation);
-                NetworkServer.Spawn(go);
+                //NetworkServer.Spawn(go);
                 return false;
             }
         }
@@ -338,13 +376,12 @@ public class MapGenerator : NetworkBehaviour
     /// <summary>
     /// Shoots ray down from spawn location. 'objectToSpawn'.ref.Spawner is then instantiated at the hit point if the point is ground. It will also align the object to the rotation of the land.
     /// </summary>
+    [Server]
     public int ArtefactSpawner(GameObject ob, Vector3 spawnPos, ArtefactRarity rarity)
     {
         //If ground is hit, spawn artefact
 
         RaycastHit hit;
-        //if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
-        //{
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
         {
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
@@ -373,10 +410,7 @@ public class MapGenerator : NetworkBehaviour
         {
             //If angle hit is bigger than 'slopeAngle' then return true
             float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(dot product)
-
-            if (rotationAngle > slopeAngle)
-            {
-                return;
+            if (rotationAngle > slopeAngle) {return;
             }
             else//Spawn indestructable
             {
@@ -396,7 +430,7 @@ public class MapGenerator : NetworkBehaviour
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
                 GameObject go = Instantiate(ob, hit.point, spawnRotation);
                 go.transform.localScale = new Vector3(randScale, randScale, randScale);
-                NetworkServer.Spawn(go);
+                //NetworkServer.Spawn(go);
             }
 
         }
