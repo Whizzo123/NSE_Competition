@@ -226,7 +226,6 @@ public class PlayerController : NetworkBehaviour
         #region Artefact interaction
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("PlayerController: Pressing E targetedArtefacts.Count: " + targetedArtefacts.Count);
             if (targetedArtefacts.Count != 0)
             {
                 if (artefactInventory.FindEmptyInventorySlot() != -1)
@@ -235,20 +234,13 @@ public class PlayerController : NetworkBehaviour
                     // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
                     foreach (ArtefactBehaviour item in targetedArtefacts)
                     {
-                        if(item == null)
-                        {
-                            Debug.LogError("Pressing E and Attempting to pick up however this item in targetedArtefacts is null");
-                        }
-                        if(artefactInventory == null)
-                        {
-                            Debug.LogError("Pressing E and Attempting to pick up however the artefact inventory is null");
-                        }
                         artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
                         FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         DestroyGameObject(item.gameObject);
                     }
                     CmdClearTargetArtefacts();
-                    Debug.Log("PlayerController ClearTargetedArtefacts Count: " + targetedArtefacts.Count);
+                    if(NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+                        FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
                 else
                 {
@@ -450,7 +442,7 @@ public class PlayerController : NetworkBehaviour
         if (collider.gameObject.GetComponent<Stash>())
         {
             gameStash = collider.gameObject.GetComponent<Stash>();
-            if(FindObjectOfType<CanvasUIManager>() != null)
+            if(FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
         }
         else if (collider.gameObject.GetComponent<AbilityPickup>())
@@ -460,7 +452,7 @@ public class PlayerController : NetworkBehaviour
         if (collider.gameObject.GetComponent<PlayerController>())
         {
             targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
-            if (FindObjectOfType<CanvasUIManager>() != null)
+            if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
         }
 
@@ -475,19 +467,9 @@ public class PlayerController : NetworkBehaviour
         {
             tempArtefactStorage.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
             CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
-        }
-
-
-        if (collider.gameObject.GetComponent<ArtefactBehaviour>() && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup()
-            && targetedArtefacts.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false)
-        {
-            Debug.LogError("This has been executed");
-
-            if (FindObjectOfType<CanvasUIManager>() != null)
+            if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
         }
-
-
     }
 
     public void OnTriggerExit(Collider collider)
@@ -496,14 +478,12 @@ public class PlayerController : NetworkBehaviour
         {
             if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
             {
-                Debug.Log("PlayerController OnTriggerExit Inside if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())");
                 //Removes specific artefact that we exited.
                 int i = 0;
                 foreach (ArtefactBehaviour item in targetedArtefacts)
                 {
                     if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
                     {
-                        Debug.Log("PlayerController OnTriggerExit Removing from list");
                         tempArtefactStorage.Remove(item);
                         CmdTargetArtefactsRemoveAt(item);
 
@@ -518,7 +498,8 @@ public class PlayerController : NetworkBehaviour
             else if (gameStash != null && collider.gameObject == gameStash.gameObject)
             {
                 gameStash = null;
-                FindObjectOfType<CanvasUIManager>().CloseHintMessage();
+                if(NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
             else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
             {
@@ -527,7 +508,8 @@ public class PlayerController : NetworkBehaviour
             if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
             {
                 targetedPlayerToStealFrom = null;
-                FindObjectOfType<CanvasUIManager>().CloseHintMessage();
+                if(NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
         }
     }
