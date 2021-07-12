@@ -143,7 +143,8 @@ public class PlayerController : NetworkBehaviour
 
     private void DevModeOn()
     {
-        vCam.enabled = !devMode;
+        if(vCam != null)
+            vCam.enabled = !devMode;
         cam.enabled = !devMode;
         playerCamera.enabled = !devMode;
         devCam.SetActive(devMode);
@@ -638,8 +639,8 @@ public class PlayerController : NetworkBehaviour
     {
         return voodooPoisoned;
     }
-
-    public void SetVoodooPoisoned(bool poisoned)
+    [Command (requiresAuthority = false)]
+    public void CmdSetVoodooPoisoned(bool poisoned)
     {
         voodooPoisoned = poisoned;
     }
