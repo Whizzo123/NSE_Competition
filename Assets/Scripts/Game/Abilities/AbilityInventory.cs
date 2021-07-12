@@ -71,13 +71,10 @@ public class AbilityInventory
 
     public void ActivateAbility(string abilityName)
     {
-        BoltLog.Info("Inside activate ability: " + abilityName);
         foreach (Ability ability in abilities)
         {
-            BoltLog.Info("Enumeration: " + ability.GetAbilityName());
             if(ability.GetAbilityName() == abilityName && ability.GetCurrentCharge() == ability.GetChargeAmount())
             {
-                BoltLog.Info("Found ability calling use function");
                 ability.Use();
                 break;
             }
@@ -118,7 +115,7 @@ public class AbilityInventory
         }
         else
         {
-            BoltLog.Error("ERROR: ABILITY ATTEMPTING TO BE ADDED TO INVENTORY THAT HAS NO SUBTYPE");
+            Debug.LogError("ERROR: ABILITY ATTEMPTING TO BE ADDED TO INVENTORY THAT HAS NO SUBTYPE");
         }
         
     }

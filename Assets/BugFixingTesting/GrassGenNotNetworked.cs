@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using Bolt;
+
 /// <summary>
 /// Main idea behind the map generator is cellular automata and a sprinkle of poisson disc sampling.ref.'Proto_Procedural.cs'. 
 /// WARNING: Currently it is way to taxing on the system. Just a 100x100 grid has a 2 second delay on a high end copmputer. Look at 'ProfilerDataSimSmall.data' profiler data to see issues

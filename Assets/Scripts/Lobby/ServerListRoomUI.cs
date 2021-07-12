@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using UdpKit;
 using Steamworks;
 using Mirror.Discovery;
 
