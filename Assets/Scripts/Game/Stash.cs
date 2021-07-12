@@ -42,7 +42,7 @@ public class Stash : NetworkBehaviour
     [ClientRpc]
     private void RpcClearInventory(PlayerController player)
     {
-        player.GetComponent<ArtefactInventory>().ClearInventory();
+        player.GetComponent<ArtefactInventory>().ClearInventory(player.playerName);
     }
 
     [ClientRpc]

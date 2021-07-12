@@ -99,9 +99,12 @@ public class ArtefactInventory : NetworkBehaviour
     /// <summary>
     /// Remove all items from inventory
     /// </summary>
-    public void ClearInventory()
+    public void ClearInventory(string name)
     {
-        FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == name)
+        {
+            FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
+        }
         CmdResetInventory();
     }
     [Command]
