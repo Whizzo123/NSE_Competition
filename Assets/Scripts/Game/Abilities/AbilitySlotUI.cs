@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Mirror;
 
 public class AbilitySlotUI : MonoBehaviour
 {
@@ -20,10 +21,10 @@ public class AbilitySlotUI : MonoBehaviour
 
     public void SlotClick()
     {
-        BoltLog.Info("Slot clicking");
-        if (!isCharging && PlayerController.localPlayer.state.Mortal == false)
+        PlayerController localPlayer = NetworkClient.localPlayer.gameObject.GetComponent<PlayerController>();
+        if (!isCharging && localPlayer.IsMortal() == false)
         {
-            PlayerController.localPlayer.abilityInventory.ActivateAbility(abilityName);
+            localPlayer.abilityInventory.ActivateAbility(abilityName);
         }
     }
 

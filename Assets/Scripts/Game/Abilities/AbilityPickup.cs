@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Bolt;
+using Mirror;
 
-public class AbilityPickup : EntityBehaviour<IAbilityPickup>
+public class AbilityPickup : NetworkBehaviour
 {
-
-    public string abilityName;
-    public bool enabledForPickup = true;
+    [SyncVar]
+    private string abilityName;
+    [SyncVar]
+    private bool enabledForPickup;
     private Quaternion rotation = Quaternion.Euler(45, 45, 0);
     public void FixedUpdate()
     {
@@ -15,37 +16,49 @@ public class AbilityPickup : EntityBehaviour<IAbilityPickup>
         this.gameObject.transform.rotation = rotation;
     }
 
-    public override void Attached()
+    public override void OnStartAuthority()
     {
-        BoltLog.Info("Attached the ability pickup dude");
-        if (entity.gameObject == null)
-            BoltLog.Error("Issue no game object attached to this entity");
-        enabledForPickup = true;
+        base.OnStartAuthority();
+        CmdSetEnabledForPickup(true);
     }
 
 
-    public void SetAbilityOnPickup(string abilityName)
+    public void SetAbilityOnPickup(string name)
     {
-        Debug.LogWarning("Running ability setup");
-        this.abilityName = abilityName;    //This line was just for testing right?
-        state.AbilityName = abilityName;
-        this.enabledForPickup = true;
+        CmdSetAbilityName(name);
+        CmdSetEnabledForPickup(true);
+    }
+
+    public string GetAbilityName()
+    {
+        return abilityName;
+    }
+
+    public bool IsEnabledForPickup()
+    {
+        return enabledForPickup;
+    }
+
+    [Command (requiresAuthority = false)]
+    public void CmdSetAbilityName(string name)
+    {
+        abilityName = name;
+    }
+
+    [Command (requiresAuthority = false)]
+    public void CmdSetEnabledForPickup(bool value)
+    {
+        enabledForPickup = value;
     }
 
     public void PickupAbility(PlayerController player)
     {
         if (enabledForPickup)
         {
-            FindObjectOfType<AbilitySlotBarUI>().AddAbilityToLoadoutBar(state.AbilityName);
-            player.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(state.AbilityName));
-            //Destroy(this);
+            FindObjectOfType<AbilitySlotBarUI>().AddAbilityToLoadoutBar(abilityName);
+            player.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(abilityName));
+            NetworkServer.Destroy(this.gameObject);
         }
-
-        
-        //Send off event to get rid of this thing
-        var request = AbilityPickupDisable.Create();
-        request.AbilityEntity = this.entity;
-        request.Send();
     }
 
 

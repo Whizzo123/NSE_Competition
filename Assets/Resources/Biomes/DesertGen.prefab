@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4003292575508371856}
   - component: {fileID: 4003292575508371857}
-  - component: {fileID: 7671949710289692790}
+  - component: {fileID: 2392418458894577105}
   m_Layer: 0
   m_Name: DesertGen
   m_TagString: Untagged
@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ea04b9507ba6e744ad79b0caecaa2a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   width: 200
   height: 200
   raycastDistance: 100
@@ -65,7 +67,7 @@ MonoBehaviour:
   - {fileID: 555891148239531055, guid: 5ec270499adae6e45ae1f084ae6cc752, type: 3}
   - {fileID: 5082642165031501281, guid: a1b22fb9e91ea4646b8256fd9f0388d7, type: 3}
   - {fileID: 5043106855782285013, guid: 8949b83891c18d146b93173ca95ce756, type: 3}
-  seed: 
+  seed: 0
   useRandomSeed: 1
   randomFillPercent: 45
   mapSmoothing: 3
@@ -82,16 +84,16 @@ MonoBehaviour:
   rareIndestructables:
   - {fileID: 4079003387046216654, guid: d4f9c44f1a672d640b28362d8d109d08, type: 3}
   commonCommonality: 7
-  radius: 17
+  radius: 12
   regionSize: {x: 200, y: 200}
-  rejectionSamples: 20
+  rejectionSamples: 30
   abilityAmountToSpawn: 20
   abilityChargesToSpawn:
   - {fileID: 1215457902705733312, guid: dd9f2b11c42d2a240af278dfd6aa6c95, type: 3}
   - {fileID: 4825882355947400030, guid: aaa65518dac45434fb0b5667ddf63322, type: 3}
   - {fileID: 4752021331141181151, guid: b83b3cb649e2f6e4f853e4153da054fe, type: 3}
   - {fileID: 5969440039603290143, guid: 247f4466952c83e448438ba1e7787551, type: 3}
---- !u!114 &7671949710289692790
+--- !u!114 &2392418458894577105
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,23 +102,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4003292575508371854}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneGuid: 
-  _serializerGuid: f76f12ae-2efd-4c55-a130-2e77b84d87c5
-  _prefabId: 24
-  _updateRate: 1
-  _autoFreezeProxyFrames: 0
-  _clientPredicted: 1
-  _allowInstantiateOnClient: 1
-  _persistThroughSceneLoads: 0
-  _sceneObjectDestroyOnDetach: 1
-  _sceneObjectAutoAttach: 1
-  _alwaysProxy: 0
-  _detachOnDisable: 1
-  _allowFirstReplicationWhenFrozen: 0
-  _autoRemoveChildEntities: 0
-  _entityBehaviourQueryOption: 0
-  _entityPriorityCalculatorQueryOption: 1
-  _entityReplicationFilterQueryOption: 1
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0

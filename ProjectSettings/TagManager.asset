@@ -7,6 +7,7 @@ TagManager:
   - Obstacle
   - Spawner
   - Artefact
+  - Indestructables
   layers:
   - Default
   - TransparentFX

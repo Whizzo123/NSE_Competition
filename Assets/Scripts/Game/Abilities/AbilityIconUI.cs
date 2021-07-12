@@ -30,6 +30,7 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        Debug.Log("InsideOnBeginDrag");
         dragging = true;
         this.transform.SetParent(FindObjectOfType<Canvas>().transform);
     }
@@ -72,7 +73,7 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
 
     public void OnPointerClick(PointerEventData eventData)
     {
-
+        Debug.Log("Clicking");
     }
 
     public void OnDrag(PointerEventData eventData)

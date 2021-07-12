@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using UdpKit;
+using Steamworks;
+using Mirror.Discovery;
 
 public class ServerListRoomUI : MonoBehaviour
 {
@@ -15,10 +16,13 @@ public class ServerListRoomUI : MonoBehaviour
     public Text concurrentPlayersText;
     private Button joinRoom;
 
+    private LobbyUIManager lobbyUIManager;
+
     #endregion 
 
     void Start()
     {
+        lobbyUIManager = FindObjectOfType<LobbyUIManager>();
         joinRoom = GetComponent<Button>();
         joinRoom.onClick.RemoveAllListeners();
         joinRoom.onClick.AddListener(() => 
@@ -31,12 +35,27 @@ public class ServerListRoomUI : MonoBehaviour
     /// </summary>
     /// <param name="match"></param>
     /// <param name="backgroundColor"></param>
-    /// <param name="clickAction"></param>
-    public void Populate(UdpSession match, Color backgroundColor, Action clickAction)
+    public void Populate(LobbyInfo info, Color backgroundColor)
     {
-        roomNameText.text = match.HostName;
-        concurrentPlayersText.text = string.Format("{0}/{1}", match.ConnectionsCurrent, match.ConnectionsMax);
+        roomNameText.text = info.lobbyName;
+        concurrentPlayersText.text = string.Format("{0}/{1}", info.playerCount, FindObjectOfType<MyNetworkManager>().maxConnections);
+        OnJoinRoomClicked += () => JoinSteamLobby(info.lobbyID);
+    }
 
-        OnJoinRoomClicked += clickAction;
+    public void Populate(ServerResponse response, Color backgroundColor)
+    {
+        roomNameText.text = response.EndPoint.Address.ToString();
+        OnJoinRoomClicked += () => JoinMirrorLobby(lobbyUIManager.discoveredServers[response.serverId]);
+    }
+
+    private void JoinSteamLobby(CSteamID lobbyID)
+    {
+        SteamMatchmaking.JoinLobby(lobbyID);
+    }
+
+    private void JoinMirrorLobby(ServerResponse response)
+    {
+        MyNetworkManager.singleton.StartClient(response.uri);
+        lobbyUIManager.ChangeScreenTo("Room");
     }
 }

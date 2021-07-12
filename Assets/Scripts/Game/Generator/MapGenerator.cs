@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using Bolt;
+using Mirror;
+
 /// <summary>
 /// Main idea behind the map generator is cellular automata and a sprinkle of poisson disc sampling.ref.'Proto_Procedural.cs'. 
 /// </summary>
-public class MapGenerator : EntityBehaviour<IGenerator>
+public class MapGenerator : NetworkBehaviour
 {
     #region Globals
     [Header("Map")]
@@ -17,7 +18,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
 
     [Header("Spawner Attributes")]
     [SerializeField] [Tooltip("Distance spawner is from the ground")] private float raycastDistance = 100f;
-    [SerializeField] [Tooltip("The angle of the slope where objects won't spawn")] [Range(1, 90)] private float slopeAngle = 30f;
+    [SerializeField] [Tooltip("The angle of the slope where objects won't spawn")] [Range(1, 90)] private float slopeAngle = 35f;
     [SerializeField] private LayerMask ground;
     [SerializeField] private LayerMask indestructables;
     [SerializeField] private LayerMask obstaclesLayer;
@@ -25,8 +26,9 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     [Space]
 
     [Header(" --------- Obstacles")]
+
     [SerializeField] [Tooltip("Obstacle game objects can have infinite amount")] private GameObject[] obstacles;
-    [SerializeField] [Tooltip("Type in seed to generate specific seed pattern")] public string seed;
+    [SerializeField] [Tooltip("Type in seed to generate specific seed pattern")][SyncVar] public string seed = "";
     [SerializeField] private bool useRandomSeed;
     [Range(0, 100)]
     [SerializeField] [Tooltip("Percentace of the block to be filled")] private int randomFillPercent = 45;
@@ -55,26 +57,45 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     [SerializeField] [Tooltip("Amount of ability charges to spawn per biome")] private int abilityAmountToSpawn;
     [SerializeField] [Tooltip("Ability charges to spawn")] private GameObject[] abilityChargesToSpawn;
 
+
+
     #endregion
 
+    //[ClientRpc]
+    //public void ChangeSeed(string newSeed)
+    //{
+    //    seed = newSeed;
+    //}
 
+
+
+    System.Random f;
     /// <summary>
     /// Generates All the obstacles in the map, 
     /// </summary> 
-    public void GenerateEverything(string seedFromGenAll)
+    [ClientRpc]
+    public void GenerateEverything()
     {
-        seed = seedFromGenAll;
+
+        //Debug.LogWarning("The seed is: " + seed);
+        //Debug.LogWarning("pseudoRandom : " + seed.GetStableHashCode());
         //Can't use Random.Range if we want to specify seed, and UnityEngine.Random will affect repeated uses of random that are connected
-        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+        System.Random pseudoRandom = new System.Random(seed.GetStableHashCode());
+        f = pseudoRandom;
 
         GenerateIndestructables(pseudoRandom);
-        GenerateMap(pseudoRandom);
-        ObstacleGeneration();
-        if (BoltNetwork.IsServer)
-        {
-            ArtefactSpawner();
+        StartCoroutine(rest());
 
-        }
+    }
+
+    IEnumerator rest()
+    {
+
+       yield return new WaitForSeconds(3);
+        System.Random pseudoRandom = f;
+        GenerateMap(pseudoRandom);
+        ObstacleGeneration(pseudoRandom);
+        ArtefactSpawner();
     }
 
 
@@ -181,9 +202,9 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     /// <summary>
     /// Spreads 'obstacles'.ref.MapGenerator on map if map cell is 0.
     /// </summary>
-    void ObstacleGeneration()
+    void ObstacleGeneration(System.Random pseudoRandom)
     {
-
+       // Debug.LogWarning("Map.length obst :" + map.Length);
         for (int x = 0; x < width; x++)
         {
                 for (int z = 0; z < height; z++)
@@ -193,9 +214,10 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                         //Spawn random Obstacle via' ObstacleSpawner()'
                         Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, z *spawnPosScale) + transform.position;
                         //If anything is obstructing the spawning, it will make the map = 1
-                        if (ObstacleSpawner((obstacles[UnityEngine.Random.Range(0, obstacles.Length)]), spawnPosition))
+                        if (ObstacleSpawner(obstacles[pseudoRandom.Next(obstacles.Length)], spawnPosition))
                         {
                             map[x, z] = 1;
+                       // Debug.LogWarning("Map has been changed to 1 : " + map[x, z] + " is on " + x + " : " + z);
                         }
 
                     }
@@ -203,12 +225,14 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                 }
 
         }
+       // Debug.LogWarning("Map.length after :" + map.Length);
 
     }
 
     /// <summary>
     /// Spreads artefacts randomly around map grid.
     /// </summary>
+    [Server]
     void ArtefactSpawner()
     {
         int itemsSpawned = 0;//total artefacts spawned
@@ -277,17 +301,17 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     {
         //Call static procedural generation method and return spawnPoints
         points = Proto_Procedural.GenerateGrids(pseudoRandom, radius, regionSize, rejectionSamples);
-        foreach (Vector3 vector3 in points)
+        foreach (Vector2 vector2 in points)
         {
             //Spawn the spawners and either rare or common indestructables
-            Vector3 spawnPosition = new Vector3(vector3.x, 0, vector3.y) + transform.position;
-            if (UnityEngine.Random.Range(0, 10) > commonCommonality)
+            Vector3 spawnPosition = new Vector3(vector2.x, 0, vector2.y) + transform.position;
+            if (pseudoRandom.Next(10) > commonCommonality)
             {
-                IndestructableSpawner(rareIndestructables[UnityEngine.Random.Range(0, rareIndestructables.Length)], spawnPosition, pseudoRandom);
+                IndestructableSpawner(rareIndestructables[pseudoRandom.Next(rareIndestructables.Length)], spawnPosition, pseudoRandom);
             }
             else
             {
-                IndestructableSpawner(commonIndestructables[UnityEngine.Random.Range(0, commonIndestructables.Length)], spawnPosition, pseudoRandom);
+                IndestructableSpawner(commonIndestructables[pseudoRandom.Next(commonIndestructables.Length)], spawnPosition, pseudoRandom);
             }
 
         }
@@ -304,10 +328,20 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     {
         //If indestructable object is found, return true.
         RaycastHit hit;
-        if (Physics.Raycast(spawnPos, Vector3.down, raycastDistance, indestructables))
+        if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, indestructables))
         {
+            //Instantiate(Resources.Load<GameObject>("Sphere") as GameObject, hit.point, Quaternion.identity);
             return true;
         }
+        //RaycastHit[] hit2;
+        //hit2 = Physics.RaycastAll(spawnPos, Vector3.down, raycastDistance);
+        //foreach (RaycastHit item in hit2)
+        //{
+        //    if (item.collider.gameObject.tag.StartsWith("indestr"))
+        //    {
+
+        //    }
+        //}
         LayerMask lm = ground;
         if (lm.value == LayerMask.GetMask("SwampGround"))
         {
@@ -321,19 +355,15 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(dot product)
             if (rotationAngle > slopeAngle)
             {
+                //Instantiate(Resources.Load<GameObject>("Sphere2") as GameObject, hit.point, Quaternion.identity);
                 return true;
             }
             else //Spawn obstacles and return false;
             {
                 Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
-                Instantiate(ob, hit.point, spawnRotation);
-                //BoltNetwork.Instantiate(ob, hit.point, spawnRotation * Quaternion.Euler(-90, 0, 0));//The extra quaternion is for the temp grass model which did not come with an upright rotation immediately.
-                /*var request = SpawnObstacle.Create();
-                request.PrefabName = ob.gameObject.name;
-                request.spawnPoint = hit.point;
-                request.rotation = spawnRotation;
-                request.Send();*/
+                GameObject go = Instantiate(ob, hit.point, spawnRotation);
+                //NetworkServer.Spawn(go);
                 return false;
             }
         }
@@ -346,18 +376,18 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     /// <summary>
     /// Shoots ray down from spawn location. 'objectToSpawn'.ref.Spawner is then instantiated at the hit point if the point is ground. It will also align the object to the rotation of the land.
     /// </summary>
+    [Server]
     public int ArtefactSpawner(GameObject ob, Vector3 spawnPos, ArtefactRarity rarity)
     {
         //If ground is hit, spawn artefact
 
         RaycastHit hit;
-        //if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
-        //{
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
         {
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            GameObject go = BoltNetwork.Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
+            GameObject go = Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
             go.GetComponent<ArtefactBehaviour>().PopulateData(go.name, rarity);
+            NetworkServer.Spawn(go);
             return 1;
         }
         else
@@ -365,41 +395,6 @@ public class MapGenerator : EntityBehaviour<IGenerator>
             
             return 0;
         }
-
-        /*RaycastHit[] hits;
-        hits = Physics.RaycastAll(spawnPos, Vector3.down, raycastDistance);
-        string g = "NOT SPAWNED ON ";
-        foreach (RaycastHit item in hits)
-        {
-            if (item.transform.name == null)
-            {
-                g = g + "NULL";
-            }
-            else
-            {
-                g = g + item.transform.name + " on " + ground.ToString() + " AND ";
-            }
-        }
-        g = g + " END";
-        Debug.LogError(g); RaycastHit[] hits;
-        hits = Physics.RaycastAll(spawnPos, Vector3.down, raycastDistance, obsground);
-
-        foreach (RaycastHit item in hits)
-        {
-
-        }
-        Debug.LogWarning("SPAWNED");*/
-        //else
-        //{
-        // Debug.LogError("NotSpawning " + ob.name + " artefact at obstacle");
-        //}
-
-        //}
-        //else
-        //{
-        //Debug.LogError("NotSpawning " + ob.name + " artefact at ground");
-        //}
-        ///////////////Destroy(this.gameobject);
     }
 
     /// <summary>
@@ -415,10 +410,7 @@ public class MapGenerator : EntityBehaviour<IGenerator>
         {
             //If angle hit is bigger than 'slopeAngle' then return true
             float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(dot product)
-
-            if (rotationAngle > slopeAngle)
-            {
-                return;
+            if (rotationAngle > slopeAngle) {return;
             }
             else//Spawn indestructable
             {
@@ -435,11 +427,10 @@ public class MapGenerator : EntityBehaviour<IGenerator>
                     spawnRotation *= randYRotation;
                 }
                 int randScale = ran.Next(1, 5);
-                //ob.transform.localScale *= randScale;
                 spawnRotation *= Quaternion.Euler(-90, 0, 0);
-                //Transform g = ob.transform; g.localScale *= randScale;
                 GameObject go = Instantiate(ob, hit.point, spawnRotation);
                 go.transform.localScale = new Vector3(randScale, randScale, randScale);
+                //NetworkServer.Spawn(go);
             }
 
         }
@@ -447,102 +438,4 @@ public class MapGenerator : EntityBehaviour<IGenerator>
     }
     #endregion
 
-    #region DeadCode
-    /*
-    private void OnDrawGizmos()
-    {
-        if (map != null)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
-                    //Vector3 pos = new Vector3(-width / 2 + x + 0.5f, 0, -height / 2 + y + 0.5f);
-                    Vector3 pos = new Vector3(x * spawnPosScale, 0, y * spawnPosScale);
-                    Gizmos.DrawCube(pos, Vector3.one);
-                }
-            }
-        }
-    }*/
-    #endregion
-
-
-    /*public void GenerateAbilities(AbilityInventory abilityInventoryFromPlayer)
-    {
-        List<GameObject> abilitiesToSpawn = new List<GameObject>();
-        
-        List<Ability> abilitiesFromInventory = abilityInventoryFromPlayer.getAbilities();
-        
-        foreach (Ability item in abilitiesFromInventory)
-        {
-            //item.GetGameobject of some sort?
-            if (item.GetUseType() == AbilityUseTypes.ONE_TIME)
-            {
-                for (int i = 0; i < abilityChargesToSpawn.Length; i++)
-                {
-                    if (abilityChargesToSpawn[i].GetComponent<AbilityPickup>().abilityName == item.GetAbilityName())
-                    {
-                        abilitiesToSpawn.Add(abilityChargesToSpawn[i]);
-                    }
-                }
-            }
-        }
-        //Debug.LogError(abilitiesToSpawn.Length);
-        Debug.LogError("ABILITIES DONE");
-        //This code is based upon the artefact spawning code
-        int iterations = 0;
-        int totalAbilitiesSpawned = 0;
-
-        //If all abilities haven't been spawned, go through loop again, iteration increases which then increases the chance to spawn artefacts.
-        while (abilityAmountToSpawn < totalAbilitiesSpawned)
-        {
-            iterations++;
-            for (int x = 1; x < width; x++)
-            {
-                for (int y = 1; y < height; y++)
-                {
-                    //if : Abilites spawning chance  &&  map[] = 0  &&  all artefacts have spawned
-                    if (map[x, y] == 0 && (UnityEngine.Random.Range(0, width * height) <= abilityAmountToSpawn * iterations) && totalAbilitiesSpawned < abilityAmountToSpawn)
-                    {
-                        Vector3 spawnPosition = new Vector3(x * spawnPosScale, 0, y * spawnPosScale) + transform.position;
-                        //Hones in on last artefact types to spawn
-                        int ran = UnityEngine.Random.Range(0, abilitiesToSpawn.Count);
-                        //Artefact can't spawn in same place twice or where there are artefacts.
-                        totalAbilitiesSpawned += AbilitySpawner(abilitiesToSpawn[ran], spawnPosition);
-                        map[x, y] = 1;
-                    }
-                    else if (totalAbilitiesSpawned >= abilityAmountToSpawn)
-                    {
-                        //If all artefacts spawned exit loop
-                        Debug.LogError("Finished loop with" + iterations + " iterations " + totalAbilitiesSpawned + " spawned ");
-                        y = height + 1;
-                        x = height + 1;
-                        break;
-                    }
-                }
-            }
-
-        }
-}
-
-    int AbilitySpawner(GameObject ob, Vector3 spawnPos)
-    {
-        Debug.LogError("ABILITY SPAWNER CALLED");
-        //If ground is hit, spawn ability
-        RaycastHit hit;
-        if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, ground))
-        {
-            Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            Instantiate(ob, hit.point + (Vector3.up * 2), spawnRotation);
-            Debug.LogError("SPAWNED AN ABILITY");
-            return 1;
-        }
-        else
-        {
-
-            return 0;
-        }
-
-    }*/
 }

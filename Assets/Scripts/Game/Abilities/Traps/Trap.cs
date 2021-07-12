@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public class Trap : Ability
 {
@@ -14,9 +15,11 @@ public class Trap : Ability
     public override void Use()
     {
         //Do animaton
-        var request = FireAnimatorPutDownTrigger.Create();
-        request.Target = placingPlayer.entity;
-        request.Send();
+        AnimatorStateInfo state = placingPlayer.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+        if (!state.IsName("PutDown"))
+        {
+            placingPlayer.transform.GetChild(0).GetComponent<Animator>().SetTrigger("PutDown");
+        }
         base.Use();
         useCount++;
     }

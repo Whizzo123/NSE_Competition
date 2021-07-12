@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Bolt;
 
 
 public class CanvasUIManager : MonoBehaviour

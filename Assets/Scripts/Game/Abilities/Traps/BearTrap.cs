@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Unity;
+using Mirror;
 
 
 public class BearTrap : Trap
@@ -22,8 +24,8 @@ public class BearTrap : Trap
         }
 
         //Spawn and sound
-        BoltLog.Info("Spawn pos: " + spawnPos);
-        BoltNetwork.Instantiate(BoltPrefabs.BearTrap, spawnPos, Quaternion.identity).GetState<IBearTrap>().PlacingPlayer = placingPlayer.entity;
+        Debug.Log("Spawn pos: " + spawnPos);
+        placingPlayer.CmdSpawnBearTrap(spawnPos, placingPlayer);
         base.Use();
         GameObject.FindObjectOfType<AudioManager>().PlaySound("BearTrapOpening");
     }

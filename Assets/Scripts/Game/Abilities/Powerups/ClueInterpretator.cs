@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using Mirror;
 
 public class ClueInterpretator : Powerup
 {
@@ -17,38 +18,22 @@ public class ClueInterpretator : Powerup
     {
         if (particles == null)
             particles = new List<GameObject>();
-        //do stuff
-        foreach (BoltEntity entity in BoltNetwork.Entities)
+        foreach (ArtefactBehaviour artefact in GameObject.FindObjectsOfType<ArtefactBehaviour>())
         {
-            if (entity.GetComponent<ArtefactBehaviour>())
+            switch (artefact.GetRarity())
             {
-                //ArtefactBehaviour artefact = FindRarestArtefact();
-                if (entity == null)
-                {
-                    Debug.LogError("NO ARTEFACTS AROUND PLAYER MUST BE HANDLED");
-                    GameObject.FindObjectOfType<CanvasUIManager>().PopupMessage("NO ARTEFACTS IN CURRENT VICINITY");
-                }
-                else
-                {
-                    Debug.Log("Loading in particles");
-                    //Spawn in particle effect
-                    switch (entity.GetComponent<ArtefactBehaviour>().GetRarity())
-                    {
-                        case ArtefactRarity.Common:
-                            particles.Add(GameObject.Instantiate(Resources.Load("Effects/CommonParticle", typeof(GameObject))) as GameObject);
-                            break;
-                        case ArtefactRarity.Exotic:
-                            particles.Add(GameObject.Instantiate(Resources.Load("Effects/ExoticParticle", typeof(GameObject))) as GameObject);
-                            break;
-                        case ArtefactRarity.Rare:
-                            particles.Add(GameObject.Instantiate(Resources.Load("Effects/RareParticle", typeof(GameObject))) as GameObject);
-                            break;
-                    }
-                    particles[particles.Count - 1].transform.position = entity.transform.position;
-                }
+                case ArtefactRarity.Common:
+                    particles.Add(GameObject.Instantiate(Resources.Load("Effects/CommonParticle", typeof(GameObject))) as GameObject);
+                    break;
+                case ArtefactRarity.Exotic:
+                    particles.Add(GameObject.Instantiate(Resources.Load("Effects/ExoticParticle", typeof(GameObject))) as GameObject);
+                    break;
+                case ArtefactRarity.Rare:
+                    particles.Add(GameObject.Instantiate(Resources.Load("Effects/RareParticle", typeof(GameObject))) as GameObject);
+                    break;
             }
+            particles[particles.Count - 1].transform.position = artefact.transform.position;
         }
-        //-----
         inUse = true;
     }
 
@@ -59,7 +44,6 @@ public class ClueInterpretator : Powerup
         foreach (GameObject gameObject in temp)
         {
             GameObject.Destroy(gameObject);
-            //particles.Remove(gameObject);
         }
         GameObject.Destroy(particle);
         //-------------
@@ -71,15 +55,14 @@ public class ClueInterpretator : Powerup
         float maxDistance = 20.0f;
         ArtefactBehaviour rarestArtefact = null;
         ArtefactRarity highestRaritySoFar = ArtefactRarity.Common;
-        foreach (BoltEntity entity in BoltNetwork.Entities)
+        foreach (ArtefactBehaviour artefact in GameObject.FindObjectsOfType<ArtefactBehaviour>())
         {
-            if (entity.GetComponent<ArtefactBehaviour>() == false) continue;
-            if (Vector3.Distance(GetPlayerToEmpower().transform.position, entity.transform.position) <= maxDistance)
+            if (Vector3.Distance(GetPlayerToEmpower().transform.position, artefact.transform.position) <= maxDistance)
             {
-                if (entity.GetComponent<ArtefactBehaviour>().GetRarity() >= highestRaritySoFar)
+                if (artefact.GetRarity() >= highestRaritySoFar)
                 {
-                    highestRaritySoFar = entity.GetComponent<ArtefactBehaviour>().GetRarity();
-                    rarestArtefact = entity.GetComponent<ArtefactBehaviour>();
+                    highestRaritySoFar = artefact.GetComponent<ArtefactBehaviour>().GetRarity();
+                    rarestArtefact = artefact;
                 }
             }
         }

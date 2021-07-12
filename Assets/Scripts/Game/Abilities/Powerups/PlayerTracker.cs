@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Bolt;
+using Mirror;
 
 public class PlayerTracker : Powerup
 {
@@ -24,7 +24,6 @@ public class PlayerTracker : Powerup
     protected override void EndEffect()
     {
         //Get rid of player track icon
-        Debug.Log("Ending effect");
         GameObject.FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(null);
         base.EndEffect();
     }
@@ -32,20 +31,20 @@ public class PlayerTracker : Powerup
     private PlayerController FindHighestPlayerTarget()
     {
         int highestInventoryStash = 0;
-        BoltEntity playerWithHighestStashOnPerson = null;
-        foreach (BoltEntity boltEntity in BoltNetwork.Entities)
+        PlayerController playerWithHighestStashOnPerson = null;
+        foreach (PlayerController player in GameObject.FindObjectsOfType<PlayerController>())
         {
-            if (boltEntity.StateIs<IGamePlayerState>() == false || boltEntity == GetPlayerToEmpower().entity) continue;
-            List<InventoryItem> inventory = boltEntity.GetState<IGamePlayerState>().Inventory.ToList<InventoryItem>();
+            if (player == NetworkClient.localPlayer.gameObject.GetComponent<PlayerController>()) continue;
+            List<ItemArtefact> inventory = player.GetComponent<ArtefactInventory>().GetInventory();
             int playerInventoryStash = 0;
-            foreach (InventoryItem item in inventory)
+            foreach (ItemArtefact item in inventory)
             {
-                playerInventoryStash += item.ItemPoints;
+                playerInventoryStash += item.points;
             }
             if(playerInventoryStash > highestInventoryStash)
             {
                 highestInventoryStash = playerInventoryStash;
-                playerWithHighestStashOnPerson = boltEntity;
+                playerWithHighestStashOnPerson = player;
             }
         }
         if (playerWithHighestStashOnPerson == null)

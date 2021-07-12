@@ -61,12 +61,12 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         mVol = 0.5f;
-        sVol = 0.7f;
-        masVol = 0.7f;
+        sVol = 0.5f;
+        masVol = 0.0f;
         PlaySound("MusicMenu");
         MusicVolume(0.5f);
         SoundVolume(0.5f);
-        MasterVolume(0.5f);
+        MasterVolume(0.0f);
     }
 
 

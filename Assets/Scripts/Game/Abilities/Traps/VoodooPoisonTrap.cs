@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-
+using Mirror;
 
 public class VoodooPoisonTrap : Trap
 {
@@ -22,8 +22,7 @@ public class VoodooPoisonTrap : Trap
             spawnPos = hit.point;
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);//Quaternion for orientating the GO to be perpendicular to the ground
             spawnRotation *= Quaternion.Euler(-90, 0, 0);
-
-            BoltNetwork.Instantiate(BoltPrefabs.VoodooPoisonTrap, spawnPos, spawnRotation).GetState<IVoodooPoisonTrap>().PlacingPlayer = placingPlayer.entity;
+            placingPlayer.CmdSpawnVoodooTrap(spawnPos, placingPlayer);
             base.Use();
 
         }        

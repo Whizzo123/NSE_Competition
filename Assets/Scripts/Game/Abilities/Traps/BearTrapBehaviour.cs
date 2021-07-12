@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Bolt;
+using Mirror;
 
-public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
+public class BearTrapBehaviour : NetworkBehaviour
 {
     private PlayerController trappedPlayer;
 
@@ -11,44 +11,56 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
     private float currentDuration;
     
     private bool sprung;
-    private bool disabled;
 
     public GameObject openTrap;
     public GameObject closedTrap;
 
-    public override void Attached()
+    [SyncVar]
+    private string placingPlayerName;
+
+    void Start()
     {
         currentDuration = 0;
         sprung = false;
-        disabled = false;
     }
+
     public void OnTriggerEnter(Collider collider)
     {
-        if(collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
-        {
-            if (collider.gameObject.GetComponent<PlayerController>().entity.GetState<IGamePlayerState>().Name != state.PlacingPlayer.GetState<IGamePlayerState>().Name)
+        if (placingPlayerName != null)
+        { 
+            if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
             {
-                trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                SpringTrap();
+                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+                {
+                    trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
+                    trappedPlayer.CmdSetImmobilized(true);
+                    trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
+                    CmdSpringTrap();
+                }
             }
         }
     }
 
-    private void SpringTrap()
+    public void SetPlacingPlayer(PlayerController controller)
+    {
+        placingPlayerName = controller.playerName;
+    }
+
+    [Command (requiresAuthority = false)]
+    private void CmdSpringTrap()
     {
         FindObjectOfType<AudioManager>().PlaySound("BearTrapClose");
-        var request = SpringBearTrap.Create();
-        request.Victim = trappedPlayer.entity;
-        request.End = false;
-        request.Trap = entity;
-        request.Send();
+        RpcSpringBearTrap();
         sprung = true;
     }
 
-    public void Disable()
-    {
-        closedTrap.SetActive(false);
-        openTrap.SetActive(false);
+    /// <summary>
+    /// Call from server to all clients to spring the bear trap
+    /// </summary>
+    [ClientRpc]
+    private void RpcSpringBearTrap()
+    {  
+        Close();
     }
 
     public void Close()
@@ -57,9 +69,15 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
         closedTrap.SetActive(true);
     }
 
-    public override void SimulateOwner()
+    public void Update()
     {
-        if (sprung && !disabled)
+        UpdateTrap();
+    }
+
+    [ServerCallback]
+    private void UpdateTrap()
+    {
+        if (sprung)
         {
             if (trapDuration > -1)
             {
@@ -69,15 +87,10 @@ public class BearTrapBehaviour : EntityBehaviour<IBearTrap>
                 }
                 else
                 {
-                    var request = SpringBearTrap.Create();
-                    request.Victim = trappedPlayer.entity;
-                    request.End = true;
-                    request.Trap = entity;
-                    request.Send();
-                    disabled = true;
+                    trappedPlayer.CmdSetImmobilized(false);
+                    NetworkServer.Destroy(this.gameObject);
                 }
             }
         }
     }
-
 }

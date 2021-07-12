@@ -44,7 +44,7 @@ public class PlayerInventoryUI : MonoBehaviour
         }
         else
         {
-            BoltLog.Error("Attempting to subtract when no inventory tab exists under that name");
+            Debug.LogError("Attempting to subtract when no inventory tab exists under that name");
         }
     }
 
