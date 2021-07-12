@@ -330,7 +330,7 @@ public class MapGenerator : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, indestructables))
         {
-           // Instantiate(Resources.Load<GameObject>("Sphere") as GameObject, hit.point, Quaternion.identity);
+            //Instantiate(Resources.Load<GameObject>("Sphere") as GameObject, hit.point, Quaternion.identity);
             return true;
         }
         //RaycastHit[] hit2;
