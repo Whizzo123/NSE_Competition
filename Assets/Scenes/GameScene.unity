@@ -3827,9 +3827,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1895423266, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: weight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895423267, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_ShowCustomSorter
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3258238270017585353, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: m_Name
-      value: Main Camera
+      value: d
       objectReference: {fileID: 0}
     - target: {fileID: 3258238270017585354, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: m_RootOrder
@@ -4163,7 +4171,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 0.8784314, g: 0.7176471, b: 0.73531085, a: 1}
-  m_Intensity: 1.05
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4172,8 +4180,8 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0.732
-    m_Bias: 0.043
+    m_Strength: 1
+    m_Bias: 0.623
     m_NormalBias: 0.13
     m_NearPlane: 0.98
     m_CullingMatrixOverride:
@@ -4219,13 +4227,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2102188482}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.43427914, y: -0.25474173, z: -0.06039297, w: 0.8618939}
+  m_LocalPosition: {x: -0.43, y: 3, z: -0.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 45.876, y: -44.916, z: -27.861}
 --- !u!1001 &467241458588778137
 PrefabInstance:
   m_ObjectHideFlags: 0
