@@ -1537,6 +1537,10 @@ PrefabInstance:
       propertyPath: useSteamMatchmaking
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
+      propertyPath: PersistNetworkManagerToOfflineScene
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
 --- !u!114 &5581680210558013704 stripped
