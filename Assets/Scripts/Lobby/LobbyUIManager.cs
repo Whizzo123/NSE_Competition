@@ -35,7 +35,7 @@ public class LobbyUIManager : MonoBehaviour
     private bool randomJoin;
 
     private const string HostAddressKey = "HostAddress";
-    private const string LobbyNameKey = "LobbyName";
+    private const string LobbyNameKey = "LobbyNameTH";
 
     private MyNetworkManager networkManager;
     private NetworkDiscovery networkDiscovery;
