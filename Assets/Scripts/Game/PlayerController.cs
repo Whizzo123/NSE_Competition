@@ -146,8 +146,10 @@ public class PlayerController : NetworkBehaviour
         if(vCam != null)
             vCam.enabled = !devMode;
         cam.enabled = !devMode;
-        playerCamera.enabled = !devMode;
-        devCam.SetActive(devMode);
+        if(playerCamera != null)
+            playerCamera.enabled = !devMode;
+        if(devCam != null)
+            devCam.SetActive(devMode);
         FindObjectOfType<Canvas>().enabled = !devMode;
     }
     [ClientCallback]
@@ -271,7 +273,7 @@ public class PlayerController : NetworkBehaviour
             Debug.LogError(artefactInventory.GetAllArtefactNames());
             if (targetedPlayerToStealFrom != null)
             {
-                if (artefactInventory.AvailableInventorySlot() && targetedPlayerToStealFrom.GrabArtefactInventory().InventoryNotEmpty())
+                if (artefactInventory.AvailableInventorySlot() && targetedPlayerToStealFrom.GrabArtefactInventory().InventoryNotEmpty() && targetedPlayerToStealFrom.hasBeenStolenFrom == false)
                 {
                     //We are not full, they are no longer stunned and have artefacts, we steal
 

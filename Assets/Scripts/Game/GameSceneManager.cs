@@ -20,7 +20,7 @@ public class GameSceneManager : NetworkBehaviour
         if(FindObjectOfType<Stash>().HasPlayerReachedWinningPointsThreshold() && !endedGame)
         {
             endedGame = true;
-            FindObjectOfType<MyLobbyCountdown>().CmdCallGameToFinish();
+            FindObjectOfType<TheCountdown>().CmdCallGameToFinish();
         }
         if(FindObjectOfType<AbilityPickup>() == null)
         {

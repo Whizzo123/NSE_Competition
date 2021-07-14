@@ -1404,7 +1404,7 @@ GameObject:
   - component: {fileID: 872072824}
   - component: {fileID: 872072823}
   m_Layer: 0
-  m_Name: LobbyCountdown
+  m_Name: TheCountdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1442,7 +1442,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   lobbyTime: 35
-  gameTime: 300
+  gameTime: 100
+  winScreenDisplayTime: 20
 --- !u!4 &872072825
 Transform:
   m_ObjectHideFlags: 0

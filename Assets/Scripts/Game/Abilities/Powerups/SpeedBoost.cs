@@ -25,7 +25,7 @@ public class SpeedBoost : Powerup
 
     protected override void EndEffect()
     {
-       // GetPlayerToEmpower().speed = GetPlayerToEmpower().normalSpeed;
+        GetPlayerToEmpower().speed = GetPlayerToEmpower().normalSpeed;
         base.EndEffect();
     }
 
