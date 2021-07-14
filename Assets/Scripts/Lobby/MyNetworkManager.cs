@@ -144,6 +144,7 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
     {
+        RoomPlayers.Clear();
         ChangeMusic();
         base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
     }
