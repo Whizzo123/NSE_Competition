@@ -122,6 +122,7 @@ public class MyNetworkManager : NetworkManager
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
+                SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
                 var conn = RoomPlayers[i].connectionToClient;
                 Vector3 spawnPos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
                 GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), spawnPos, Quaternion.identity);
@@ -146,6 +147,7 @@ public class MyNetworkManager : NetworkManager
     {
         RoomPlayers.Clear();
         ChangeMusic();
+        SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
         base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
     }
 
