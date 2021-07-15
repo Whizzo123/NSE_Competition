@@ -116,7 +116,7 @@ public class PlayerController : NetworkBehaviour
     void SetCamera()
     {
         vCam = GameObject.FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
-        DontDestroyOnLoad(vCam);
+        //DontDestroyOnLoad(vCam);
         vCam.LookAt = this.gameObject.transform;
         vCam.Follow = this.gameObject.transform;
         vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
