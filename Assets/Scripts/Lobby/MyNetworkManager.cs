@@ -5,6 +5,7 @@ using Mirror;
 using Mirror.FizzySteam;
 using Steamworks;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class MyNetworkManager : NetworkManager
 {
@@ -18,7 +19,7 @@ public class MyNetworkManager : NetworkManager
     [SerializeField] private PlayerController gamePlayerPrefab = null;
     [Tooltip("Do we use Steam for matchmaking or not?")]
     [SerializeField] public bool useSteamMatchmaking;
-
+ 
 
     //List<LobbyPlayer> RoomPlayers = new List<LobbyPlayer>();
 
@@ -26,11 +27,16 @@ public class MyNetworkManager : NetworkManager
 
     void Start()
     {
-        GameObject[] prefabs = Resources.LoadAll<GameObject>("NetworkSpawningPrefabs");
-        for (int i = 0; i < prefabs.Length; i++)
+        var networkIdentities = Resources.LoadAll<NetworkIdentity>("").Cast<NetworkIdentity>().ToArray();
+        List<GameObject> gameObjectsFromNetworked = new List<GameObject>();
+        foreach (var item in networkIdentities)
         {
-            spawnPrefabs.Add(prefabs[i]);
+            gameObjectsFromNetworked.Add(item.gameObject);
         }
+        gameObjectsFromNetworked.CopyTo(spawnPrefabs);
+
+        //lobbyPlayerPrefab = spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "MirrorRoomPlayerLobby");
+
         //if(useSteamMatchmaking)
         //{
         //    transport = GetComponent<FizzySteamworks>();
