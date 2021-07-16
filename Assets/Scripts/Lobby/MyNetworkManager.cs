@@ -31,14 +31,8 @@ public class MyNetworkManager : NetworkManager
         {
             spawnPrefabs.Add(prefabs[i]);
         }
-        //if(useSteamMatchmaking)
-        //{
-        //    transport = GetComponent<FizzySteamworks>();
-        //}
-        //else
-        //{
-        //    transport = GetComponent<TelepathyTransport>();
-        //}
+        if(GameObject.Find("CM vcam1"))
+            Destroy(GameObject.Find("CM vcam1"));
     }
 
     public override void OnStartServer()
@@ -102,13 +96,16 @@ public class MyNetworkManager : NetworkManager
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         Debug.Log("OnServerDisconnect");
-        if(conn.identity != null)
+        if(conn.identity != null && SceneManager.GetActiveScene().name == "LobbyScene")
         {
-            var player = conn.identity.GetComponent<MirrorRoomPlayerLobby>();
+            if (SceneManager.GetActiveScene().name == "LobbyScene")
+            {
+                var player = conn.identity.GetComponent<MirrorRoomPlayerLobby>();
 
-            RoomPlayers.Remove(player);
+                RoomPlayers.Remove(player);
 
-            NotifyPlayersofReadyState();
+                NotifyPlayersofReadyState();
+            } 
         }
         base.OnServerDisconnect(conn);
     }
@@ -125,6 +122,7 @@ public class MyNetworkManager : NetworkManager
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
+                SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
                 var conn = RoomPlayers[i].connectionToClient;
                 Vector3 spawnPos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
                 GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), spawnPos, Quaternion.identity);
@@ -147,7 +145,9 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
     {
+        RoomPlayers.Clear();
         ChangeMusic();
+        SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
         base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
     }
 

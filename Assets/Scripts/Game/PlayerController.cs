@@ -88,7 +88,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        vCam = GameObject.FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
         if (vCam != null)
         {
             Invoke("SetCamera", 0);
@@ -115,8 +115,8 @@ public class PlayerController : NetworkBehaviour
     [Client]
     void SetCamera()
     {
-        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
-        DontDestroyOnLoad(vCam);
+        vCam = GameObject.FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        //DontDestroyOnLoad(vCam);
         vCam.LookAt = this.gameObject.transform;
         vCam.Follow = this.gameObject.transform;
         vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
@@ -132,12 +132,12 @@ public class PlayerController : NetworkBehaviour
             //REMINDER, you can't find the object if they are not in the same section ie dontdestroysection
             devCam = GameObject.Find("DevCam");
             Debug.LogError(devCam);
-            devCam.SetActive(true);
+            devCam.SetActive(false);
         }
         else
         {
             devCam = Instantiate(devCam);
-            devCam.SetActive(true);
+            devCam.SetActive(false);
         }
     }
 
@@ -146,8 +146,10 @@ public class PlayerController : NetworkBehaviour
         if(vCam != null)
             vCam.enabled = !devMode;
         cam.enabled = !devMode;
-        playerCamera.enabled = !devMode;
-        devCam.SetActive(devMode);
+        if(playerCamera != null)
+            playerCamera.enabled = !devMode;
+        if(devCam != null)
+            devCam.SetActive(devMode);
         FindObjectOfType<Canvas>().enabled = !devMode;
     }
     [ClientCallback]
@@ -158,10 +160,10 @@ public class PlayerController : NetworkBehaviour
         if (!hasAuthority) { return; };
 
         #region DEVMODE
-        if (Input.GetKey(KeyCode.P)) { devMode = true;}
-        if (Input.GetKey(KeyCode.O)){devMode = false;}
-        DevModeOn();
-        if (devMode){return;}
+        //if (Input.GetKey(KeyCode.P)) { devMode = true;}
+        //if (Input.GetKey(KeyCode.O)){devMode = false;}
+        //DevModeOn();
+        //if (devMode){return;}
         #endregion
 
         abilityInventory.Update();
@@ -271,7 +273,7 @@ public class PlayerController : NetworkBehaviour
             Debug.LogError(artefactInventory.GetAllArtefactNames());
             if (targetedPlayerToStealFrom != null)
             {
-                if (artefactInventory.AvailableInventorySlot() && targetedPlayerToStealFrom.GrabArtefactInventory().InventoryNotEmpty())
+                if (artefactInventory.AvailableInventorySlot() && targetedPlayerToStealFrom.GrabArtefactInventory().InventoryNotEmpty() && targetedPlayerToStealFrom.hasBeenStolenFrom == false)
                 {
                     //We are not full, they are no longer stunned and have artefacts, we steal
 

@@ -9,13 +9,15 @@ public struct LeaderboardScore
     public int score;
 }
 
-public class MyLobbyCountdown : NetworkBehaviour
+public class TheCountdown : NetworkBehaviour
 {
     [Header("Variables")]
     public float lobbyTime;
     private float currentLobbyTime;
     public float gameTime;
     private float currentGameTime;
+    public float winScreenDisplayTime;
+    private float currentWinScreenDisplayTime;
    
 
     // Update is called once per frame
@@ -23,6 +25,7 @@ public class MyLobbyCountdown : NetworkBehaviour
     {
         currentLobbyTime = lobbyTime;
         currentGameTime = gameTime;
+        currentWinScreenDisplayTime = winScreenDisplayTime;
         StartCoroutine(Countdown());
     }
 
@@ -70,6 +73,33 @@ public class MyLobbyCountdown : NetworkBehaviour
             }
         }
         EndGame();
+    }
+
+    [Server]
+    private IEnumerator WinScreenDisplayTimer()
+    {
+        var floorTime = Mathf.FloorToInt(winScreenDisplayTime);
+
+        while(currentWinScreenDisplayTime > 0)
+        {
+            yield return null;
+
+            currentWinScreenDisplayTime -= Time.deltaTime;
+            var newFloorTime = Mathf.FloorToInt(currentWinScreenDisplayTime);
+
+            if(newFloorTime != floorTime)
+            {
+                floorTime = newFloorTime;
+            }
+        }
+        RpcDisconnectPlayer();
+        MyNetworkManager.singleton.StopHost();
+    }
+
+    [ClientRpc]
+    private void RpcDisconnectPlayer()
+    {
+        MyNetworkManager.singleton.StopClient();
     }
 
     [ClientRpc]
@@ -138,11 +168,18 @@ public class MyLobbyCountdown : NetworkBehaviour
             Debug.Log("Adding to results: " + results[i].name + " with score of: " + results[i].score);
             FindObjectOfType<CanvasUIManager>().winScreen.AddToContent(results[i].name, results[i].score);
         }
+        CmdStartWinScreenDisplayTimer();
     }
 
     [Command(requiresAuthority = false)]
     public void CmdCallGameToFinish()
     {
         EndGame();
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdStartWinScreenDisplayTimer()
+    {
+        StartCoroutine(WinScreenDisplayTimer());
     }
 }
