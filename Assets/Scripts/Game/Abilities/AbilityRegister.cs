@@ -6,49 +6,19 @@ using System.Linq;
 
 public class AbilityRegister : MonoBehaviour
 {
-    //private Dictionary<string, Powerup> powerups;
-    //private Dictionary<string, Debuff> debuffs;
-    //private Dictionary<string, Trap> traps;
 
     private Dictionary<string, Ability> abilities;
 
     public void Initialize()
     {
-        //RegisterPowerups();
-        //RegisterDebuffs();
-        //RegisterTraps();
         Register();
     }
 
-    //public List<Ability> GetLoadoutList()
-    //{
-    //    List<Ability> loadoutList = new List<Ability>();
-
-    //    foreach (Powerup powerup in powerups.Values)
-    //    {
-    //        loadoutList.Add(powerup);
-    //    }
-    //    foreach (Debuff debuff in debuffs.Values)
-    //    {
-    //        loadoutList.Add(debuff);
-    //    }
-    //    foreach (Trap trap in traps.Values)
-    //    {
-    //        loadoutList.Add(trap);
-    //    }
-
-    //    return loadoutList;
-    //}
 
     public List<Ability> GetLoadoutList()
     {
         return abilities.Values.ToList<Ability>();
     }
-
-    //public string[] GetTrapList()
-    //{
-    //    return traps.Keys.ToArray<string>();
-    //}
 
     public string[] GetTrapList()
     {
@@ -61,40 +31,6 @@ public class AbilityRegister : MonoBehaviour
         return trapList.ToArray<string>();
     }
 
-    //public Ability Clone(string name)
-    //{
-    //    if(powerups.ContainsKey(name))
-    //    {
-    //        return ClonePowerup(name);
-    //    }
-    //    else if(debuffs.ContainsKey(name))
-    //    {
-    //        return CloneDebuff(name);
-    //    }
-    //    else if(traps.ContainsKey(name))
-    //    {
-    //        return CloneTrap(name);
-    //    }
-    //    Debug.LogError("Couldn't find ability type to clone");
-    //    return null;
-    //}
-
-    //public Powerup ClonePowerup(string name)
-    //{
-    //    return (Powerup)powerups[name].Clone();
-    //}
-
-    //public Debuff CloneDebuff(string name)
-    //{
-    //    return (Debuff)debuffs[name].Clone();
-    //}
-
-    //public Trap CloneTrap(string name)
-    //{
-    //    Trap trap = traps[name];
-    //    return (Trap)traps[name].Clone();
-    //}
-
     public Ability Clone(string name)
     {
         return abilities[name].Clone();
@@ -102,15 +38,6 @@ public class AbilityRegister : MonoBehaviour
 
     private void Register()
     {
-        //powerups = new Dictionary<string, Powerup>();
-        /*SpeedBoost speedBoost = new SpeedBoost();
-        PlayerTracker playerTracker = new PlayerTracker();
-        Camouflage camouflage = new Camouflage();
-        ClueInterpretator clueInterpretator = new ClueInterpretator();
-        powerups.Add(speedBoost.GetAbilityName(), speedBoost);
-        powerups.Add(playerTracker.GetAbilityName(), playerTracker);
-        powerups.Add(camouflage.GetAbilityName(), camouflage);
-        powerups.Add(clueInterpretator.GetAbilityName(), clueInterpretator);*/
         abilities = new Dictionary<string, Ability>();
         Ability speedBoost = new Ability("Speed", "Run really fast", 3, AbilityUseTypes.RECHARGE, AbilityType.POWERUP, 10.0f, Effects.SpeedBoost,
             Effects.EndSpeedBoost, 20.0f);
@@ -140,27 +67,4 @@ public class AbilityRegister : MonoBehaviour
         abilities.Add(bearTrap.GetAbilityName(), bearTrap);
         abilities.Add(voodooTrap.GetAbilityName(), voodooTrap);
     }
-
-    //private void RegisterDebuffs()
-    //{
-    //    debuffs = new Dictionary<string, Debuff>();
-    //    StickyBomb stunDebuff = new StickyBomb();
-    //    ParalysisDart paralysisDart = new ParalysisDart();
-    //    MortalSpell mortalSpell = new MortalSpell();
-    //    debuffs.Add(stunDebuff.GetAbilityName(), stunDebuff);
-    //    debuffs.Add(paralysisDart.GetAbilityName(), paralysisDart);
-    //    debuffs.Add(mortalSpell.GetAbilityName(), mortalSpell);
-    //}
-
-    //private void RegisterTraps()
-    //{
-    //    traps = new Dictionary<string, Trap>();
-    //    BearTrap bearTrap = new BearTrap();
-    //    VoodooPoisonTrap voodooTrap = new VoodooPoisonTrap();
-    //    traps.Add(bearTrap.GetAbilityName(), bearTrap);
-    //    traps.Add(voodooTrap.GetAbilityName(), voodooTrap); 
-    //}
-
-
-
 }

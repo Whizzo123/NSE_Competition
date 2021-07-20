@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
 public enum AbilityUseTypes { PASSIVE, RECHARGE, ONE_TIME};
@@ -8,7 +6,7 @@ public enum AbilityType { POWERUP, DEBUFF, TRAP};
 
 public class Ability
 {
-    //Player reference
+
     protected string name;
     protected string description;
     protected int pointsCost;
@@ -38,7 +36,7 @@ public class Ability
         fullCharge = 0;
         oppositeDebuffActivated = false;
     }
-    //Extra duration parameter, extra abilitytype parameter
+
     public Ability(string abilityName, string abilityDescription, int abilityCost, AbilityUseTypes abilityUseType, AbilityType abilityType, float abilityDuration, Action<Ability> onUseAction, Action<Ability> onEndAction, float amountToCharge = 0)
     {
         name = abilityName;
@@ -54,17 +52,11 @@ public class Ability
         effectInvokedOnUse += onUseAction;
         effectInvokedOnEnd += onEndAction;
     }
-    //would still need a clone method
+
     public Ability Clone()
     {
         return new Ability(name, description, pointsCost, useType, abilityType, duration, effectInvokedOnUse, effectInvokedOnEnd, fullCharge);
     }
-
-    //keep a written version of this
-    //virtual public void UpdateAbility()
-    //{
-
-    //}
 
     public void UpdateAbility()
     {
@@ -175,6 +167,10 @@ public class Ability
             castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
     }
 
+    public void ResetUseCount()
+    {
+        useCount = 0;
+    }
 
     public string GetAbilityName()
     {

@@ -616,7 +616,6 @@ public class PlayerController : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdModifySpeed(float newSpeed)
     {
-        //Debug.Log("Modifying Speed: " + playerName);
         speed = newSpeed;
     }
 
@@ -690,31 +689,6 @@ public class PlayerController : NetworkBehaviour
             Debug.Log("RpcToggleCamouflage the ClientRpc is hitting client called: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
     }
 }
-
-
-
-
-#region deadCode
-/*
-          //Old camera code
-            /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
-             {
-                 if (lastMousePos != Input.mousePosition)
-                 {
-                     float mouseMoveDistance = lastMousePos.x - Input.mousePosition.x;
-                     if (inverted)
-                         mouseMoveDistance *= -1;
-                     this.transform.Rotate(new Vector3(0, mouseMoveDistance * rotationSpeed * Time.deltaTime, 0));
-                 }
-
-                 lastMousePos = Input.mousePosition;
-             }
-
-             #region movement
-
-            #endregion
- */
-#endregion
 
 //////Remember, this was all called from Update() A [ClientCallback], also remember we testing player position. This is updated from the transform, not necessarily the function
 //No tags, if we do something, everyone else sees that
