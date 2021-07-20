@@ -75,7 +75,7 @@ public class MyLobbyCountdown : NetworkBehaviour
     [ClientRpc]
     private void DisableLoadoutScreen()
     {
-        FindObjectOfType<AbilitySlotBarUI>().LoadInAbilitiesFromLoadout(FindObjectOfType<LoadoutBarUI>().GetLoadoutForAbilitySlotBar());
+        FindObjectOfType<AbilitySlotBarUI>().LoadInAbilitiesFromLoadout(FindObjectOfType<LoadoutSelectionBoxUI>().GetLoadoutForAbilitySlotBar());
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
         NetworkClient.localPlayer.GetComponent<PlayerController>().SetLoadoutReleased(true);
     }

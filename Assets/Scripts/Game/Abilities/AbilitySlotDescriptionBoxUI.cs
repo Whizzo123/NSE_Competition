@@ -38,7 +38,7 @@ public class AbilitySlotDescriptionBoxUI : MonoBehaviour
                     break;
                 }
             }
-            if (result.gameObject.GetComponent<AbilityIconUI>() != slotDisplaying)
+            if (result.gameObject.GetComponent<AbilityPickBarIconUI>() != slotDisplaying)
             {
                 slotDisplaying = result.gameObject.GetComponent<AbilitySlotUI>();
                 UpdateDisplay();

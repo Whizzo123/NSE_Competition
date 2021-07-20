@@ -84,7 +84,7 @@ public class AbilityInventory
     public void AddAbilityToInventory(Ability ability)
     {
         //Check whether we are adding new ability or filling up a trap's uses
-        if (ability.GetType() == AbilityType.TRAP && FindAbility(ability.GetAbilityName()) == null)
+        if (ability.GetType() == AbilityType.TRAP && FindAbility(ability.GetAbilityName()) != null)
             FindAbility(ability.GetAbilityName()).ResetUseCount();
         else
         {

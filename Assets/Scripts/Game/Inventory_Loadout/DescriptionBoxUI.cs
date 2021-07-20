@@ -11,7 +11,7 @@ public class DescriptionBoxUI : MonoBehaviour
     public GameObject descriptionText;
     public GameObject pointsText;
 
-    private AbilityIconUI iconUIDisplaying;
+    private AbilityPickBarIconUI iconUIDisplaying;
 
     // Start is called before the first frame update
     void Start()
@@ -28,22 +28,22 @@ public class DescriptionBoxUI : MonoBehaviour
         List<RaycastResult> results = RaycastAgainstUIAtCurrentMousePos(evntData);
         foreach(RaycastResult result in results)
         {
-            if (result.gameObject.GetComponent<AbilityIconUI>())
+            if (result.gameObject.GetComponent<AbilityPickBarIconUI>())
             {
                 overIconUI = true;
             }
             if (iconUIDisplaying == null)
             {
-                if(result.gameObject.GetComponent<AbilityIconUI>())
+                if(result.gameObject.GetComponent<AbilityPickBarIconUI>())
                 {
-                    iconUIDisplaying = result.gameObject.GetComponent<AbilityIconUI>();
+                    iconUIDisplaying = result.gameObject.GetComponent<AbilityPickBarIconUI>();
                     UpdateDisplay();
                     break;
                 }
             }
-            if(result.gameObject.GetComponent<AbilityIconUI>() != iconUIDisplaying)
+            if(result.gameObject.GetComponent<AbilityPickBarIconUI>() != iconUIDisplaying)
             {
-                iconUIDisplaying = result.gameObject.GetComponent<AbilityIconUI>();
+                iconUIDisplaying = result.gameObject.GetComponent<AbilityPickBarIconUI>();
                 UpdateDisplay();
                 break;
             }
