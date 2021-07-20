@@ -659,21 +659,6 @@ public class PlayerController : NetworkBehaviour
     {
         hasBeenStolenFrom = value;
     }
-    [Command]
-    public void CmdSpawnBearTrap(Vector3 spawnPos, PlayerController placingPlayer)
-    {
-        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "BearTrap"), spawnPos, Quaternion.identity);
-        go.GetComponent<BearTrapBehaviour>().SetPlacingPlayer(placingPlayer);
-        NetworkServer.Spawn(go);
-    }
-    [Command]
-    public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerController placingPlayer)
-    {
-        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, Quaternion.identity);
-        go.GetComponent<VoodooPoisonTrapBehaviour>().SetPlacingPlayer(placingPlayer);
-        NetworkServer.Spawn(go);
-    }
-
 
     [ClientCallback]
     public void DestroyGameObject(GameObject go)
@@ -684,21 +669,6 @@ public class PlayerController : NetworkBehaviour
     public void CmdDestroyGameObject(GameObject go)
     {
         NetworkServer.Destroy(go);
-    }
-    [Command]
-    public void CmdSpawnStickyBombParticles(Vector3 spawnPos, float effectDuration)
-    {
-        GameObject stickyBombParticles = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefab => spawnPrefab.name == "SlowBombExplosion_PA"), spawnPos, Quaternion.identity);
-        stickyBombParticles.GetComponent<StickyBombBehaviour>().effectDuration = effectDuration;
-        stickyBombParticles.GetComponent<StickyBombBehaviour>().tick = true;
-        NetworkServer.Spawn(stickyBombParticles);
-    }
-    [Command]
-    public void CmdSpawnCamouflageParticles(Vector3 spawnPos)
-    {
-        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Invisibility_PA"),
-            spawnPos, Quaternion.identity);
-        NetworkServer.Spawn(go);
     }
     [Command]
     public void CmdToggleCamouflage(bool toggle, PlayerController player)

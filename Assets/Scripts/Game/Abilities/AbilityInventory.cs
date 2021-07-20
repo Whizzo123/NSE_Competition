@@ -83,40 +83,44 @@ public class AbilityInventory
 
     public void AddAbilityToInventory(Ability ability)
     {
-        if(ability.GetType().IsSubclassOf(typeof(Powerup)))
-        {
-            Powerup powerup = (Powerup)ability;
-            powerup.SetPlayerToEmpower(NetworkClient.localPlayer.GetComponent<PlayerController>());
-            powerup.SetInventory(this);
-            CmdAddToAbilities(powerup);
-        }
-        else if(ability.GetType().IsSubclassOf(typeof(Debuff)))
-        {
-            Debuff debuff = (Debuff)ability;
-            debuff.SetCastingPlayer(NetworkClient.localPlayer.GetComponent<PlayerController>());
-            debuff.SetInventory(this);
-            CmdAddToAbilities(debuff);
-        }
-        else if(ability.GetType().IsSubclassOf(typeof(Trap)))
-        {
-            if (FindAbility(ability.GetAbilityName()) == null)
-            {
-                Debug.Log("Setting trap player");
-                Trap trap = (Trap)ability;
-                trap.SetInventory(this);
-                trap.SetPlacingPlayer(NetworkClient.localPlayer.GetComponent<PlayerController>());
-                CmdAddToAbilities(trap);
-            }
-            else
-            {
-                Trap trap = (Trap)FindAbility(ability.GetAbilityName());
-                trap.ResetUseCount();
-            }
-        }
-        else
-        {
-            Debug.LogError("ERROR: ABILITY ATTEMPTING TO BE ADDED TO INVENTORY THAT HAS NO SUBTYPE");
-        }
+        ability.SetCastingPlayer(NetworkClient.localPlayer.GetComponent<PlayerController>());
+        ability.SetInventory(this);
+        //REMEMBER: Need to add in trap type reset thing that is commented down below
+        CmdAddToAbilities(ability);
+        //if(ability.GetType().IsSubclassOf(typeof(Powerup)))
+        //{
+        //    Powerup powerup = (Powerup)ability;
+        //    powerup.SetPlayerToEmpower(NetworkClient.localPlayer.GetComponent<PlayerController>());
+        //    powerup.SetInventory(this);
+        //    CmdAddToAbilities(powerup);
+        //}
+        //else if(ability.GetType().IsSubclassOf(typeof(Debuff)))
+        //{
+        //    Debuff debuff = (Debuff)ability;
+        //    debuff.SetCastingPlayer(NetworkClient.localPlayer.GetComponent<PlayerController>());
+        //    debuff.SetInventory(this);
+        //    CmdAddToAbilities(debuff);
+        //}
+        //else if(ability.GetType().IsSubclassOf(typeof(Trap)))
+        //{
+        //    if (FindAbility(ability.GetAbilityName()) == null)
+        //    {
+        //        Debug.Log("Setting trap player");
+        //        Trap trap = (Trap)ability;
+        //        trap.SetInventory(this);
+        //        trap.SetPlacingPlayer(NetworkClient.localPlayer.GetComponent<PlayerController>());
+        //        CmdAddToAbilities(trap);
+        //    }
+        //    else
+        //    {
+        //        Trap trap = (Trap)FindAbility(ability.GetAbilityName());
+        //        trap.ResetUseCount();
+        //    }
+        //}
+        //else
+        //{
+        //    Debug.LogError("ERROR: ABILITY ATTEMPTING TO BE ADDED TO INVENTORY THAT HAS NO SUBTYPE");
+        //}
         
     }
 

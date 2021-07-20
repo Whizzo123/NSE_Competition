@@ -10,55 +10,55 @@ public class Powerup : Ability
     private float currentDuration;
     protected bool oppositeDebuffActivated;
 
-    public Powerup(string abilityName, string abilityDescription, int abilityCost, AbilityUseTypes abilityType, float amountToCharge = 0, float durationOfEffect = 0) 
-        : base(abilityName, abilityDescription, abilityCost, abilityType, amountToCharge)
-    {
-        effectDuration = durationOfEffect;
-        oppositeDebuffActivated = false;
-    }
+    //public Powerup(string abilityName, string abilityDescription, int abilityCost, AbilityUseTypes abilityType, float amountToCharge = 0, float durationOfEffect = 0) 
+    //    : base(abilityName, abilityDescription, abilityCost, abilityType, amountToCharge)
+    //{
+    //    effectDuration = durationOfEffect;
+    //    oppositeDebuffActivated = false;
+    //}
 
-    public override void UpdateAbility()
-    {
-        if (useType == AbilityUseTypes.RECHARGE)
-        {
-            if (inUse)
-            {
+    //public override void UpdateAbility()
+    //{
+    //    if (useType == AbilityUseTypes.RECHARGE)
+    //    {
+    //        if (inUse)
+    //        {
 
-                //Do stuff to do with duration of effect
-                if (currentDuration < effectDuration)
-                {
-                    currentDuration += Time.deltaTime;
-                    if (currentDuration > effectDuration)
-                        currentDuration = effectDuration;
-                }
-                else
-                {
-                    EndEffect();
-                }
-            }
-            else
-            {
-                if(currentCharge < fullCharge)
-                {
-                    currentCharge += Time.deltaTime;
-                    if (currentCharge > fullCharge)
-                    {
-                        currentCharge = fullCharge;
-                        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, false);
-                    }
-                }
-            }
-        }
-        else if (useType == AbilityUseTypes.ONE_TIME && used)
-        {
-            //Destroy
+    //            //Do stuff to do with duration of effect
+    //            if (currentDuration < effectDuration)
+    //            {
+    //                currentDuration += Time.deltaTime;
+    //                if (currentDuration > effectDuration)
+    //                    currentDuration = effectDuration;
+    //            }
+    //            else
+    //            {
+    //                EndEffect();
+    //            }
+    //        }
+    //        else
+    //        {
+    //            if(currentCharge < fullCharge)
+    //            {
+    //                currentCharge += Time.deltaTime;
+    //                if (currentCharge > fullCharge)
+    //                {
+    //                    currentCharge = fullCharge;
+    //                    GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, false);
+    //                }
+    //            }
+    //        }
+    //    }
+    //    else if (useType == AbilityUseTypes.ONE_TIME && used)
+    //    {
+    //        //Destroy
 
-        }
-        else if (useType == AbilityUseTypes.PASSIVE)
-        {
-            Use();
-        }
-    }
+    //    }
+    //    else if (useType == AbilityUseTypes.PASSIVE)
+    //    {
+    //        Use();
+    //    }
+    //}
 
     protected virtual void EndEffect()
     {

@@ -9,17 +9,17 @@ public class PlayerTracker : Powerup
 
 
 
-    public PlayerTracker() : base("PlayerTracker", "Track other players on the map", 5, AbilityUseTypes.RECHARGE, 30.0f, 25.0f)
-    {
+    //public PlayerTracker() : base("PlayerTracker", "Track other players on the map", 5, AbilityUseTypes.RECHARGE, 30.0f, 25.0f)
+    //{
 
-    }
+    //}
 
-    public override void Use()
-    {
-        //Display player track icon
-        GameObject.FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(FindHighestPlayerTarget());
-        inUse = true;
-    }
+    //public override void Use()
+    //{
+    //    //Display player track icon
+    //    GameObject.FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(FindHighestPlayerTarget());
+    //    inUse = true;
+    //}
 
     protected override void EndEffect()
     {
@@ -58,9 +58,9 @@ public class PlayerTracker : Powerup
         }
     }
 
-    public override Ability Clone()
-    {
-        return new PlayerTracker();
-    }
+    //public override Ability Clone()
+    //{
+    //    return new PlayerTracker();
+    //}
 
 }
