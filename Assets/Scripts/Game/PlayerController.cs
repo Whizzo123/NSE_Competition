@@ -616,7 +616,6 @@ public class PlayerController : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdModifySpeed(float newSpeed)
     {
-        //Debug.Log("Modifying Speed: " + playerName);
         speed = newSpeed;
     }
 
@@ -659,21 +658,6 @@ public class PlayerController : NetworkBehaviour
     {
         hasBeenStolenFrom = value;
     }
-    [Command]
-    public void CmdSpawnBearTrap(Vector3 spawnPos, PlayerController placingPlayer)
-    {
-        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "BearTrap"), spawnPos, Quaternion.identity);
-        go.GetComponent<BearTrapBehaviour>().SetPlacingPlayer(placingPlayer);
-        NetworkServer.Spawn(go);
-    }
-    [Command]
-    public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerController placingPlayer)
-    {
-        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, Quaternion.identity);
-        go.GetComponent<VoodooPoisonTrapBehaviour>().SetPlacingPlayer(placingPlayer);
-        NetworkServer.Spawn(go);
-    }
-
 
     [ClientCallback]
     public void DestroyGameObject(GameObject go)
@@ -684,21 +668,6 @@ public class PlayerController : NetworkBehaviour
     public void CmdDestroyGameObject(GameObject go)
     {
         NetworkServer.Destroy(go);
-    }
-    [Command]
-    public void CmdSpawnStickyBombParticles(Vector3 spawnPos, float effectDuration)
-    {
-        GameObject stickyBombParticles = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefab => spawnPrefab.name == "SlowBombExplosion_PA"), spawnPos, Quaternion.identity);
-        stickyBombParticles.GetComponent<StickyBombBehaviour>().effectDuration = effectDuration;
-        stickyBombParticles.GetComponent<StickyBombBehaviour>().tick = true;
-        NetworkServer.Spawn(stickyBombParticles);
-    }
-    [Command]
-    public void CmdSpawnCamouflageParticles(Vector3 spawnPos)
-    {
-        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Invisibility_PA"),
-            spawnPos, Quaternion.identity);
-        NetworkServer.Spawn(go);
     }
     [Command]
     public void CmdToggleCamouflage(bool toggle, PlayerController player)
@@ -720,31 +689,6 @@ public class PlayerController : NetworkBehaviour
             Debug.Log("RpcToggleCamouflage the ClientRpc is hitting client called: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
     }
 }
-
-
-
-
-#region deadCode
-/*
-          //Old camera code
-            /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
-             {
-                 if (lastMousePos != Input.mousePosition)
-                 {
-                     float mouseMoveDistance = lastMousePos.x - Input.mousePosition.x;
-                     if (inverted)
-                         mouseMoveDistance *= -1;
-                     this.transform.Rotate(new Vector3(0, mouseMoveDistance * rotationSpeed * Time.deltaTime, 0));
-                 }
-
-                 lastMousePos = Input.mousePosition;
-             }
-
-             #region movement
-
-            #endregion
- */
-#endregion
 
 //////Remember, this was all called from Update() A [ClientCallback], also remember we testing player position. This is updated from the transform, not necessarily the function
 //No tags, if we do something, everyone else sees that

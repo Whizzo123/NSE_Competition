@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LoadoutBarUI : MonoBehaviour
+public class LoadoutSelectionBoxUI : MonoBehaviour
 {
 
     public GameObject loadoutContent;
@@ -20,11 +20,11 @@ public class LoadoutBarUI : MonoBehaviour
 
     public bool AddGameObjectToContent(GameObject gameObject)
     {
-        if (currentPointsLeft - gameObject.GetComponent<AbilityIconUI>().abilityPoints >= 0)
+        if (currentPointsLeft - gameObject.GetComponent<AbilityPickBarIconUI>().abilityPoints >= 0)
         {
             gameObject.transform.SetParent(loadoutContent.transform);
-            UpdatePoints(-(gameObject.GetComponent<AbilityIconUI>().abilityPoints));
-            gameObject.GetComponent<AbilityIconUI>().SetIconAsPartOfLoadout(true);
+            UpdatePoints(-(gameObject.GetComponent<AbilityPickBarIconUI>().abilityPoints));
+            gameObject.GetComponent<AbilityPickBarIconUI>().SetIconAsPartOfLoadout(true);
             return true;
         }
         return false;
@@ -32,7 +32,7 @@ public class LoadoutBarUI : MonoBehaviour
 
     public int NumberOfLoadoutAbilitiesEquipped()
     {
-        return gameObject.GetComponentsInChildren<AbilityIconUI>().Length;
+        return gameObject.GetComponentsInChildren<AbilityPickBarIconUI>().Length;
     }
 
     public void RefundPoints(int pointsToRefund)
@@ -42,7 +42,7 @@ public class LoadoutBarUI : MonoBehaviour
 
     public List<string> GetLoadoutForAbilitySlotBar()
     {
-        AbilityIconUI[] loadout = transform.GetComponentsInChildren<AbilityIconUI>();
+        AbilityPickBarIconUI[] loadout = transform.GetComponentsInChildren<AbilityPickBarIconUI>();
         List<string> loadoutNames = new List<string>();
         for (int i = 0; i < loadout.Length; i++)
         {

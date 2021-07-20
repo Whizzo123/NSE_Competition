@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilityBarUI : MonoBehaviour
+public class AbilityPickBarUI : MonoBehaviour
 {
 
     public GameObject barContent;
@@ -22,7 +22,7 @@ public class AbilityBarUI : MonoBehaviour
         foreach (Ability ability in loadoutList)
         {
             GameObject go = Instantiate(abilityIconPrefab);
-            go.GetComponent<AbilityIconUI>().PopulateAbilityIcon(ability.GetAbilityName(), ability.GetAbilityDescription(), ability.GetAbilityCost(), Resources.Load("UI/" + ability.GetAbilityName(), typeof(Sprite)) as Sprite);
+            go.GetComponent<AbilityPickBarIconUI>().PopulateAbilityIcon(ability.GetAbilityName(), ability.GetAbilityDescription(), ability.GetAbilityCost(), Resources.Load("UI/" + ability.GetAbilityName(), typeof(Sprite)) as Sprite);
             AddGameObjectToContent(go);
         }
     }

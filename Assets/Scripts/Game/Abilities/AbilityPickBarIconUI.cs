@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler
+public class AbilityPickBarIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler
 {
 
     private bool dragging;
@@ -41,31 +41,31 @@ public class AbilityIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
         foreach (RaycastResult result in results)
         {
             Debug.Log("Result GameObject: " + result.gameObject.name);
-            if(result.gameObject.GetComponent<AbilityBarUI>())
+            if(result.gameObject.GetComponent<AbilityPickBarUI>())
             {
-                result.gameObject.GetComponent<AbilityBarUI>().AddGameObjectToContent(gameObject);
+                result.gameObject.GetComponent<AbilityPickBarUI>().AddGameObjectToContent(gameObject);
                 if(iconInLoadout)
                 {
-                    FindObjectOfType<LoadoutBarUI>().RefundPoints(abilityPoints);
+                    FindObjectOfType<LoadoutSelectionBoxUI>().RefundPoints(abilityPoints);
                     SetIconAsPartOfLoadout(false);
                 }
             }
-            else if(result.gameObject.GetComponent<LoadoutBarUI>())
+            else if(result.gameObject.GetComponent<LoadoutSelectionBoxUI>())
             {
                 //Check whether we have enough points left to add the ability
-                if(result.gameObject.GetComponent<LoadoutBarUI>().AddGameObjectToContent(gameObject) == false)
+                if(result.gameObject.GetComponent<LoadoutSelectionBoxUI>().AddGameObjectToContent(gameObject) == false)
                 {
                     //If not then add to ability bar instead
-                    FindObjectOfType<AbilityBarUI>().AddGameObjectToContent(gameObject);
+                    FindObjectOfType<AbilityPickBarUI>().AddGameObjectToContent(gameObject);
                 }
             }
         }
         if(this.transform.parent == FindObjectOfType<Canvas>().transform)
         {
-            FindObjectOfType<AbilityBarUI>().AddGameObjectToContent(gameObject);
+            FindObjectOfType<AbilityPickBarUI>().AddGameObjectToContent(gameObject);
             if (iconInLoadout)
             {
-                FindObjectOfType<LoadoutBarUI>().RefundPoints(abilityPoints);
+                FindObjectOfType<LoadoutSelectionBoxUI>().RefundPoints(abilityPoints);
                 SetIconAsPartOfLoadout(false);
             }
         }
