@@ -19,7 +19,8 @@ public struct UIScreens
 }
 
 /// <summary>
-/// 
+/// <para>This class manages both Steam and Mirror's creation of lobbies, initialisation of network, and join requests.</para>
+/// <para>It also manages a lot of UI in the 'LobbyScene'</para>
 /// </summary>
 public class LobbyUIManager : MonoBehaviour
 {

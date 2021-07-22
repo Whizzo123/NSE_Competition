@@ -10,7 +10,7 @@ using System.Linq;
 /// <summary>
 /// Inherits from most functions of NetworkManager, where NetworkManager has a lot of doing functions,
 /// MySceneManager has a lot of reactive functions - what happens when something happens.
-/// <para>Manages a lot of Mirror backend things such as//JoeComment it doesn't do anything with steam does it? Even if steam is used, does this get used?</para>
+/// <para>Manages a lot of Mirror backend things such as//JoeComment it doesn't do anything with steam does it?</para>
 /// </summary>
 public class MyNetworkManager : NetworkManager
 {
