@@ -8,43 +8,56 @@ using Steamworks;
 using Mirror;
 using Mirror.Discovery;
 
+/// <summary>
+/// Identifying name accompanied by the gameobject tied to it.
+/// </summary>
+[Serializable]
+public struct UIScreens
+{
+    public string screenName;
+    public GameObject screen;
+}
+
+/// <summary>
+/// 
+/// </summary>
 public class LobbyUIManager : MonoBehaviour
 {
     #region Variables
 
-    [SerializeField]
-    public UIScreens[] screens;
+    [Header("Canvas and Screens")]
+    [SerializeField][Tooltip("All screens that we can switch to")]public UIScreens[] screens;//JoeComment Should we not add the root screen to this?
 
-    private CreateScreenUI createScreen;
-    private BrowseScreenUI browseScreen;
+    [Tooltip("JoeComment")] private CreateScreenUI createScreen;
+    [Tooltip("JoeComment")] private BrowseScreenUI browseScreen;
 
-    public Canvas BrowseCreateCanvas;
-    public Canvas RoomCanvas;
+    [SerializeField] [Tooltip("The main canvas")] public Canvas BrowseCreateCanvas;
+    [Tooltip("JoeComment")] public Canvas RoomCanvas;
 
-    public string gameSceneName;
+    [Tooltip("JoeComment")] public string gameSceneName; //necessary?
+    [Space]
 
-    [Tooltip("Minimum Required Players To Start")]
-    [SerializeField] private int minPlayers = 2;
+    [Header("Lobby settings")]
+    [Tooltip("Room name specified by player")] private string roomName;//Do we need this at all, does it add to the user experience
 
-    [Tooltip("Time in second between all players ready & match start")]
-    [SerializeField]
-    public float prematchCountdown = 5.0f;
+    public static CSteamID LobbyId { get; private set; }//LobbyID is the lobbies unique identifier
+
+    [SerializeField] [Tooltip("JoeComment are these filters")] private const string HostAddressKey = "HostAddress";
+    [Tooltip("JoeComment are these filters")] private const string LobbyNameKey = "LobbyName";
+
+    [SerializeField][Tooltip("Minimum Required Players To Start")] private int minPlayers = 2;
+    [SerializeField][Tooltip("Time in second between all players ready & match start")]public float prematchCountdown = 5.0f;
+    [Space]
 
 
+    [Header("Network")]
+    [Tooltip("Reference to the MyNetworkManager")] private MyNetworkManager networkManager;
+    [Tooltip("Reference to the NetworkDiscovery")] private NetworkDiscovery networkDiscovery;
 
-    private bool randomJoin;
+    [Tooltip("JoeComment ?All networks we have discovered? All networks we can connect to(factoring filters)")] public readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
+    [SerializeField] [Tooltip("Are we joining randomly?")] private bool randomJoin;
+    [Space]
 
-    private const string HostAddressKey = "HostAddress";
-    private const string LobbyNameKey = "LobbyName";
-
-    private MyNetworkManager networkManager;
-    private NetworkDiscovery networkDiscovery;
-
-    public readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
-
-    public static CSteamID LobbyId { get; private set; }
-
-    private string roomName;
 
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
@@ -54,11 +67,14 @@ public class LobbyUIManager : MonoBehaviour
     #endregion
 
     #region START_ACTIONMAPPING
+
     void Start()
     {
+
         networkManager = FindObjectOfType<MyNetworkManager>();
         networkDiscovery = FindObjectOfType<NetworkDiscovery>();
         networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
+        //Starts steam
         if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             InitializeSteam();
 
@@ -73,6 +89,7 @@ public class LobbyUIManager : MonoBehaviour
         {
             Debug.LogError("Failed to find the browse screen");
         }
+
         //Set random join to false by default
         randomJoin = false;
         StartUI();
@@ -85,12 +102,60 @@ public class LobbyUIManager : MonoBehaviour
         createScreen.OnCreateButtonClick += CreateRoomSession;
         createScreen.OnBrowseButtonClick += SwapToBrowseScreen;
         createScreen.OnRandomButtonClick += JoinRandomSession;
-        //browseScreen.OnClickJoinSession += JoinSessionEvent;
     }
 
     #endregion
 
-    #region SteamLobbyLogic
+    #region LOBBY_CREATION_OR_JOINING
+    /// <summary>
+    /// Called when creating a room on the network, decides whether to create mirror or steam lobby.
+    /// </summary>
+    private void CreateRoomSession()
+    {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+
+        roomName = createScreen.inputField.text;
+        Debug.Log("CreatingRoomSession");
+
+        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+            SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, networkManager.maxConnections);
+        else
+            CreateMirrorLobby();
+    }
+    /// <summary>
+    /// Switches to browse screen, decides whether to discover Steam lobbies or Mirror lobbies.
+    /// </summary>
+    private void SwapToBrowseScreen()
+    {
+        //In order for client to view session list we need to connect them to the network //JoeComment is this true? Where do we connect them?
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+        ChangeScreenTo("Browse");
+
+        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+            SteamMatchmaking.RequestLobbyList();
+        else
+            networkDiscovery.StartDiscovery();
+    }
+    //RandomJoinNotSupportedYet----------------------------------------------------------------
+    /// <summary>
+    /// Joins any available session, decides whether to join steam or mirror lobbies
+    /// </summary>
+    private void JoinRandomSession()
+    {
+        FindObjectOfType<AudioManager>().PlaySound("Click");
+
+        //Set random join to true
+        randomJoin = true;
+        //Launch the client
+    }
+    //------------------------------------------------------------------------------------------
+    #endregion
+
+    #region STEAMLOGICLOBBY
+
+    /// <summary>
+    /// JoeComment
+    /// </summary>
     private void InitializeSteam()
     {
         if (!SteamManager.Initialized) { return; }
@@ -101,8 +166,13 @@ public class LobbyUIManager : MonoBehaviour
         lobbyMatchList = Callback<LobbyMatchList_t>.Create(OnLobbyMatchListGrab);
     }
 
+    #region Callbacks
+    /// <summary>
+    /// JoeComment
+    /// </summary>
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
+        
         if (callback.m_eResult != EResult.k_EResultOK)
         {
             Debug.LogError("Lobby could not be created");
@@ -111,37 +181,49 @@ public class LobbyUIManager : MonoBehaviour
 
         LobbyId = new CSteamID(callback.m_ulSteamIDLobby);
 
+        //Start Steam Networking
         networkManager.StartHost();
-
         SteamMatchmaking.SetLobbyData(LobbyId, HostAddressKey, SteamUser.GetSteamID().ToString());
-        SteamMatchmaking.SetLobbyData(LobbyId, LobbyNameKey, roomName);
+        SteamMatchmaking.SetLobbyData(LobbyId, LobbyNameKey, roomName);//JoeComment is it supposed to do it twice?
     }
 
+    /// <summary>
+    /// Joins Steam Lobby with callback.m_steamIDLobby
+    /// </summary>
     private void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback)
     {
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
-
+    /// <summary>
+    /// When player has connected to Lobby, they trigger this function.
+    /// <para>Change the screen to Room and sets up local lobby data, and starts a client connection to the host</para>
+    /// </summary>
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
         ChangeScreenTo("Room");
         LobbyId = new CSteamID(callback.m_ulSteamIDLobby);
-        Debug.LogError("LobbyId: " + LobbyId);
+        //Debug.Log("LobbyId: " + LobbyId);
+        //JoeComment
         if (NetworkServer.active) { return; }
 
+        //Starts a client connection by connecting to the host address
         string hostAddress = SteamMatchmaking.GetLobbyData(LobbyId, HostAddressKey);
-
         networkManager.networkAddress = hostAddress;
         Debug.LogError("NetworkAddress: " + hostAddress);
         networkManager.StartClient();
     }
-
+    /// <summary>
+    /// JoeComment
+    /// </summary>
     private void OnLobbyMatchListGrab(LobbyMatchList_t callback)
     {
-        Debug.Log("Callback number: " + callback.m_nLobbiesMatching);
+        //Debug.Log("Callback number: " + callback.m_nLobbiesMatching);
+
+        //JoeComment
         List<LobbyInfo> lobbies = new List<LobbyInfo>();
         for (int i = 0; i < callback.m_nLobbiesMatching; i++)
         {
+            
             CSteamID lobbyId = SteamMatchmaking.GetLobbyByIndex(i);
             if (SteamMatchmaking.GetLobbyData(lobbyId, LobbyNameKey) != "")
             {
@@ -153,21 +235,30 @@ public class LobbyUIManager : MonoBehaviour
                 Debug.Log("LobbyID: " + lobbyId);
             }
         }
+
+        //Update the UI
         browseScreen.SessionListUpdated(lobbies);
     }
     #endregion
+    #endregion
 
-    #region MirrorLobbyLogic
+    #region MIRRORLOBBYLOGIC
+    /// <summary>
+    /// Disables BrowseCreateCanvas and starts hosting locally.
+    /// </summary>
     private void CreateMirrorLobby()
     {
         BrowseCreateCanvas.gameObject.SetActive(false);
         networkManager.StartHost();
         networkDiscovery.AdvertiseServer();
     }
-
+    /// <summary>
+    /// Adds server to discoveredServers
+    /// </summary>
+    /// <param name="info"></param>
     public void OnDiscoveredServer(ServerResponse info)
     {
-        // Note that you can check the versioning to decide if you can connect to the server or not using this method
+        // Note: that you can check the versioning to decide if you can connect to the server or not using this method
         Debug.Log("ServerID: " + info.serverId);
         Debug.Log("Uri: " + info.uri.Host);
         Debug.Log("IPEndPoint: " + info.EndPoint.ToString());
@@ -175,47 +266,23 @@ public class LobbyUIManager : MonoBehaviour
     }
 
     #endregion
+
+
+
+ 
+
     /// <summary>
-    /// Called when creating a room on the network
+    /// Stops client connection
     /// </summary>
-    private void CreateRoomSession()
-    {
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        roomName = createScreen.inputField.text;
-        Debug.Log("CreatingRoomSession");
-
-        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
-            SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, networkManager.maxConnections);
-        else
-            CreateMirrorLobby();
-    }
-
-    private void SwapToBrowseScreen()
-    {
-        //In order for client to view session list we need to connect them to the network
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        ChangeScreenTo("Browse");
-        if(FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
-            SteamMatchmaking.RequestLobbyList();
-        else
-            networkDiscovery.StartDiscovery();
-    }
-
-    //RandomJoinNotSupportedYet----------------------------------------------------------------
-    private void JoinRandomSession()
-    {
-        FindObjectOfType<AudioManager>().PlaySound("Click");
-        //Set random join to true
-        randomJoin = true;
-        //Launch the client
-    }
-    //------------------------------------------------------------------------------------------
-
     public void BackToTitleScreen()
     {
         networkManager.StopClient();
     }
 
+    #region SCREEN_MANAGEMENT
+    /// <summary>
+    /// Find screen in UIScreens[], does not load it.
+    /// </summary>
     private UIScreens FindScreenByName(string name)
     {
         for (int i = 0; i < screens.Length; i++)
@@ -228,6 +295,11 @@ public class LobbyUIManager : MonoBehaviour
         Debug.LogError("Name: " + name + " does not belong to any UIScreen object");
         return new UIScreens();
     }
+
+    /// <summary>
+    /// Changes screen to the specified name, in UIScreens[]
+    /// </summary>
+    /// <param name="name"></param>
     public void ChangeScreenTo(string name)
     {
         for (int i = 0; i < screens.Length; i++)
@@ -238,25 +310,19 @@ public class LobbyUIManager : MonoBehaviour
             {
                 if(screens[i].screenName == "Room")
                 {
-                    RoomCanvas.gameObject.SetActive(true);
+                    RoomCanvas.gameObject.SetActive(true);//JoeComment RoomCanvas is null no?
                     BrowseCreateCanvas.gameObject.SetActive(false);
                 }
                 screens[i].screen.SetActive(true);
             }
         }
     }
-
-
+    #endregion
 
 }
 
 
-[Serializable]
-public struct UIScreens
-{
-    public string screenName;
-    public GameObject screen;
-}
+
 
 #region BOLTNETWORK_START_AUTHORISATION_JOIN_REFUSAL
 
