@@ -9,6 +9,9 @@ public struct LeaderboardScore
     public int score;
 }
 
+/// <summary>
+/// 
+/// </summary>
 public class MyLobbyCountdown : NetworkBehaviour
 {
     [Header("Variables")]

@@ -2,21 +2,25 @@
 using UnityEngine;
 using Mirror;
 
+//Todo: Remove the spawning of abilities and put it in it's own script.
+/// <summary>
+/// Controls the game ending
+/// </summary>
 public class GameSceneManager : NetworkBehaviour
 {
-    [SyncVar]
-    private bool endedGame = false;
-    [SyncVar]
-    private bool pickupSpawnCounting = false;
+    [SyncVar][Tooltip("Has the game ended via MyLobbyCountdown or Stash")] private bool endedGame = false;
+    [SyncVar][Tooltip("")]private bool pickupSpawnCounting = false;
 
 
     void Start()
     {
-        FindObjectOfType<AudioManager>().ActivateGameMusic();
+        FindObjectOfType<AudioManager>().ActivateGameMusic();//JoeComment should we activate the music on scene changes, via network manager.
     }
 
     void LateUpdate()
     {
+        //JoeComment the game gets called to end here when the winning threshold is reached yet the game gets called to end in MyLobbyCountdown when the countdown ends
+        //Is there a way for us to have them be called in the same script? Is that even more clean?
         if(FindObjectOfType<Stash>().HasPlayerReachedWinningPointsThreshold() && !endedGame)
         {
             endedGame = true;
