@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 /// <summary>
-/// Spawns the scoreboard prefabs
+/// Spawns the winning scoreboard 
 /// </summary>
 public class WinScreenUI : MonoBehaviour
 {

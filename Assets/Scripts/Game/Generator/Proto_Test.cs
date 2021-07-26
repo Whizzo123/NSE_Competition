@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 2D Representation of the <see cref="Proto_Procedural"/> script, draws in editor
+/// </summary>
 public class Proto_Test : MonoBehaviour
 {
-    public int radius = 7;
-    public Vector2 regionSize = new Vector2(200, 200);
-    List<Vector2> points;
+    [Header("Settings")]
+    [Tooltip("Radius for generating objects")]public int radius = 7;
+    [Tooltip("Region size for aree. NOTE: Be careful going over 200,200, and be careful changing it in increments")] public Vector2 regionSize = new Vector2(200, 200);
+
+    [Tooltip("Points generated")] private List<Vector2> points;
 
 
     public void OnValidate()
@@ -27,9 +32,6 @@ public class Proto_Test : MonoBehaviour
             }
         }
     }
-
-
-
     //private void OnDrawGizmos()
     //{
     //    if (map != null)

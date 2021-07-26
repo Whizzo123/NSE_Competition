@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Generates a random seed for each map generator and starts the generation process for each of them.
+/// </summary>
 public class GenerateAllGen : NetworkBehaviour
 {
+    [Tooltip("All map generators inside the map")]public GameObject[] mapGens;
 
-    //string seed;
-    public GameObject[] mapGens;
-
-
+    //Todo: Get rid of magic numbers
     void Start()
     {
-        //Debug.LogWarning("Auth" + hasAuthority);
         for (int i = 0; i < 5; i++)
         {
             CmdChangeSeed(i);
@@ -20,17 +20,10 @@ public class GenerateAllGen : NetworkBehaviour
         StartCoroutine(Gens());
         
     }
-
-    IEnumerator Gens()
-    {
-        //Debug.LogWarning("Coroutine running");
-        for (int i = 0; i < 5; i++)
-        {
-            yield return new WaitForSeconds(3);
-            GenerateCall(i);
-        }
-    }
-
+    /// <summary>
+    /// Changes the i'th mapgenerator seed
+    /// </summary>
+    /// <param name="i"></param>
     [Command(requiresAuthority = false)]
     void CmdChangeSeed(int i)
     {
@@ -39,16 +32,18 @@ public class GenerateAllGen : NetworkBehaviour
         mapGens[i].GetComponent<MapGenerator>().seed = seed;
     }
 
-    //void RandSeed(int i)
-    //{
-    //    seed = System.DateTime.Now.ToString();
-    //    GenerateCall(i, seed);
-    //    MapGenerator[] gens = FindObjectsOfType<MapGenerator>();
-    //   //foreach (MapGenerator item in gens)
-    //   //{
-    //   //    item.seed = evnt.seedString;
-    //   //}
-    //}
+    /// <summary>
+    /// Call GenerateCall every 3 seconds
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator Gens()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSeconds(3);
+            GenerateCall(i);
+        }
+    }
     public void GenerateCall(int i)
     {
         mapGens[i].GetComponent<MapGenerator>().GenerateEverything();
