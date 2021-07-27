@@ -56,13 +56,13 @@ public class Effects : NetworkBehaviour
             switch(artefact.GetRarity())
             {
                 case ArtefactRarity.Common:
-                    particles.Add(GameObject.Instantiate(Resources.Load("Effects/CommonParticle", typeof(GameObject))) as GameObject);
+                    particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/CommonArtefact_PA", typeof(GameObject))) as GameObject);
                     break;
                 case ArtefactRarity.Exotic:
-                    particles.Add(GameObject.Instantiate(Resources.Load("Effects/ExoticParticle", typeof(GameObject))) as GameObject);
+                    particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/ExoticArtefact_PA", typeof(GameObject))) as GameObject);
                     break;
                 case ArtefactRarity.Rare:
-                    particles.Add(GameObject.Instantiate(Resources.Load("Effects/RareParticle", typeof(GameObject))) as GameObject);
+                    particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/RareArtefact_PA", typeof(GameObject))) as GameObject);
                     break;
             }
             particles[particles.Count - 1].transform.position = artefact.transform.position;
