@@ -34,8 +34,7 @@ public class ArtefactInventory : NetworkBehaviour
         item.points = artefactPoints;
 
         //Find an empty slot and add it, update the ui
-        int emptySlot = FindEmptyInventorySlot();
-        if (emptySlot > -1)
+        if (inventory.Count <= 8)
         {
             CmdAddToInventory(item);
             FindObjectOfType<CanvasUIManager>().PopupArtefactPickupDisplay(item);
@@ -177,16 +176,10 @@ public class ArtefactInventory : NetworkBehaviour
         }
         return false;
     }
-    /// <summary>
-    /// Todo: JoeComment, just making sure, can we depreciate this now. I'm pretty sure we can use count TO DEPRECIATE?: Find empty inventory slot from player inventory
-    /// </summary>
-    /// <returns></returns>
-    public int FindEmptyInventorySlot()
+
+    public int GetInventoryCount()
     {
-        if (inventory.Count >= 8)
-            return -1;
-        else
-            return 0;
+        return inventory.Count();
     }
 
 }

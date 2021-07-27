@@ -91,7 +91,7 @@ public class CanvasUIManager : MonoBehaviour
 
     public void RemoveFromInventoryScreen(ItemArtefact artefact)
     {
-        inventoryUI.SubtractInventoryItem(artefact);
+        inventoryUI.UpdateInventoryItem(artefact, false);
     }
 
     public void SetTimeText(int timeLeft)

@@ -38,41 +38,25 @@ public class PlayerInventoryUI : MonoBehaviour
     /// <summary>
     /// Called in order to update the count for artefacts and visually the inventory item count
     /// </summary>
-    private void UpdateInventoryItem(ItemArtefact item, bool adding)
+    public void UpdateInventoryItem(ItemArtefact item, bool adding)
     {
-
-        if (adding)
+        if (inventoryTabs.ContainsKey(item.name))
         {
-            inventoryTabs[item.name].GetComponent<InventoryTabUI>().EditCount(1);
-        }
-        else
-        {
-            inventoryTabs[item.name].GetComponent<InventoryTabUI>().EditCount(-1);
-           
-            if (inventoryTabs[item.name].GetComponent<InventoryTabUI>().GrabPersonalCount() <= 0)
+            if (adding)
             {
-                RemoveInventoryItem(item.name);
+                inventoryTabs[item.name].GetComponent<InventoryTabUI>().EditCount(1);
+            }
+            else
+            {
+                inventoryTabs[item.name].GetComponent<InventoryTabUI>().EditCount(-1);
+
+                if (inventoryTabs[item.name].GetComponent<InventoryTabUI>().GrabPersonalCount() <= 0)
+                {
+                    RemoveInventoryItem(item.name);
+                }
             }
         }
     }
-//Todo: JoeComment why do we need two ways to do subtraction with the inventoryTabs.
-    /// <summary>
-    /// Called in order to remove item from inventory by one count from screen
-    /// </summary>
-    /// <param name="item"></param>
-    public void SubtractInventoryItem(ItemArtefact item)
-    {
-        if(inventoryTabs.ContainsKey(item.name))
-        {
-            UpdateInventoryItem(item, false);
-        }
-        else
-        {
-            Debug.LogError("Attempting to subtract when no inventory tab exists under that name");
-        }
-    }
-
-
 
     /// <summary>
     /// Clears entire inventory screen

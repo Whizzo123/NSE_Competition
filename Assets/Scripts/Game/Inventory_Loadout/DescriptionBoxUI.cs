@@ -52,17 +52,9 @@ public class DescriptionBoxUI : MonoBehaviour
                 break;
             }
         }
-        //JoeComment can we not just say in line 35 SwitchScreen(overIconUI)?
-        //Turn on description box if we are hovering
-        if(overIconUI && GetComponent<Image>().enabled == false)
-        {
-            SwitchScreen(true);
-        }
-        else if(overIconUI == false && GetComponent<Image>().enabled == true)
-        {
-            SwitchScreen(false);
+        SwitchScreen(overIconUI);
+        if (!overIconUI)
             iconUIDisplaying = null;
-        }
 
         this.transform.position = new Vector2(Input.mousePosition.x - GetComponent<RectTransform>().rect.width / 2, Input.mousePosition.y - GetComponent<RectTransform>().rect.height /2);
     }

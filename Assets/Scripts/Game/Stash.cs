@@ -14,14 +14,6 @@ public class Stash : NetworkBehaviour
 
     [SerializeField][Tooltip("Amount of points a player must reach to win and end the game")] public int winningPointsThreshold;
 
-    /// <summary>
-    /// Called when entity attached in network like unity start method
-    /// </summary>
-    public override void OnStartAuthority()//JoeComment necessary?
-    {
-
-    }
-
     #region ADDING_TO_SCORE
     /// <summary>
     /// Called when adding to stash from player inventory
@@ -64,17 +56,6 @@ public class Stash : NetworkBehaviour
     }
     #endregion
 
-    /// <summary>
-    /// Used to update the Stash state
-    /// </summary>
-    public void UpdateScore(string name, int points)//JoeComment necessary?
-    {
-        if(StashedScores.ContainsKey(name))
-        {
-            StashedScores[name] += points;
-        }
-    }
-
 
     /// <summary>
     /// Check all players and see if any have reached the winning threshold.
@@ -105,7 +86,7 @@ public class Stash : NetworkBehaviour
         return 0;
     }
     /// <summary>
-    /// JoeComment this just returns the entire dictionary does it not?
+    /// Used to convert SyncDictionary to normal Dictionary for easier handling
     /// </summary>
     /// <returns></returns>
     public Dictionary<string, int> GetStashedScores()

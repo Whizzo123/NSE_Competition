@@ -10,7 +10,7 @@ using System.Linq;
 /// <summary>
 /// Inherits from most functions of NetworkManager, where NetworkManager has a lot of doing functions,
 /// MySceneManager has a lot of reactive functions - what happens when something happens.
-/// <para>Manages a lot of Mirror backend things such as//JoeComment it doesn't do anything with steam does it?</para>
+/// <para>Manages a lot of Mirror backend things such as connecting clients together and managing scene changes</para>
 /// </summary>
 public class MyNetworkManager : NetworkManager
 {
@@ -39,18 +39,6 @@ public class MyNetworkManager : NetworkManager
             gameObjectsFromNetworked.Add(item.gameObject);
         }
         gameObjectsFromNetworked.CopyTo(spawnPrefabs);
-
-
-        //lobbyPlayerPrefab = spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "MirrorRoomPlayerLobby");
-
-        //if(useSteamMatchmaking)
-        //{
-        //    transport = GetComponent<FizzySteamworks>();
-        //}
-        //else
-        //{
-        //    transport = GetComponent<TelepathyTransport>();
-        //}
     }
 
     #region CLIENT_CONNECTION_FUNCTIONS
@@ -181,7 +169,7 @@ public class MyNetworkManager : NetworkManager
 
     #region READY_START
     /// <summary>
-    /// JoeComment
+    /// Handles telling all players whether the Lobby is ready to proceed to game
     /// </summary>
     public void NotifyPlayersofReadyState()
     {
@@ -221,7 +209,7 @@ public class MyNetworkManager : NetworkManager
     #endregion
 
     /// <summary>
-    /// JoeComment necessary?
+    /// Handles the activation of music on scene changes and the such
     /// </summary>
     void ChangeMusic()
     {

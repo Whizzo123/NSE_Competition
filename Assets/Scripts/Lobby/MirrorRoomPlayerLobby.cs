@@ -12,7 +12,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 {
     #region Variables
     [Header("UI")]
-    [SerializeField] [Tooltip("JoeComment")]private GameObject lobbyUI = null;
+    [SerializeField] [Tooltip("The Lobby Screen")]private GameObject lobbyUI = null;
     [SerializeField] [Tooltip("Player name for all players")] private Text[] playerNameTexts = new Text[5];
     [SerializeField] [Tooltip("Ready texts for all players")] private Text[] playerReadyTexts = new Text[5];
     [SerializeField] [Tooltip("Start button")] private Button startGameButton = null;
@@ -23,7 +23,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     public string DisplayName = "Loading...";
     [SyncVar(hook = nameof(HandleReadyStatusChanged))]
     public bool IsReady = false;
-    [SyncVar(hook = nameof(HandleSteamIdUpdated))]
+    //[SyncVar(hook = nameof(HandleSteamIdUpdated))]
     private ulong steamId;
 
     [SerializeField] [Tooltip("Is this player the host?")] private bool isLeader;//Todo: isHost?
@@ -59,7 +59,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 
 
     /// <summary>
-    /// Sets a name for a steam user //JoeComment is this necessary?
+    /// Sets a name for a steam user 
     /// </summary>
     public void SetSteamId(ulong steamId)
     {
@@ -70,11 +70,11 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
     }
 
-    //JoeComment does this do anything? 
-    private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
-    {
-        CSteamID cSteamId = new CSteamID(newSteamId);
-    }
+    // TODO: Do a test of steam without this method and check it's not required and if so delete
+    //private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
+    //{
+    //    CSteamID cSteamId = new CSteamID(newSteamId);
+    //}
 
     public override void OnStartAuthority()
     {
@@ -139,14 +139,13 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
 
 
-        //JoeComment
+        //Loop through playerNameTexts playerReadyTexts and set them back to default
         for (int i = 0; i < playerNameTexts.Length; i++)
         {
             playerNameTexts[i].text = "Waiting For Player...";
             playerReadyTexts[i].text = string.Empty;
         }
-        Debug.Log("Room Roomplayer count: " + Room.RoomPlayers.Count);
-        //JoeComment
+        //Loop through all players in room and set their respective DisplayName and ReadyStatus
         for (int i = 0; i < Room.RoomPlayers.Count; i++)
         {
             playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
@@ -193,7 +192,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     }
 
     /// <summary>
-    /// Allows the Start game button to be interactable if host and 'readyToStart'//JoeComment check if this is right
+    /// Allows the Start game button to be interactable if host and 'readyToStart' is true
     /// </summary>
     public void HandleReadyToStart(bool readyToStart)
     {
@@ -211,7 +210,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     }
 
     /// <summary>
-    /// JoeComment
+    /// Run on server to check whether we are ready
     /// </summary>
     [Command]
     public void CmdReadyUp()

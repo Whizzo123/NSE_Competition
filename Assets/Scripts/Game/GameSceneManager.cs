@@ -14,13 +14,12 @@ public class GameSceneManager : NetworkBehaviour
 
     void Start()
     {
-        FindObjectOfType<AudioManager>().ActivateGameMusic();//JoeComment should we activate the music on scene changes, via network manager.
+        
     }
 
     void LateUpdate()
     {
-        //JoeComment the game gets called to end here when the winning threshold is reached yet the game gets called to end in MyLobbyCountdown when the countdown ends
-        //Is there a way for us to have them be called in the same script? Is that even more clean?
+        //JoeReply -> The reason it is here rather than in the countdown is because it isn't really time related and only really time related stuff exists in MyLobbyCountdown.cs
         if(FindObjectOfType<Stash>().HasPlayerReachedWinningPointsThreshold() && !endedGame)
         {
             endedGame = true;

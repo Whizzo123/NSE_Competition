@@ -27,15 +27,13 @@ public class LobbyUIManager : MonoBehaviour
     #region Variables
 
     [Header("Canvas and Screens")]
-    [SerializeField][Tooltip("All screens that we can switch to")]public UIScreens[] screens;//JoeComment Should we not add the root screen to this?
+    [SerializeField][Tooltip("All screens that we can switch to")]public UIScreens[] screens;
 
-    [Tooltip("JoeComment")] private CreateScreenUI createScreen;
-    [Tooltip("JoeComment")] private BrowseScreenUI browseScreen;
+    [Tooltip("Creation Screen for Lobbies")] private CreateScreenUI createScreen;
+    [Tooltip("Browse Screen for choosing Servers")] private BrowseScreenUI browseScreen;
 
     [SerializeField] [Tooltip("The main canvas")] public Canvas BrowseCreateCanvas;
-    [Tooltip("JoeComment")] public Canvas RoomCanvas;
-
-    [Tooltip("JoeComment")] public string gameSceneName; //necessary?
+    [Tooltip("Seperate canvas for Lobby screen")] public Canvas RoomCanvas;
     [Space]
 
     [Header("Lobby settings")]
@@ -43,8 +41,8 @@ public class LobbyUIManager : MonoBehaviour
 
     public static CSteamID LobbyId { get; private set; }//LobbyID is the lobbies unique identifier
 
-    [SerializeField] [Tooltip("JoeComment are these filters")] private const string HostAddressKey = "HostAddress";
-    [Tooltip("JoeComment are these filters")] private const string LobbyNameKey = "LobbyName";
+    [SerializeField] [Tooltip("Holds address for host")] private const string HostAddressKey = "HostAddress";
+    [Tooltip("Holds name for lobby")] private const string LobbyNameKey = "LobbyName";
 
     [SerializeField][Tooltip("Minimum Required Players To Start")] private int minPlayers = 2;
     [SerializeField][Tooltip("Time in second between all players ready & match start")]public float prematchCountdown = 5.0f;
@@ -55,7 +53,7 @@ public class LobbyUIManager : MonoBehaviour
     [Tooltip("Reference to the MyNetworkManager")] private MyNetworkManager networkManager;
     [Tooltip("Reference to the NetworkDiscovery")] private NetworkDiscovery networkDiscovery;
 
-    [Tooltip("JoeComment ?All networks we have discovered? All networks we can connect to(factoring filters)")] public readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
+    [Tooltip("Dictionary of all discovered servers")] public readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
     [SerializeField] [Tooltip("Are we joining randomly?")] private bool randomJoin;
     [Space]
 
@@ -128,7 +126,7 @@ public class LobbyUIManager : MonoBehaviour
     /// </summary>
     private void SwapToBrowseScreen()
     {
-        //In order for client to view session list we need to connect them to the network //JoeComment is this true? Where do we connect them?
+        //In order for client to view session list we need to connect them to the network in order to discover servers it's not so much a connection as it is putting the client online
         FindObjectOfType<AudioManager>().PlaySound("Click");
         ChangeScreenTo("Browse");
 
@@ -155,7 +153,7 @@ public class LobbyUIManager : MonoBehaviour
     #region STEAMLOGICLOBBY
 
     /// <summary>
-    /// JoeComment
+    /// Setup all the callbacks and stuff for passing between Steam and Mirror
     /// </summary>
     private void InitializeSteam()
     {
@@ -169,7 +167,7 @@ public class LobbyUIManager : MonoBehaviour
 
     #region Callbacks
     /// <summary>
-    /// JoeComment
+    /// Called when a lobby is created through SteamMatchmaking
     /// </summary>
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
@@ -185,7 +183,7 @@ public class LobbyUIManager : MonoBehaviour
         //Start Steam Networking
         networkManager.StartHost();
         SteamMatchmaking.SetLobbyData(LobbyId, HostAddressKey, SteamUser.GetSteamID().ToString());
-        SteamMatchmaking.SetLobbyData(LobbyId, LobbyNameKey, roomName);//JoeComment is it supposed to do it twice?
+        SteamMatchmaking.SetLobbyData(LobbyId, LobbyNameKey, roomName);//JoeReply -> it's setting 2 different things hostaddress and lobbyname
     }
 
     /// <summary>
@@ -203,8 +201,7 @@ public class LobbyUIManager : MonoBehaviour
     {
         ChangeScreenTo("Room");
         LobbyId = new CSteamID(callback.m_ulSteamIDLobby);
-        //Debug.Log("LobbyId: " + LobbyId);
-        //JoeComment
+        //If we are the server don't bother going further
         if (NetworkServer.active) { return; }
 
         //Starts a client connection by connecting to the host address
@@ -214,17 +211,16 @@ public class LobbyUIManager : MonoBehaviour
         networkManager.StartClient();
     }
     /// <summary>
-    /// JoeComment
+    /// Callback for when we ask for all steam lobbies matching filter
     /// </summary>
     private void OnLobbyMatchListGrab(LobbyMatchList_t callback)
     {
-        //Debug.Log("Callback number: " + callback.m_nLobbiesMatching);
 
-        //JoeComment
+        //Loop through returned callback which is just a number
         List<LobbyInfo> lobbies = new List<LobbyInfo>();
         for (int i = 0; i < callback.m_nLobbiesMatching; i++)
         {
-            
+            //Grab that lobby and get it's data into a struct to be added to list
             CSteamID lobbyId = SteamMatchmaking.GetLobbyByIndex(i);
             if (SteamMatchmaking.GetLobbyData(lobbyId, LobbyNameKey) != "")
             {
@@ -311,7 +307,7 @@ public class LobbyUIManager : MonoBehaviour
             {
                 if(screens[i].screenName == "Room")
                 {
-                    RoomCanvas.gameObject.SetActive(true);//JoeComment RoomCanvas is null no?
+                    RoomCanvas.gameObject.SetActive(true);//JoeReply -> Room Canvas should not be null it's set in editor pretty sure
                     BrowseCreateCanvas.gameObject.SetActive(false);
                 }
                 screens[i].screen.SetActive(true);

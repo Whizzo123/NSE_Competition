@@ -9,7 +9,7 @@ using UnityEngine;
 public class WinScreenUI : MonoBehaviour
 {
     [Tooltip("The container for the player scoreboard elements")] public GameObject winElementPrefab;
-    [Tooltip("JoeComment")] public GameObject content;
+    [Tooltip("Container UI for win leaderboard")] public GameObject content;
 
     /// <summary>
     /// Spawns an element on the leaderboards and populates it with parameter information.

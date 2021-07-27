@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class LoadoutBarUI : MonoBehaviour
 {
     [Header("Loadout bar")]
-    [Tooltip("JoeComment")] public GameObject loadoutContent;
+    [Tooltip("The box where ability icons are dragged into")] public GameObject loadoutContent;
     [Space]
 
     [Header("Points")]

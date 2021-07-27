@@ -52,9 +52,9 @@ public class ServerListRoomUI : MonoBehaviour
     /// </summary>
     public void Populate(ServerResponse response, Color backgroundColor)
     {
-        //JoeComment is it not updating the number of players?
-        //Also when joining a steam lobby, is it just joining the steam lobby or is it joinning steam and joining mirror as well.
         roomNameText.text = response.EndPoint.Address.ToString();
+        //Setup a call back here that when clicked in the server list we call our join mirror lobby function which then decides whether we are joining through 
+        //SteamMatchmaking or just a LAN connection
         OnJoinRoomClicked += () => JoinMirrorLobby(lobbyUIManager.discoveredServers[response.serverId]);
     }
 

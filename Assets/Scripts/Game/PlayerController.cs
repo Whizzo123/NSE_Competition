@@ -201,7 +201,7 @@ public class PlayerController : NetworkBehaviour
         //Sets up player name for scoreboard use and floating name use
         if (playerNameText == null && SceneManager.GetActiveScene().name == "GameScene")
         {
-            playerNameText = Instantiate(Resources.Load<GameObject>("Prefabs/PlayerNameText"));
+            playerNameText = Instantiate(Resources.Load<GameObject>("PlayerAssets/PlayerNameText_UI"));
             playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
             playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
             playerNameText.SetActive(true);
@@ -270,7 +270,7 @@ public class PlayerController : NetworkBehaviour
             if (targetedArtefacts.Count != 0)
             {
                 //If we have an empty slot
-                if (artefactInventory.FindEmptyInventorySlot() != -1)
+                if (artefactInventory.GetInventoryCount() <= 8)
                 {
                     Debug.Log("Picking up Artefacts");
                     // All artefacts that are in our range get added to our inventory and gameobject destroyed

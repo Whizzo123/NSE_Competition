@@ -15,7 +15,7 @@ public class BrowseScreenUI : MonoBehaviour
     [Header("Session lists")]
     [SerializeField] [Tooltip("Prefab used for instantiation for sessions, has ServerListRoomUI.cs")] public GameObject sessionListObjectPrefab;
     [SerializeField] [Tooltip("Prefab used for no lobbies")] public GameObject noServerFoundText;
-    [SerializeField] [Tooltip("JoeComment")] public GameObject serverList;
+    [SerializeField] [Tooltip("GameObject containing list of servers")] public GameObject serverList;
     
 
     public event Action<LobbyInfo> OnClickJoinSession;
@@ -91,7 +91,7 @@ public class BrowseScreenUI : MonoBehaviour
                 }
 
                 noServerFoundText.SetActive(false);
-                //JoeComment
+                //Loop through all servers and spawn them in the server list and populate the element with the server name and stuff
                 foreach (long serverID in servers.Keys)
                 {
                     GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
@@ -111,7 +111,7 @@ public class BrowseScreenUI : MonoBehaviour
 }
 
 /// <summary>
-/// JoeComment is this also used for lobby filters
+/// Struct container for storing Steam Lobby data
 /// </summary>
 public struct LobbyInfo
 {

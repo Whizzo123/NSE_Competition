@@ -78,7 +78,7 @@ public class ScoreboardUI : MonoBehaviour
                 return item;
             }
         }
-        //JoeComment
+        //Spawn a new slot on the scoreboard for this player and add it to the tabs list lastly return it back
         GameObject newTab = (GameObject)Instantiate(tabPrefab, transform);
         tabs.Add(newTab.GetComponent<ScoreboardTabUI>());
         return newTab.GetComponent<ScoreboardTabUI>();
