@@ -24,29 +24,6 @@ public class AbilitySlotUI : MonoBehaviour
         isEmpty = true;
         GetComponent<Button>().onClick.AddListener(() => SlotClick());
     }
-    /// <summary>
-    /// Sets the ability icon if it is empty. Takes in name and sets image, and information.
-    /// </summary>
-    public bool SetAbilityName(string name)
-    {
-        if (isEmpty)
-        {
-            abilityName = name;
-            isEmpty = false;
-            GetComponent<Image>().sprite = Resources.Load("UI/" + abilityName, typeof(Sprite)) as Sprite;
-            return true;
-        }
-        else if (name == string.Empty)
-        {
-            abilityName = name;
-            isEmpty = true;
-            GetComponent<Image>().sprite = Resources.Load("UI/blank", typeof(Sprite)) as Sprite;
-            return true;
-        }
-
-        return false;
-
-    }
 
     /// <summary>
     /// Uses ability clicked, if not in cooldown and player isn't affected by Mortal Spell
@@ -93,6 +70,9 @@ public class AbilitySlotUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the ability icon if it is empty. Takes in name and sets image, and information.
+    /// </summary>
     public bool SetAbilityName(string name)
     {
         if (isEmpty)
@@ -112,7 +92,7 @@ public class AbilitySlotUI : MonoBehaviour
         return false;
         
     }
-}
+
     public string GetAbilityName()
     {
         return abilityName;
