@@ -3,36 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Menu button manager allows navigation of the 'TitleScene', and
+/// //Should allow navigation of 'LobbyScene'. We will need to see if this is feasible.
+/// </summary>
 public class MenuButtonManagerUI : MonoBehaviour
 {
-    public GameObject panel1;
-    public GameObject panel2;
+   //Todo: rename these variables
 
+    [SerializeField] [Tooltip("Canvas")] public GameObject panel1;//Necessary?
+    [SerializeField] [Tooltip("Panel showing main screen navigation")] public GameObject panel2;
+
+    //Todo: Either have a LoadScene function for use of buttons, or do it through Joes ways of using Lambdas (preferable)
+
+    /// <summary>
+    /// Loads LobbyScene
+    /// </summary>
     public void Play()
     {
         SceneManager.LoadScene("LobbyScene");
     }
 
+    /// <summary>
+    /// Turns on the Options panel and sets panel2 off
+    /// </summary>
     public void Options()
     {
         FindObjectOfType<AudioManager>().TurnOn();
         panel2.SetActive(false);
     }
 
+    /// <summary>
+    /// Goes back to the root navigation screen and sets Options panel off
+    /// </summary>
     public void titleScreen()
     {
         FindObjectOfType<AudioManager>().TurnOff();
         panel2.SetActive(true);
-    }
-
-    /// <summary>
-    /// ////////////////////////////////////////////Remove this(When safe), it's only used in back button for the lobby scene, which needs to use bolt not mono
-    /// </summary>
-    public void TitleScreen()
-    {
-        SceneManager.LoadScene("TitleScene");
-
-        //BoltNetwork should be destroyed here. However this is also used in the title screen, where boltnetwork is not active.
     }
 
     public void Quit()

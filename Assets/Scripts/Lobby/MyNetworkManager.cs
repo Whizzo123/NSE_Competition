@@ -5,41 +5,43 @@ using Mirror;
 using Mirror.FizzySteam;
 using Steamworks;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
+/// <summary>
+/// Inherits from most functions of NetworkManager, where NetworkManager has a lot of doing functions,
+/// MySceneManager has a lot of reactive functions - what happens when something happens.
+/// <para>Manages a lot of Mirror backend things such as connecting clients together and managing scene changes</para>
+/// </summary>
 public class MyNetworkManager : NetworkManager
 {
 
     [Scene] [SerializeField] private string menuScene = string.Empty;
 
     [Header("Lobby")]
-    [SerializeField] private MirrorRoomPlayerLobby lobbyPlayerPrefab = null;
-    [SerializeField] public int minPlayers;
+    [SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private MirrorRoomPlayerLobby lobbyPlayerPrefab = null;
+    [SerializeField] [Tooltip("Minimum players to start a game")] public int minPlayers;
     [Header("Game")]
-    [SerializeField] private PlayerController gamePlayerPrefab = null;
-    [Tooltip("Do we use Steam for matchmaking or not?")]
-    [SerializeField] public bool useSteamMatchmaking;
-
+    [SerializeField] [Tooltip("Prefab used to spawn the controllable player")] private PlayerController gamePlayerPrefab = null;
+    [SerializeField] [Tooltip("Do we use Steam for matchmaking or not?")] public bool useSteamMatchmaking;
+ 
 
     //List<LobbyPlayer> RoomPlayers = new List<LobbyPlayer>();
 
-    public List<MirrorRoomPlayerLobby> RoomPlayers = new List<MirrorRoomPlayerLobby>();
+    [SerializeField][Tooltip("All players inside the lobby")] public List<MirrorRoomPlayerLobby> RoomPlayers = new List<MirrorRoomPlayerLobby>();
 
     void Start()
     {
-        GameObject[] prefabs = Resources.LoadAll<GameObject>("NetworkSpawningPrefabs");
-        for (int i = 0; i < prefabs.Length; i++)
+        //Loads all gameobjects in resources that have NetworkIdentities attatched to them.
+        var networkIdentities = Resources.LoadAll<NetworkIdentity>("").Cast<NetworkIdentity>().ToArray();
+        List<GameObject> gameObjectsFromNetworked = new List<GameObject>();
+        foreach (var item in networkIdentities)
         {
-            spawnPrefabs.Add(prefabs[i]);
+            gameObjectsFromNetworked.Add(item.gameObject);
         }
-        if(GameObject.Find("CM vcam1"))
-            Destroy(GameObject.Find("CM vcam1"));
+        gameObjectsFromNetworked.CopyTo(spawnPrefabs);
     }
 
-    public override void OnStartServer()
-    {
-        Debug.Log("OnStartServer");
-    }
-
+    #region CLIENT_CONNECTION_FUNCTIONS
     public override void OnStartClient()
     {
         Debug.Log("OnStartClient");
@@ -58,7 +60,16 @@ public class MyNetworkManager : NetworkManager
 
         Debug.Log("OnClientDisconnect");
     }
+    #endregion
 
+    #region SERVER_CONNECTION_FUNCTIONS
+    public override void OnStartServer()
+    {
+        Debug.Log("OnStartServer");
+    }
+    /// <summary>
+    /// If the lobby is full, disconnect the most recent connnection. todo: We should also add in a way to remove the lobby if it's full
+    /// </summary>
     public override void OnServerConnect(NetworkConnection conn)
     {
         Debug.Log("OnServerConnect");
@@ -68,18 +79,27 @@ public class MyNetworkManager : NetworkManager
             return;
         }
     }
+    public override void OnStopServer()
+    {
+        Debug.Log("OnStopServer");
+        base.OnStopServer();
+    }
+    #endregion
 
+    #region SERVER_CLIENT_EVENTS
     public override void OnServerAddPlayer(NetworkConnection conn) 
     {
         Debug.Log("Inside OnServerAddPlayer");
+
         if (SceneManager.GetActiveScene().name == "LobbyScene")
         {
             MirrorRoomPlayerLobby lobbyPlayerInstance = Instantiate(lobbyPlayerPrefab);
 
+            //Host?
             bool isLeader = RoomPlayers.Count == 0;
-
             lobbyPlayerInstance.IsLeader = isLeader;
 
+            //Steam setup
             if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             {
                 CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex(LobbyUIManager.LobbyId, RoomPlayers.Count);
@@ -89,10 +109,10 @@ public class MyNetworkManager : NetworkManager
             {
                 lobbyPlayerInstance.SetSteamId(0);
             }
+         
             NetworkServer.AddPlayerForConnection(conn, lobbyPlayerInstance.gameObject);
         }
     }
-
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         Debug.Log("OnServerDisconnect");
@@ -110,19 +130,13 @@ public class MyNetworkManager : NetworkManager
         base.OnServerDisconnect(conn);
     }
 
-    public override void OnStopServer()
-    {
-        Debug.Log("OnStopServer");
-        base.OnStopServer();
-    }
-
     public override void ServerChangeScene(string newSceneName)
     {
         if (newSceneName.Contains("Game"))
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
-                SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
+                //For each player, replaces their lobby identity with the game identity
                 var conn = RoomPlayers[i].connectionToClient;
                 Vector3 spawnPos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
                 GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), spawnPos, Quaternion.identity);
@@ -142,7 +156,6 @@ public class MyNetworkManager : NetworkManager
 
         Debug.Log("OnServerSceneChanged");
     }
-
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
     {
         RoomPlayers.Clear();
@@ -151,47 +164,61 @@ public class MyNetworkManager : NetworkManager
         base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
     }
 
-    void ChangeMusic()
-    {
-        FindObjectOfType<AudioManager>().ActivateGameMusic();
-    }
-
     public override void OnServerReady(NetworkConnection conn)
     {
         base.OnServerReady(conn);
 
         Debug.Log("OnServerReady");
     }
+    #endregion
 
+    #region READY_START
+    /// <summary>
+    /// Handles telling all players whether the Lobby is ready to proceed to game
+    /// </summary>
     public void NotifyPlayersofReadyState()
     {
-        foreach(var player in RoomPlayers)
+        foreach (var player in RoomPlayers)
         {
             player.HandleReadyToStart(IsReadyToStart());
         }
     }
-
+    /// <summary>
+    /// If all players are ready and there is more than the minimum amount of players required to start - 
+    /// return true
+    /// </summary>
+    /// <returns></returns>
     private bool IsReadyToStart()
     {
-        if(numPlayers < minPlayers) { return false; }
+        if (numPlayers < minPlayers) { return false; }
 
         foreach (var player in RoomPlayers)
         {
-            if(!player.IsReady) { return false; }
+            if (!player.IsReady) { return false; }
         }
 
         return true;
     }
 
+    /// <summary>
+    /// If everyone is ready and we're in lobby; change everyone's scene to the 'GameScene'
+    /// </summary>
     public void StartGame()
     {
-        if(SceneManager.GetActiveScene().name == "LobbyScene")
+        if (SceneManager.GetActiveScene().name == "LobbyScene")
         {
-            if(!IsReadyToStart()) { return; }
+            if (!IsReadyToStart()) { return; }
             ServerChangeScene("GameScene");
         }
     }
+    #endregion
 
-
+    /// <summary>
+    /// Handles the activation of music on scene changes and the such
+    /// </summary>
+    void ChangeMusic()
+    {
+        FindObjectOfType<AudioManager>().ActivateGameMusic();
+    }
 
 }

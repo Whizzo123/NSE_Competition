@@ -4,19 +4,15 @@ using UnityEngine;
 
 public static class Proto_Procedural 
 {
-#region poisson disc sampling method
+
     /// <summary>
     /// This procedural generation algorithm is called Poisson Disc Sampling, by Bridson. It has since had many alterations to make it more efficient and produce more tightly packed points.
     /// </summary>
-    /// <param name="radius"></param>
-    /// <param name="sampleRegionSize"></param>
-    /// <param name="numSamplesBeforeRejection"></param>
-    /// <returns></returns>
     public static List<Vector2> GenerateGrids(System.Random pseudoRandom, int radius, Vector2 sampleRegionSize, int numSamplesBeforeRejection = 30)
     {
         float cellSize = radius / Mathf.Sqrt(2);
-
         int[,] grid = new int[Mathf.CeilToInt(sampleRegionSize.x / cellSize), Mathf.CeilToInt(sampleRegionSize.y / cellSize)];
+
         List<Vector2> points = new List<Vector2>();
         List<Vector2> spawnPoint = new List<Vector2>();
 
@@ -79,5 +75,4 @@ public static class Proto_Procedural
         }
         return false;
     }
-#endregion
 }
