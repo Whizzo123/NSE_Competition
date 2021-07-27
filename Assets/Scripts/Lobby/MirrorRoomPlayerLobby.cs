@@ -70,7 +70,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
     }
 
-    // TODO: Do a test of steam without this method and check it's not required and if so delete
+    // THIS IS VERY MUCH REQUIRED CLIENT NAME WILL NOT APPEAR WITHOUT IT
     private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
     {
         CSteamID cSteamId = new CSteamID(newSteamId);
