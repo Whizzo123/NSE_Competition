@@ -15,9 +15,7 @@ public class DescriptionBoxUI : MonoBehaviour
     [Tooltip("Description of ability")] public GameObject descriptionText;
     [Tooltip("The point cost of ability")] public GameObject pointsText;
 
-    [Tooltip("The targetted ability icon")]private AbilityIconUI iconUIDisplaying;
-
-    private AbilityPickBarIconUI iconUIDisplaying;
+    [Tooltip("The targetted ability icon")]private AbilityPickBarIconUI iconUIDisplaying;
 
     // Update is called once per frame
     void Update()
@@ -31,7 +29,7 @@ public class DescriptionBoxUI : MonoBehaviour
         foreach(RaycastResult result in results)
         {
             //Hover is true,
-            if (result.gameObject.GetComponent<AbilityIconUI>())
+            if (result.gameObject.GetComponent<AbilityPickBarIconUI>())
             {
                 overIconUI = true;
             }
@@ -46,7 +44,7 @@ public class DescriptionBoxUI : MonoBehaviour
                 }
             }
             //If we hover over a new ability, display that one
-            if(result.gameObject.GetComponent<AbilityIconUI>() != iconUIDisplaying)
+            if(result.gameObject.GetComponent<AbilityPickBarIconUI>() != iconUIDisplaying)
             {
                 iconUIDisplaying = result.gameObject.GetComponent<AbilityPickBarIconUI>();
                 UpdateDisplay();

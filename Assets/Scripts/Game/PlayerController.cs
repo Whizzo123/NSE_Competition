@@ -28,8 +28,8 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
-    [Tooltip("Our abilities that we've selected")] [SyncVar]public AbilityInventory abilityInventory;
-    [SyncVar]private ArtefactInventory artefactInventory;
+    [Tooltip("Our abilities that we've selected")] [SyncVar] public AbilityInventory abilityInventory;
+    [SyncVar] private ArtefactInventory artefactInventory;
     [SyncVar]
     public string playerName;
 
@@ -173,7 +173,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void DevModeOn()
     {
-        if(vCam != null)
+        if (vCam != null)
             vCam.enabled = !devMode;
         cam.enabled = !devMode;
         playerCamera.enabled = !devMode;
@@ -190,10 +190,10 @@ public class PlayerController : NetworkBehaviour
         if (!hasAuthority) { return; };
 
         #region DEVMODE
-        if (Input.GetKey(KeyCode.P)) { devMode = true;}
-        if (Input.GetKey(KeyCode.O)){devMode = false;}
+        if (Input.GetKey(KeyCode.P)) { devMode = true; }
+        if (Input.GetKey(KeyCode.O)) { devMode = false; }
         DevModeOn();
-        if (devMode){return;}
+        if (devMode) { return; }
         #endregion
 
         abilityInventory.Update();
@@ -282,7 +282,7 @@ public class PlayerController : NetworkBehaviour
                     }
                     CmdClearTargetArtefacts();
 
-                    if(NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+                    if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                         FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
                 else
@@ -301,7 +301,7 @@ public class PlayerController : NetworkBehaviour
                 gameStash.CmdAddToStashScores(this);
                 FindObjectOfType<AudioManager>().PlaySound("Stash");
             }
-            else if(gameStash != null && !artefactInventory.InventoryNotEmpty())
+            else if (gameStash != null && !artefactInventory.InventoryNotEmpty())
             {
                 FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
             }
@@ -360,7 +360,7 @@ public class PlayerController : NetworkBehaviour
         #endregion
 
         #region OBSTACLE_INTERACTION
-        if (Input.GetKey(KeyCode.Space) && toolWait== false )//&& state.Paralyzed == false)
+        if (Input.GetKey(KeyCode.Space) && toolWait == false)//&& state.Paralyzed == false)
         {
             playerAnim.SetTrigger("Cut");
             StartCoroutine(Hit());
@@ -428,7 +428,7 @@ public class PlayerController : NetworkBehaviour
 
             Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
 
-            if (rotationAngle < 45) 
+            if (rotationAngle < 45)
             {
                 finalQuat = slopeQuat.normalized * lookQuat; //Quaternion rotation of look rotation and slope rotation
                 transform.rotation = finalQuat;
@@ -471,7 +471,7 @@ public class PlayerController : NetworkBehaviour
         if (collider.gameObject.GetComponent<Stash>())
         {
             gameStash = collider.gameObject.GetComponent<Stash>();
-            if(FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+            if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
         }
         else if (collider.gameObject.GetComponent<AbilityPickup>())
@@ -538,7 +538,7 @@ public class PlayerController : NetworkBehaviour
             else if (gameStash != null && collider.gameObject == gameStash.gameObject)
             {
                 gameStash = null;
-                if(NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+                if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                     FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
             //Ability Pickup
@@ -550,7 +550,7 @@ public class PlayerController : NetworkBehaviour
             if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
             {
                 targetedPlayerToStealFrom = null;
-                if(NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+                if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                     FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
         }
@@ -570,7 +570,7 @@ public class PlayerController : NetworkBehaviour
         toolWait = true;
         CmdHitForward();
         yield return new WaitForSeconds(waitTime);
-        toolWait= false;
+        toolWait = false;
     }
 
     [Command]
@@ -703,7 +703,7 @@ public class PlayerController : NetworkBehaviour
     {
         return immobilize;
     }
-    [Command (requiresAuthority = false)]
+    [Command(requiresAuthority = false)]
     public void CmdSetImmobilized(bool value)
     {
         immobilize = value;
@@ -714,7 +714,7 @@ public class PlayerController : NetworkBehaviour
     {
         return voodooPoisoned;
     }
-    [Command (requiresAuthority = false)]
+    [Command(requiresAuthority = false)]
     public void CmdSetVoodooPoisoned(bool poisoned)
     {
         voodooPoisoned = poisoned;
@@ -729,22 +729,6 @@ public class PlayerController : NetworkBehaviour
     public void CmdSetMortal(bool mortal)
     {
         this.mortal = mortal;
-    }
-    [Command (requiresAuthority = false)]
-    public void CmdSetHasBeenStolenFrom(bool value)
-    {
-        hasBeenStolenFrom = value;
-    }
-
-    [ClientCallback]
-    public void DestroyGameObject(GameObject go)
-    {
-        CmdDestroyGameObject(go);
-    }
-    [Command(requiresAuthority = false)]
-    public void CmdDestroyGameObject(GameObject go)
-    {
-        NetworkServer.Destroy(go);
     }
     [Command]
     public void CmdToggleCamouflage(bool toggle, PlayerController player)
@@ -765,7 +749,7 @@ public class PlayerController : NetworkBehaviour
         else
             Debug.Log("RpcToggleCamouflage the ClientRpc is hitting client called: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
     }
-}
+
     /// <summary>
     /// Toggles the mesh on and off for invisibility effect
     /// </summary>
@@ -808,7 +792,7 @@ public class PlayerController : NetworkBehaviour
 
                  lastMousePos = Input.mousePosition;
              }
-
+*/
 //////Remember, this was all called from Update() A [ClientCallback], also remember we testing player position. This is updated from the transform, not necessarily the function
 //No tags, if we do something, everyone else sees that
 //[Client] If we do somethingg, everyone else sees that
@@ -845,3 +829,4 @@ public class PlayerController : NetworkBehaviour
 //[Command]
 //Call this from a client to run this function on the server. Make sure to validate input etc. 
 //It's not possible to call this from a server. Use this as a wrapper around another function, if you want to call it from the server too. 
+#endregion
