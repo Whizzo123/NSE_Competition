@@ -22,7 +22,7 @@ public class AbilityPickBarUI : MonoBehaviour
         foreach (Ability ability in loadoutList)
         {
             GameObject go = Instantiate(abilityIconPrefab);
-            go.GetComponent<AbilityPickBarIconUI>().PopulateAbilityIcon(ability.GetAbilityName(), ability.GetAbilityDescription(), ability.GetAbilityCost(), Resources.Load("UI/" + ability.GetAbilityName(), typeof(Sprite)) as Sprite);
+            go.GetComponent<AbilityIconUI>().PopulateAbilityIcon(ability.GetAbilityName(), ability.GetAbilityDescription(), ability.GetAbilityCost(), Resources.Load("UI/Abilities/" + ability.GetAbilityName(), typeof(Sprite)) as Sprite);
             AddGameObjectToContent(go);
         }
     }

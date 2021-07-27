@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+
+/// <summary>
+/// The visuals for the artefacts in the inventory.
+/// </summary>
 public class PlayerInventoryUI : MonoBehaviour
 {
-    private Dictionary<string, GameObject> inventoryTabs;
-    public GameObject inventoryTabPrefab;
+    [Tooltip("The indivual elements for artefacts")]private Dictionary<string, GameObject> inventoryTabs;
+    [Tooltip("The bounding box for the artefact elements")]public GameObject inventoryTabPrefab;
 
     void Start()
     {
@@ -17,9 +21,9 @@ public class PlayerInventoryUI : MonoBehaviour
     /// <summary>
     /// Called in order to add item to inventory screen
     /// </summary>
-    /// <param name="item"></param>
     public void AddInventoryItem(ItemArtefact item)
     {
+        //Updates count or adds it to screen
         if(inventoryTabs.ContainsKey(item.name))
         {
             UpdateInventoryItem(item, true);
@@ -31,44 +35,28 @@ public class PlayerInventoryUI : MonoBehaviour
             inventoryTabs.Add(item.name, go);
         }
     }
-
     /// <summary>
-    /// Called in order to remove item from inventory by one count from screen
+    /// Called in order to update the count for artefacts and visually the inventory item count
     /// </summary>
-    /// <param name="item"></param>
-    public void SubtractInventoryItem(ItemArtefact item)
+    public void UpdateInventoryItem(ItemArtefact item, bool adding)
     {
-        if(inventoryTabs.ContainsKey(item.name))
+        if (inventoryTabs.ContainsKey(item.name))
         {
-            UpdateInventoryItem(item, false);
-        }
-        else
-        {
-            Debug.LogError("Attempting to subtract when no inventory tab exists under that name");
-        }
-    }
-
-    /// <summary>
-    /// Called in order to update inventory items
-    /// </summary>
-    /// <param name="item"></param>
-    /// <param name="adding"></param>
-    private void UpdateInventoryItem(ItemArtefact item, bool adding)
-    {
-        if (adding)
-        {
-            inventoryTabs[item.name].GetComponent<InventoryTabUI>().EditCount(1);
-        }
-        else
-        {
-            inventoryTabs[item.name].GetComponent<InventoryTabUI>().EditCount(-1);
-            if(inventoryTabs[item.name].GetComponent<InventoryTabUI>().GrabPersonalCount() <= 0)
+            if (adding)
             {
-                RemoveInventoryItem(item.name);
+                inventoryTabs[item.name].GetComponent<InventoryTabUI>().EditCount(1);
+            }
+            else
+            {
+                inventoryTabs[item.name].GetComponent<InventoryTabUI>().EditCount(-1);
+
+                if (inventoryTabs[item.name].GetComponent<InventoryTabUI>().GrabPersonalCount() <= 0)
+                {
+                    RemoveInventoryItem(item.name);
+                }
             }
         }
     }
-
 
     /// <summary>
     /// Clears entire inventory screen
@@ -81,11 +69,9 @@ public class PlayerInventoryUI : MonoBehaviour
             RemoveInventoryItem(inventoryKeys[i]);
         }
     }
-
     /// <summary>
     /// Destroys inventory item uielement and removes from inventory screen list
     /// </summary>
-    /// <param name="name"></param>
     public void RemoveInventoryItem(string name)
     {
         Destroy(inventoryTabs[name]);

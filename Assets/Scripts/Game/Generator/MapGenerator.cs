@@ -5,11 +5,12 @@ using UnityEngine;
 using Mirror;
 
 /// <summary>
-/// Main idea behind the map generator is cellular automata and a sprinkle of poisson disc sampling.ref.'Proto_Procedural.cs'. 
+/// Generates a map for indestructables, and obstacles and artefacts, based on a (random) seed. Then instantiates them all.
+/// <para> Main idea behind the map generator is cellular automata and a sprinkle of poisson disc sampling.ref.'Proto_Procedural.cs'. </para>
 /// </summary>
 public class MapGenerator : NetworkBehaviour
 {
-    #region Globals
+    #region VARIABLES
     [Header("Map")]
     public int width = 100;
     public int height = 100;
@@ -19,10 +20,10 @@ public class MapGenerator : NetworkBehaviour
     [Header("Spawner Attributes")]
     [SerializeField] [Tooltip("Distance spawner is from the ground")] private float raycastDistance = 100f;
     [SerializeField] [Tooltip("The angle of the slope where objects won't spawn")] [Range(1, 90)] private float slopeAngle = 35f;
-    [SerializeField] private LayerMask ground;
-    [SerializeField] private LayerMask indestructables;
-    [SerializeField] private LayerMask obstaclesLayer;
-    [SerializeField] private LayerMask obsground;
+    [SerializeField] [Tooltip("Layer that everything can spawn on")]private LayerMask ground;
+    [SerializeField] [Tooltip("Indestructable layer that obstacles can't spawn on")] private LayerMask indestructables;
+    [SerializeField] private LayerMask obstaclesLayer;// Todo: Redundant
+    [SerializeField] private LayerMask obsground;//Todo: Redundant
     [Space]
 
     [Header(" --------- Obstacles")]
@@ -38,9 +39,9 @@ public class MapGenerator : NetworkBehaviour
 
     [Header(" --------- Artefacts")]
     [SerializeField] [Tooltip("1st slot is an exotic artefact, 2nd slot is a rare artefact, 3rd is a common artefact.")] private GameObject[] artefactSpawner;
-    [SerializeField] private int commonArtefacts = 50;
-    [SerializeField] private int rareArtefacts = 10;
-    [SerializeField] private int exoticArtefacts = 1;
+    [SerializeField] [Tooltip("Amount of common artefacts to spawn")] private int commonArtefacts = 50;
+    [SerializeField] [Tooltip("Amount of rare artefacts to spawn")] private int rareArtefacts = 10;
+    [SerializeField] [Tooltip("Amount of exotic artefacts to spawn")] private int exoticArtefacts = 1;
     [Space]
 
     [Header(" ---------- Indestructables")]
@@ -61,13 +62,6 @@ public class MapGenerator : NetworkBehaviour
 
     #endregion
 
-    //[ClientRpc]
-    //public void ChangeSeed(string newSeed)
-    //{
-    //    seed = newSeed;
-    //}
-
-
 
     System.Random f;
     /// <summary>
@@ -76,9 +70,6 @@ public class MapGenerator : NetworkBehaviour
     [ClientRpc]
     public void GenerateEverything()
     {
-
-        //Debug.LogWarning("The seed is: " + seed);
-        //Debug.LogWarning("pseudoRandom : " + seed.GetStableHashCode());
         //Can't use Random.Range if we want to specify seed, and UnityEngine.Random will affect repeated uses of random that are connected
         System.Random pseudoRandom = new System.Random(seed.GetStableHashCode());
         f = pseudoRandom;
@@ -90,9 +81,9 @@ public class MapGenerator : NetworkBehaviour
 
     IEnumerator rest()
     {
-
        yield return new WaitForSeconds(3);
         System.Random pseudoRandom = f;
+
         GenerateMap(pseudoRandom);
         ObstacleGeneration(pseudoRandom);
         ArtefactSpawner();
@@ -330,24 +321,16 @@ public class MapGenerator : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, indestructables))
         {
-            //Instantiate(Resources.Load<GameObject>("Sphere") as GameObject, hit.point, Quaternion.identity);
             return true;
         }
-        //RaycastHit[] hit2;
-        //hit2 = Physics.RaycastAll(spawnPos, Vector3.down, raycastDistance);
-        //foreach (RaycastHit item in hit2)
-        //{
-        //    if (item.collider.gameObject.tag.StartsWith("indestr"))
-        //    {
 
-        //    }
-        //}
         LayerMask lm = ground;
         if (lm.value == LayerMask.GetMask("SwampGround"))
         {
             lm = LayerMask.GetMask("SwampWater");
             
         }
+
         //If ground is found
         if (Physics.Raycast(spawnPos, Vector3.down, out hit, raycastDistance, lm))
         {

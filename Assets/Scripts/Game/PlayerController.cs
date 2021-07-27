@@ -4,11 +4,24 @@ using UnityEngine.UI;
 using Mirror;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// The player controller class provides input to the game player object. It interacts with many,
+///  if not all systems, such as:
+/// <list type="bullet">
+///<listheader>
+///    <item>Artefact</item><description> - Calls many pickup functions</description>
+///    <item>Ability</item><description> - Know what abilities are available for the networked player.</description>
+///    <item>SceneManager</item><description> - Interacts with the stash</description>
+///</listheader>
+///</list>
+///<para>It is most likely the heaviest class. We may want to think about splitting up core features in the future in seperate scripts e.g. split the movement, the interactions, the spawning of camera.</para>
+/// </summary>
 public class PlayerController : NetworkBehaviour
 {
     #region Variables
     [Header("Stored Interactables")]
     //Stored interactables
+    [Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. The reason for this was to allow us to check that we are not picking up the same artefact twice.")] public List<ArtefactBehaviour> tempArtefactStorage;
     [Tooltip("The artefacts that are in range for picking up")] readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
     [Tooltip("NA")] private Stash gameStash;
     [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
@@ -80,14 +93,16 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Free look camera")] public GameObject devCam;
     #endregion
 
+    #region SETUP_PLAYER
     public void Awake()
     {
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(this);//Allows object to survive scene load(use until we know we can spawn after load or whenever we want
         playerCharacterController = this.gameObject.GetComponent<CharacterController>();
     }
 
     public override void OnStartAuthority()
     {
+        //Attatches Camera
         vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
         if (vCam != null)
         {
@@ -97,24 +112,34 @@ public class PlayerController : NetworkBehaviour
         {
             Invoke("SetCamera", 5);
         }
+
+        //Setup player components and immobolise player
         CmdSetupPlayer();
         SetLoadoutReleased(false);
         base.OnStartAuthority();
     }
-
+    /// <summary>
+    /// Resets some variables and sets up some components
+    /// </summary>
     [Command]
     private void CmdSetupPlayer()
     {
+        //Components
         abilityInventory = new AbilityInventory(this);
         artefactInventory = GetComponent<ArtefactInventory>();
+
+        //Variables
         immobilize = false;
         hasBeenStolenFrom = false;
     }
-
-
+    /// <summary>
+    /// Attatches the normal camera and devcam. Todo: It is very messy right now, will need to clean up later
+    /// </summary>
     [Client]
     void SetCamera()
     {
+        //Currently what it's trying to do is find cameras, if it can't find cameras, it will instantiate cameras
+        //It also modifies so many things. It is simply a mess that needs to be fixed, it's not worth commenting here
         vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
         DontDestroyOnLoad(vCam);
         vCam.LookAt = this.gameObject.transform;
@@ -140,7 +165,12 @@ public class PlayerController : NetworkBehaviour
             devCam.SetActive(true);
         }
     }
+    #endregion
 
+
+    /// <summary>
+    /// Turns devcam on and off
+    /// </summary>
     private void DevModeOn()
     {
         if(vCam != null)
@@ -148,8 +178,10 @@ public class PlayerController : NetworkBehaviour
         cam.enabled = !devMode;
         playerCamera.enabled = !devMode;
         devCam.SetActive(devMode);
+
         FindObjectOfType<Canvas>().enabled = !devMode;
     }
+
     [ClientCallback]
     void Update()
     {
@@ -166,22 +198,24 @@ public class PlayerController : NetworkBehaviour
 
         abilityInventory.Update();
 
+        //Sets up player name for scoreboard use and floating name use
         if (playerNameText == null && SceneManager.GetActiveScene().name == "GameScene")
         {
-            playerNameText = Instantiate(Resources.Load<GameObject>("Prefabs/PlayerNameText"));
+            playerNameText = Instantiate(Resources.Load<GameObject>("PlayerAssets/PlayerNameText_UI"));
             playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
             playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
             playerNameText.SetActive(true);
             playerNameText.GetComponent<Text>().text = playerName;
         }
-
+        //Todo: Cleanup, maybe instead use loadoutReleased to return instead, this should help boost speed as
+        //we can get rid of the pre-emptive code loading and reduce the amount of code that is predicted.
         if (loadoutReleased)
         {
 
 
             if (immobilize == false)
             {
-                #region Falling
+                #region FALLING
 
                 //Projects a sphere underneath player to check ground layer
                 isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
@@ -198,12 +232,17 @@ public class PlayerController : NetworkBehaviour
 
                 #endregion
 
-                #region Movement
+                #region MOVEMENT_AND_ANIMATION
                 playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), playerFallingVelocity.y, Input.GetAxisRaw("Vertical")).normalized;
+
+                //Animations, with movement checks
                 if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
                 {
                     direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+
                     playerAnim.SetBool("moving", true);
+
+                    //Voodoo poison
                     if (voodooPoisoned)
                     {
                         playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
@@ -214,6 +253,7 @@ public class PlayerController : NetworkBehaviour
                 {
                     playerAnim.SetBool("moving", false);
                 }
+
                 playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
                 PlayerRotation();
                 #endregion
@@ -222,17 +262,18 @@ public class PlayerController : NetworkBehaviour
                 playerAnim.SetBool("moving", false);
         }
 
-
-
-        #region Artefact interaction
+        //Todo:Remove ability pickups from here? Different Stash button as well? Thoughts for discussion
+        #region ARTEFACT_INTERACTION
         if (Input.GetKeyDown(KeyCode.E))
         {
+            //If we have artefacts in range
             if (targetedArtefacts.Count != 0)
             {
-                if (artefactInventory.FindEmptyInventorySlot() != -1)
+                //If we have an empty slot
+                if (artefactInventory.GetInventoryCount() <= 8)
                 {
                     Debug.Log("Picking up Artefacts");
-                    // Now we are using a list, so we will pick all up, but we won't run into exiting and entering issues
+                    // All artefacts that are in our range get added to our inventory and gameobject destroyed
                     foreach (ArtefactBehaviour item in targetedArtefacts)
                     {
                         artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
@@ -240,6 +281,7 @@ public class PlayerController : NetworkBehaviour
                         DestroyGameObject(item.gameObject);
                     }
                     CmdClearTargetArtefacts();
+
                     if(NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                         FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
@@ -255,6 +297,7 @@ public class PlayerController : NetworkBehaviour
             }
             else if (gameStash != null && artefactInventory.InventoryNotEmpty())
             {
+                //Todo: For consistancy, instead of clearing the artefact inventory elsewhere, let's clear it here
                 gameStash.CmdAddToStashScores(this);
                 FindObjectOfType<AudioManager>().PlaySound("Stash");
             }
@@ -265,15 +308,16 @@ public class PlayerController : NetworkBehaviour
         }
         #endregion
 
-        #region Stealing
+        #region STEALING
         if (Input.GetKeyDown(KeyCode.F))// && !state.HasBeenStolenFrom)
         {
             Debug.LogError(artefactInventory.GetAllArtefactNames());
+
+            //If we are not full, they are no longer stunned and have artefacts, we steal
             if (targetedPlayerToStealFrom != null)
             {
                 if (artefactInventory.AvailableInventorySlot() && targetedPlayerToStealFrom.GrabArtefactInventory().InventoryNotEmpty())
                 {
-                    //We are not full, they are no longer stunned and have artefacts, we steal
 
                     //Add to our inventory
                     ItemArtefact randomArtefact = targetedPlayerToStealFrom.GetArtefactInventory().GrabRandomItem();
@@ -299,6 +343,7 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
+        //Stunning timer from being stolen from
         if (hasBeenStolenFrom)
         {
             if (currentStunAfterTimer >= timeForStunAfterSteal)
@@ -314,7 +359,7 @@ public class PlayerController : NetworkBehaviour
         }
         #endregion
 
-        #region Obstacle Interaction
+        #region OBSTACLE_INTERACTION
         if (Input.GetKey(KeyCode.Space) && toolWait== false )//&& state.Paralyzed == false)
         {
             playerAnim.SetTrigger("Cut");
@@ -322,14 +367,17 @@ public class PlayerController : NetworkBehaviour
         }
         #endregion
 
+        #region FOOTSTEP_SOUNDS
         if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
         {
+            //Raycasts to our feet, grabs the layer below us and uses the string from the layer to play the sound
             RaycastHit hit;
             if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
             {
-                string hitstring = hit.transform.gameObject.layer.ToString();
-                int layernumber = int.Parse(hitstring);
+                string hitstring = hit.transform.gameObject.layer.ToString();//I believe this is unnecessary
+                int layernumber = int.Parse(hitstring);//I believe this is unnescessary
                 string lm = LayerMask.LayerToName(layernumber);
+                //Todo: Re do this as it causes weird behaviour
                 if (lm == "SwampGround")
                 {
                     FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
@@ -341,65 +389,18 @@ public class PlayerController : NetworkBehaviour
                 FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
             }
         }
+        #endregion
+
+        //Todo: Find a different way to stop players from climbing obstacles as this is unreliable
         if (playerFallingVelocity.y < -200)
         {
             CmdServerValidateHit();
         }
     }
 
-    ArtefactInventory GrabArtefactInventory()
-    {
-        return artefactInventory;
-    }
-
-
-    [Command]
-    private void CmdClearTargetArtefacts()
-    {
-        targetedArtefacts.Clear();
-    }
-
-
-    [Command]
-    private void CmdServerValidateHit()
-    {
-        //Validate the logic
-        //We will pass in a transform for this
-
-        RpcHitDown();
-    }
-
-    [ClientRpc]
-    private void RpcHitDown()
-    {
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit[] hit;
-        hit = Physics.SphereCastAll(ray, radiusOfSphere, lengthOfSphere, obstacles);
-        foreach (RaycastHit item in hit)
-        {
-            if (item.transform.GetComponent<ArtefactBehaviour>())
-            {
-                item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
-                item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
-                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
-            }
-            else if (item.transform.GetComponent<AbilityPickup>())
-            {
-                item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
-                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
-                item.transform.GetComponent<AbilityPickup>().CmdSetEnabledForPickup(true);
-            }
-            else
-            {
-                Destroy(item.transform.gameObject);
-            }
-        }
-    }
-
     /// <summary>
-    /// Used to set whether we are able to move now or not
+    /// Used to set whether we are able to move now or not, also disables the water collider so we can go through the water
     /// </summary>
-    /// <param name="value"></param>
     public void SetLoadoutReleased(bool value)
     {
         loadoutReleased = value;
@@ -412,6 +413,7 @@ public class PlayerController : NetworkBehaviour
     /// <summary>
     /// Rotates player according to slope and movement direction.
     /// If we wanted the model to remain upright, we can attach this to a child that isn't visible, but has the same parameters as the player(height etc)
+    /// <para>Primarily used for the purpose of aiming the forward ray when on slopes</para>
     /// </summary>
     [ClientCallback]
     void PlayerRotation()
@@ -435,11 +437,37 @@ public class PlayerController : NetworkBehaviour
         }
 
     }
+    [Command(requiresAuthority = false)]
+    public void CmdSetHasBeenStolenFrom(bool value)
+    {
+        hasBeenStolenFrom = value;
+    }
+
+    /// <summary>
+    /// Calls CmdDestroyGameObject.
+    /// </summary>
+    [ClientCallback]
+    public void DestroyGameObject(GameObject go)
+    {
+        CmdDestroyGameObject(go);
+    }
+    /// <summary>
+    /// Destroys networked GameObjects.
+    /// <para>Call DestroyGameObject(GameObject go) instead to destroy on all instances.</para>
+    /// </summary>
+    [Command(requiresAuthority = false)]
+    public void CmdDestroyGameObject(GameObject go)
+    {
+        NetworkServer.Destroy(go);
+    }
 
     #region Collision
-
+    /// <summary>
+    /// Used for entering the stash and other players to allow for interaction and ui pop ups
+    /// </summary>
     public void OnTriggerEnter(Collider collider)
     {
+        //Allows us to interact with the gamestash and shows hint message
         if (collider.gameObject.GetComponent<Stash>())
         {
             gameStash = collider.gameObject.GetComponent<Stash>();
@@ -450,6 +478,7 @@ public class PlayerController : NetworkBehaviour
         {
             targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
         }
+        //Allows us to interact with A player and shows hint message
         if (collider.gameObject.GetComponent<PlayerController>())
         {
             targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
@@ -459,24 +488,33 @@ public class PlayerController : NetworkBehaviour
 
     }
 
-    public List<ArtefactBehaviour> tempArtefactStorage;
-
+    /// <summary>
+    /// Used for the targeted artefact as it doesn't work in OnTriggerEnter, as when the artefacts re-appear
+    /// , they don't trigger the function.
+    /// </summary>
     public void OnTriggerStay(Collider collider)
     {
-
+        //If it is available for pickup and it currently isn't in tempartefactstorage
         if (collider.gameObject.GetComponent<ArtefactBehaviour>() && tempArtefactStorage.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup())
         {
+            //Adds it temporarily
             tempArtefactStorage.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            //Sends command to add it to targeted artefact
             CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
+
             if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
         }
     }
 
+    /// <summary>
+    /// Used to disable all interactions and disbable text interactions.
+    /// </summary>
     public void OnTriggerExit(Collider collider)
     {
         if (collider != null)
         {
+            //Artefacts
             if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
             {
                 //Removes specific artefact that we exited.
@@ -496,16 +534,19 @@ public class PlayerController : NetworkBehaviour
                     FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
             }
+            //Game Stash
             else if (gameStash != null && collider.gameObject == gameStash.gameObject)
             {
                 gameStash = null;
                 if(NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                     FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
+            //Ability Pickup
             else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
             {
                 targetedAbilityPickup = null;
             }
+            //Players
             if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
             {
                 targetedPlayerToStealFrom = null;
@@ -537,9 +578,8 @@ public class PlayerController : NetworkBehaviour
     {
         HitForward();
     }
-
     /// <summary>
-    /// Destroys obstacles directly in front of player. This relies on PlayerRotation().
+    /// Destroys obstacles directly in front of player.
     /// </summary>
     [ClientRpc]
     void HitForward()
@@ -574,56 +614,91 @@ public class PlayerController : NetworkBehaviour
 
     }
 
-
-    private void OnDrawGizmos()
+    /// <summary>
+    /// Used to destroy the obstacles underneath player if player has accidentaly went on top of obstacles
+    /// </summary>
+    [Command]
+    private void CmdServerValidateHit()
     {
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(transform.position + (transform.forward * lengthOfSphere), radiusOfSphere);
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down);
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(transform.position, -transform.up + transform.position);
-        //Gizmos.color = Color.green;
-        //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
+        //Validate the logic//Just a reminder that everything right now is pretty much client authorative. Cheating is easily possible.
+
+        RpcHitDown();
     }
+    /// <summary>
+    /// Destroy obstacles underneath player, still does normal hit behaviour for interactables
+    /// </summary>
+    [ClientRpc]
+    private void RpcHitDown()
+    {
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit[] hit;
+        hit = Physics.SphereCastAll(ray, radiusOfSphere, lengthOfSphere, obstacles);
+        foreach (RaycastHit item in hit)
+        {
+            if (item.transform.GetComponent<ArtefactBehaviour>())
+            {
+                item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
+                item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
+            }
+            else if (item.transform.GetComponent<AbilityPickup>())
+            {
+                item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
+                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
+                item.transform.GetComponent<AbilityPickup>().CmdSetEnabledForPickup(true);
+            }
+            else
+            {
+                Destroy(item.transform.gameObject);
+            }
+        }
+    }
+
+
 
     #endregion
 
+    #region ARTEFACT_FUNCTIONS
+    public ArtefactInventory GetArtefactInventory()
+    {
+        return artefactInventory;
+    }
+    //Todo:Remove this, we already have GetArtefactInventory, line 318 uses this
+    ArtefactInventory GrabArtefactInventory()
+    {
+        return artefactInventory;
+    }
 
+    [Command]
+    private void CmdClearTargetArtefacts()
+    {
+        targetedArtefacts.Clear();
+    }
     [Command]
     private void CmdAddToTargetedArtefacts(ArtefactBehaviour artefact)
     {
         targetedArtefacts.Add(artefact);
     }
-
     [Command]
     private void CmdTargetArtefactsRemoveAt(ArtefactBehaviour artefact)
     {
         targetedArtefacts.Remove(artefact);
     }
-
-    public void ToggleMesh(bool toggle)
+    public void SetArtefactInventory(ArtefactInventory inventory)
     {
-        //Player -> _scaleTest -> FULL.002
-        transform.GetChild(0).transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = toggle;
+        artefactInventory = inventory;
     }
+    #endregion
 
-    public ArtefactInventory GetArtefactInventory()
-    {
-        return artefactInventory;
-    }
-
+    #region ABILITY_FUNCTIONS
+    //Speed
     [Command(requiresAuthority = false)]
     public void CmdModifySpeed(float newSpeed)
     {
         speed = newSpeed;
     }
 
-    public void SetArtefactInventory(ArtefactInventory inventory)
-    {
-        artefactInventory = inventory;
-    }
-
+    //Immobolise
     public bool IsImmobilized()
     {
         return immobilize;
@@ -634,6 +709,7 @@ public class PlayerController : NetworkBehaviour
         immobilize = value;
     }
 
+    //Poison
     public bool IsVoodooPoisoned()
     {
         return voodooPoisoned;
@@ -644,6 +720,7 @@ public class PlayerController : NetworkBehaviour
         voodooPoisoned = poisoned;
     }
 
+    //Mortal
     public bool IsMortal()
     {
         return mortal;
@@ -689,6 +766,48 @@ public class PlayerController : NetworkBehaviour
             Debug.Log("RpcToggleCamouflage the ClientRpc is hitting client called: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
     }
 }
+    /// <summary>
+    /// Toggles the mesh on and off for invisibility effect
+    /// </summary>
+    public void ToggleMesh(bool toggle)
+    {
+        //Player -> _scaleTest -> FULL.002
+        transform.GetChild(0).transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = toggle;
+    }
+
+    #endregion
+}
+
+
+
+
+#region deadCode
+/*
+ * 
+ *   private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position + (transform.forward * lengthOfSphere), radiusOfSphere);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down);
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawLine(transform.position, -transform.up + transform.position);
+        //Gizmos.color = Color.green;
+        //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
+    }
+          //Old camera code
+            /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+             {
+                 if (lastMousePos != Input.mousePosition)
+                 {
+                     float mouseMoveDistance = lastMousePos.x - Input.mousePosition.x;
+                     if (inverted)
+                         mouseMoveDistance *= -1;
+                     this.transform.Rotate(new Vector3(0, mouseMoveDistance * rotationSpeed * Time.deltaTime, 0));
+                 }
+
+                 lastMousePos = Input.mousePosition;
+             }
 
 //////Remember, this was all called from Update() A [ClientCallback], also remember we testing player position. This is updated from the transform, not necessarily the function
 //No tags, if we do something, everyone else sees that

@@ -64,7 +64,7 @@ public class AbilitySlotUI : MonoBehaviour
         {
             abilityName = name;
             isEmpty = false;
-            GetComponent<Image>().sprite = Resources.Load("UI/" + abilityName, typeof(Sprite)) as Sprite;
+            GetComponent<Image>().sprite = Resources.Load("UI/Abilities/" + abilityName, typeof(Sprite)) as Sprite;
             return true;
         }
         else if(name == string.Empty)

@@ -3612,7 +3612,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 553888725}
   m_HandleRect: {fileID: 553888724}
   m_Direction: 0
-  m_Value: 0.013405521
+  m_Value: 0.013405888
   m_Size: 0.8973441
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3890,6 +3890,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1895423267, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_ShowToolkit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895423267, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_ShowCustomSorter
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3258238270017585353, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: m_Name
       value: Main Camera

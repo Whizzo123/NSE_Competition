@@ -2,21 +2,24 @@
 using UnityEngine;
 using Mirror;
 
+//Todo: Remove the spawning of abilities and put it in it's own script. For now leaving this script uncommented for that reason
+/// <summary>
+/// Controls the game ending
+/// </summary>
 public class GameSceneManager : NetworkBehaviour
 {
-    [SyncVar]
-    private bool endedGame = false;
-    [SyncVar]
-    private bool pickupSpawnCounting = false;
+    [SyncVar][Tooltip("Has the game ended via MyLobbyCountdown or Stash")] private bool endedGame = false;
+    [SyncVar][Tooltip("")]private bool pickupSpawnCounting = false;
 
 
     void Start()
     {
-        FindObjectOfType<AudioManager>().ActivateGameMusic();
+        
     }
 
     void LateUpdate()
     {
+        //JoeReply -> The reason it is here rather than in the countdown is because it isn't really time related and only really time related stuff exists in MyLobbyCountdown.cs
         if(FindObjectOfType<Stash>().HasPlayerReachedWinningPointsThreshold() && !endedGame)
         {
             endedGame = true;

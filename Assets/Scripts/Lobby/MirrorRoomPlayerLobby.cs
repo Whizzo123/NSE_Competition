@@ -5,25 +5,32 @@ using UnityEngine.UI;
 using System;
 using Steamworks;
 
+/// <summary>
+/// Handles the UI Element for each player. Handles some networking functions such as readying up, initiating the start game, disconnecting players
+/// </summary>
 public class MirrorRoomPlayerLobby : NetworkBehaviour
 {
-
+    #region Variables
     [Header("UI")]
-    [SerializeField] private GameObject lobbyUI = null;
-    [SerializeField] private Text[] playerNameTexts = new Text[5];
-    [SerializeField] private Text[] playerReadyTexts = new Text[5];
-    [SerializeField] private Button startGameButton = null;
-    [SerializeField] private Button[] removeButtons = new Button[5];
+    [SerializeField] [Tooltip("The Lobby Screen")]private GameObject lobbyUI = null;
+    [SerializeField] [Tooltip("Player name for all players")] private Text[] playerNameTexts = new Text[5];
+    [SerializeField] [Tooltip("Ready texts for all players")] private Text[] playerReadyTexts = new Text[5];
+    [SerializeField] [Tooltip("Start button")] private Button startGameButton = null;
+    [SerializeField] [Tooltip("Remove buttons")] private Button[] removeButtons = new Button[5];
+    [Space]
 
     [SyncVar(hook = nameof(HandleDisplayNameChanged))]
     public string DisplayName = "Loading...";
     [SyncVar(hook = nameof(HandleReadyStatusChanged))]
     public bool IsReady = false;
-    [SyncVar(hook = nameof(HandleSteamIdUpdated))]
+    //[SyncVar(hook = nameof(HandleSteamIdUpdated))]
     private ulong steamId;
 
-    private bool isLeader;
+    [SerializeField] [Tooltip("Is this player the host?")] private bool isLeader;//Todo: isHost?
 
+    /// <summary>
+    /// Setter. Set start game button visible if isLeader
+    /// </summary>
     public bool IsLeader
     {
         set
@@ -33,8 +40,12 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
     }
 
-    private MyNetworkManager room;
 
+    [SerializeField] [Tooltip("Reference to MyNetworkManager for")] private MyNetworkManager room;
+
+    /// <summary>
+    /// Getter. Returns MyNetworkManager
+    /// </summary>
     private MyNetworkManager Room
     {
         get
@@ -44,8 +55,12 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
     }
 
-    #region Server
+    #endregion
 
+
+    /// <summary>
+    /// Sets a name for a steam user 
+    /// </summary>
     public void SetSteamId(ulong steamId)
     {
         this.steamId = steamId;
@@ -55,18 +70,15 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
     }
 
-    #endregion
-
-    #region Client
-    private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
-    {
-        CSteamID cSteamId = new CSteamID(newSteamId);
-    }
-
-    #endregion
+    // TODO: Do a test of steam without this method and check it's not required and if so delete
+    //private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
+    //{
+    //    CSteamID cSteamId = new CSteamID(newSteamId);
+    //}
 
     public override void OnStartAuthority()
     {
+        //Uses steam name or generates a temporary name
         if (!FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
         {
             string name = string.Format("{0} #{1}", GenerateFullName(), UnityEngine.Random.Range(1, 100));
@@ -74,7 +86,9 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
         else
             CmdSetDisplayName(SteamFriends.GetFriendPersonaName(new CSteamID(steamId)));
+
         lobbyUI.SetActive(true);
+        //RemoveButtons enable or disable if leader
         if (isLeader)
             EnableRemoveButtons();
         else
@@ -82,13 +96,18 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 
     }
 
+    /// <summary>
+    /// Adds player to MyNetworkManager and updating the UI
+    /// </summary>
     public override void OnStartClient()
     {
         Room.RoomPlayers.Add(this);
 
         UpdateDisplay();
     }
-
+    /// <summary>
+    /// Adds player to MyNetworkManager and updating the UI
+    /// </summary>
     public override void OnStopClient()
     {
         Room.RoomPlayers.Remove(this);
@@ -99,8 +118,12 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     public void HandleReadyStatusChanged(bool oldValue, bool newValue) => UpdateDisplay();
     public void HandleDisplayNameChanged(string oldValue, string newValue) => UpdateDisplay();
 
+    /// <summary>
+    /// Updates every Player UI Element
+    /// </summary>
     private void UpdateDisplay()
     {
+        //Updates the Element if we have authority over it.
         if(!hasAuthority)
         {
             foreach (var player in Room.RoomPlayers)
@@ -115,12 +138,14 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
             return;
         }
 
+
+        //Loop through playerNameTexts playerReadyTexts and set them back to default
         for (int i = 0; i < playerNameTexts.Length; i++)
         {
             playerNameTexts[i].text = "Waiting For Player...";
             playerReadyTexts[i].text = string.Empty;
         }
-        Debug.Log("Room Roomplayer count: " + Room.RoomPlayers.Count);
+        //Loop through all players in room and set their respective DisplayName and ReadyStatus
         for (int i = 0; i < Room.RoomPlayers.Count; i++)
         {
             playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
@@ -128,25 +153,10 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
     }
 
-    public void EnableRemoveButtons()
-    {
-        removeButtons[0].gameObject.SetActive(false);
-        for (int i = 1; i < removeButtons.Length; i++)
-        {
-            removeButtons[i].gameObject.SetActive(true);
-        }
-        removeButtons[1].onClick.AddListener(() => KickPlayer(1));
-        removeButtons[2].onClick.AddListener(() => KickPlayer(2));
-        removeButtons[3].onClick.AddListener(() => KickPlayer(3));
-        removeButtons[4].onClick.AddListener(() => KickPlayer(4));
-    }
 
-    public void KickPlayer(int index)
-    {
-        if(Room.RoomPlayers[index] != null)
-            Room.RoomPlayers[index].connectionToClient.Disconnect();
-    }
-
+    /// <summary>
+    /// Disables all remove buttons
+    /// </summary>
     public void DisableRemoveButtons()
     {
         for (int i = 0; i < removeButtons.Length; i++)
@@ -154,7 +164,36 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
             removeButtons[i].gameObject.SetActive(false);
         }
     }
+    /// <summary>
+    /// Turns on all kick player buttons and adds a listener to each button
+    /// </summary>
+    public void EnableRemoveButtons()
+    {
+        //Sets all but host kicks on
+        removeButtons[0].gameObject.SetActive(false);
+        for (int i = 1; i < removeButtons.Length; i++)
+        {
+            removeButtons[i].gameObject.SetActive(true);
+        }
+        //Todo: Use For Loop? in the one above?
+        removeButtons[1].onClick.AddListener(() => KickPlayer(1));
+        removeButtons[2].onClick.AddListener(() => KickPlayer(2));
+        removeButtons[3].onClick.AddListener(() => KickPlayer(3));
+        removeButtons[4].onClick.AddListener(() => KickPlayer(4));
+    }
 
+    /// <summary>
+    /// Disconnects the specified player
+    /// </summary>
+    public void KickPlayer(int index)
+    {
+        if(Room.RoomPlayers[index] != null)
+            Room.RoomPlayers[index].connectionToClient.Disconnect();
+    }
+
+    /// <summary>
+    /// Allows the Start game button to be interactable if host and 'readyToStart' is true
+    /// </summary>
     public void HandleReadyToStart(bool readyToStart)
     {
         if(!isLeader) { return; }
@@ -170,6 +209,9 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         DisplayName = displayName;
     }
 
+    /// <summary>
+    /// Run on server to check whether we are ready
+    /// </summary>
     [Command]
     public void CmdReadyUp()
     {
@@ -186,6 +228,9 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         Room.StartGame();
     }
 
+    /// <summary>
+    /// Generates a random name.
+    /// </summary>
     private string GenerateFullName()
     {
         return string.Format("{0} {1}",
@@ -194,6 +239,9 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         );
     }
 
+    /// <summary>
+    /// Generates a random name with length of 'len'
+    /// </summary>
     private string GenerateName(int len)
     {
         var rand = new System.Random(DateTime.Now.Second);

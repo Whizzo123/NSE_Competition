@@ -5,26 +5,33 @@ using System;
 using Steamworks;
 using Mirror.Discovery;
 
+/// <summary>
+/// Controls the Browsing screen UI - displays the list of all available sessions and joining of them
+/// //Todo: allows filtering of all sessions
+/// </summary>
 public class BrowseScreenUI : MonoBehaviour
 {
     #region Variables
-    public GameObject sessionListObjectPrefab;
-    public GameObject noServerFoundText;
-    public GameObject serverList;
+    [Header("Session lists")]
+    [SerializeField] [Tooltip("Prefab used for instantiation for sessions, has ServerListRoomUI.cs")] public GameObject sessionListObjectPrefab;
+    [SerializeField] [Tooltip("Prefab used for no lobbies")] public GameObject noServerFoundText;
+    [SerializeField] [Tooltip("GameObject containing list of servers")] public GameObject serverList;
+    
 
     public event Action<LobbyInfo> OnClickJoinSession;
 
     private LobbyUIManager lobbyUIManager;
 
-    private float waitTime = 5f;
-    private float currentWaitTime = 0f;
+    [Header("Refresh rate")]
+    [SerializeField][Tooltip("Time to wait for refreshing")] private float waitTime = 5f;
+    [Tooltip("Time elapsed since last refresh")]private float currentWaitTime = 0f;
+    //Create a countdown action
     #endregion 
 
     private void Start()
     {
         lobbyUIManager = FindObjectOfType<LobbyUIManager>();
     }
-
 
     /// <summary>
     /// Resets UI by destroying the old outdated server list uielements
@@ -41,15 +48,13 @@ public class BrowseScreenUI : MonoBehaviour
 
 
     /// <summary>
-    /// Updated frequently with all servers hosted currently on the bolt network
+    /// Updates the UI for any lobbies
     /// </summary>
-    /// <param name="sessionList"></param>
     public void SessionListUpdated(List<LobbyInfo> lobbies)
     {
         Debug.Log("Recieved session list update");
 
         ResetUI();
-
         if (lobbies.Count == 0)
         {
             noServerFoundText.SetActive(true);
@@ -57,10 +62,10 @@ public class BrowseScreenUI : MonoBehaviour
         }
 
         noServerFoundText.SetActive(false);
-
+        //Todo: Version Control, filtering
+        //Instantiates all available lobbies
         foreach (LobbyInfo info in lobbies)
         {
-            //Searches for any lobby that is in the current version.
             GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
 
             ServerListRoomUI serverEntryUI = serverEntryGO.GetComponent<ServerListRoomUI>();
@@ -68,10 +73,13 @@ public class BrowseScreenUI : MonoBehaviour
         }
     }
 
+
+    //Todo: Refresh the browse screen periodically or add a refresh button to show new lobbies
     void Update()
-    {
+    { 
         if (!FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
         {
+            //Periodically updates the details of the lobby
             if (currentWaitTime <= 0)
             {
                 Dictionary<long, ServerResponse> servers = lobbyUIManager.discoveredServers;
@@ -83,6 +91,7 @@ public class BrowseScreenUI : MonoBehaviour
                 }
 
                 noServerFoundText.SetActive(false);
+                //Loop through all servers and spawn them in the server list and populate the element with the server name and stuff
                 foreach (long serverID in servers.Keys)
                 {
                     GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
@@ -101,6 +110,9 @@ public class BrowseScreenUI : MonoBehaviour
 
 }
 
+/// <summary>
+/// Struct container for storing Steam Lobby data
+/// </summary>
 public struct LobbyInfo
 {
     public CSteamID lobbyID;
