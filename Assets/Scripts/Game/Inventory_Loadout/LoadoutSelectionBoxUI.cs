@@ -35,10 +35,10 @@ public class LoadoutSelectionBoxUI : MonoBehaviour
     {
         if (currentPointsLeft - gameObject.GetComponent<AbilityPickBarIconUI>().abilityPoints >= 0)
         {
-            UpdatePoints(-(gameObject.GetComponent<AbilityIconUI>().abilityPoints));
+            UpdatePoints(-(gameObject.GetComponent<AbilityPickBarIconUI>().abilityPoints));
 
             gameObject.transform.SetParent(loadoutContent.transform);
-            gameObject.GetComponent<AbilityIconUI>().SetIconAsPartOfLoadout(true);
+            gameObject.GetComponent<AbilityPickBarIconUI>().SetIconAsPartOfLoadout(true);
             return true;
         }
         return false;
@@ -83,26 +83,6 @@ public class LoadoutSelectionBoxUI : MonoBehaviour
         }
 
         pointsText.GetComponent<Text>().text = currentPointsLeft + "/" + maxiumumPointsAvaliable + " pts";
-    }
-
-
-    public int NumberOfLoadoutAbilitiesEquipped()
-    {
-        return gameObject.GetComponentsInChildren<AbilityIconUI>().Length;
-    }
-    /// <summary>
-    /// Returns all the abilites names that are in the loadout bar
-    /// </summary>
-    public List<string> GetLoadoutForAbilitySlotBar()
-    {
-        List<string> loadoutNames = new List<string>();
-        AbilityIconUI[] loadout = transform.GetComponentsInChildren<AbilityIconUI>();
-
-        for (int i = 0; i < loadout.Length; i++)
-        {
-            loadoutNames.Add(loadout[i].abilityName);
-        }
-        return loadoutNames;
     }
 
 }
