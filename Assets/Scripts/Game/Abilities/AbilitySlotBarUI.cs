@@ -3,31 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// The containing class for <see cref="AbilitySlotUI"/>. Has functionality for adding, removing and setting slot states.
+/// </summary>
 public class AbilitySlotBarUI : MonoBehaviour
 {
-
-    private AbilitySlotUI[] slots;
+    [SerializeField][Tooltip("All the AbilitySlotUI Elements contained")]private AbilitySlotUI[] slots;
 
     void Start()
     {
         slots = transform.GetComponentsInChildren<AbilitySlotUI>();
     }
 
+    /// <summary>
+    /// Fills in ability slots with abilities chosen by player, and adds ability to inventory
+    /// </summary>
     public void LoadInAbilitiesFromLoadout(List<string> loadout)
     {
         foreach (string loadoutItem in loadout)
         {
+            //Adds ability to slot ui
             for (int i = 0; i < slots.Length; i++)
             {
                 if (slots[i].SetAbilityName(loadoutItem)) break; else continue;
             }
+            //Adds ability to inventory
             NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(loadoutItem));
         }
     }
-
-    // Slots method to grab empty slot or slot to recharge that is called on ability pickup from AbilityPickup.PickupAbility()
+    /// <summary>
+    /// Adds ability to an empty slot
+    /// </summary>
     public void AddAbilityToLoadoutBar(string abilityName)
     {
+        //JoeComment trap redundant?
         Trap trap = null;// = (Trap)PlayerController.localPlayer.abilityInventory.FindAbility(abilityName);
         if (trap == null)
         {
@@ -41,22 +50,33 @@ public class AbilitySlotBarUI : MonoBehaviour
             }
         }
     }
-
-    public void SetSlotChargingState(string name, bool state)
-    {
-        GetSlot(name).IsCharging(state);
-    }
-
+    /// <summary>
+    /// Sets slot's name to null, if it matches abilityName.
+    /// </summary>
+    /// <param name="abilityName"></param>
     public void RemoveItemFromBar(string abilityName)
     {
         GetSlot(abilityName).SetAbilityName(string.Empty);
     }
 
+    /// <summary>
+    /// Sets an ability to the parameter 'state' for isCharging bool
+    /// </summary>
+    public void SetSlotChargingState(string name, bool state)
+    {
+        GetSlot(name).IsCharging(state);
+    }
+    /// <summary>
+    /// Changes ability icon color based on state
+    /// </summary>
     public void SetSlotUseState(string name, bool state)
     {
         GetSlot(name).InUse(state);
     }
 
+    /// <summary>
+    /// Gets the first slot instance where abilityName matches the ability slot UI name
+    /// </summary>
     private AbilitySlotUI GetSlot(string abilityName)
     {
         for (int i = 0; i < slots.Length; i++)
