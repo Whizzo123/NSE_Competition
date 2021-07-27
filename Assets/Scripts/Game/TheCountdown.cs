@@ -16,11 +16,13 @@ public class TheCountdown : NetworkBehaviour
 {
     //Todo: Rename variables, I assume lobby time isn't the actual lobby
     [Header("Variables")]
-    [SerializeField][Tooltip("Total loadout menu time")] public float lobbyTime;
-    [Tooltip("Time elapsed in loadout menu")]private float currentLobbyTime;
-    [SerializeField][Tooltip("Total game time")] public float gameTime;
+    public float winScreenDisplayTime;
+    private float currentWinScreenDisplayTime;
+    [SerializeField] [Tooltip("Total loadout menu time")] public float lobbyTime;
+    [Tooltip("Time elapsed in loadout menu")] private float currentLobbyTime;
+    [SerializeField] [Tooltip("Total game time")] public float gameTime;
     [Tooltip("Elapsed time in the game scene")] private float currentGameTime;
-   
+
 
     void Start()
     {
@@ -70,14 +72,14 @@ public class TheCountdown : NetworkBehaviour
         var floorTime = Mathf.FloorToInt(gameTime);
 
         //Ticks down game timer and updates the clock UI
-        while(currentGameTime > 0)
+        while (currentGameTime > 0)
         {
             yield return null;
 
             currentGameTime -= Time.deltaTime;
             var newFloorTime = Mathf.FloorToInt(currentGameTime);
 
-            if(newFloorTime != floorTime)
+            if (newFloorTime != floorTime)
             {
                 floorTime = newFloorTime;
 
@@ -190,10 +192,37 @@ public class TheCountdown : NetworkBehaviour
     {
         EndGame();
     }
-
+    /// <summary>
+    /// Starts the coroutine that counts down how long we display the win screen for
+    /// </summary>
     [Command(requiresAuthority = false)]
     private void CmdStartWinScreenDisplayTimer()
     {
         StartCoroutine(WinScreenDisplayTimer());
+    }
+
+    /// <summary>
+    /// Runs an enumeration for the time of winScreenDisplayTime and then disconnects all players from the game
+    /// </summary>
+    /// <returns>IEnumerator</returns>
+    [Server]
+    private IEnumerator WinScreenDisplayTimer()
+    {
+        var floorTime = Mathf.FloorToInt(winScreenDisplayTime);
+
+        while (currentWinScreenDisplayTime > 0)
+        {
+            yield return null;
+
+            currentWinScreenDisplayTime -= Time.deltaTime;
+            var newFloorTime = Mathf.FloorToInt(currentWinScreenDisplayTime);
+
+            if (newFloorTime != floorTime)
+            {
+                floorTime = newFloorTime;
+            }
+        }
+        RpcDisconnectPlayer();
+        MyNetworkManager.singleton.StopHost();
     }
 }
