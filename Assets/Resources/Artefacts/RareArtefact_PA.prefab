@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8257305160184563561}
   - component: {fileID: 3046556750570656691}
   m_Layer: 0
-  m_Name: RareParticle
+  m_Name: RareArtefact_PA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -285,7 +285,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.3
+      scalar: 0.65
       minScalar: 1
       maxCurve:
         serializedVersion: 2
