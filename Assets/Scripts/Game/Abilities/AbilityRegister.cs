@@ -7,19 +7,28 @@ using System.Linq;
 public class AbilityRegister : MonoBehaviour
 {
 
-    private Dictionary<string, Ability> abilities;
+    [Tooltip("Abilities available")]private Dictionary<string, Ability> abilities;
 
+    /// <summary>
+    /// Call: Registers all abilites
+    /// </summary>
     public void Initialize()
     {
         Register();
     }
 
 
+    /// <summary>
+    /// Returns all abilities
+    /// </summary>
     public List<Ability> GetLoadoutList()
     {
         return abilities.Values.ToList<Ability>();
     }
 
+    /// <summary>
+    /// Returns name of all traps
+    /// </summary>
     public string[] GetTrapList()
     {
         List<string> trapList = new List<string>();
@@ -36,6 +45,9 @@ public class AbilityRegister : MonoBehaviour
         return abilities[name].Clone();
     }
 
+    /// <summary>
+    /// Sets up all abilities
+    /// </summary>
     private void Register()
     {
         abilities = new Dictionary<string, Ability>();
@@ -47,23 +59,28 @@ public class AbilityRegister : MonoBehaviour
             AbilityType.POWERUP, 10.0f, Effects.ActivateClueInterpretator, Effects.DeactivateClueInterpretator, 20.0f);
         Ability playerTracker = new Ability("PlayerTracker", "Track other players on the map", 5, AbilityUseTypes.RECHARGE, AbilityType.POWERUP, 25.0f,
             Effects.ActivatePlayerTracker, Effects.DeactivatePlayerTracker, 30.0f);
+
         Ability bearTrap = new Ability("Bear Trap", "Ensnare your opponents in a bear trap to immobilize them", 3, AbilityUseTypes.ONE_TIME, AbilityType.TRAP,
             0.0f, Effects.SpringBearTrap, null, 7.0f);
         Ability voodooTrap = new Ability("Voodoo Poison Trap", "Hits enemy with voodoo poison effect hindering their movement", 3, AbilityUseTypes.ONE_TIME,
             AbilityType.TRAP, 0.0f, Effects.SpringVoodooTrap, null, 7.0f);
+
         Ability stickyBomb = new Ability("StickyBomb", "Stun an opponent of your choosing to change the tides", 1, AbilityUseTypes.RECHARGE, AbilityType.DEBUFF,
             20.0f, Effects.ThrowStickyBomb, Effects.EndStickyBombEffect, 30.0f);
         Ability mortalSpell = new Ability("Mortal Spell", "Brings an enemy back down to the mortal plane all abilities are stripped for 10 secs", 3, AbilityUseTypes.RECHARGE,
             AbilityType.DEBUFF, 20.0f, Effects.CastMortalSpell, Effects.EndMortalSpell, 10.0f);
         Ability paralysisDart = new Ability("Paralysis Dart", "Shoot a poison dart capable of turning an enemies hands to lead so they cannot use tools", 3, AbilityUseTypes.RECHARGE,
             AbilityType.DEBUFF, 10.0f, Effects.ThrowParalysisDart, Effects.EndParalysisDartEffect, 20.0f);
+
         abilities.Add(speedBoost.GetAbilityName(), speedBoost);
         abilities.Add(camouflage.GetAbilityName(), camouflage);
         abilities.Add(clueInterpretator.GetAbilityName(), clueInterpretator);
         abilities.Add(playerTracker.GetAbilityName(), playerTracker);
+
         abilities.Add(stickyBomb.GetAbilityName(), stickyBomb);
         abilities.Add(mortalSpell.GetAbilityName(), mortalSpell);
         abilities.Add(paralysisDart.GetAbilityName(), paralysisDart);
+
         abilities.Add(bearTrap.GetAbilityName(), bearTrap);
         abilities.Add(voodooTrap.GetAbilityName(), voodooTrap);
     }
