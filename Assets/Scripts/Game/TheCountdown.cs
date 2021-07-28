@@ -104,6 +104,11 @@ public class TheCountdown : NetworkBehaviour
     {
         FindObjectOfType<AbilitySlotBarUI>().LoadInAbilitiesFromLoadout(FindObjectOfType<LoadoutSelectionBoxUI>().GetLoadoutForAbilitySlotBar());
         FindObjectOfType<CanvasUIManager>().loadoutScreen.SetActive(false);
+        //Try and disable slot here
+        foreach (AbilityPickBarIconUI icon in FindObjectsOfType<AbilityPickBarIconUI>())
+        {
+            icon.gameObject.SetActive(false);
+        }
         NetworkClient.localPlayer.GetComponent<PlayerController>().SetLoadoutReleased(true);
     }
 
