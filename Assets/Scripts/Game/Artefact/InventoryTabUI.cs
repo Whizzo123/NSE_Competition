@@ -24,7 +24,7 @@ public class InventoryTabUI : MonoBehaviour
         string substringedName = name.Replace("(Clone)", "");
         Debug.Log("Populate under sub: " + substringedName);
 
-        itemImage.sprite = Resources.Load("UI/" + substringedName, typeof(Sprite)) as Sprite;
+        itemImage.sprite = Resources.Load("UI/Artefacts/" + substringedName, typeof(Sprite)) as Sprite;
 
         personalCount = count;
         itemCountText.text = "" + personalCount;

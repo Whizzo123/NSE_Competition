@@ -23,7 +23,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     public string DisplayName = "Loading...";
     [SyncVar(hook = nameof(HandleReadyStatusChanged))]
     public bool IsReady = false;
-    //[SyncVar(hook = nameof(HandleSteamIdUpdated))]
+    [SyncVar(hook = nameof(HandleSteamIdUpdated))]
     private ulong steamId;
 
     [SerializeField] [Tooltip("Is this player the host?")] private bool isLeader;//Todo: isHost?
@@ -70,11 +70,11 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
     }
 
-    // TODO: Do a test of steam without this method and check it's not required and if so delete
-    //private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
-    //{
-    //    CSteamID cSteamId = new CSteamID(newSteamId);
-    //}
+    // THIS IS VERY MUCH REQUIRED CLIENT NAME WILL NOT APPEAR WITHOUT IT
+    private void HandleSteamIdUpdated(ulong oldSteamId, ulong newSteamId)
+    {
+        CSteamID cSteamId = new CSteamID(newSteamId);
+    }
 
     public override void OnStartAuthority()
     {
