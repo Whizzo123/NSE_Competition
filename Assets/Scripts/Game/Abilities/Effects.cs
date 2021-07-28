@@ -12,6 +12,7 @@ public class Effects : NetworkBehaviour
 
     #region PowerupEffects
 
+    //Todo: Add speed particles
     public static void SpeedBoost(Ability ability)
     {
         if(ability.GetCastingPlayer().speed != boostToSpeed && !ability.IsOppositeDebuffActivated())

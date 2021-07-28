@@ -5,7 +5,7 @@ public enum AbilityUseTypes { PASSIVE, RECHARGE, ONE_TIME};
 public enum AbilityType { POWERUP, DEBUFF, TRAP};
 
 /// <summary>
-/// Base class for all abilities. Contains usage, functions and all information regarding the abililty besides<see cref="Effects"/>
+/// Base class for all abilities. Contains usage, functions and all information regarding the abililty besides <see cref="Effects"/>
 /// </summary>
 public class Ability
 {
