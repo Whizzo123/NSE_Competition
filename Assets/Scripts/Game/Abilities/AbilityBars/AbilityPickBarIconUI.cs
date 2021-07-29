@@ -93,7 +93,7 @@ public class AbilityPickBarIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHa
             //Todo: Return ability back with points if not hovering over anything. 
             //Also make sure that the bug where it stays on screen after holding while timer ends is gone
         }
-        //JoeComment
+        //If we are neither over loadout selection box or the ability pick bar but just random part of the screen add back to pick bar
         if(this.transform.parent == FindObjectOfType<Canvas>().transform)
         {
             FindObjectOfType<AbilityPickBarUI>().AddGameObjectToContent(gameObject);
