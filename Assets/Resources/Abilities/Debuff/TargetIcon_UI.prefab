@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8032513448092699934}
   - component: {fileID: 8032513448092699935}
   m_Layer: 5
-  m_Name: TargetIcon
+  m_Name: TargetIcon_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -88,3 +88,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3e52b859881fc247a0e38db80b3e382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointerImage: {fileID: 21300000, guid: a059e20138bb6e446ba51b2f43682940, type: 3}
+  aimCircleImage: {fileID: 21300000, guid: 86e39758f61f646448713659b1d2aeb7, type: 3}
