@@ -34,7 +34,8 @@ public class BearTrapBehaviour : NetworkBehaviour
                 {
                     trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                     trappedPlayer.CmdSetImmobilized(true);
-                    trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
+                    Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
+                    trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.playerName);
                     CmdSpringTrap();
                 }
             }

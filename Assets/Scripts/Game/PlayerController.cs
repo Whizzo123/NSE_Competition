@@ -460,6 +460,21 @@ public class PlayerController : NetworkBehaviour
     {
         NetworkServer.Destroy(go);
     }
+    [Command(requiresAuthority = false)]
+    public void CmdMovePlayer(Vector3 position, string playerName)
+    {
+        transform.position = position;
+        RpcMovePlayer(position, playerName);
+    }
+
+    [ClientRpc]
+    public void RpcMovePlayer(Vector3 position, string playerName)
+    {
+        if(this.playerName == playerName)
+        {
+            transform.position = position;
+        }
+    }
 
     #region Collision
     /// <summary>
