@@ -7,7 +7,9 @@ public class PlayerTrackIconUI : MonoBehaviour
 {
 
     private PlayerController target;
-    public Image iconImage;
+    [Tooltip("Image for when target off screen")] public Sprite pointerImage;
+    [Tooltip("Image for when target on screen")] public Sprite aimCircleImage;
+    public Image imageComponent;
     private float widthOffset;
     private float heightOffset;
 
@@ -24,11 +26,56 @@ public class PlayerTrackIconUI : MonoBehaviour
         //Do stuff to have icon move around screen
         if(target != null)
         {
-            Vector2 screenPos = NetworkClient.localPlayer.GetComponent<PlayerController>().playerCamera.WorldToScreenPoint(target.transform.position);
-            screenPos.x = Mathf.Clamp(screenPos.x, 0 + widthOffset, Screen.width - widthOffset);
-            screenPos.y = Mathf.Clamp(screenPos.y, 0 + heightOffset, Screen.height - heightOffset);
-            transform.position = screenPos;
+            Camera playerCamera = NetworkClient.localPlayer.GetComponent<PlayerController>().playerCamera;
+            Vector2 screenPos = playerCamera.WorldToScreenPoint(target.transform.position);
+            bool isOffScreen = screenPos.x < widthOffset || screenPos.x > Screen.width - widthOffset || screenPos.y > Screen.height - heightOffset || screenPos.y < heightOffset;
+            if (isOffScreen)
+            {
+                //Outside bounds of screen
+                this.transform.localRotation = Quaternion.identity;
+                SetImage(pointerImage);
+                Vector3 dir = target.transform.position - NetworkClient.localPlayer.transform.position;
+                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                {
+                    if (dir.x < 0)
+                    {
+                        this.transform.position = new Vector3(widthOffset, Screen.height / 2, 0);
+                        this.transform.Rotate(new Vector3(0, 0, 90.0f));
+                    }
+                    else if (dir.x > 0)
+                    {
+                        this.transform.position = new Vector3(Screen.width - widthOffset, Screen.height / 2, 0);
+                        this.transform.Rotate(new Vector3(0, 0, -90.0f));
+                    }
+                }
+                else
+                {
+                    if (dir.z < 0)
+                    {
+                        this.transform.position = new Vector3(Screen.width / 2, heightOffset, 0);
+                        this.transform.Rotate(new Vector3(0, 0, 180.0f));
+                    }
+                    else if (dir.z > 0)
+                    {
+                        this.transform.position = new Vector3(Screen.width / 2, Screen.height - heightOffset, 0);
+                    }
+                }
+            }
+            else
+            {
+                //Inside bounds of screen
+                SetImage(aimCircleImage);
+                transform.position = screenPos;
+                this.transform.Rotate(new Vector3(0, 0, 90 * Time.deltaTime));
+            }
+
+
         }
+    }
+
+    private void SetImage(Sprite sprite)
+    {
+        GetComponent<Image>().sprite = sprite;
     }
 
     public void SetIconTarget(PlayerController player)
@@ -36,11 +83,11 @@ public class PlayerTrackIconUI : MonoBehaviour
         target = player;
         if(target == null)
         {
-            iconImage.enabled = false;
+            imageComponent.enabled = false;
         }
         else
         {
-            iconImage.enabled = true;
+            imageComponent.enabled = true;
         }
     }
 }

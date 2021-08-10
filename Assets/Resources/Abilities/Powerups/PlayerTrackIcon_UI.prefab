@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2703930740496407594}
   - component: {fileID: 2665329225712190715}
   m_Layer: 5
-  m_Name: PlayerTrackIcon
+  m_Name: PlayerTrackIcon_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -88,4 +88,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30a4ece74fdf82047851cb4b6bea3901, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iconImage: {fileID: 2703930740496407594}
+  pointerImage: {fileID: 21300000, guid: 4d8ea4b36aa9d304c9c2aefb238dc6ce, type: 3}
+  aimCircleImage: {fileID: 21300000, guid: 880add43508ecd740997c1db0c421e69, type: 3}
+  imageComponent: {fileID: 2703930740496407594}
