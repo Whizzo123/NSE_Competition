@@ -33,7 +33,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
         {
             if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
             {
-                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName && !collider.gameObject.GetComponent<PlayerController>().IsVoodooPoisoned())
                 {
                     trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                     trappedPlayer.CmdSetVoodooPoisoned(true);
