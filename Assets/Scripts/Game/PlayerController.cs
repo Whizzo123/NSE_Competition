@@ -510,7 +510,7 @@ public class PlayerController : NetworkBehaviour
     public void OnTriggerStay(Collider collider)
     {
         //If it is available for pickup and it currently isn't in tempartefactstorage
-        if (collider.gameObject.GetComponent<ArtefactBehaviour>() && tempArtefactStorage.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup())
+        if (collider.gameObject.GetComponent<ArtefactBehaviour>() && tempArtefactStorage.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup() && targetedArtefacts.Count <= 4)
         {
             //Adds it temporarily
             tempArtefactStorage.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());

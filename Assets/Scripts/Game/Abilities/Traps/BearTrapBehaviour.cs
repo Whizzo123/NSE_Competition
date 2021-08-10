@@ -30,17 +30,15 @@ public class BearTrapBehaviour : NetworkBehaviour
         { 
             if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
             {
-                //if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName && !collider.gameObject.GetComponent<PlayerController>().IsImmobilized())
                 if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
                 {
                     trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                     if (!trappedPlayer.IsImmobilized())
                     {
                         trappedPlayer.CmdSetImmobilized(true);
-                    Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
-                    trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.playerName);
+                        Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
+                        trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.playerName);
                     }
-
                     CmdSpringTrap();
                 }
             }
