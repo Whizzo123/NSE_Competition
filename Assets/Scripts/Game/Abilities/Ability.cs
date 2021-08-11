@@ -139,6 +139,7 @@ public class Ability
         }
         else
         {
+            Debug.Log("UpdatingTrapAbility: " + useCount + ": " + used);
             if (used && useCount >= 3)
             {
                 castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
@@ -151,7 +152,8 @@ public class Ability
     /// </summary>
     public void Use()
     {
-        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
+        if(useType == AbilityUseTypes.RECHARGE)
+            GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
         AnimatorStateInfo state = castingPlayer.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
         Animator animator = castingPlayer.transform.GetChild(0).GetComponent<Animator>();
         switch (abilityType)
@@ -159,14 +161,13 @@ public class Ability
             case (AbilityType.POWERUP):
                 if (useType == AbilityUseTypes.ONE_TIME)
                 {
-                    used = true;
+                    //Not sure if this is gonna do anything if its the end of August and still isn't used delete me pls :)
                 }
                 break;
             case (AbilityType.DEBUFF):
                 if (!state.IsName("Throw"))
                 {
                     animator.SetTrigger("Throw");
-                    used = true;
                 }
                 break;
             case (AbilityType.TRAP):
@@ -177,6 +178,7 @@ public class Ability
                 useCount++;
                 break;
         }
+        used = true;
         effectInvokedOnUse.Invoke(this);
     }
     

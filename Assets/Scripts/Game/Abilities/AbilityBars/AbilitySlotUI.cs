@@ -35,6 +35,7 @@ public class AbilitySlotUI : MonoBehaviour
         PlayerController localPlayer = NetworkClient.localPlayer.gameObject.GetComponent<PlayerController>();
         if (!isCharging && localPlayer.IsMortal() == false)
         {
+            Debug.Log("Activating");
             localPlayer.abilityInventory.ActivateAbility(abilityName);
         }
     }
@@ -47,19 +48,19 @@ public class AbilitySlotUI : MonoBehaviour
     {
         if (charging)
         {
-            //GetComponent<Image>().color = chargingColor;
-            overlayImage.gameObject.SetActive(true);
-            overlayImage.gameObject.transform.localScale = new Vector3(1, 1, 1);
+            GetComponent<Image>().color = chargingColor;
+            //overlayImage.gameObject.SetActive(true);
+            //overlayImage.gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
         else
         {
-            //GetComponent<Image>().color = Color.white;
-            overlayImage.gameObject.SetActive(false);
+            GetComponent<Image>().color = Color.white;
+           // overlayImage.gameObject.SetActive(false);
         }
         isCharging = charging;
     }
 
-    private void Update()
+    /*private void Update()
     {
         if(isCharging)
         { 
@@ -68,7 +69,7 @@ public class AbilitySlotUI : MonoBehaviour
             float percentage = currentCharge / maxCharge;
             overlayImage.transform.localScale = new Vector3(1 - percentage, 1 - percentage, 1);
         }
-    }
+    }*/
     /// <summary>
     /// Changes color of icon if ability whether it is used or not.
     /// </summary>
@@ -100,7 +101,7 @@ public class AbilitySlotUI : MonoBehaviour
         {
             abilityName = name;
             isEmpty = true;
-            GetComponent<Image>().sprite = Resources.Load("UI/blank", typeof(Sprite)) as Sprite;
+            GetComponent<Image>().sprite = Resources.Load("UI/Abilities/blank", typeof(Sprite)) as Sprite;
             return true;
         }
         return false;
