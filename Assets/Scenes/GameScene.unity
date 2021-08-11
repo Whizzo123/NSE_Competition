@@ -17,17 +17,17 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0.5372549, g: 0.5600258, b: 0.65882355, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.02
+  m_FogDensity: 0.002
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 0.34
+  m_AmbientIntensity: 1.35
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.2743414, g: 0.4245283, b: 0.4231427, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 2bd8959f5fbd3644aa33af1a155fc147, type: 2}
-  m_HaloStrength: 0.5
+  m_HaloStrength: 0.418
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
@@ -35,10 +35,10 @@ RenderSettings:
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: 0.497
+  m_ReflectionIntensity: 0.667
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2102188483}
-  m_IndirectSpecularColor: {r: 0.053336944, g: 0.16386588, b: 0.36920837, a: 0.497}
+  m_IndirectSpecularColor: {r: 0.08363454, g: 0.20180596, b: 0.51453, a: 0.667}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 34a7716bab0e0fd4b9e49195a6ae94c1, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: a49038c472a6ce143837e32690be6860, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 77d1ea8e8b1bd6d4391df6d04f8fa808, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -3831,9 +3831,21 @@ PrefabInstance:
       propertyPath: weight
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1895423266, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895423267, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1895423267, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: m_ShowCustomSorter
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3247585302607933297, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3258238270017585353, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: m_Name
@@ -4170,8 +4182,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.8784314, g: 0.7176471, b: 0.73531085, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 1, g: 0.8700374, b: 0.504717, a: 1}
+  m_Intensity: 0.92
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4180,8 +4192,8 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.623
+    m_Strength: 0.391
+    m_Bias: 0.021
     m_NormalBias: 0.13
     m_NearPlane: 0.98
     m_CullingMatrixOverride:
@@ -4245,6 +4257,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: _emple
       objectReference: {fileID: 0}
+    - target: {fileID: 2519224595844920787, guid: 582274c556be50644a8dc000e29431a4, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967294
+      objectReference: {fileID: 0}
     - target: {fileID: 3007777557571645289, guid: 582274c556be50644a8dc000e29431a4, type: 3}
       propertyPath: m_RootOrder
       value: 12
@@ -4297,6 +4313,14 @@ PrefabInstance:
       propertyPath: m_AssetId
       value: 582274c556be50644a8dc000e29431a4
       objectReference: {fileID: 0}
+    - target: {fileID: 4176782011411518470, guid: 582274c556be50644a8dc000e29431a4, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176782011411518470, guid: 582274c556be50644a8dc000e29431a4, type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 582274c556be50644a8dc000e29431a4, type: 3}
 --- !u!1001 &842628540546763061
@@ -4306,13 +4330,29 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5312652003311564820, guid: d6fe9d6068dbe23468ee4355d0ad9f17, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5312652003311564820, guid: d6fe9d6068dbe23468ee4355d0ad9f17, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5312652003311564820, guid: d6fe9d6068dbe23468ee4355d0ad9f17, type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5312652003311564820, guid: d6fe9d6068dbe23468ee4355d0ad9f17, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5961262501756180929, guid: d6fe9d6068dbe23468ee4355d0ad9f17, type: 3}
       propertyPath: m_Name
       value: _esert
       objectReference: {fileID: 0}
     - target: {fileID: 5961262501756180929, guid: d6fe9d6068dbe23468ee4355d0ad9f17, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 4294967294
       objectReference: {fileID: 0}
     - target: {fileID: 6481093305336120187, guid: d6fe9d6068dbe23468ee4355d0ad9f17, type: 3}
       propertyPath: m_RootOrder
@@ -4373,7 +4413,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3664452559614145335, guid: 1aff2a03fc20c074394b71484e0939c8, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 4294967294
       objectReference: {fileID: 0}
     - target: {fileID: 4148114996177545613, guid: 1aff2a03fc20c074394b71484e0939c8, type: 3}
       propertyPath: m_RootOrder
@@ -4543,7 +4583,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 969397416496547677, guid: 9d961c50112d1114b96f41a33b0aeb91, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 4294967294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d961c50112d1114b96f41a33b0aeb91, type: 3}
@@ -4871,7 +4911,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4523724237648911341, guid: f5b30186d3adcfe4699955c2169d75ca, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 4294967294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5b30186d3adcfe4699955c2169d75ca, type: 3}
