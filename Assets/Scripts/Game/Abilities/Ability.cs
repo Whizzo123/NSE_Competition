@@ -151,6 +151,7 @@ public class Ability
     /// </summary>
     public void Use()
     {
+        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
         AnimatorStateInfo state = castingPlayer.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
         Animator animator = castingPlayer.transform.GetChild(0).GetComponent<Animator>();
         switch (abilityType)
@@ -188,7 +189,6 @@ public class Ability
             currentCharge = 0;
             currentDuration = 0;
             inUse = false;
-            GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
         }
         if (useType == AbilityUseTypes.ONE_TIME)
             castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);

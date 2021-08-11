@@ -18,6 +18,7 @@ public class AbilitySlotUI : MonoBehaviour
     [Header("Color")]
     [SerializeField] [Tooltip("Color for when on cooldown")] public Color chargingColor;
     [SerializeField] [Tooltip("Color for when ready to use")] public Color inUseColor;
+    [SerializeField] [Tooltip("Overlay mask")] public Image overlayImage;
 
     void Start()
     {
@@ -46,14 +47,27 @@ public class AbilitySlotUI : MonoBehaviour
     {
         if (charging)
         {
-            GetComponent<Image>().color = chargingColor;
+            //GetComponent<Image>().color = chargingColor;
+            overlayImage.gameObject.SetActive(true);
+            overlayImage.gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
         else
         {
-            GetComponent<Image>().color = Color.white;
+            //GetComponent<Image>().color = Color.white;
+            overlayImage.gameObject.SetActive(false);
         }
-
         isCharging = charging;
+    }
+
+    private void Update()
+    {
+        if(isCharging)
+        { 
+            float currentCharge = NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.FindAbility(abilityName).GetCurrentCharge();
+            float maxCharge = NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.FindAbility(abilityName).GetChargeAmount();
+            float percentage = currentCharge / maxCharge;
+            overlayImage.transform.localScale = new Vector3(1 - percentage, 1 - percentage, 1);
+        }
     }
     /// <summary>
     /// Changes color of icon if ability whether it is used or not.
