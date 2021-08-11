@@ -8,7 +8,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
 {
     private PlayerController trappedPlayer;
 
-    public float trapDuration = 5;
+    public float trapDuration = 2.5f; // Test this please
     private float currentDuration;
     
     private bool sprung;
