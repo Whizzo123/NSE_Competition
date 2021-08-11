@@ -3832,6 +3832,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1895423266, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: isGlobal
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895423266, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -3841,6 +3845,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1895423267, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: m_ShowCustomSorter
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895423267, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: volumeLayer.m_Bits
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3247585302607933297, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
@@ -3894,6 +3902,10 @@ PrefabInstance:
     - target: {fileID: 3258238270017585354, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: near clip plane
