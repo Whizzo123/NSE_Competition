@@ -113,6 +113,7 @@ public class Ability
                             GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, false);
                         }
                     }
+
                 }
             }
             else if (useType == AbilityUseTypes.ONE_TIME)
@@ -152,8 +153,7 @@ public class Ability
     /// </summary>
     public void Use()
     {
-        if(useType == AbilityUseTypes.RECHARGE)
-            GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
+      
         AnimatorStateInfo state = castingPlayer.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
         Animator animator = castingPlayer.transform.GetChild(0).GetComponent<Animator>();
         switch (abilityType)
@@ -163,23 +163,43 @@ public class Ability
                 {
                     //Not sure if this is gonna do anything if its the end of August and still isn't used delete me pls :)
                 }
+                effectInvokedOnUse.Invoke(this);
+                //Reset charge value and set slot charging state
+                if (useType == AbilityUseTypes.RECHARGE)
+                {
+                    currentCharge = 0;
+                    GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
+                }
                 break;
             case (AbilityType.DEBUFF):
-                if (!state.IsName("Throw"))
+                effectInvokedOnUse.Invoke(this);
+                if (!state.IsName("Throw") && inUse)
                 {
                     animator.SetTrigger("Throw");
+                    if (useType == AbilityUseTypes.RECHARGE)
+                    {
+                        currentCharge = 0;
+                        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
+                    }
                 }
                 break;
             case (AbilityType.TRAP):
                 if (!state.IsName("PutDown"))
                 {
                     animator.SetTrigger("PutDown");
+                    effectInvokedOnUse.Invoke(this);
+                    //Reset charge value and set slot charging state
+                    if (useType == AbilityUseTypes.RECHARGE)
+                    {
+                        currentCharge = 0;
+                        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
+                    }
                 }
                 useCount++;
                 break;
         }
         used = true;
-        effectInvokedOnUse.Invoke(this);
+        
     }
     
     private void EndEffect()
@@ -188,7 +208,6 @@ public class Ability
             effectInvokedOnEnd.Invoke(this);
         if (abilityType == AbilityType.POWERUP || abilityType == AbilityType.DEBUFF)
         {
-            currentCharge = 0;
             currentDuration = 0;
             inUse = false;
         }

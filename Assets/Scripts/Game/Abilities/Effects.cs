@@ -177,6 +177,7 @@ public class Effects : NetworkBehaviour
             PlayerController closestPlayer = FindClosestPlayer(ability);
             FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
             ability.SetTargetedPlayer(closestPlayer);
+            Debug.Log("Setting targeted player");
         }
         else
         {
@@ -188,6 +189,7 @@ public class Effects : NetworkBehaviour
             if (speedBoost != null)
                 speedBoost.SetOppositeDebuffActivated(true);
             ability.GetTargetedPlayer().CmdModifySpeed(5f);
+            Debug.Log("Got player commencing throw");
             
         }
     }
