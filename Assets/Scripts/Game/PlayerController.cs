@@ -764,17 +764,7 @@ public class PlayerController : NetworkBehaviour
         else
         {
             Debug.Log("RpcToggleCamouflage the ClientRpc is hitting client called: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
-            foreach(Material mat in player.GetComponentInChildren<SkinnedMeshRenderer>().materials)
-            {
-                Debug.Log("Hitting materials: " + player.GetComponentInChildren<SkinnedMeshRenderer>().materials.Length);
-                Color color = mat.color;
-                //If true turning mesh back on change back
-                if (toggle)
-                    color.a = 1.0f;
-                else
-                    color.a = 0.5f;
-                mat.color = color;
-            }
+            
         }
     }
 

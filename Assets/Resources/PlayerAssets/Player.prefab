@@ -1284,17 +1284,17 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -8274133419916619345, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: -6629797300637803691, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: -6478536213147159724, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: -876546973899608171, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: -2813467912831258332, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: -6922793697723135513, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: -3846018093981099296, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: 4874126678125670354, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: -3522955778539423533, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: 9185737683893222716, guid: 9905685fde9271f46a76071b02aee460, type: 3}
-  - {fileID: -6087771358165109452, guid: 9905685fde9271f46a76071b02aee460, type: 3}
+  - {fileID: 2100000, guid: 56e08af66a6880149b2c734d3a5f91f6, type: 2}
+  - {fileID: 2100000, guid: ffabfeba1c0517243ac3d8ec39fc2f40, type: 2}
+  - {fileID: 2100000, guid: 533919cf14968fd4f8f58f57581e6f2b, type: 2}
+  - {fileID: 2100000, guid: 1fc29df09d9ba9440bd9d10a07628720, type: 2}
+  - {fileID: 2100000, guid: 48cb1858069fbe245ba33508b69c714d, type: 2}
+  - {fileID: 2100000, guid: 8100c227d265cd14c98173d19e80c351, type: 2}
+  - {fileID: 2100000, guid: 148372ebfc9181d43a020fcddbde627d, type: 2}
+  - {fileID: 2100000, guid: 15a67973798f99d4caa2a445202a530e, type: 2}
+  - {fileID: 2100000, guid: a8a9953402c484345ba431c6ffd48815, type: 2}
+  - {fileID: 2100000, guid: 595bfefde46ec3748901d1563574f8dc, type: 2}
+  - {fileID: 2100000, guid: bfc13459abbc58d4b8a1e198a957fc47, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1666,6 +1666,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  tempArtefactStorage: []
   playerName: 
   waitTime: 0.569
   playerGravity: -65

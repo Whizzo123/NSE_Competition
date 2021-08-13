@@ -31,8 +31,24 @@ public class Effects : NetworkBehaviour
     {
         Vector3 spawnPos = ability.GetCastingPlayer().gameObject.transform.position;
         FindObjectOfType<Effects>().CmdSpawnCamouflageParticles(spawnPos);
+        AlterMaterials(ability, false);
         ability.GetCastingPlayer().CmdToggleCamouflage(false, ability.GetCastingPlayer());
         ability.SetInUse(true);
+    }
+
+    public static void AlterMaterials(Ability ability, bool toggle)
+    {
+        foreach (Material mat in ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials)
+        {
+            Debug.Log("Hitting materials: " + ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials.Length);
+            Color color = mat.color;
+            //If true turning mesh back on change back
+            if (toggle)
+                color.a = 1.0f;
+            else
+                color.a = 0.5f;
+            mat.color = color;
+        }
     }
 
     [Command (requiresAuthority = false)]
@@ -45,6 +61,7 @@ public class Effects : NetworkBehaviour
 
     public static void DeactivateCamouflage(Ability ability)
     {
+        AlterMaterials(ability, true);
         ability.GetCastingPlayer().CmdToggleCamouflage(true, ability.GetCastingPlayer());
     }
 
