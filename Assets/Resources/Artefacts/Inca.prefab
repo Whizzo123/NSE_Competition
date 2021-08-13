@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 7348678549364091987}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0.07}
+  m_LocalScale: {x: 5, y: 5, z: 0.4}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -51,18 +51,18 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7348678549364091987}
   m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3522955778539423533, guid: 6ba5de89c2a58fe429d05b20ce5dd458, type: 3}
+  - {fileID: 2100000, guid: cf7a0eea5a9883045a120df32e9ee4ff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,6 +98,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  artefactName: 
+  points: 0
+  rarity: 0
+  avaliableForPickup: 0
 --- !u!65 &8561310119300251705
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -109,7 +113,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 3, z: 29}
+  m_Size: {x: 0.4, y: 0.7, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3538270924435370509
 MonoBehaviour:

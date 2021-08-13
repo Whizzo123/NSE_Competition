@@ -74,8 +74,8 @@ MonoBehaviour:
   spawnPosScale: 2
   artefactSpawner:
   - {fileID: 5066538118683467629, guid: 843fb1a63203ca94aa8b713e420a4988, type: 3}
-  - {fileID: 5110210771469321765, guid: f02762067df284a4c8b09d531bc10af6, type: 3}
   - {fileID: 3500044115046012371, guid: e4ff61ddd21a39b4098cd82b882ffe05, type: 3}
+  - {fileID: 5110210771469321765, guid: f02762067df284a4c8b09d531bc10af6, type: 3}
   commonArtefacts: 50
   rareArtefacts: 20
   exoticArtefacts: 1
