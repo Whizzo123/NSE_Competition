@@ -50,7 +50,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7348678549364091987}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3522955778539423533, guid: 6ba5de89c2a58fe429d05b20ce5dd458, type: 3}
+  - {fileID: 2100000, guid: 2c6829cc2979ebc40b12d42d8a9dd222, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,6 +98,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  artefactName: 
+  points: 0
+  rarity: 0
+  avaliableForPickup: 0
 --- !u!65 &8561310119300251705
 BoxCollider:
   m_ObjectHideFlags: 0

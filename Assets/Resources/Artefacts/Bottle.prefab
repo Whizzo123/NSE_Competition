@@ -62,9 +62,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -2813467912831258332, guid: 5facaf957ff396e44be3fd4189768521, type: 3}
-  - {fileID: -8274133419916619345, guid: 5facaf957ff396e44be3fd4189768521, type: 3}
-  - {fileID: -6629797300637803691, guid: 5facaf957ff396e44be3fd4189768521, type: 3}
+  - {fileID: 2100000, guid: 1bc61b9293d66e74aae0c6ce73a37959, type: 2}
+  - {fileID: 2100000, guid: 12acfa35bacbb0f48815da0ca4305877, type: 2}
+  - {fileID: 2100000, guid: 68f8979d271fbc44c90a9c355ac3a1fd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -100,6 +100,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  artefactName: 
+  points: 0
+  rarity: 0
+  avaliableForPickup: 0
 --- !u!65 &-4587001002744856315
 BoxCollider:
   m_ObjectHideFlags: 0

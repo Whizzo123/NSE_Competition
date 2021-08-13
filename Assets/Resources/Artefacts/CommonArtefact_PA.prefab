@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2028250100165203150}
   - component: {fileID: 215997950524606163}
   m_Layer: 0
-  m_Name: CommonParticle
+  m_Name: CommonArtefact_PA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4767,7 +4767,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c36e9fe061f685c4193abcda537f5b32, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

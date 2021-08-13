@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -6478536213147159724, guid: 3142e71fa19221a41b1b0c7eda9c6f37, type: 3}
+  - {fileID: 2100000, guid: b2668e8ce7fbcb9439c5c88c6e5b459c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,6 +98,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  artefactName: 
+  points: 0
+  rarity: 0
   avaliableForPickup: 0
 --- !u!65 &-4564324696093435009
 BoxCollider:

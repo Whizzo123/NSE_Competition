@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Mirror;
+using UnityEditor;
 
 public class Effects : NetworkBehaviour
 {
@@ -9,6 +10,37 @@ public class Effects : NetworkBehaviour
     private static float boostToSpeed = 7.5f;
     private static List<GameObject> particles;
     private static LayerMask ground;
+    private static Material[] playerNormalMats;
+    private static  Material[] playerFadeMats;
+
+    private void Start()
+    {
+        playerNormalMats = new Material[11];
+        playerNormalMats[0] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_1_Mat.mat", typeof(Material));
+        playerNormalMats[1] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_2_Mat.mat", typeof(Material));
+        playerNormalMats[2] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_3_Mat.mat", typeof(Material));
+        playerNormalMats[3] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_4_Mat.mat", typeof(Material));
+        playerNormalMats[4] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_5_Mat.mat", typeof(Material));
+        playerNormalMats[5] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_6_Mat.mat", typeof(Material));
+        playerNormalMats[6] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_7_Mat.mat", typeof(Material));
+        playerNormalMats[7] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_8_Mat.mat", typeof(Material));
+        playerNormalMats[8] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_9_Mat.mat", typeof(Material));
+        playerNormalMats[9] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_10_Mat.mat", typeof(Material));
+        playerNormalMats[10] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_11_Mat.mat", typeof(Material));
+
+        playerFadeMats = new Material[11];
+        playerFadeMats[0] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_1_FadeMat.mat", typeof(Material));
+        playerFadeMats[1] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_2_FadeMat.mat", typeof(Material));
+        playerFadeMats[2] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_3_FadeMat.mat", typeof(Material));
+        playerFadeMats[3] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_4_FadeMat.mat", typeof(Material));
+        playerFadeMats[4] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_5_FadeMat.mat", typeof(Material));
+        playerFadeMats[5] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_6_FadeMat.mat", typeof(Material));
+        playerFadeMats[6] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_7_FadeMat.mat", typeof(Material));
+        playerFadeMats[7] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_8_FadeMat.mat", typeof(Material));
+        playerFadeMats[8] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_9_FadeMat.mat", typeof(Material));
+        playerFadeMats[9] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_10_FadeMat.mat", typeof(Material));
+        playerFadeMats[10] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_11_FadeMat.mat", typeof(Material));
+    }
 
     #region PowerupEffects
 
@@ -38,17 +70,16 @@ public class Effects : NetworkBehaviour
 
     public static void AlterMaterials(Ability ability, bool toggle)
     {
-        foreach (Material mat in ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials)
+        Debug.Log("Hitting materials: " + ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials.Length);
+        if (toggle)
         {
-            Debug.Log("Hitting materials: " + ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials.Length);
-            Color color = mat.color;
-            //If true turning mesh back on change back
-            if (toggle)
-                color.a = 1.0f;
-            else
-                color.a = 0.5f;
-            mat.color = color;
+            ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials = playerNormalMats;
         }
+        else
+        {
+            ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials = playerFadeMats;
+        }
+
     }
 
     [Command (requiresAuthority = false)]
