@@ -115,7 +115,7 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _AlbedoColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColor: {r: 0.6160561, g: 0.40355164, b: 0.22204119, a: 1}
+    - _BaseColor: {r: 0.6160561, g: 0.4035516, b: 0.22204116, a: 0.6745098}
     - _Color: {r: 0.6160561, g: 0.40355167, b: 0.22204123, a: 1}
     - _Emission: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
