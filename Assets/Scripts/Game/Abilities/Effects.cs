@@ -132,6 +132,7 @@ public class Effects : NetworkBehaviour
     public static void ActivatePlayerTracker(Ability ability)
     {
         FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(FindHighestPlayerTarget());
+        ability.SetInUse(true);
     }
 
     public static void DeactivatePlayerTracker(Ability ability)
@@ -332,6 +333,36 @@ public class Effects : NetworkBehaviour
     private static float GetDistance(Vector3 a, Vector3 b)
     {
         return Vector3.Distance(a, b);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        RpcCreateAbilityEffectTimer(abilityName, targetPlayerName, fullDuration);
+    }
+
+    [ClientRpc]
+    private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
+    }
+
+
+
+    //Don't know if I really want this here maybe somewhere else at some point really just proof of concept right now
+
+    [Command(requiresAuthority = false)]
+    public void CmdUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        RpcUpdateTargetTimer(targetPlayerName, abilityName, duration);
+    }
+
+    [ClientRpc]
+    private void RpcUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+            GameObject.FindObjectOfType<AbilityTimerContainer>().UpdateTimer(abilityName, duration);
     }
 
     #endregion 

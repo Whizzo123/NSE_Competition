@@ -37,6 +37,8 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 {
                     trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                     trappedPlayer.CmdSetVoodooPoisoned(true);
+                    if (!trappedPlayer.IsVoodooPoisoned())
+                        CmdCreateAbilityEffectTimer("Voodoo Poison Trap", trappedPlayer.playerName, trapDuration);
                     CmdSpringTrap();
                 }
             }
@@ -83,6 +85,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 if (currentDuration < trapDuration)
                 {
                     currentDuration += Time.deltaTime;
+                    CmdUpdateTargetTimer(trappedPlayer.playerName, "Voodoo Poison Trap", currentDuration);
                 }
                 else
                 {
@@ -91,5 +94,31 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 }
             }
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        RpcCreateAbilityEffectTimer(abilityName, targetPlayerName, fullDuration);
+    }
+
+    [ClientRpc]
+    private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName && FindObjectOfType<AbilityTimerContainer>().Contains(abilityName) == false)
+            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        RpcUpdateTargetTimer(targetPlayerName, abilityName, duration);
+    }
+
+    [ClientRpc]
+    private void RpcUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+            GameObject.FindObjectOfType<AbilityTimerContainer>().UpdateTimer(abilityName, duration);
     }
 }

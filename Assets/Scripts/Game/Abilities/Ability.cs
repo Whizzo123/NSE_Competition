@@ -95,6 +95,10 @@ public class Ability
                         currentDuration += Time.deltaTime;
                         if (currentDuration > duration)
                             currentDuration = duration;
+                        if (abilityType == AbilityType.POWERUP)
+                            GameObject.FindObjectOfType<AbilityTimerContainer>().UpdateTimer(name, currentDuration);
+                        else
+                            UpdateTargetTimer();
                     }
                     else
                     {
@@ -147,18 +151,24 @@ public class Ability
             }
         }
     }
+
+    private void UpdateTargetTimer()
+    {
+        GameObject.FindObjectOfType<Effects>().CmdUpdateTargetTimer(targetedPlayer.playerName, name, currentDuration);
+    }
     
     /// <summary>
     /// Uses ability, invoke effect and sets animator
     /// </summary>
     public void Use()
     {
-      
+        
         AnimatorStateInfo state = castingPlayer.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
         Animator animator = castingPlayer.transform.GetChild(0).GetComponent<Animator>();
         switch (abilityType)
         {
             case (AbilityType.POWERUP):
+                CreateLocalAbilityEffectTimer(name, duration);
                 if (useType == AbilityUseTypes.ONE_TIME)
                 {
                     //Not sure if this is gonna do anything if its the end of August and still isn't used delete me pls :)
@@ -172,9 +182,11 @@ public class Ability
                 }
                 break;
             case (AbilityType.DEBUFF):
+                
                 effectInvokedOnUse.Invoke(this);
                 if (!state.IsName("Throw") && inUse)
                 {
+                    GameObject.FindObjectOfType<Effects>().CmdCreateAbilityEffectTimer(name, targetedPlayer.playerName, duration);
                     animator.SetTrigger("Throw");
                     if (useType == AbilityUseTypes.RECHARGE)
                     {
@@ -213,6 +225,11 @@ public class Ability
         }
         if (useType == AbilityUseTypes.ONE_TIME)
             castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
+    }
+
+    public static void CreateLocalAbilityEffectTimer(string abilityName, float fullDuration)
+    {
+        GameObject.FindObjectOfType<AbilityTimerContainer>().AddTimer(abilityName, fullDuration);
     }
 
     public void ResetUseCount()
@@ -256,6 +273,11 @@ public class Ability
     public float GetDuration()
     {
         return duration;
+    }
+
+    public float GetCurrentDuration()
+    {
+        return currentDuration;
     }
 
     public bool IsInUse()
