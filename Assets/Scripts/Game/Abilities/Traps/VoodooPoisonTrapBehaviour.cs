@@ -33,11 +33,10 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
         {
             if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
             {
-                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName && !collider.gameObject.GetComponent<PlayerController>().IsVoodooPoisoned())
                 {
                     trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                     trappedPlayer.CmdSetVoodooPoisoned(true);
-                    trappedPlayer.transform.position = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
                     CmdSpringTrap();
                 }
             }
