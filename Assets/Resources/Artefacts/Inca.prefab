@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8630801404072232764}
   - component: {fileID: 8561310119300251705}
   - component: {fileID: 3538270924435370509}
-  m_Layer: 9
+  m_Layer: 18
   m_Name: Inca
   m_TagString: Artefact
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7348678549364091987}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.7, z: 5}

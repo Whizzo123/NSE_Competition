@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 552467687243015804}
   - component: {fileID: 4326175156711398971}
   - component: {fileID: 1573009493923451969}
-  m_Layer: 9
+  m_Layer: 18
   m_Name: Celtic
   m_TagString: Artefact
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4080121278887737943}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.3, y: 0.7, z: 0.3}

@@ -16,30 +16,30 @@ public class Effects : NetworkBehaviour
     private void Start()
     {
         playerNormalMats = new Material[11];
-        playerNormalMats[0] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_1_Mat.mat", typeof(Material));
-        playerNormalMats[1] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_2_Mat.mat", typeof(Material));
-        playerNormalMats[2] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_3_Mat.mat", typeof(Material));
-        playerNormalMats[3] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_4_Mat.mat", typeof(Material));
-        playerNormalMats[4] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_5_Mat.mat", typeof(Material));
-        playerNormalMats[5] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_6_Mat.mat", typeof(Material));
-        playerNormalMats[6] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_7_Mat.mat", typeof(Material));
-        playerNormalMats[7] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_8_Mat.mat", typeof(Material));
-        playerNormalMats[8] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_9_Mat.mat", typeof(Material));
-        playerNormalMats[9] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_10_Mat.mat", typeof(Material));
-        playerNormalMats[10] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_11_Mat.mat", typeof(Material));
+        playerNormalMats[0] = Resources.Load<Material>("Character/Extracted Mats/Player_1_Mat");
+        playerNormalMats[1] = Resources.Load<Material>("Character/Extracted Mats/Player_2_Mat");
+        playerNormalMats[2] = Resources.Load<Material>("Character/Extracted Mats/Player_3_Mat");
+        playerNormalMats[3] = Resources.Load<Material>("Character/Extracted Mats/Player_4_Mat");
+        playerNormalMats[4] = Resources.Load<Material>("Character/Extracted Mats/Player_5_Mat");
+        playerNormalMats[5] = Resources.Load<Material>("Character/Extracted Mats/Player_6_Mat");
+        playerNormalMats[6] = Resources.Load<Material>("Character/Extracted Mats/Player_7_Mat");
+        playerNormalMats[7] = Resources.Load<Material>("Character/Extracted Mats/Player_8_Mat");
+        playerNormalMats[8] = Resources.Load<Material>("Character/Extracted Mats/Player_9_Mat");
+        playerNormalMats[9] = Resources.Load<Material>("Character/Extracted Mats/Player_10_Mat");
+        playerNormalMats[10] = Resources.Load<Material>("Character/Extracted Mats/Player_11_Mat");
 
         playerFadeMats = new Material[11];
-        playerFadeMats[0] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_1_FadeMat.mat", typeof(Material));
-        playerFadeMats[1] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_2_FadeMat.mat", typeof(Material));
-        playerFadeMats[2] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_3_FadeMat.mat", typeof(Material));
-        playerFadeMats[3] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_4_FadeMat.mat", typeof(Material));
-        playerFadeMats[4] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_5_FadeMat.mat", typeof(Material));
-        playerFadeMats[5] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_6_FadeMat.mat", typeof(Material));
-        playerFadeMats[6] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_7_FadeMat.mat", typeof(Material));
-        playerFadeMats[7] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_8_FadeMat.mat", typeof(Material));
-        playerFadeMats[8] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_9_FadeMat.mat", typeof(Material));
-        playerFadeMats[9] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_10_FadeMat.mat", typeof(Material));
-        playerFadeMats[10] = (Material)AssetDatabase.LoadAssetAtPath("Assets/Art/Character/Extracted Mats/Player_11_FadeMat.mat", typeof(Material));
+        playerFadeMats[0] = Resources.Load<Material>("Character/Extracted Mats/Player_1_FadeMat");
+        playerFadeMats[1] = Resources.Load<Material>("Character/Extracted Mats/Player_2_FadeMat");
+        playerFadeMats[2] = Resources.Load<Material>("Character/Extracted Mats/Player_3_FadeMat");
+        playerFadeMats[3] = Resources.Load<Material>("Character/Extracted Mats/Player_4_FadeMat");
+        playerFadeMats[4] = Resources.Load<Material>("Character/Extracted Mats/Player_5_FadeMat");
+        playerFadeMats[5] = Resources.Load<Material>("Character/Extracted Mats/Player_6_FadeMat");
+        playerFadeMats[6] = Resources.Load<Material>("Character/Extracted Mats/Player_7_FadeMat");
+        playerFadeMats[7] = Resources.Load<Material>("Character/Extracted Mats/Player_8_FadeMat");
+        playerFadeMats[8] = Resources.Load<Material>("Character/Extracted Mats/Player_9_FadeMat");
+        playerFadeMats[9] = Resources.Load<Material>("Character/Extracted Mats/Player_10_FadeMat");
+        playerFadeMats[10] = Resources.Load<Material>("Character/Extracted Mats/Player_11_FadeMat");
     }
 
     #region PowerupEffects
@@ -202,14 +202,15 @@ public class Effects : NetworkBehaviour
             spawnPos = hit.point;
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
             spawnRotation *= Quaternion.Euler(-90, 0, 0);
-            FindObjectOfType<Effects>().CmdSpawnVoodooTrap(spawnPos, ability.GetCastingPlayer());
+
+            FindObjectOfType<Effects>().CmdSpawnVoodooTrap(spawnPos, ability.GetCastingPlayer(), spawnRotation);
         }
     }
 
     [Command (requiresAuthority = false)]
-    public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerController placingPlayer)
+    public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerController placingPlayer, Quaternion spawnRotation)
     {
-        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, Quaternion.identity);
+        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, spawnRotation);
         go.GetComponent<VoodooPoisonTrapBehaviour>().SetPlacingPlayer(placingPlayer);
         NetworkServer.Spawn(go);
     }
