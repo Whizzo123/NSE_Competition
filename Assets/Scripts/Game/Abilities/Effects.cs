@@ -6,7 +6,7 @@ using UnityEditor;
 
 public class Effects : NetworkBehaviour
 {
-
+    private static GenericTimer genericTimer;
     private static float boostToSpeed = 7.5f;
     private static List<GameObject> particles;
     private static LayerMask ground;
@@ -15,6 +15,7 @@ public class Effects : NetworkBehaviour
 
     private void Start()
     {
+        genericTimer = GameObject.Find("GenericObject").GetComponent<GenericTimer>();
         playerNormalMats = new Material[11];
         playerNormalMats[0] = Resources.Load<Material>("Character/Extracted Mats/Player_1_Mat");
         playerNormalMats[1] = Resources.Load<Material>("Character/Extracted Mats/Player_2_Mat");
@@ -225,9 +226,17 @@ public class Effects : NetworkBehaviour
         {
             FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
             PlayerController closestPlayer = FindClosestPlayer(ability);
-            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
-            ability.SetTargetedPlayer(closestPlayer);
-            Debug.Log("Setting targeted player");
+            if (closestPlayer != null)
+            {
+                FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
+                ability.SetTargetedPlayer(closestPlayer);
+                Debug.Log("Setting targeted player");
+                genericTimer.SetTimer(3f, () => { Debug.Log("StickyTimer Up"); ThrowStickyBomb(ability); });//Will throw bomb after 3 seconds
+            }
+            else
+            {
+                FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
+            }
         }
         else
         {

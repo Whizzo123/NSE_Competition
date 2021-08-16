@@ -13,7 +13,7 @@ using UnityEngine.UI;
 /// </summary>
 public class CanvasUIManager : MonoBehaviour
 {
-
+    private GenericTimer genericTimer;
     public Canvas canvas;
     public static GameObject playerNameTextPrefab;
     public GameObject artefactPickupPopup;
@@ -31,31 +31,42 @@ public class CanvasUIManager : MonoBehaviour
     public Text TimeText;
     public Text loadoutTimeText;
 
-    public void PopupArtefactPickupDisplay(ItemArtefact artefact)
+    public void Start()
     {
-        artefactPickupPopup.SetActive(true);
-        artefactPickupPopup.GetComponent<ArtefactPickupPopupUI>().SetMessage(artefact);
-        StartCoroutine(PopupCountdown());
+        genericTimer = GameObject.Find("GenericObject").GetComponent<GenericTimer>();
     }
-
+    /// <summary>
+    /// Show a hint message with no time associated to it's visibility. Manually close it with <see cref="CloseHintMessage"/>.
+    /// </summary>
     public void ShowHintMessage(string message)
     {
         hintMessage.SetActive(true);
         hintMessage.GetComponent<Text>().text = message;
     }
 
+    /// <summary>
+    /// Closes the hintMessage ui text
+    /// </summary>
     public void CloseHintMessage()
     {
         hintMessage.SetActive(false);
     }
 
+    /// <summary>
+    /// Pops up message for 2 seconds before disappearing.
+    /// </summary>
+    /// <param name="message"></param>
     public void PopupMessage(string message)
     {
         popupMessage.SetActive(true);
         popupMessage.GetComponent<Text>().text = message;
-        StartCoroutine(PopupMessageCountdown());
+        genericTimer.SetTimer(2f, () => { popupMessage.SetActive(false); });
+        //StartCoroutine(PopupMessageCountdown());
     }
-
+    /// <summary>
+    /// Kept this in case there are issues with overlapping times
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator PopupMessageCountdown()
     {
         float remainingTime = popupMessageShowTime;
@@ -68,20 +79,6 @@ public class CanvasUIManager : MonoBehaviour
         }
 
         popupMessage.SetActive(false);
-    }
-
-    private IEnumerator PopupCountdown()
-    {
-        float remainingTime = popupShowTime;
-
-        while(remainingTime > 0)
-        {
-            yield return null;
-
-            remainingTime -= Time.deltaTime;
-        }
-
-        artefactPickupPopup.SetActive(false);
     }
 
     public void AddToInventoryScreen(ItemArtefact artefact)
