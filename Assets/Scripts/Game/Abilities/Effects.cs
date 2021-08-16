@@ -104,8 +104,7 @@ public class Effects : NetworkBehaviour
         foreach(ArtefactBehaviour artefact in FindObjectsOfType<ArtefactBehaviour>())
         {
             float dist = Vector3.Distance(ability.GetCastingPlayer().transform.position, artefact.transform.position);
-            Debug.LogError(dist);
-            if (dist < 30)
+            if (dist < 50)
             {
                 switch (artefact.GetRarity())
                 {
@@ -123,7 +122,7 @@ public class Effects : NetworkBehaviour
             }
 
         }
-
+        Instantiate(Resources.Load("Abilities/Powerups/ClueInterpreterSphere"), ability.GetCastingPlayer().transform.position, Quaternion.identity);
         ability.SetInUse(true);
     }
 
