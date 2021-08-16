@@ -103,20 +103,27 @@ public class Effects : NetworkBehaviour
             particles = new List<GameObject>();
         foreach(ArtefactBehaviour artefact in FindObjectsOfType<ArtefactBehaviour>())
         {
-            switch(artefact.GetRarity())
+            float dist = Vector3.Distance(ability.GetCastingPlayer().transform.position, artefact.transform.position);
+            Debug.LogError(dist);
+            if (dist < 30)
             {
-                case ArtefactRarity.Common:
-                    particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/CommonArtefact_PA", typeof(GameObject))) as GameObject);
-                    break;
-                case ArtefactRarity.Exotic:
-                    particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/ExoticArtefact_PA", typeof(GameObject))) as GameObject);
-                    break;
-                case ArtefactRarity.Rare:
-                    particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/RareArtefact_PA", typeof(GameObject))) as GameObject);
-                    break;
+                switch (artefact.GetRarity())
+                {
+                    case ArtefactRarity.Common:
+                        particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/CommonArtefact_PA", typeof(GameObject))) as GameObject);
+                        break;
+                    case ArtefactRarity.Exotic:
+                        particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/ExoticArtefact_PA", typeof(GameObject))) as GameObject);
+                        break;
+                    case ArtefactRarity.Rare:
+                        particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/RareArtefact_PA", typeof(GameObject))) as GameObject);
+                        break;
+                }
+                particles[particles.Count - 1].transform.position = artefact.transform.position;
             }
-            particles[particles.Count - 1].transform.position = artefact.transform.position;
+
         }
+
         ability.SetInUse(true);
     }
 
