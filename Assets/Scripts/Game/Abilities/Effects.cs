@@ -231,7 +231,7 @@ public class Effects : NetworkBehaviour
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
                 Debug.Log("Setting targeted player");
-                genericTimer.SetTimer(3f, () => { Debug.Log("StickyTimer Up"); ThrowStickyBomb(ability); });//Will throw bomb after 3 seconds
+                genericTimer.SetTimer(3f, () => { Debug.Log("StickyTimer Up"); ability.Use(); });//Will throw bomb after 3 seconds
             }
             else
             {

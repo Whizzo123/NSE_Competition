@@ -70,6 +70,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
         //GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
         openTrap.SetActive(false);
         closedTrap.SetActive(true);
+        Debug.Log("Closing trap");
     }
 
     void Update()
