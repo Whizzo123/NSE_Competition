@@ -64,10 +64,10 @@ MonoBehaviour:
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
-  m_TargetMovementOnly: 0
+  m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.004999995
-  m_CameraDistance: 10
+  m_CameraDistance: 211.23
   m_DeadZoneWidth: 0.33
   m_DeadZoneHeight: 0.34
   m_DeadZoneDepth: 0
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
   m_Priority: 10
-  m_StandbyUpdate: 2
+  m_StandbyUpdate: 0
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
   m_Lens:

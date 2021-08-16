@@ -68,9 +68,8 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("NA")] public GameObject nameTextPrefab;
     [Tooltip("NA")] public GameObject playerNameText;
 
-    [Tooltip("Camera attatched to the player")] public Camera playerCamera;
-    [Tooltip("NA")] public Cinemachine.CinemachineVirtualCamera vCam;
-    [Tooltip("NA")] public Camera cam;
+    [Tooltip("Camera attatched to the player, already in the world space")] public Camera playerCamera;
+    [Tooltip("Virtual camera controlling the playerCamera, already in the world space")] public Cinemachine.CinemachineFreeLook vCam;
     [Space]
 
 
@@ -103,10 +102,10 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartAuthority()
     {
         //Attatches Camera
-        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        vCam = FindObjectOfType<Cinemachine.CinemachineFreeLook>();
         if (vCam != null)
         {
-            Invoke("SetCamera", 0);
+            Invoke("SetCamera", 1);
         }
         else
         {
@@ -140,11 +139,11 @@ public class PlayerController : NetworkBehaviour
     {
         //Currently what it's trying to do is find cameras, if it can't find cameras, it will instantiate cameras
         //It also modifies so many things. It is simply a mess that needs to be fixed, it's not worth commenting here
-        vCam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        vCam = FindObjectOfType<Cinemachine.CinemachineFreeLook>();
         //DontDestroyOnLoad(vCam);
         vCam.LookAt = this.gameObject.transform;
         vCam.Follow = this.gameObject.transform;
-        vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
+        //vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
         playerCamera = Camera.main;
         if (!hasAuthority)
         {
@@ -175,7 +174,6 @@ public class PlayerController : NetworkBehaviour
     {
         if (vCam != null)
             vCam.enabled = !devMode;
-        cam.enabled = !devMode;
         playerCamera.enabled = !devMode;
         devCam.SetActive(devMode);
 
@@ -215,25 +213,20 @@ public class PlayerController : NetworkBehaviour
 
             if (immobilize == false)
             {
-                #region FALLING
 
-                //Projects a sphere underneath player to check ground layer
-                isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
-
-                //Player recieves a constant y velocity from gravity
-                playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
-
-                //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
-                if (isGrounded && playerFallingVelocity.y < 0)
-                {
-                    playerFallingVelocity.y = -1f;
-                }
-                playerFallingVelocity.y = -1f;
-
-                #endregion
 
                 #region MOVEMENT_AND_ANIMATION
-                playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), playerFallingVelocity.y, Input.GetAxisRaw("Vertical")).normalized;
+                if (isGrounded)
+                {
+                    playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+                    playerMovement = playerCamera.transform.TransformDirection(playerMovement);//Allows player to move along camera rotation axis
+                    if (Input.GetAxisRaw("Vertical") < -0.5)//To stop backwards going up
+                    {
+                        playerMovement.y = 0;
+                    }
+                }
+
+
 
                 //Animations, with movement checks
                 if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
@@ -254,8 +247,26 @@ public class PlayerController : NetworkBehaviour
                     playerAnim.SetBool("moving", false);
                 }
 
+                #region FALLING
+
+                //Projects a sphere underneath player to check ground layer
+                isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
+
+                //Player recieves a constant y velocity from gravity
+                playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
+
+                //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
+                if (isGrounded && playerFallingVelocity.y < 0)
+                {
+                    playerFallingVelocity.y = -5f;
+                }
+
+                #endregion
+
                 playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
+                playerCharacterController.Move(playerFallingVelocity * Time.deltaTime);
                 PlayerRotation();
+                
                 #endregion
             }
             else
@@ -421,21 +432,47 @@ public class PlayerController : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
         {
-            Quaternion finalQuat;
-            Vector3 axisOfRotation = (Vector3.Cross(hit.normal, Vector3.up)).normalized;//gets the axis to rotate on a slope.
-            float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(for somereason it's negative either way round) (dot product)
-            Quaternion slopeQuat = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
 
-            Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
 
-            if (rotationAngle < 45)
+            //Quaternion finalQuat;
+            //Vector3 axisOfRotation = (Vector3.Cross(hit.normal, Vector3.up)).normalized;//gets the axis to rotate on a slope.
+            //float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(for somereason it's negative either way round) (dot product)
+            //Quaternion slopeQuat = Quaternion.identity;// = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
+
+            //Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
+
+            //if (rotationAngle < 45)
+            //{
+            //    slopeQuat = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
+
+            //    //finalQuat = slopeQuat.normalized;// * lookQuat; //Quaternion rotation of look rotation and slope rotation
+            //    //transform.rotation = finalQuat;
+            //}
+            if (playerMovement.x != 0 && playerMovement.z != 0)
             {
-                finalQuat = slopeQuat.normalized * lookQuat; //Quaternion rotation of look rotation and slope rotation
-                transform.rotation = finalQuat;
-            }
+                float ta = Mathf.Atan2(playerMovement.x, playerMovement.z) * Mathf.Rad2Deg;// + cam.transform.eulerAngles.y;
+                Quaternion rot = Quaternion.Euler(0f, ta, 0f);// * slopeQuat.normalized;
+                transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * 10);
 
+            }
         }
 
+        if (Input.GetMouseButton(1))
+        {
+            vCam.m_XAxis.m_MaxSpeed = 200;
+
+        }
+        else
+        {
+            vCam.m_XAxis.m_MaxSpeed = 0;
+        }
+        if (Input.GetMouseButton(2))
+        {
+            vCam.m_YAxis.m_MaxSpeed = 20;//Adjustable sensitivity
+        }else
+        {
+            vCam.m_YAxis.m_MaxSpeed = 0;
+        }
     }
     [Command(requiresAuthority = false)]
     public void CmdSetHasBeenStolenFrom(bool value)
@@ -778,25 +815,25 @@ public class PlayerController : NetworkBehaviour
     }
 
     #endregion
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position + (transform.forward * lengthOfSphere), radiusOfSphere);//Death sphere
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down);//Down 
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, -transform.up + transform.position);//Up
+        //Gizmos.color = Color.green;
+        //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
+    }
 }
 
 
 
 
 #region deadCode
-/*
- * 
- *   private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(transform.position + (transform.forward * lengthOfSphere), radiusOfSphere);
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down);
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(transform.position, -transform.up + transform.position);
-        //Gizmos.color = Color.green;
-        //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
-    }
+
           //Old camera code
             /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
              {
