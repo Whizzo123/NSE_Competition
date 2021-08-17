@@ -280,7 +280,7 @@ public class PlayerController : NetworkBehaviour
             if (targetedArtefacts.Count != 0)
             {
                 //If we have an empty slot
-                if (artefactInventory.GetInventoryCount() <= 8)
+                if (artefactInventory.GetInventoryCount() <= 7)
                 {
                     Debug.Log("Picking up Artefacts");
                     // All artefacts that are in our range get added to our inventory and gameobject destroyed
@@ -292,7 +292,7 @@ public class PlayerController : NetworkBehaviour
                         DestroyGameObject(item.gameObject);
                     }
                     CmdClearTargetArtefacts();
-
+                    
                     if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                         FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
@@ -310,6 +310,7 @@ public class PlayerController : NetworkBehaviour
             {
                 //Todo: For consistancy, instead of clearing the artefact inventory elsewhere, let's clear it here
                 gameStash.CmdAddToStashScores(this);
+                tempArtefactStorage.Clear();
                 FindObjectOfType<AudioManager>().PlaySound("Stash");
             }
             else if (gameStash != null && !artefactInventory.InventoryNotEmpty())
