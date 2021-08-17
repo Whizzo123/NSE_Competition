@@ -23,6 +23,7 @@ public class PlayerController : NetworkBehaviour
     //Stored interactables
     [Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. The reason for this was to allow us to check that we are not picking up the same artefact twice.")] public List<ArtefactBehaviour> tempArtefactStorage;
     [Tooltip("The artefacts that are in range for picking up")] readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
+    [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")]private List<uint> artefactsForDestruction = new List<uint>();
     [Tooltip("NA")] private Stash gameStash;
     [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
@@ -274,20 +275,6 @@ public class PlayerController : NetworkBehaviour
 
         //Todo:Remove ability pickups from here? Different Stash button as well? Thoughts for discussion
         #region ARTEFACT_INTERACTION
-        for (int i = 0; i < tempArtefactStorage.Count; i++)
-        {
-            if (tempArtefactStorage[i] == null)
-            {
-                tempArtefactStorage.RemoveAt(i);
-            }
-        }
-        for (int i = 0; i < targetedArtefacts.Count; i++)
-        {
-            if (targetedArtefacts[i] == null)
-            {
-                CmdTargetArtefactsRemoveAtI(i);
-            }
-        }
         if (Input.GetKeyDown(KeyCode.E))
         {
             //If we have artefacts in range
@@ -304,6 +291,8 @@ public class PlayerController : NetworkBehaviour
                         artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
                         FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         DestroyGameObject(item.gameObject);
+                        artefactsForDestruction.Add(item.GetComponent<NetworkIdentity>().netId);
+                        
                     }
                     CmdClearTargetArtefacts();
                     
@@ -325,6 +314,8 @@ public class PlayerController : NetworkBehaviour
                 //Todo: For consistancy, instead of clearing the artefact inventory elsewhere, let's clear it here
                 gameStash.CmdAddToStashScores(this);
                 tempArtefactStorage.Clear();
+                artefactsForDestruction.Clear();
+                CmdClearTargetArtefacts();
                 FindObjectOfType<AudioManager>().PlaySound("Stash");
             }
             else if (gameStash != null && !artefactInventory.InventoryNotEmpty())
@@ -562,6 +553,10 @@ public class PlayerController : NetworkBehaviour
     public void OnTriggerStay(Collider collider)
     {
         ArtefactBehaviour artefactBehaviour = collider.gameObject.GetComponent<ArtefactBehaviour>();
+        if (artefactsForDestruction.Contains(artefactBehaviour.netId))
+        {
+            return;
+        }
         //If it is available for pickup and it currently isn't in tempartefactstorage
         if (artefactBehaviour &&
             tempArtefactStorage.Contains(artefactBehaviour) == false && targetedArtefacts.Contains(artefactBehaviour) == false &&
