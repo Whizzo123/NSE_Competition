@@ -8,7 +8,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
 {
     private PlayerController trappedPlayer;
 
-    public float trapDuration = 5;
+    public float trapDuration = 2.5f; // Test this please
     private float currentDuration;
     
     private bool sprung;
@@ -33,10 +33,14 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
         {
             if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
             {
-                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName && !collider.gameObject.GetComponent<PlayerController>().IsVoodooPoisoned())
+                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
                 {
                     trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                    trappedPlayer.CmdSetVoodooPoisoned(true);
+                    if (!trappedPlayer.IsVoodooPoisoned())
+                    {
+                        trappedPlayer.CmdSetVoodooPoisoned(true);
+                        CmdCreateAbilityEffectTimer("Voodoo Poison Trap", trappedPlayer.playerName, trapDuration);
+                    }
                     CmdSpringTrap();
                 }
             }
@@ -63,9 +67,10 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
 
     public void Close()
     {
-        GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
+        //GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
         openTrap.SetActive(false);
         closedTrap.SetActive(true);
+        Debug.Log("Closing trap");
     }
 
     void Update()
@@ -83,6 +88,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 if (currentDuration < trapDuration)
                 {
                     currentDuration += Time.deltaTime;
+                    CmdUpdateTargetTimer(trappedPlayer.playerName, "Voodoo Poison Trap", currentDuration);
                 }
                 else
                 {
@@ -91,5 +97,31 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 }
             }
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        RpcCreateAbilityEffectTimer(abilityName, targetPlayerName, fullDuration);
+    }
+
+    [ClientRpc]
+    private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName && FindObjectOfType<AbilityTimerContainer>().Contains(abilityName) == false)
+            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        RpcUpdateTargetTimer(targetPlayerName, abilityName, duration);
+    }
+
+    [ClientRpc]
+    private void RpcUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+            GameObject.FindObjectOfType<AbilityTimerContainer>().UpdateTimer(abilityName, duration);
     }
 }

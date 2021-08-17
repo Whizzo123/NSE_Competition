@@ -95,6 +95,10 @@ public class Ability
                         currentDuration += Time.deltaTime;
                         if (currentDuration > duration)
                             currentDuration = duration;
+                        if (abilityType == AbilityType.POWERUP)
+                            GameObject.FindObjectOfType<AbilityTimerContainer>().UpdateTimer(name, currentDuration);
+                        else
+                            UpdateTargetTimer();
                     }
                     else
                     {
@@ -113,6 +117,7 @@ public class Ability
                             GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, false);
                         }
                     }
+
                 }
             }
             else if (useType == AbilityUseTypes.ONE_TIME)
@@ -139,11 +144,17 @@ public class Ability
         }
         else
         {
+            Debug.Log("UpdatingTrapAbility: " + useCount + ": " + used);
             if (used && useCount >= 3)
             {
                 castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
             }
         }
+    }
+
+    private void UpdateTargetTimer()
+    {
+        GameObject.FindObjectOfType<Effects>().CmdUpdateTargetTimer(targetedPlayer.playerName, name, currentDuration);
     }
     
     /// <summary>
@@ -151,32 +162,56 @@ public class Ability
     /// </summary>
     public void Use()
     {
+        
         AnimatorStateInfo state = castingPlayer.transform.GetChild(0).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
         Animator animator = castingPlayer.transform.GetChild(0).GetComponent<Animator>();
         switch (abilityType)
         {
             case (AbilityType.POWERUP):
+                CreateLocalAbilityEffectTimer(name, duration);
                 if (useType == AbilityUseTypes.ONE_TIME)
                 {
-                    used = true;
+                    //Not sure if this is gonna do anything if its the end of August and still isn't used delete me pls :)
+                }
+                effectInvokedOnUse.Invoke(this);
+                //Reset charge value and set slot charging state
+                if (useType == AbilityUseTypes.RECHARGE)
+                {
+                    currentCharge = 0;
+                    GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
                 }
                 break;
             case (AbilityType.DEBUFF):
-                if (!state.IsName("Throw"))
+                
+                effectInvokedOnUse.Invoke(this);
+                if (!state.IsName("Throw") && inUse)
                 {
+                    GameObject.FindObjectOfType<Effects>().CmdCreateAbilityEffectTimer(name, targetedPlayer.playerName, duration);
                     animator.SetTrigger("Throw");
-                    used = true;
+                    if (useType == AbilityUseTypes.RECHARGE)
+                    {
+                        currentCharge = 0;
+                        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
+                    }
                 }
                 break;
             case (AbilityType.TRAP):
                 if (!state.IsName("PutDown"))
                 {
                     animator.SetTrigger("PutDown");
+                    effectInvokedOnUse.Invoke(this);
+                    //Reset charge value and set slot charging state
+                    if (useType == AbilityUseTypes.RECHARGE)
+                    {
+                        currentCharge = 0;
+                        GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
+                    }
                 }
                 useCount++;
                 break;
         }
-        effectInvokedOnUse.Invoke(this);
+        used = true;
+        
     }
     
     private void EndEffect()
@@ -185,13 +220,16 @@ public class Ability
             effectInvokedOnEnd.Invoke(this);
         if (abilityType == AbilityType.POWERUP || abilityType == AbilityType.DEBUFF)
         {
-            currentCharge = 0;
             currentDuration = 0;
             inUse = false;
-            GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);
         }
         if (useType == AbilityUseTypes.ONE_TIME)
             castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
+    }
+
+    public static void CreateLocalAbilityEffectTimer(string abilityName, float fullDuration)
+    {
+        GameObject.FindObjectOfType<AbilityTimerContainer>().AddTimer(abilityName, fullDuration);
     }
 
     public void ResetUseCount()
@@ -235,6 +273,11 @@ public class Ability
     public float GetDuration()
     {
         return duration;
+    }
+
+    public float GetCurrentDuration()
+    {
+        return currentDuration;
     }
 
     public bool IsInUse()

@@ -58,7 +58,7 @@ public class AbilityRegister : MonoBehaviour
         Ability camouflage = new Ability("Camouflage", "Allows you to blend in with your surroundings for limited amount of time", 4, AbilityUseTypes.RECHARGE,
             AbilityType.POWERUP, 15.0f, Effects.ActivateCamouflage, Effects.DeactivateCamouflage, 50.0f);
         Ability clueInterpretator = new Ability("Clue Interpretator", "Gain insight to where your nearby artefacts works", 5, AbilityUseTypes.RECHARGE,
-            AbilityType.POWERUP, 10.0f, Effects.ActivateClueInterpretator, Effects.DeactivateClueInterpretator, 20.0f);
+            AbilityType.POWERUP, 10.0f, Effects.ActivateClueInterpretator, Effects.DeactivateClueInterpretator, 30.0f);
         Ability playerTracker = new Ability("PlayerTracker", "Track other players on the map", 5, AbilityUseTypes.RECHARGE, AbilityType.POWERUP, 25.0f,
             Effects.ActivatePlayerTracker, Effects.DeactivatePlayerTracker, 30.0f);
         //Traps

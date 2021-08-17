@@ -46,7 +46,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 4
+  m_Radius: 1.4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-2556144238126641609
 MonoBehaviour:
@@ -160,6 +160,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5770247344185561090}
     m_Modifications:
+    - target: {fileID: -8768133303093192197, guid: 747b0e4e732e2464085b159f04ef8fd7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5163e4c7a81c6ab4380dc0887f251b58, type: 2}
     - target: {fileID: -8679921383154817045, guid: 747b0e4e732e2464085b159f04ef8fd7, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -204,6 +208,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1461304994638716399, guid: 747b0e4e732e2464085b159f04ef8fd7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5163e4c7a81c6ab4380dc0887f251b58, type: 2}
+    - target: {fileID: 882129737928793925, guid: 747b0e4e732e2464085b159f04ef8fd7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5163e4c7a81c6ab4380dc0887f251b58, type: 2}
     - target: {fileID: 919132149155446097, guid: 747b0e4e732e2464085b159f04ef8fd7, type: 3}
       propertyPath: m_Name
       value: Closed
@@ -212,6 +224,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8442510506162454399, guid: 747b0e4e732e2464085b159f04ef8fd7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5163e4c7a81c6ab4380dc0887f251b58, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 747b0e4e732e2464085b159f04ef8fd7, type: 3}
 --- !u!1 &529349913482325329 stripped

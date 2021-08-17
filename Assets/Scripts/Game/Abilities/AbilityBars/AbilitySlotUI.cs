@@ -18,11 +18,13 @@ public class AbilitySlotUI : MonoBehaviour
     [Header("Color")]
     [SerializeField] [Tooltip("Color for when on cooldown")] public Color chargingColor;
     [SerializeField] [Tooltip("Color for when ready to use")] public Color inUseColor;
+    [SerializeField] [Tooltip("Overlay mask")] public Image overlayImage;
 
     void Start()
     {
         isEmpty = true;
         GetComponent<Button>().onClick.AddListener(() => SlotClick());
+        overlayImage.fillAmount = 0;
     }
 
     /// <summary>
@@ -42,32 +44,51 @@ public class AbilitySlotUI : MonoBehaviour
     /// Changes color of icon if ability is on cooldown. Sets isCharging to parameter charging
     /// </summary>
     /// <param name="charging"></param>
-    public void IsCharging(bool charging)
+    public void SetCharging(bool charging)
     {
         if (charging)
         {
-            GetComponent<Image>().color = chargingColor;
+            overlayImage.fillAmount = 1;
         }
         else
         {
-            GetComponent<Image>().color = Color.white;
+            overlayImage.fillAmount = 0;
         }
-
         isCharging = charging;
     }
+
+    public bool IsCharging()
+    {
+        return isCharging;
+    }
+
+    private void Update()
+    {
+        //If we are charging
+        if(isCharging)
+        { 
+            //Grab charge values from local player
+            float currentCharge = NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.FindAbility(abilityName).GetCurrentCharge();
+            float maxCharge = NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.FindAbility(abilityName).GetChargeAmount();
+            //Calculate percentage
+            float percentage = currentCharge / maxCharge;
+            //Set fill amount as 1 - the percentage calculated
+            overlayImage.fillAmount = 1 - percentage;
+        }
+    }
     /// <summary>
-    /// Changes color of icon if ability whether it is used or not.
+    /// Changes color of icon if ability whether it is used or not. //If this is end of August and still doesn't matter remove
     /// </summary>
     public void InUse(bool use)
     {
-        if (use)
+        /*if (use)
         {
             GetComponent<Image>().color = inUseColor;
         }
         else
         {
             GetComponent<Image>().color = chargingColor;
-        }
+        }*/
     }
 
     /// <summary>
@@ -86,7 +107,7 @@ public class AbilitySlotUI : MonoBehaviour
         {
             abilityName = name;
             isEmpty = true;
-            GetComponent<Image>().sprite = Resources.Load("UI/blank", typeof(Sprite)) as Sprite;
+            GetComponent<Image>().sprite = Resources.Load("UI/Abilities/blank", typeof(Sprite)) as Sprite;
             return true;
         }
         return false;

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -8767180296026285004}
   - component: {fileID: -4564324696093435009}
   - component: {fileID: -3332082166651673410}
-  m_Layer: 9
+  m_Layer: 18
   m_Name: Ankh
   m_TagString: Artefact
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5093038191571087133}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 2, y: 3, z: 2}

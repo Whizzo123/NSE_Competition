@@ -37,7 +37,9 @@ public class ArtefactInventory : NetworkBehaviour
         if (inventory.Count <= 8)
         {
             CmdAddToInventory(item);
-            FindObjectOfType<CanvasUIManager>().PopupArtefactPickupDisplay(item);
+            string text;
+            text = "You picked up a " + artefactName.Replace("(Clone)", "") + " this is worth " + artefactPoints + " points";
+            FindObjectOfType<CanvasUIManager>().PopupMessage(text);
             FindObjectOfType<CanvasUIManager>().AddToInventoryScreen(item);
             
         }

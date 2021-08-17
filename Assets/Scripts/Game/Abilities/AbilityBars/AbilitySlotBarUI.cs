@@ -63,7 +63,11 @@ public class AbilitySlotBarUI : MonoBehaviour
     /// </summary>
     public void SetSlotChargingState(string name, bool state)
     {
-        GetSlot(name).IsCharging(state);
+        GetSlot(name).SetCharging(state);
+    }
+    public bool GetSlotChargingState(string name)
+    {
+        return GetSlot(name).IsCharging();
     }
     /// <summary>
     /// Changes ability icon color based on state

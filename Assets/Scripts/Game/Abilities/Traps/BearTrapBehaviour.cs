@@ -38,8 +38,10 @@ public class BearTrapBehaviour : NetworkBehaviour
                         trappedPlayer.CmdSetImmobilized(true);
                         Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
                         trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.playerName);
+                        CmdCreateAbilityEffectTimer("Bear Trap", trappedPlayer.playerName, trapDuration);
                     }
                     CmdSpringTrap();
+                    
                 }
             }
         }
@@ -90,6 +92,7 @@ public class BearTrapBehaviour : NetworkBehaviour
                     if(trappedPlayer.IsImmobilized() == false)
                         trappedPlayer.CmdSetImmobilized(true);
                     currentDuration += Time.deltaTime;
+                    CmdUpdateTargetTimer(trappedPlayer.playerName, "Bear Trap", currentDuration);
                 }
                 else
                 {
@@ -99,5 +102,31 @@ public class BearTrapBehaviour : NetworkBehaviour
                 }
             }
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        RpcCreateAbilityEffectTimer(abilityName, targetPlayerName, fullDuration);
+    }
+
+    [ClientRpc]
+    private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName && FindObjectOfType<AbilityTimerContainer>().Contains(abilityName) == false)
+            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        RpcUpdateTargetTimer(targetPlayerName, abilityName, duration);
+    }
+
+    [ClientRpc]
+    private void RpcUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+            GameObject.FindObjectOfType<AbilityTimerContainer>().UpdateTimer(abilityName, duration);
     }
 }

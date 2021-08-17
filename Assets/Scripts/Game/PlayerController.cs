@@ -799,7 +799,10 @@ public class PlayerController : NetworkBehaviour
             player.ToggleMesh(toggle);
         }
         else
+        {
             Debug.Log("RpcToggleCamouflage the ClientRpc is hitting client called: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
+            
+        }
     }
 
     /// <summary>

@@ -2,13 +2,46 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Mirror;
+using UnityEditor;
 
 public class Effects : NetworkBehaviour
 {
-
+    private static GenericTimer genericTimer;
     private static float boostToSpeed = 7.5f;
     private static List<GameObject> particles;
     private static LayerMask ground;
+    private static Material[] playerNormalMats;
+    private static  Material[] playerFadeMats;
+
+    private void Start()
+    {
+        genericTimer = GameObject.Find("GenericObject").GetComponent<GenericTimer>();
+        playerNormalMats = new Material[11];
+        playerNormalMats[0] = Resources.Load<Material>("Character/Extracted Mats/Player_1_Mat");
+        playerNormalMats[1] = Resources.Load<Material>("Character/Extracted Mats/Player_2_Mat");
+        playerNormalMats[2] = Resources.Load<Material>("Character/Extracted Mats/Player_3_Mat");
+        playerNormalMats[3] = Resources.Load<Material>("Character/Extracted Mats/Player_4_Mat");
+        playerNormalMats[4] = Resources.Load<Material>("Character/Extracted Mats/Player_5_Mat");
+        playerNormalMats[5] = Resources.Load<Material>("Character/Extracted Mats/Player_6_Mat");
+        playerNormalMats[6] = Resources.Load<Material>("Character/Extracted Mats/Player_7_Mat");
+        playerNormalMats[7] = Resources.Load<Material>("Character/Extracted Mats/Player_8_Mat");
+        playerNormalMats[8] = Resources.Load<Material>("Character/Extracted Mats/Player_9_Mat");
+        playerNormalMats[9] = Resources.Load<Material>("Character/Extracted Mats/Player_10_Mat");
+        playerNormalMats[10] = Resources.Load<Material>("Character/Extracted Mats/Player_11_Mat");
+
+        playerFadeMats = new Material[11];
+        playerFadeMats[0] = Resources.Load<Material>("Character/Extracted Mats/Player_1_FadeMat");
+        playerFadeMats[1] = Resources.Load<Material>("Character/Extracted Mats/Player_2_FadeMat");
+        playerFadeMats[2] = Resources.Load<Material>("Character/Extracted Mats/Player_3_FadeMat");
+        playerFadeMats[3] = Resources.Load<Material>("Character/Extracted Mats/Player_4_FadeMat");
+        playerFadeMats[4] = Resources.Load<Material>("Character/Extracted Mats/Player_5_FadeMat");
+        playerFadeMats[5] = Resources.Load<Material>("Character/Extracted Mats/Player_6_FadeMat");
+        playerFadeMats[6] = Resources.Load<Material>("Character/Extracted Mats/Player_7_FadeMat");
+        playerFadeMats[7] = Resources.Load<Material>("Character/Extracted Mats/Player_8_FadeMat");
+        playerFadeMats[8] = Resources.Load<Material>("Character/Extracted Mats/Player_9_FadeMat");
+        playerFadeMats[9] = Resources.Load<Material>("Character/Extracted Mats/Player_10_FadeMat");
+        playerFadeMats[10] = Resources.Load<Material>("Character/Extracted Mats/Player_11_FadeMat");
+    }
 
     #region PowerupEffects
 
@@ -31,8 +64,23 @@ public class Effects : NetworkBehaviour
     {
         Vector3 spawnPos = ability.GetCastingPlayer().gameObject.transform.position;
         FindObjectOfType<Effects>().CmdSpawnCamouflageParticles(spawnPos);
+        AlterMaterials(ability, false);
         ability.GetCastingPlayer().CmdToggleCamouflage(false, ability.GetCastingPlayer());
         ability.SetInUse(true);
+    }
+
+    public static void AlterMaterials(Ability ability, bool toggle)
+    {
+        Debug.Log("Hitting materials: " + ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials.Length);
+        if (toggle)
+        {
+            ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials = playerNormalMats;
+        }
+        else
+        {
+            ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials = playerFadeMats;
+        }
+
     }
 
     [Command (requiresAuthority = false)]
@@ -45,6 +93,7 @@ public class Effects : NetworkBehaviour
 
     public static void DeactivateCamouflage(Ability ability)
     {
+        AlterMaterials(ability, true);
         ability.GetCastingPlayer().CmdToggleCamouflage(true, ability.GetCastingPlayer());
     }
 
@@ -54,20 +103,26 @@ public class Effects : NetworkBehaviour
             particles = new List<GameObject>();
         foreach(ArtefactBehaviour artefact in FindObjectsOfType<ArtefactBehaviour>())
         {
-            switch(artefact.GetRarity())
+            float dist = Vector3.Distance(ability.GetCastingPlayer().transform.position, artefact.transform.position);
+            if (dist < 50)
             {
-                case ArtefactRarity.Common:
-                    particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/CommonArtefact_PA", typeof(GameObject))) as GameObject);
-                    break;
-                case ArtefactRarity.Exotic:
-                    particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/ExoticArtefact_PA", typeof(GameObject))) as GameObject);
-                    break;
-                case ArtefactRarity.Rare:
-                    particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/RareArtefact_PA", typeof(GameObject))) as GameObject);
-                    break;
+                switch (artefact.GetRarity())
+                {
+                    case ArtefactRarity.Common:
+                        particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/CommonArtefact_PA", typeof(GameObject))) as GameObject);
+                        break;
+                    case ArtefactRarity.Exotic:
+                        particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/ExoticArtefact_PA", typeof(GameObject))) as GameObject);
+                        break;
+                    case ArtefactRarity.Rare:
+                        particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/RareArtefact_PA", typeof(GameObject))) as GameObject);
+                        break;
+                }
+                particles[particles.Count - 1].transform.position = artefact.transform.position;
             }
-            particles[particles.Count - 1].transform.position = artefact.transform.position;
+
         }
+        Instantiate(Resources.Load("Abilities/Powerups/ClueInterpreterSphere"), ability.GetCastingPlayer().transform.position, Quaternion.identity);
         ability.SetInUse(true);
     }
 
@@ -84,6 +139,7 @@ public class Effects : NetworkBehaviour
     public static void ActivatePlayerTracker(Ability ability)
     {
         FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(FindHighestPlayerTarget());
+        ability.SetInUse(true);
     }
 
     public static void DeactivatePlayerTracker(Ability ability)
@@ -153,14 +209,15 @@ public class Effects : NetworkBehaviour
             spawnPos = hit.point;
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
             spawnRotation *= Quaternion.Euler(-90, 0, 0);
-            FindObjectOfType<Effects>().CmdSpawnVoodooTrap(spawnPos, ability.GetCastingPlayer());
+
+            FindObjectOfType<Effects>().CmdSpawnVoodooTrap(spawnPos, ability.GetCastingPlayer(), spawnRotation);
         }
     }
 
     [Command (requiresAuthority = false)]
-    public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerController placingPlayer)
+    public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerController placingPlayer, Quaternion spawnRotation)
     {
-        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, Quaternion.identity);
+        GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, spawnRotation);
         go.GetComponent<VoodooPoisonTrapBehaviour>().SetPlacingPlayer(placingPlayer);
         NetworkServer.Spawn(go);
     }
@@ -175,8 +232,17 @@ public class Effects : NetworkBehaviour
         {
             FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
             PlayerController closestPlayer = FindClosestPlayer(ability);
-            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
-            ability.SetTargetedPlayer(closestPlayer);
+            if (closestPlayer != null)
+            {
+                FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
+                ability.SetTargetedPlayer(closestPlayer);
+                Debug.Log("Setting targeted player");
+                genericTimer.SetTimer(3f, () => { Debug.Log("StickyTimer Up"); ability.Use(); });//Will throw bomb after 3 seconds
+            }
+            else
+            {
+                FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
+            }
         }
         else
         {
@@ -188,6 +254,7 @@ public class Effects : NetworkBehaviour
             if (speedBoost != null)
                 speedBoost.SetOppositeDebuffActivated(true);
             ability.GetTargetedPlayer().CmdModifySpeed(5f);
+            Debug.Log("Got player commencing throw");
             
         }
     }
@@ -282,6 +349,36 @@ public class Effects : NetworkBehaviour
     private static float GetDistance(Vector3 a, Vector3 b)
     {
         return Vector3.Distance(a, b);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        RpcCreateAbilityEffectTimer(abilityName, targetPlayerName, fullDuration);
+    }
+
+    [ClientRpc]
+    private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
+    }
+
+
+
+    //Don't know if I really want this here maybe somewhere else at some point really just proof of concept right now
+
+    [Command(requiresAuthority = false)]
+    public void CmdUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        RpcUpdateTargetTimer(targetPlayerName, abilityName, duration);
+    }
+
+    [ClientRpc]
+    private void RpcUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
+    {
+        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+            GameObject.FindObjectOfType<AbilityTimerContainer>().UpdateTimer(abilityName, duration);
     }
 
     #endregion 
