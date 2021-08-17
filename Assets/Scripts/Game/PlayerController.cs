@@ -274,6 +274,20 @@ public class PlayerController : NetworkBehaviour
 
         //Todo:Remove ability pickups from here? Different Stash button as well? Thoughts for discussion
         #region ARTEFACT_INTERACTION
+        for (int i = 0; i < tempArtefactStorage.Count; i++)
+        {
+            if (tempArtefactStorage[i] == null)
+            {
+                tempArtefactStorage.RemoveAt(i);
+            }
+        }
+        for (int i = 0; i < targetedArtefacts.Count; i++)
+        {
+            if (targetedArtefacts[i] == null)
+            {
+                CmdTargetArtefactsRemoveAtI(i);
+            }
+        }
         if (Input.GetKeyDown(KeyCode.E))
         {
             //If we have artefacts in range
@@ -288,7 +302,6 @@ public class PlayerController : NetworkBehaviour
                     {
                         Debug.Log("Looping now ");
                         artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
-                        tempArtefactStorage.Remove(item);
                         FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         DestroyGameObject(item.gameObject);
                     }
@@ -549,16 +562,9 @@ public class PlayerController : NetworkBehaviour
     public void OnTriggerStay(Collider collider)
     {
         ArtefactBehaviour artefactBehaviour = collider.gameObject.GetComponent<ArtefactBehaviour>();
-        //for (int i = 0; i < tempArtefactStorage.Count; i++)
-        //{
-        //    if (tempArtefactStorage[i] == null)
-        //    {
-        //        tempArtefactStorage.RemoveAt(i);
-        //    }
-        //}
         //If it is available for pickup and it currently isn't in tempartefactstorage
         if (artefactBehaviour &&
-            tempArtefactStorage.Contains(artefactBehaviour) == false && targetedArtefacts.Contains(artefactBehaviour) &&
+            tempArtefactStorage.Contains(artefactBehaviour) == false && targetedArtefacts.Contains(artefactBehaviour) == false &&
             artefactBehaviour.IsAvaliableForPickup() && 
             targetedArtefacts.Count <= 4)
         {
@@ -750,6 +756,11 @@ public class PlayerController : NetworkBehaviour
     private void CmdTargetArtefactsRemoveAt(ArtefactBehaviour artefact)
     {
         targetedArtefacts.Remove(artefact);
+    }
+    [Command]
+    private void CmdTargetArtefactsRemoveAtI(int i)
+    {
+        targetedArtefacts.RemoveAt(i);
     }
     public void SetArtefactInventory(ArtefactInventory inventory)
     {
