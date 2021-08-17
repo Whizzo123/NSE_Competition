@@ -320,7 +320,7 @@ public class PlayerController : NetworkBehaviour
         #endregion
 
         #region STEALING
-        if (Input.GetKeyDown(KeyCode.F))// && !state.HasBeenStolenFrom)
+        if (Input.GetKeyDown(KeyCode.F) && !hasBeenStolenFrom)
         {
             Debug.LogError(artefactInventory.GetAllArtefactNames());
 
