@@ -31,7 +31,6 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Our abilities that we've selected")] [SyncVar] public AbilityInventory abilityInventory;
     [SyncVar] private ArtefactInventory artefactInventory;
     [SyncVar] public string playerName;
-    [SyncVar] private bool aboutToPickup;
 
 
     [Space]
@@ -281,13 +280,13 @@ public class PlayerController : NetworkBehaviour
             if (targetedArtefacts.Count != 0)
             {
                 //If we have an empty slot
-                if (artefactInventory.GetInventoryCount() <= 8 && !aboutToPickup)
+                if (artefactInventory.GetInventoryCount() <= 8)
                 {
                     Debug.Log("Picking up Artefacts");
-                    aboutToPickup = true;
                     // All artefacts that are in our range get added to our inventory and gameobject destroyed
                     foreach (ArtefactBehaviour item in targetedArtefacts)
                     {
+                        Debug.Log("Looping now ");
                         artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
                         FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         DestroyGameObject(item.gameObject);
@@ -725,8 +724,9 @@ public class PlayerController : NetworkBehaviour
     [Command]
     private void CmdClearTargetArtefacts()
     {
+        Debug.Log("Command is hit");
         targetedArtefacts.Clear();
-        aboutToPickup = false;
+        Debug.Log("TargetedArtefact is causing issues");
     }
     [Command]
     private void CmdAddToTargetedArtefacts(ArtefactBehaviour artefact)
