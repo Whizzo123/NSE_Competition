@@ -295,6 +295,7 @@ public class PlayerController : NetworkBehaviour
                         
                     }
                     CmdClearTargetArtefacts();
+                    tempArtefactStorage.Clear();
                     
                     if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                         FindObjectOfType<CanvasUIManager>().CloseHintMessage();
