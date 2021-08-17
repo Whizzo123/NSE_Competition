@@ -277,7 +277,7 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             //If we have artefacts in range
-            if (targetedArtefacts.Count != 0)
+            if (targetedArtefacts.Count != 0 && tempArtefactStorage.Count != 0)
             {
                 //If we have an empty slot
                 if (artefactInventory.GetInventoryCount() <= 7)
@@ -288,6 +288,7 @@ public class PlayerController : NetworkBehaviour
                     {
                         Debug.Log("Looping now ");
                         artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
+                        tempArtefactStorage.Remove(item);
                         FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         DestroyGameObject(item.gameObject);
                     }
@@ -547,13 +548,24 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     public void OnTriggerStay(Collider collider)
     {
+        ArtefactBehaviour artefactBehaviour = collider.gameObject.GetComponent<ArtefactBehaviour>();
+        //for (int i = 0; i < tempArtefactStorage.Count; i++)
+        //{
+        //    if (tempArtefactStorage[i] == null)
+        //    {
+        //        tempArtefactStorage.RemoveAt(i);
+        //    }
+        //}
         //If it is available for pickup and it currently isn't in tempartefactstorage
-        if (collider.gameObject.GetComponent<ArtefactBehaviour>() && tempArtefactStorage.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup() && targetedArtefacts.Count <= 4)
+        if (artefactBehaviour &&
+            tempArtefactStorage.Contains(artefactBehaviour) == false && targetedArtefacts.Contains(artefactBehaviour) &&
+            artefactBehaviour.IsAvaliableForPickup() && 
+            targetedArtefacts.Count <= 4)
         {
             //Adds it temporarily
-            tempArtefactStorage.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            tempArtefactStorage.Add(artefactBehaviour);
             //Sends command to add it to targeted artefact
-            CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            CmdAddToTargetedArtefacts(artefactBehaviour);
 
             if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
