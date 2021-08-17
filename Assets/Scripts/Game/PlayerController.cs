@@ -30,8 +30,8 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
     [Tooltip("Our abilities that we've selected")] [SyncVar] public AbilityInventory abilityInventory;
     [SyncVar] private ArtefactInventory artefactInventory;
-    [SyncVar]
-    public string playerName;
+    [SyncVar] public string playerName;
+    [SyncVar] private bool aboutToPickup;
 
 
     [Space]
@@ -281,9 +281,10 @@ public class PlayerController : NetworkBehaviour
             if (targetedArtefacts.Count != 0)
             {
                 //If we have an empty slot
-                if (artefactInventory.GetInventoryCount() <= 8)
+                if (artefactInventory.GetInventoryCount() <= 8 && !aboutToPickup)
                 {
                     Debug.Log("Picking up Artefacts");
+                    aboutToPickup = true;
                     // All artefacts that are in our range get added to our inventory and gameobject destroyed
                     foreach (ArtefactBehaviour item in targetedArtefacts)
                     {
@@ -725,6 +726,7 @@ public class PlayerController : NetworkBehaviour
     private void CmdClearTargetArtefacts()
     {
         targetedArtefacts.Clear();
+        aboutToPickup = false;
     }
     [Command]
     private void CmdAddToTargetedArtefacts(ArtefactBehaviour artefact)
