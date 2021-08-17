@@ -23,6 +23,7 @@ public class PlayerController : NetworkBehaviour
     //Stored interactables
     [Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. The reason for this was to allow us to check that we are not picking up the same artefact twice.")] public List<ArtefactBehaviour> tempArtefactStorage;
     [Tooltip("The artefacts that are in range for picking up")] readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
+    [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")]private List<uint> artefactsForDestruction = new List<uint>();
     [Tooltip("NA")] private Stash gameStash;
     [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
@@ -30,8 +31,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
     [Tooltip("Our abilities that we've selected")] [SyncVar] public AbilityInventory abilityInventory;
     [SyncVar] private ArtefactInventory artefactInventory;
-    [SyncVar]
-    public string playerName;
+    [SyncVar] public string playerName;
 
 
     [Space]
@@ -278,21 +278,25 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             //If we have artefacts in range
-            if (targetedArtefacts.Count != 0)
+            if (targetedArtefacts.Count != 0 && tempArtefactStorage.Count != 0)
             {
                 //If we have an empty slot
-                if (artefactInventory.GetInventoryCount() <= 8)
+                if (artefactInventory.GetInventoryCount() <= 7)
                 {
                     Debug.Log("Picking up Artefacts");
                     // All artefacts that are in our range get added to our inventory and gameobject destroyed
                     foreach (ArtefactBehaviour item in targetedArtefacts)
                     {
+                        Debug.Log("Looping now ");
                         artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
                         FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
                         DestroyGameObject(item.gameObject);
+                        artefactsForDestruction.Add(item.GetComponent<NetworkIdentity>().netId);
+                        
                     }
                     CmdClearTargetArtefacts();
-
+                    tempArtefactStorage.Clear();
+                    
                     if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                         FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
@@ -310,6 +314,9 @@ public class PlayerController : NetworkBehaviour
             {
                 //Todo: For consistancy, instead of clearing the artefact inventory elsewhere, let's clear it here
                 gameStash.CmdAddToStashScores(this);
+                tempArtefactStorage.Clear();
+                artefactsForDestruction.Clear();
+                CmdClearTargetArtefacts();
                 FindObjectOfType<AudioManager>().PlaySound("Stash");
             }
             else if (gameStash != null && !artefactInventory.InventoryNotEmpty())
@@ -320,7 +327,7 @@ public class PlayerController : NetworkBehaviour
         #endregion
 
         #region STEALING
-        if (Input.GetKeyDown(KeyCode.F))// && !state.HasBeenStolenFrom)
+        if (Input.GetKeyDown(KeyCode.F) && !hasBeenStolenFrom)
         {
             Debug.LogError(artefactInventory.GetAllArtefactNames());
 
@@ -546,13 +553,21 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     public void OnTriggerStay(Collider collider)
     {
+        ArtefactBehaviour artefactBehaviour = collider.gameObject.GetComponent<ArtefactBehaviour>();
+        if (artefactsForDestruction.Contains(artefactBehaviour.netId))
+        {
+            return;
+        }
         //If it is available for pickup and it currently isn't in tempartefactstorage
-        if (collider.gameObject.GetComponent<ArtefactBehaviour>() && tempArtefactStorage.Contains(collider.gameObject.GetComponent<ArtefactBehaviour>()) == false && collider.gameObject.GetComponent<ArtefactBehaviour>().IsAvaliableForPickup() && targetedArtefacts.Count <= 4)
+        if (artefactBehaviour &&
+            tempArtefactStorage.Contains(artefactBehaviour) == false && targetedArtefacts.Contains(artefactBehaviour) == false &&
+            artefactBehaviour.IsAvaliableForPickup() && 
+            targetedArtefacts.Count <= 4)
         {
             //Adds it temporarily
-            tempArtefactStorage.Add(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            tempArtefactStorage.Add(artefactBehaviour);
             //Sends command to add it to targeted artefact
-            CmdAddToTargetedArtefacts(collider.gameObject.GetComponent<ArtefactBehaviour>());
+            CmdAddToTargetedArtefacts(artefactBehaviour);
 
             if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
@@ -724,7 +739,9 @@ public class PlayerController : NetworkBehaviour
     [Command]
     private void CmdClearTargetArtefacts()
     {
+        Debug.Log("Command is hit");
         targetedArtefacts.Clear();
+        Debug.Log("TargetedArtefact is causing issues");
     }
     [Command]
     private void CmdAddToTargetedArtefacts(ArtefactBehaviour artefact)
@@ -735,6 +752,11 @@ public class PlayerController : NetworkBehaviour
     private void CmdTargetArtefactsRemoveAt(ArtefactBehaviour artefact)
     {
         targetedArtefacts.Remove(artefact);
+    }
+    [Command]
+    private void CmdTargetArtefactsRemoveAtI(int i)
+    {
+        targetedArtefacts.RemoveAt(i);
     }
     public void SetArtefactInventory(ArtefactInventory inventory)
     {

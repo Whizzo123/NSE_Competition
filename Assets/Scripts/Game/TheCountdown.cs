@@ -28,7 +28,7 @@ public class TheCountdown : NetworkBehaviour
     {
         currentLobbyTime = lobbyTime;
         currentGameTime = gameTime;
-
+        currentWinScreenDisplayTime = winScreenDisplayTime;
         StartCoroutine(Countdown());
     }
 
