@@ -105,6 +105,13 @@ public class BrowseScreenUI : MonoBehaviour
                 currentWaitTime -= Time.deltaTime;
             }
         }
+        else
+        {
+            if(currentWaitTime <= 0)
+            {
+                SteamMatchmaking.RequestLobbyList();
+            }
+        }
     }
 
 

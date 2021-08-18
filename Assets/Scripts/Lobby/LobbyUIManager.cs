@@ -115,7 +115,7 @@ public class LobbyUIManager : MonoBehaviour
 
         roomName = createScreen.inputField.text;
         Debug.Log("CreatingRoomSession");
-
+        FindObjectOfType<BackTemp>().SwitchingTo(ActiveScreen.LOBBY);
         if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, networkManager.maxConnections);
         else
@@ -307,8 +307,17 @@ public class LobbyUIManager : MonoBehaviour
             {
                 if(screens[i].screenName == "Room")
                 {
-                    RoomCanvas.gameObject.SetActive(true);//JoeReply -> Room Canvas should not be null it's set in editor pretty sure
+                    FindObjectOfType<BackTemp>().SwitchingTo(ActiveScreen.LOBBY);
                     BrowseCreateCanvas.gameObject.SetActive(false);
+                }
+                else if(screens[i].screenName == "Create")
+                {
+                    BrowseCreateCanvas.gameObject.SetActive(true);
+                    FindObjectOfType<BackTemp>().SwitchingTo(ActiveScreen.CREATE);
+                }
+                else if(screens[i].screenName == "Browse")
+                {
+                    FindObjectOfType<BackTemp>().SwitchingTo(ActiveScreen.BROWSE);
                 }
                 screens[i].screen.SetActive(true);
             }
