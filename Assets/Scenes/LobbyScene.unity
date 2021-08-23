@@ -629,10 +629,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputField: {fileID: 691402760}
-  playerNameInput: {fileID: 0}
   createButton: {fileID: 2143849611}
   browseButton: {fileID: 1093110669}
   randomButton: {fileID: 670605029}
+  playerNameInput: {fileID: 0}
 --- !u!1 &553446443
 GameObject:
   m_ObjectHideFlags: 0
@@ -737,7 +737,6 @@ GameObject:
   - component: {fileID: 562292646}
   - component: {fileID: 562292645}
   - component: {fileID: 562292644}
-  - component: {fileID: 562292648}
   m_Layer: 5
   m_Name: BrowseCreateCanvas
   m_TagString: Untagged
@@ -825,18 +824,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &562292648
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562292643}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 788bf0a49253ba446871b62c539a4a17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &670605027
 GameObject:
   m_ObjectHideFlags: 0
@@ -1946,6 +1933,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1523075014}
   - component: {fileID: 1523075013}
+  - component: {fileID: 1523075015}
   m_Layer: 0
   m_Name: LobbyUIManager
   m_TagString: Untagged
@@ -1974,9 +1962,9 @@ MonoBehaviour:
     screen: {fileID: 0}
   BrowseCreateCanvas: {fileID: 562292646}
   RoomCanvas: {fileID: 0}
-  gameSceneName: GameScene
   minPlayers: 2
   prematchCountdown: 5
+  randomJoin: 0
 --- !u!4 &1523075014
 Transform:
   m_ObjectHideFlags: 0
@@ -1991,6 +1979,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1523075015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523075012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 788bf0a49253ba446871b62c539a4a17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1555436509
 GameObject:
   m_ObjectHideFlags: 0
@@ -2045,6 +2045,7 @@ MonoBehaviour:
   sessionListObjectPrefab: {fileID: 9006002583616740794, guid: 093a02644966be84aa362b6f352fbecf, type: 3}
   noServerFoundText: {fileID: 755229902}
   serverList: {fileID: 65857039}
+  waitTime: 5
 --- !u!1 &1842277867
 GameObject:
   m_ObjectHideFlags: 0
@@ -2127,7 +2128,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 562292648}
+      - m_Target: {fileID: 1523075015}
         m_TargetAssemblyTypeName: BackTemp, Assembly-CSharp
         m_MethodName: Back
         m_Mode: 1
