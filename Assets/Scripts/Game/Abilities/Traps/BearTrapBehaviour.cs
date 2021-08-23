@@ -10,6 +10,7 @@ public class BearTrapBehaviour : NetworkBehaviour
     public float trapDuration = 5;
     private float currentDuration;
     
+    [SyncVar]
     private bool sprung;
 
     public GameObject openTrap;
@@ -26,7 +27,7 @@ public class BearTrapBehaviour : NetworkBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (placingPlayerName != null)
+        if (placingPlayerName != null && sprung == false)
         { 
             if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
             {

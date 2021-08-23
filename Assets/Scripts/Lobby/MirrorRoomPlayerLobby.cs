@@ -17,6 +17,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     [SerializeField] [Tooltip("Ready texts for all players")] private Text[] playerReadyTexts = new Text[5];
     [SerializeField] [Tooltip("Start button")] private Button startGameButton = null;
     [SerializeField] [Tooltip("Remove buttons")] private Button[] removeButtons = new Button[5];
+    [SerializeField] [Tooltip("Back button")] public Button backButton;
     [Space]
 
     [SyncVar(hook = nameof(HandleDisplayNameChanged))]
@@ -27,6 +28,11 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     private ulong steamId;
 
     [SerializeField] [Tooltip("Is this player the host?")] private bool isLeader;//Todo: isHost?
+
+    private void Awake()
+    {
+        backButton.onClick.AddListener(() => FindObjectOfType<BackTemp>().Back());
+    }
 
     /// <summary>
     /// Setter. Set start game button visible if isLeader
@@ -93,7 +99,6 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
             EnableRemoveButtons();
         else
             DisableRemoveButtons();
-
     }
 
     /// <summary>
