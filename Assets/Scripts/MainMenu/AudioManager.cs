@@ -92,7 +92,7 @@ public class AudioManager : MonoBehaviour
         mVol = 0.5f;
         sVol = 0.5f;
         masVol = 0.0f;
-        PlaySound("MusicMenu");
+        ActivateMenuMusic();
         MusicVolume(0.5f);
         SoundVolume(0.5f);
         MasterVolume(0.0f);
@@ -187,7 +187,7 @@ public class AudioManager : MonoBehaviour
         audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == "MusicGame");
         if (audioFound != null)
         {
-            audioFound.audioSource.Play();
+            //audioFound.audioSource.Play();
         }
     }
     /// <summary>
@@ -198,7 +198,7 @@ public class AudioManager : MonoBehaviour
         AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == "MusicGame");
         if (audioFound != null)
         {
-            audioFound.audioSource.Stop();
+            //audioFound.audioSource.Stop();
         }
         audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == "MusicMenu");
         if (audioFound != null)

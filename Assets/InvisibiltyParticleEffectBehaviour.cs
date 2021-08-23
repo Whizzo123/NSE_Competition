@@ -11,7 +11,6 @@ public class InvisibiltyParticleEffectBehaviour : NetworkBehaviour
     void Start()
     {
         //particlefx.SetActive(true);
-        Invoke("PlayFX", 3);
         Destroy(this.gameObject, 4);
 
     }

@@ -540,10 +540,10 @@ public class PlayerController : NetworkBehaviour
         //Allows us to interact with A player and shows hint message
         if (collider.gameObject.GetComponent<PlayerController>())
         {
-            //if (collider.GetComponentInChildren<SkinnedMeshRenderer>().material.name.Contains("Fade"))
-            //{
-                //return;
-            //}
+            if (collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled == false)
+            {
+                return;
+            }
             targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
             if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
             {
