@@ -42,6 +42,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                         CmdCreateAbilityEffectTimer("Voodoo Poison Trap", trappedPlayer.playerName, trapDuration);
                     }
                     CmdSpringTrap();
+                    Close();
                 }
             }
         }
@@ -55,7 +56,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     [Command (requiresAuthority = false)]
     private void CmdSpringTrap()
     {
-        RpcSpringTrap();
+        //Close();//Maybe call close here now that it's a direct rpc??
         sprung = true;
     }
 
@@ -65,9 +66,9 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
         Close();
     }
 
+    [ClientRpc]
     public void Close()
     {
-        //GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
         openTrap.SetActive(false);
         closedTrap.SetActive(true);
         Debug.Log("Closing trap");

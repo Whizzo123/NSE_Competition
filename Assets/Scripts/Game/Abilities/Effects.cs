@@ -89,6 +89,20 @@ public class Effects : NetworkBehaviour
         GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Invisibility_PA"),
             spawnPos, Quaternion.identity);
         NetworkServer.Spawn(go);
+        //temp();
+    }
+
+    [ClientRpc]
+    void temp()
+    {
+        if(GameObject.Find("Invisibility_PA(Clone)"))
+        {
+            Debug.LogError("PLAYING INVIS");
+            GameObject go = GameObject.Find("Invisibility_PA(Clone)");
+            go.SetActive(true);
+            go.GetComponent<ParticleSystem>().Play();
+        }
+
     }
 
     public static void DeactivateCamouflage(Ability ability)
@@ -237,7 +251,13 @@ public class Effects : NetworkBehaviour
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
                 Debug.Log("Setting targeted player");
-                genericTimer.SetTimer(3f, () => { Debug.Log("StickyTimer Up"); ability.Use(); });//Will throw bomb after 3 seconds
+                genericTimer.SetTimer(3f, () =>
+                {//Will throw bomb after 3 seconds
+                    if (!ability.IsInUse())
+                    {
+                        ability.Use();
+                    }  
+                });
             }
             else
             {

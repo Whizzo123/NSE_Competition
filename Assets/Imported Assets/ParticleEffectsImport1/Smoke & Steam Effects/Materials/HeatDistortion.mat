@@ -22,8 +22,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: HeatDistortion
   m_Shader: {fileID: 4800000, guid: 0406db5a14f94604a8c57ccfbc9f3b46, type: 3}
-  m_ShaderKeywords: _DISTORTION_ON _EMISSION _FADING_ON _FLIPBOOKBLENDING_ON _NORMALMAP
-    _SOFTPARTICLES_ON
+  m_ShaderKeywords: _ALPHAMODULATE_ON _ALPHATEST_ON _COLOROVERLAY_ON _DISTORTION_ON
+    _EMISSION _FADING_ON _FLIPBOOKBLENDING_ON _NORMALMAP _SOFTPARTICLES_ON
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -76,22 +76,22 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AlphaClip: 0
-    - _Blend: 0
+    - _AlphaClip: 1
+    - _Blend: 3
     - _BlendOp: 0
     - _BumpScale: 1
     - _CameraFadingEnabled: 0
     - _CameraFarFadeDistance: 2
     - _CameraNearFadeDistance: 1
-    - _ColorMode: 0
+    - _ColorMode: 3
     - _Cull: 2
-    - _Cutoff: 0.5
+    - _Cutoff: 0.118
     - _DetailNormalMapScale: 1
     - _DistortionBlend: 1
     - _DistortionEnabled: 1
     - _DistortionStrength: 5
     - _DistortionStrengthScaled: 0.5
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _EmissionEnabled: 1
     - _FlipbookBlending: 1
     - _FlipbookMode: 1
@@ -109,13 +109,13 @@ Material:
     - _SoftParticlesFarFadeDistance: 1
     - _SoftParticlesNearFadeDistance: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 5
+    - _SrcBlend: 2
     - _Surface: 1
     - _UVSec: 0
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 1024.0007, g: 1024.0007, b: 1024.0007, a: 1}
-    - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
+    - _BaseColorAddSubDiff: {r: -1, g: 0, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 1024.0004, g: 1024.0004, b: 1024.0004, a: 1}
     - _ColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}
