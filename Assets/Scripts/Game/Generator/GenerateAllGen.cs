@@ -9,11 +9,12 @@ using Mirror;
 public class GenerateAllGen : NetworkBehaviour
 {
     [Tooltip("All map generators inside the map")]public GameObject[] mapGens;
+    [SerializeField] private int generators = 5;
 
     //Todo: Get rid of magic numbers
     void Start()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < generators; i++)
         {
             CmdChangeSeed(i);
         }
@@ -38,7 +39,7 @@ public class GenerateAllGen : NetworkBehaviour
     /// <returns></returns>
     IEnumerator Gens()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < generators; i++)
         {
             yield return new WaitForSeconds(3);
             GenerateCall(i);
