@@ -19,7 +19,7 @@ public class Stash : NetworkBehaviour
     /// Called when adding to stash from player inventory
     /// </summary>
     [Command(requiresAuthority = false)]
-    public void CmdAddToStashScores(PlayerController player)
+    public void CmdAddToStashScores(PlayerToArtefactInteraction player)
     {
         string playerName = player.playerName;
 
@@ -29,7 +29,7 @@ public class Stash : NetworkBehaviour
             score = StashedScores[playerName];
 
         //Add all artefacts in player inventory to score, then StashedScore
-        foreach (ItemArtefact item in player.GetComponent<ArtefactInventory>().GetInventory())
+        foreach (ItemArtefact item in player.GetArtefactInventory().GetInventory())
         {
             score += item.points;
         }
@@ -42,9 +42,9 @@ public class Stash : NetworkBehaviour
     /// Removes all artefacts from inventory
     /// </summary>
     [ClientRpc]
-    private void RpcClearInventory(PlayerController player)
+    private void RpcClearInventory(PlayerToArtefactInteraction player)
     {
-        player.GetComponent<ArtefactInventory>().ClearInventory(player.playerName);
+        player.GetArtefactInventory().ClearInventory(player.playerName);
     }
     /// <summary>
     /// Updates the the scoreboard ui

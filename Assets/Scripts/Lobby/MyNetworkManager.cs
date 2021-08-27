@@ -140,7 +140,7 @@ public class MyNetworkManager : NetworkManager
                 var conn = RoomPlayers[i].connectionToClient;
                 Vector3 spawnPos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
                 GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), spawnPos, Quaternion.identity);
-                gameplayInstance.GetComponent<PlayerController>().playerName = RoomPlayers[i].DisplayName;
+                gameplayInstance.GetComponent<PlayerToArtefactInteraction>().playerName = RoomPlayers[i].DisplayName;
                 NetworkServer.Destroy(conn.identity.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn, gameplayInstance.gameObject);
                 NetworkServer.Spawn(gameplayInstance, conn);

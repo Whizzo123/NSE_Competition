@@ -58,12 +58,12 @@ public class AbilityPickup : NetworkBehaviour
     /// Adds ability to player inventory and destroys object if it's enabled for pickup
     /// </summary>
     /// <param name="player"></param>
-    public void PickupAbility(PlayerController player)
+    public void PickupAbility(PlayerToAbilityInteraction player)
     {
         if (enabledForPickup)
         {
             FindObjectOfType<AbilitySlotBarUI>().AddAbilityToLoadoutBar(abilityName);
-            player.abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(abilityName));
+            player.GetAbilityInventory().AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(abilityName));
 
             NetworkServer.Destroy(this.gameObject);
         }

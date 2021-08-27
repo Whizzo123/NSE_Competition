@@ -41,8 +41,8 @@ public class Ability
 
     [Header("Component references")]
     [Tooltip("JoeComment")] protected AbilityInventory inventory;
-    [Tooltip("Player to not target with traps and debuffs")] private PlayerController castingPlayer;
-    [Tooltip("Player to target with debuffs. JoeComment does this also do trapped players?")] private PlayerController targetedPlayer;
+    [Tooltip("Player to not target with traps and debuffs")] private PlayerToArtefactInteraction castingPlayer;
+    [Tooltip("Player to target with debuffs. JoeComment does this also do trapped players?")] private PlayerToArtefactInteraction targetedPlayer;
     #endregion
 
     #region SETUP
@@ -147,7 +147,7 @@ public class Ability
             Debug.Log("UpdatingTrapAbility: " + useCount + ": " + used);
             if (used && useCount >= 3)
             {
-                castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
+                castingPlayer.GetArtefactInventory().RemoveAbilityFromInventory(this);
             }
         }
     }

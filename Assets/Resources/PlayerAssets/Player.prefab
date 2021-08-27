@@ -1620,8 +1620,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7811146946738992400}
-  - component: {fileID: 7811146946738992404}
+  - component: {fileID: 3597636760140961687}
   - component: {fileID: 4071522212128209381}
+  - component: {fileID: 1024887395001701078}
+  - component: {fileID: 2349167185957455263}
+  - component: {fileID: 2170362586506345961}
+  - component: {fileID: 1085632541018468081}
+  - component: {fileID: 2723256207170165961}
+  - component: {fileID: 9084222010806805765}
   - component: {fileID: 1889028440207431689}
   - component: {fileID: 8921563345967218691}
   - component: {fileID: 4684549018310827129}
@@ -1652,7 +1658,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7811146946738992404
+--- !u!114 &3597636760140961687
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1661,37 +1667,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 7811146946738992411}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1acd6921d2b4364aac74fff7dd1adfa, type: 3}
+  m_Script: {fileID: 11500000, guid: 51deefa08226fef4aab636c747b617c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  tempArtefactStorage: []
-  playerName: 
-  waitTime: 0.569
-  playerGravity: -65
-  groundDistance: 2.5
-  playerFallingVelocity: {x: 0, y: 0, z: 0}
-  speed: 10
-  normalSpeed: 10
-  lengthOfSphere: 2
-  radiusOfSphere: 1
-  obstacles:
-    serializedVersion: 2
-    m_Bits: 262656
-  ground:
-    serializedVersion: 2
-    m_Bits: 63744
-  playerCharacterController: {fileID: 0}
-  playerAnim: {fileID: 8412895053057340191}
-  nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
+  immobilize: 0
+  voodooPoisoned: 0
+  mortality: 0
+  hasBeenStolenFrom: 0
+  nameTextPrefab: {fileID: 0}
   playerNameText: {fileID: 0}
+  playerMovement: {fileID: 0}
   playerCamera: {fileID: 0}
-  vCam: {fileID: 0}
-  offset: {x: 0, y: 10, z: 10}
-  timeForStunAfterSteal: 10
-  devMode: 0
-  devCam: {fileID: 22159899250329015, guid: 73b92ca893da92447ae9bf658bf9355c, type: 3}
+  playerToArtefactInteraction: {fileID: 0}
+  playerToObstacleInteraction: {fileID: 0}
+  playerToPlayerInteraction: {fileID: 0}
+  playerToAbilityInteraction: {fileID: 0}
+  playerAnim: {fileID: 0}
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1706,6 +1699,112 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+--- !u!114 &1024887395001701078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22c2643ca32496f47a84af73d6ebf0fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  xAxisSensitivity: 200
+  yAxisSensitivity: 20
+--- !u!114 &2349167185957455263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b21671c56fcea7744aa898ee6bbb936c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  playerGravity: -30
+  groundDistance: 1
+  playerFallingVelocity: {x: 0, y: 0, z: 0}
+  voodooSpeed: 1
+  speed: 10
+  normalSpeed: 10
+  ground:
+    serializedVersion: 2
+    m_Bits: 63744
+  playerCharacterController: {fileID: 0}
+  playerAnim: {fileID: 0}
+--- !u!114 &2170362586506345961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b02d0ef6b7d52a48bf2d9ac275d2b0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+--- !u!114 &1085632541018468081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d175e24eedb06fb41822a3fd2da5b50b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.01
+  tempArtefactStorage: []
+  playerName: 
+--- !u!114 &2723256207170165961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d6a12bd093ff2b4e88ab25f231e8640, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  lengthOfSphere: 2
+  radiusOfSphere: 1
+  waitTime: 0.05
+  obstacles:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!114 &9084222010806805765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0851ec98e12be9f4eb1c514e1bf79a40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  timeForStunAfterSteal: 10
 --- !u!54 &1889028440207431689
 Rigidbody:
   m_ObjectHideFlags: 0

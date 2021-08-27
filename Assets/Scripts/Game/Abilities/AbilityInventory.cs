@@ -9,7 +9,7 @@ using Mirror;
 /// </summary>
 public class AbilityInventory
 {
-    [Tooltip("Player that has this instance of AbilityInventory")]private PlayerController player;
+    [Tooltip("Player that has this instance of AbilityInventory")]private PlayerToArtefactInteraction player;
     
     [Tooltip("Ability list that player can use")]readonly SyncList<Ability> abilities = new SyncList<Ability>();
 
@@ -24,9 +24,9 @@ public class AbilityInventory
     {
 
     }
-    public AbilityInventory(PlayerController playerOwningInventory)
+    public AbilityInventory(PlayerToArtefactInteraction playerOwningInventory)
     {
-        player = playerOwningInventory;
+        player = playerOwningInventory;//used?
     }
 
     #region ADDITION_AND_REMOVAL_OF_ABILITIES

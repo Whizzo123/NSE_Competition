@@ -34,6 +34,7 @@ public class CanvasUIManager : MonoBehaviour
     public void Start()
     {
         genericTimer = GameObject.Find("GenericObject").GetComponent<GenericTimer>();
+
     }
     /// <summary>
     /// Show a hint message with no time associated to it's visibility. Manually close it with <see cref="CloseHintMessage"/>.

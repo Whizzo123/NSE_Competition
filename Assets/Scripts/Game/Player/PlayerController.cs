@@ -307,13 +307,13 @@ public class PlayerController : NetworkBehaviour
             }
             else if (targetedAbilityPickup != null)
             {
-                targetedAbilityPickup.PickupAbility(this);
+                //targetedAbilityPickup.PickupAbility(this); "Plains"
                 targetedAbilityPickup = null;
             }
             else if (gameStash != null && artefactInventory.InventoryNotEmpty())
             {
                 //Todo: For consistancy, instead of clearing the artefact inventory elsewhere, let's clear it here
-                gameStash.CmdAddToStashScores(this);
+                //gameStash.CmdAddToStashScores(this);
                 tempArtefactStorage.Clear();
                 artefactsForDestruction.Clear();
                 CmdClearTargetArtefacts();
@@ -384,7 +384,7 @@ public class PlayerController : NetworkBehaviour
             StartCoroutine(Hit());
         }
         #endregion
-
+        //Todo: With FMOD
         #region FOOTSTEP_SOUNDS
         if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
         {
@@ -415,13 +415,12 @@ public class PlayerController : NetworkBehaviour
             CmdServerValidateHit();
         }
     }
-
     /// <summary>
     /// Used to set whether we are able to move now or not, also disables the water collider so we can go through the water
     /// </summary>
     public void SetLoadoutReleased(bool value)
     {
-        loadoutReleased = value;
+        immobilize = !value;
         if (GameObject.Find("_wamp_water") && value == true)
         {
             GameObject.Find("_wamp_water").GetComponent<MeshCollider>().enabled = false;
