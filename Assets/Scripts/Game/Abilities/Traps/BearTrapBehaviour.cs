@@ -41,6 +41,7 @@ public class BearTrapBehaviour : NetworkBehaviour
                         trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.playerName);
                         CmdCreateAbilityEffectTimer("Bear Trap", trappedPlayer.playerName, trapDuration);
                     }
+                    //If two traps are stacked, the commands will send twice. making it trap infinitley
                     CmdSpringTrap();
                     
                 }
@@ -76,6 +77,7 @@ public class BearTrapBehaviour : NetworkBehaviour
         closedTrap.SetActive(true);
     }
 
+    float safeBreak = 10.0f;//GEt rid of this when cleaner solution is found
     public void Update()
     {
         UpdateTrap();
@@ -86,6 +88,7 @@ public class BearTrapBehaviour : NetworkBehaviour
     {
         if (sprung)
         {
+            safeBreak -= Time.deltaTime;
             if (trapDuration > -1)
             {
                 if (currentDuration < trapDuration)
@@ -101,6 +104,11 @@ public class BearTrapBehaviour : NetworkBehaviour
                         trappedPlayer.CmdSetImmobilized(false);
                     NetworkServer.Destroy(this.gameObject);
                 }
+            }
+            if (safeBreak < 0)
+            {
+                trappedPlayer.CmdSetImmobilized(false);
+                NetworkServer.Destroy(this.gameObject);
             }
         }
     }
