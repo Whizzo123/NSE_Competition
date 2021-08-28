@@ -109,7 +109,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
     {
         if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName && FindObjectOfType<AbilityTimerContainer>().Contains(abilityName) == false)
-            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
+            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration, true);
     }
 
     [Command(requiresAuthority = false)]

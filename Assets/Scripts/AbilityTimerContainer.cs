@@ -15,10 +15,10 @@ public class AbilityTimerContainer : MonoBehaviour
         timerPrefab = Resources.Load<GameObject>("UI/Abilities/TimerUI");
     }
 
-    public void AddTimer(string abilityName, float fullDuration)
+    public void AddTimer(string abilityName, float fullDuration, bool badEffect)
     {
         GameObject timer = Instantiate(timerPrefab, this.transform);
-        timer.GetComponent<TimerUI>().InitializeEventTimer(fullDuration);
+        timer.GetComponent<TimerUI>().InitializeEventTimer(fullDuration, badEffect);
         timer.GetComponent<TimerUI>().StartCount();
         childTimers.Add(abilityName, timer.GetComponent<TimerUI>());
     }

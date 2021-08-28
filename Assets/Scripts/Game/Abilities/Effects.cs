@@ -361,7 +361,7 @@ public class Effects : NetworkBehaviour
     private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
     {
         if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
-            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
+            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration, true);
     }
 
 

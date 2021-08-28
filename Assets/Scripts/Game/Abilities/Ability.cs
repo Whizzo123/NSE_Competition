@@ -168,7 +168,7 @@ public class Ability
         switch (abilityType)
         {
             case (AbilityType.POWERUP):
-                CreateLocalAbilityEffectTimer(name, duration);
+                CreateLocalAbilityEffectTimer(name, duration, false);
                 if (useType == AbilityUseTypes.ONE_TIME)
                 {
                     //Not sure if this is gonna do anything if its the end of August and still isn't used delete me pls :)
@@ -227,9 +227,9 @@ public class Ability
             castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
     }
 
-    public static void CreateLocalAbilityEffectTimer(string abilityName, float fullDuration)
+    public static void CreateLocalAbilityEffectTimer(string abilityName, float fullDuration, bool badEffect)
     {
-        GameObject.FindObjectOfType<AbilityTimerContainer>().AddTimer(abilityName, fullDuration);
+        GameObject.FindObjectOfType<AbilityTimerContainer>().AddTimer(abilityName, fullDuration, badEffect);
     }
 
     public void ResetUseCount()
