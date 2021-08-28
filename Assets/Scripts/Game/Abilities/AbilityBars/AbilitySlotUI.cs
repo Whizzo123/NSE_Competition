@@ -33,10 +33,10 @@ public class AbilitySlotUI : MonoBehaviour
     public void SlotClick()
     {
         //Activate ability if not on cooldown and player isn't affected by 'Mortal Spell' Ability
-        PlayerController localPlayer = NetworkClient.localPlayer.gameObject.GetComponent<PlayerController>();
-        if (!isCharging && localPlayer.IsMortal() == false)
+        PlayerToAbilityInteraction localPlayer = NetworkClient.localPlayer.gameObject.GetComponent<PlayerToAbilityInteraction>();
+        if (!isCharging && localPlayer.enabled != false)
         {
-            localPlayer.abilityInventory.ActivateAbility(abilityName);
+            localPlayer.GetAbilityInventory().ActivateAbility(abilityName);
         }
     }
 
@@ -68,8 +68,8 @@ public class AbilitySlotUI : MonoBehaviour
         if(isCharging)
         { 
             //Grab charge values from local player
-            float currentCharge = NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.FindAbility(abilityName).GetCurrentCharge();
-            float maxCharge = NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.FindAbility(abilityName).GetChargeAmount();
+            float currentCharge = NetworkClient.localPlayer.GetComponent<PlayerToAbilityInteraction>().GetAbilityInventory().FindAbility(abilityName).GetCurrentCharge();
+            float maxCharge = NetworkClient.localPlayer.GetComponent<PlayerToAbilityInteraction>().GetAbilityInventory().FindAbility(abilityName).GetChargeAmount();
             //Calculate percentage
             float percentage = currentCharge / maxCharge;
             //Set fill amount as 1 - the percentage calculated

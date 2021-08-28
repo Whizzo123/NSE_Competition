@@ -39,6 +39,10 @@ public class PlayerCamera : NetworkBehaviour
         {
             Invoke("SetCamera", 2);
         }
+        else
+        {
+            Invoke("SetCamera", 5);
+        }
         base.OnStartAuthority();
     }
 
@@ -73,19 +77,20 @@ public class PlayerCamera : NetworkBehaviour
         //}
         //else
         //{
-        devCam = Instantiate(devCam);
-        devCam.SetActive(false);
+        //devCam = Instantiate(devCam);
+        //devCam.SetActive(false);
         //}
     }
 
 
 
     // Update is called once per frame
+    [ClientCallback]
     void Update()
     {
         if (!hasAuthority) { return; };
 
-        EnableDevMode();
+        //EnableDevMode();
 
         CameraRotation();
     }

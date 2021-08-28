@@ -21,7 +21,7 @@ public class MyNetworkManager : NetworkManager
     [SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private MirrorRoomPlayerLobby lobbyPlayerPrefab = null;
     [SerializeField] [Tooltip("Minimum players to start a game")] public int minPlayers;
     [Header("Game")]
-    [SerializeField] [Tooltip("Prefab used to spawn the controllable player")] private PlayerController gamePlayerPrefab = null;
+    [SerializeField] [Tooltip("Prefab used to spawn the controllable player")] private PlayerStates gamePlayerPrefab = null;
     [SerializeField] [Tooltip("Do we use Steam for matchmaking or not?")] public bool useSteamMatchmaking;
  
 
@@ -140,7 +140,7 @@ public class MyNetworkManager : NetworkManager
                 var conn = RoomPlayers[i].connectionToClient;
                 Vector3 spawnPos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
                 GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), spawnPos, Quaternion.identity);
-                gameplayInstance.GetComponent<PlayerToArtefactInteraction>().playerName = RoomPlayers[i].DisplayName;
+                gameplayInstance.GetComponent<PlayerStates>().playerName = RoomPlayers[i].DisplayName;
                 NetworkServer.Destroy(conn.identity.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn, gameplayInstance.gameObject);
                 NetworkServer.Spawn(gameplayInstance, conn);

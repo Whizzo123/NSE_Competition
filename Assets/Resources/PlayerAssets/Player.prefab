@@ -1672,19 +1672,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  immobilize: 0
-  voodooPoisoned: 0
-  mortality: 0
-  hasBeenStolenFrom: 0
-  nameTextPrefab: {fileID: 0}
-  playerNameText: {fileID: 0}
-  playerMovement: {fileID: 0}
-  playerCamera: {fileID: 0}
-  playerToArtefactInteraction: {fileID: 0}
-  playerToObstacleInteraction: {fileID: 0}
-  playerToPlayerInteraction: {fileID: 0}
-  playerToAbilityInteraction: {fileID: 0}
-  playerAnim: {fileID: 0}
+  mortal: 0
+  playerName: 
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1734,11 +1723,9 @@ MonoBehaviour:
   playerFallingVelocity: {x: 0, y: 0, z: 0}
   voodooSpeed: 1
   speed: 10
-  normalSpeed: 10
   ground:
     serializedVersion: 2
     m_Bits: 63744
-  playerCharacterController: {fileID: 0}
   playerAnim: {fileID: 0}
 --- !u!114 &2170362586506345961
 MonoBehaviour:
@@ -1768,8 +1755,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.01
-  tempArtefactStorage: []
-  playerName: 
 --- !u!114 &2723256207170165961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1784,12 +1769,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  lengthOfSphere: 2
-  radiusOfSphere: 1
   waitTime: 0.05
   obstacles:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
 --- !u!114 &9084222010806805765
 MonoBehaviour:
   m_ObjectHideFlags: 0

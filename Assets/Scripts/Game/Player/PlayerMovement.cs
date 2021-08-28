@@ -14,14 +14,14 @@ public class PlayerMovement : NetworkBehaviour
     //Movement
     public float voodooSpeed = 1f;
     [Tooltip("The current speed of the player")] [SyncVar] public float speed = 10f;
-    [Tooltip("The original speed of the player")] public float normalSpeed = 10f;
+    [Tooltip("The original speed of the player")] readonly public float normalSpeed = 10f;
     [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
     [Space]
 
     [Header("LayerMasks and Components")]
-    [Tooltip("Ground to check for isGrounded")] public LayerMask ground;
+    [Tooltip("Ground to check for isGrounded")] [SerializeField] private LayerMask ground;
     [Space]
-    [Tooltip("Character controller reference")] public CharacterController playerCharacterController;//See attached()
+    [Tooltip("Character controller reference")] private CharacterController playerCharacterController;//See attached()
     public Animator playerAnim;
 
 
@@ -38,14 +38,15 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!hasAuthority) { return; };
 
-
+       
             #region MOVEMENT_AND_ANIMATION
             if (isGrounded)
             {
                 PlayerInput();
+                AnimatePlayer();
             }
-
-            AnimatePlayer();
+        PlayerFalling();
+ 
 
 
 
@@ -80,20 +81,7 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    private void PlayerFalling()
-    {
-        //Projects a sphere underneath player to check ground layer
-        isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
 
-        //Player recieves a constant y velocity from gravity
-        playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
-
-        //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
-        if (isGrounded && playerFallingVelocity.y < 0)
-        {
-            playerFallingVelocity.y = -5f;
-        }
-    }
 
     void PlayerRotation()
     {
@@ -111,7 +99,20 @@ public class PlayerMovement : NetworkBehaviour
         }
 
     }
+    private void PlayerFalling()
+    {
+        //Projects a sphere underneath player to check ground layer
+        isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
 
+        //Player recieves a constant y velocity from gravity
+        playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
+
+        //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
+        if (isGrounded && playerFallingVelocity.y < 0)
+        {
+            playerFallingVelocity.y = -5f;
+        }
+    }
     public float GetFallingVelocity()
     {
         return playerFallingVelocity.y;

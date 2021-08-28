@@ -6,20 +6,30 @@ public class PlayerToPlayerInteraction : NetworkBehaviour
 {
 
     [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom = false;
-    [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerStates targetedPlayerToStealFrom;
+    [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerToPlayerInteraction targetedPlayerToStealFrom;
     [Tooltip("NA")] private float currentStunAfterTimer;
     [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal = 10.0f;
 
-    private ArtefactInventory artefactInventory;
+    [SyncVar] private ArtefactInventory artefactInventory;
     private PlayerStates player;
     // Start is called before the first frame update
     void Start()
     {
         player = GetComponent<PlayerStates>();
+    }
+
+    public override void OnStartAuthority()
+    {
+        CmdSetArtefactInventory();
+        base.OnStartAuthority();
+    }
+    [Command]
+    private void CmdSetArtefactInventory()
+    {
         artefactInventory = GetComponent<PlayerToArtefactInteraction>().GetArtefactInventory();
     }
 
-    // Update is called once per frame
+    [ClientCallback]
     void Update()
     {
 
@@ -36,7 +46,7 @@ public class PlayerToPlayerInteraction : NetworkBehaviour
             if (currentStunAfterTimer >= timeForStunAfterSteal)
             {
                 currentStunAfterTimer = 0;
-                player.SetStolenFrom(false);
+                targetedPlayerToStealFrom.GetComponent<PlayerToAbilityInteraction>().CmdSetStolenFrom(false);
             }
             else
             {
@@ -53,7 +63,7 @@ public class PlayerToPlayerInteraction : NetworkBehaviour
         //If we are not full, they are no longer stunned and have artefacts, we steal
         if (targetedPlayerToStealFrom != null)
         {
-            ArtefactInventory enemyPlayerArtefactInventory = targetedPlayerToStealFrom.playerToArtefactInteraction.GetArtefactInventory();
+            ArtefactInventory enemyPlayerArtefactInventory = targetedPlayerToStealFrom.GetArtefactInventory();
             if (artefactInventory.AvailableInventorySlot() && enemyPlayerArtefactInventory.InventoryNotEmpty() && targetedPlayerToStealFrom.hasBeenStolenFrom == false)
             {
 
@@ -67,7 +77,7 @@ public class PlayerToPlayerInteraction : NetworkBehaviour
                     if (enemyPlayerArtefactInventory.GetInventory()[indexToRemove].name != string.Empty && enemyPlayerArtefactInventory.GetInventory()[indexToRemove].name == randomArtefact.name)
                     {
                         enemyPlayerArtefactInventory.RemoveFromInventory(indexToRemove, randomArtefact.name, randomArtefact.points);
-                        targetedPlayerToStealFrom.SetStolenFrom(true);
+                        targetedPlayerToStealFrom.GetComponent<PlayerToAbilityInteraction>().CmdSetStolenFrom(true);
                         break;
                     }
                 }
@@ -85,9 +95,9 @@ public class PlayerToPlayerInteraction : NetworkBehaviour
         if (!hasAuthority) { return; };
 
         //Allows us to interact with A player and shows hint message
-        if (collider.gameObject.GetComponent<PlayerController>())
+        if (collider.gameObject.GetComponent<PlayerToPlayerInteraction>())
         {
-            targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerStates>();
+            targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerToPlayerInteraction>();
             if (FindObjectOfType<CanvasUIManager>() != null) //&& NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
         }
@@ -106,9 +116,27 @@ public class PlayerToPlayerInteraction : NetworkBehaviour
             if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
             {
                 targetedPlayerToStealFrom = null;
-                if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+                if (NetworkClient.localPlayer.GetComponent<PlayerToPlayerInteraction>() == this)
                     FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
         }
     }
+
+
+
+
+    #region GETTERS/SETTERS
+    public ArtefactInventory GetArtefactInventory()
+    {
+        return artefactInventory;
+    }
+    public void SetArtefactInventory(ArtefactInventory inventory)
+    {
+        artefactInventory = inventory;
+    }
+    public string GetPlayerName()
+    {
+        return player.playerName;
+    }
+    #endregion
 }

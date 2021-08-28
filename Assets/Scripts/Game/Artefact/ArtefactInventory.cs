@@ -96,7 +96,7 @@ public class ArtefactInventory : NetworkBehaviour
     /// </summary>
     public void ClearInventory(string name)
     {
-        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == name)
+        if (NetworkClient.localPlayer.GetComponent <PlayerStates>().playerName == name)
         {
             FindObjectOfType<CanvasUIManager>().inventoryUI.ClearInventoryScreen();
         }

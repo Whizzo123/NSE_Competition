@@ -33,7 +33,7 @@ public class DebuffTargetIcon : MonoBehaviour
     {
         if (targetObject != null)
         {
-            Camera playerCamera = NetworkClient.localPlayer.GetComponent<PlayerController>().playerCamera;
+            Camera playerCamera = NetworkClient.localPlayer.GetComponent<PlayerCamera>().GetCamera();
             Vector2 screenPos = playerCamera.WorldToScreenPoint(targetObject.transform.position);
             bool isOffScreen = screenPos.x < widthOffset || screenPos.x > Screen.width - widthOffset || screenPos.y > Screen.height - heightOffset || screenPos.y < heightOffset;
             if (isOffScreen)

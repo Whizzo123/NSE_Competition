@@ -5,16 +5,16 @@ using Mirror;
 
 public class PlayerToObstacleInteraction : NetworkBehaviour
 {
-    [Tooltip("Distance forward from the player for the destruction sphere")] public float lengthOfSphere = 2f;
-    [Tooltip("Radius of the obstacle destruction sphere cast")] public float radiusOfSphere = 1f;
+    [Tooltip("Distance forward from the player for the destruction sphere")] private float lengthOfSphere = 2f;
+    [Tooltip("Radius of the obstacle destruction sphere cast")] private float radiusOfSphere = 1f;
 
     [Header("Player options")]
     [SerializeField] [Tooltip("Time delay before destroying another obstacle")] [Range(0, 1)] private float waitTime = 0.05f;
     [Tooltip("If the tools are currently on cooldown")] private bool toolWait = false;
 
-    public LayerMask obstacles;
+    [SerializeField]private LayerMask obstacles;
 
-
+    [ClientCallback]
     private void Update()
     {
 
@@ -22,7 +22,7 @@ public class PlayerToObstacleInteraction : NetworkBehaviour
 
         if (Input.GetKey(KeyCode.Space) && toolWait == false)//&& state.Paralyzed == false)
         {
-            GetComponent<PlayerStates>().playerAnim.SetTrigger("Cut");
+            GetComponent<PlayerStates>().GetAnimator().SetTrigger("Cut");
             StartCoroutine(Hit());
         }
 

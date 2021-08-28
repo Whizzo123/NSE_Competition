@@ -28,7 +28,7 @@ public class AbilitySlotBarUI : MonoBehaviour
                 if (slots[i].SetAbilityName(loadoutItem)) break; else continue;
             }
             //Adds ability to inventory
-            NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(loadoutItem));
+            NetworkClient.localPlayer.GetComponent<PlayerToAbilityInteraction>().GetAbilityInventory().AddAbilityToInventory(FindObjectOfType<AbilityRegister>().Clone(loadoutItem));
         }
     }
     /// <summary>
@@ -36,7 +36,7 @@ public class AbilitySlotBarUI : MonoBehaviour
     /// </summary>
     public void AddAbilityToLoadoutBar(string abilityName)
     {
-        Ability ability = NetworkClient.localPlayer.GetComponent<PlayerController>().abilityInventory.FindAbility(abilityName);
+        Ability ability = NetworkClient.localPlayer.GetComponent<PlayerToAbilityInteraction>().GetAbilityInventory().FindAbility(abilityName);
         if (ability == null)
         {
             foreach (AbilitySlotUI slot in slots)

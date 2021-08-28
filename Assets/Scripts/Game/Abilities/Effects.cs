@@ -48,16 +48,16 @@ public class Effects : NetworkBehaviour
     //Todo: Add speed particles
     public static void SpeedBoost(Ability ability)
     {
-        if(ability.GetCastingPlayer().speed != boostToSpeed && !ability.IsOppositeDebuffActivated())
+        if(ability.GetCastingPlayer().GetComponent<PlayerMovement>().speed != boostToSpeed && !ability.IsOppositeDebuffActivated())
         {
-            ability.GetCastingPlayer().speed = ability.GetCastingPlayer().normalSpeed + boostToSpeed;
+            ability.GetCastingPlayer().GetComponent<PlayerMovement>().speed = ability.GetCastingPlayer().GetComponent<PlayerMovement>().normalSpeed + boostToSpeed;
             ability.SetInUse(true);
         }
     }
 
     public static void EndSpeedBoost(Ability ability)
     {
-        ability.GetCastingPlayer().speed = ability.GetCastingPlayer().normalSpeed;
+        ability.GetCastingPlayer().GetComponent<PlayerMovement>().speed = ability.GetCastingPlayer().GetComponent<PlayerMovement>().normalSpeed;
     }
 
     public static void ActivateCamouflage(Ability ability)
@@ -65,7 +65,7 @@ public class Effects : NetworkBehaviour
         Vector3 spawnPos = ability.GetCastingPlayer().gameObject.transform.position;
         FindObjectOfType<Effects>().CmdSpawnCamouflageParticles(spawnPos);
         AlterMaterials(ability, false);
-        ability.GetCastingPlayer().CmdToggleCamouflage(false, ability.GetCastingPlayer());
+        ability.GetCastingPlayer().CmdToggleCamouflage(ability.GetCastingPlayer().GetComponent<PlayerStates>());
         ability.SetInUse(true);
     }
 
@@ -94,7 +94,7 @@ public class Effects : NetworkBehaviour
     public static void DeactivateCamouflage(Ability ability)
     {
         AlterMaterials(ability, true);
-        ability.GetCastingPlayer().CmdToggleCamouflage(true, ability.GetCastingPlayer());
+        ability.GetCastingPlayer().CmdToggleCamouflage(ability.GetCastingPlayer().GetComponent<PlayerStates>());
     }
 
     public static void ActivateClueInterpretator(Ability ability)
@@ -147,14 +147,14 @@ public class Effects : NetworkBehaviour
         FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(null);
     }
 
-    public static PlayerController FindHighestPlayerTarget()
+    public static PlayerToAbilityInteraction FindHighestPlayerTarget()
     {
         int highestInventoryStash = 0;
-        PlayerController playerWithHighestStashOnPerson = null;
-        foreach (PlayerController player in FindObjectsOfType<PlayerController>())
+        PlayerToAbilityInteraction playerWithHighestStashOnPerson = null;
+        foreach (PlayerToAbilityInteraction player in FindObjectsOfType<PlayerToAbilityInteraction>())
         {
-            if (player == NetworkClient.localPlayer.gameObject.GetComponent<PlayerController>()) continue;
-            List<ItemArtefact> inventory = player.GetComponent<ArtefactInventory>().GetInventory();
+            if (player == NetworkClient.localPlayer.gameObject.GetComponent<PlayerToAbilityInteraction>()) continue;
+            List<ItemArtefact> inventory = player.GetComponent<PlayerToArtefactInteraction>().GetArtefactInventory().GetInventory();
             int playerInventoryStash = 0;
             foreach (ItemArtefact item in inventory)
             {
@@ -173,7 +173,7 @@ public class Effects : NetworkBehaviour
         }
         else
         {
-            return playerWithHighestStashOnPerson.GetComponent<PlayerController>();
+            return playerWithHighestStashOnPerson; ;
         }
     }
 
@@ -192,10 +192,10 @@ public class Effects : NetworkBehaviour
     }
 
     [Command (requiresAuthority = false)]
-    private void CmdSpawnBearTrap(Vector3 spawnPos, PlayerController placingPlayer)
+    private void CmdSpawnBearTrap(Vector3 spawnPos, PlayerToAbilityInteraction placingPlayer)
     {
         GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "BearTrap"), spawnPos, Quaternion.identity);
-        go.GetComponent<BearTrapBehaviour>().SetPlacingPlayer(placingPlayer);
+        go.GetComponent<BearTrapBehaviour>().SetPlacingPlayer(placingPlayer.GetComponent<PlayerStates>().playerName);
         NetworkServer.Spawn(go);
     }
 
@@ -215,10 +215,10 @@ public class Effects : NetworkBehaviour
     }
 
     [Command (requiresAuthority = false)]
-    public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerController placingPlayer, Quaternion spawnRotation)
+    public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerToAbilityInteraction placingPlayer, Quaternion spawnRotation)
     {
         GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "VoodooPoisonTrap"), spawnPos, spawnRotation);
-        go.GetComponent<VoodooPoisonTrapBehaviour>().SetPlacingPlayer(placingPlayer);
+        go.GetComponent<VoodooPoisonTrapBehaviour>().SetPlacingPlayer(placingPlayer.GetComponent<PlayerStates>().playerName);
         NetworkServer.Spawn(go);
     }
 
@@ -231,7 +231,7 @@ public class Effects : NetworkBehaviour
         if(ability.GetTargetedPlayer() == null)
         {
             FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-            PlayerController closestPlayer = FindClosestPlayer(ability);
+            PlayerToAbilityInteraction closestPlayer = FindClosestPlayer(ability);
             if (closestPlayer != null)
             {
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
@@ -250,7 +250,7 @@ public class Effects : NetworkBehaviour
             ability.SetInUse(true);
             Vector3 spawnPos = ability.GetTargetedPlayer().transform.position;
             FindObjectOfType<Effects>().CmdSpawnStickyBombParticles(spawnPos, ability.GetDuration());
-            Ability speedBoost = ability.GetTargetedPlayer().abilityInventory.FindAbility("Speed");
+            Ability speedBoost = ability.GetTargetedPlayer().GetAbilityInventory().FindAbility("Speed");
             if (speedBoost != null)
                 speedBoost.SetOppositeDebuffActivated(true);
             ability.GetTargetedPlayer().CmdModifySpeed(5f);
@@ -261,10 +261,10 @@ public class Effects : NetworkBehaviour
 
     public static void EndStickyBombEffect(Ability ability)
     {
-        Ability speedBoost = ability.GetTargetedPlayer().abilityInventory.FindAbility("Speed");
+        Ability speedBoost = ability.GetTargetedPlayer().GetAbilityInventory().FindAbility("Speed");
         if (speedBoost != null)
             speedBoost.SetOppositeDebuffActivated(false);
-        ability.GetTargetedPlayer().CmdModifySpeed(FindObjectOfType<PlayerController>().normalSpeed);
+        ability.GetTargetedPlayer().CmdModifySpeed(FindObjectOfType<PlayerMovement>().normalSpeed);//may need to change this if players get different movement speeds
         ability.SetTargetedPlayer(null);
     }
 
@@ -282,7 +282,7 @@ public class Effects : NetworkBehaviour
         if(ability.GetTargetedPlayer() == null)
         {
             FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-            PlayerController closestPlayer = FindClosestPlayer(ability);
+            PlayerToAbilityInteraction closestPlayer = FindClosestPlayer(ability);
             FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
             ability.SetTargetedPlayer(closestPlayer);
         }
@@ -306,14 +306,14 @@ public class Effects : NetworkBehaviour
         if(ability.GetTargetedPlayer() == null)
         {
             FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-            PlayerController closestPlayer = FindClosestPlayer(ability);
+            PlayerToAbilityInteraction closestPlayer = FindClosestPlayer(ability);
             FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
             ability.SetTargetedPlayer(closestPlayer);
         }
         else
         {
             ability.SetInUse(true);
-            ability.GetTargetedPlayer().CmdSetImmobilized(true);
+            ability.GetTargetedPlayer().SetImmobolised(true);
             FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
             FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(ability.GetAbilityName(), true);
         }
@@ -321,7 +321,7 @@ public class Effects : NetworkBehaviour
 
     public static void EndParalysisDartEffect(Ability ability)
     {
-        ability.GetTargetedPlayer().CmdSetImmobilized(false);
+        ability.GetTargetedPlayer().SetImmobolised(false);
         ability.SetTargetedPlayer(null);
     }
 
@@ -329,11 +329,11 @@ public class Effects : NetworkBehaviour
 
     #region UtilityFunctions
 
-    private static PlayerController FindClosestPlayer(Ability ability)
+    private static PlayerToAbilityInteraction FindClosestPlayer(Ability ability)
     {
         float shortestDistance = float.MaxValue;
-        PlayerController closestPlayer = null;
-        foreach(PlayerController player in FindObjectsOfType<PlayerController>())
+        PlayerToAbilityInteraction closestPlayer = null;
+        foreach(PlayerToAbilityInteraction player in FindObjectsOfType<PlayerToAbilityInteraction>())
         {
             if (player == ability.GetCastingPlayer()) continue;
             float newDistance = GetDistance(player.transform.position, ability.GetCastingPlayer().transform.position);
@@ -360,7 +360,7 @@ public class Effects : NetworkBehaviour
     [ClientRpc]
     private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
     {
-        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+        if (NetworkClient.localPlayer.GetComponent<PlayerStates>().playerName == targetPlayerName)
             Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
     }
 
@@ -377,7 +377,7 @@ public class Effects : NetworkBehaviour
     [ClientRpc]
     private void RpcUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
     {
-        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+        if (NetworkClient.localPlayer.GetComponent<PlayerStates>().playerName == targetPlayerName)
             GameObject.FindObjectOfType<AbilityTimerContainer>().UpdateTimer(abilityName, duration);
     }
 

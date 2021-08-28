@@ -6,7 +6,7 @@ using Mirror;
 
 public class VoodooPoisonTrapBehaviour : NetworkBehaviour
 {
-    private PlayerController trappedPlayer;
+    private PlayerToAbilityInteraction trappedPlayer;
 
     public float trapDuration = 2.5f; // Test this please
     private float currentDuration;
@@ -31,15 +31,15 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     {
         if (placingPlayerName != null)
         {
-            if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
+            if (collider.gameObject.GetComponent<PlayerToAbilityInteraction>() && collider.isTrigger == false)
             {
-                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+                if (collider.gameObject.GetComponent<PlayerStates>().playerName != placingPlayerName)
                 {
-                    trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                    if (!trappedPlayer.IsVoodooPoisoned())
+                    trappedPlayer = collider.gameObject.GetComponent<PlayerToAbilityInteraction>();
+                    if (!trappedPlayer.GetVoodooPlayer())
                     {
-                        trappedPlayer.CmdSetVoodooPoisoned(true);
-                        CmdCreateAbilityEffectTimer("Voodoo Poison Trap", trappedPlayer.playerName, trapDuration);
+                        trappedPlayer.SetVoodooPlayer(true);
+                        CmdCreateAbilityEffectTimer("Voodoo Poison Trap", trappedPlayer.GetComponent<PlayerStates>().playerName, trapDuration);
                     }
                     CmdSpringTrap();
                 }
@@ -47,9 +47,9 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
         }
     }
 
-    public void SetPlacingPlayer(PlayerController controller)
+    public void SetPlacingPlayer(string playerName)
     {
-        placingPlayerName = controller.playerName;
+        placingPlayerName = playerName;
     }
 
     [Command (requiresAuthority = false)]
@@ -88,11 +88,11 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 if (currentDuration < trapDuration)
                 {
                     currentDuration += Time.deltaTime;
-                    CmdUpdateTargetTimer(trappedPlayer.playerName, "Voodoo Poison Trap", currentDuration);
+                    CmdUpdateTargetTimer(trappedPlayer.GetComponent<PlayerStates>().playerName, "Voodoo Poison Trap", currentDuration);
                 }
                 else
                 {
-                    trappedPlayer.CmdSetVoodooPoisoned(false);
+                    trappedPlayer.SetVoodooPlayer(false);
                     NetworkServer.Destroy(this.gameObject);
                 }
             }

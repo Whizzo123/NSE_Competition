@@ -9,7 +9,7 @@ using Mirror;
 /// </summary>
 public class AbilityInventory
 {
-    [Tooltip("Player that has this instance of AbilityInventory")]private PlayerToArtefactInteraction player;
+    [Tooltip("Player that has this instance of AbilityInventory")]private PlayerToArtefactInteraction player;//Necessary?
     
     [Tooltip("Ability list that player can use")]readonly SyncList<Ability> abilities = new SyncList<Ability>();
 
@@ -26,7 +26,7 @@ public class AbilityInventory
     }
     public AbilityInventory(PlayerToArtefactInteraction playerOwningInventory)
     {
-        player = playerOwningInventory;//used?
+        player = playerOwningInventory;
     }
 
     #region ADDITION_AND_REMOVAL_OF_ABILITIES
@@ -120,7 +120,7 @@ public class AbilityInventory
             FindAbility(ability.GetAbilityName()).ResetUseCount();
         else
         {
-            ability.SetCastingPlayer(NetworkClient.localPlayer.GetComponent<PlayerController>());
+            ability.SetCastingPlayer(NetworkClient.localPlayer.GetComponent<PlayerToAbilityInteraction>());
             ability.SetInventory(this);
             CmdAddToAbilities(ability);
         }  

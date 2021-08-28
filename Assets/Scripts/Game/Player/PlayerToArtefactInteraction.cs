@@ -6,14 +6,12 @@ using Mirror;
 public class PlayerToArtefactInteraction : NetworkBehaviour
 {
     [Header("Stored Interactables")]
-    [Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. The reason for this was to allow us to check that we are not picking up the same artefact twice.")] public List<ArtefactBehaviour> tempArtefactStorage;
+    [Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. The reason for this was to allow us to check that we are not picking up the same artefact twice.")] private List<ArtefactBehaviour> tempArtefactStorage;
     [Tooltip("The artefacts that are in range for picking up")] readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
     [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")] private List<uint> artefactsForDestruction = new List<uint>();
     [SyncVar] private ArtefactInventory artefactInventory;
 
     [Tooltip("NA")] private Stash gameStash;
-    [SyncVar] public string playerName;
-
 
 
     public override void OnStartAuthority()
@@ -32,6 +30,7 @@ public class PlayerToArtefactInteraction : NetworkBehaviour
     }
 
     // Update is called once per frame
+    [ClientCallback]
     void Update()
     {
         if (!hasAuthority) { return; };
@@ -68,7 +67,7 @@ public class PlayerToArtefactInteraction : NetworkBehaviour
                 CmdClearTargetArtefacts();
                 tempArtefactStorage.Clear();
 
-                if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+                if (NetworkClient.localPlayer.GetComponent<PlayerToArtefactInteraction>() == this)
                     FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
             else
@@ -131,6 +130,10 @@ public class PlayerToArtefactInteraction : NetworkBehaviour
     public void OnTriggerStay(Collider collider)
     {
         if (!hasAuthority) { return; };
+        if (!collider.gameObject.GetComponent<ArtefactBehaviour>())
+        {
+            return;
+        }
         ArtefactBehaviour artefactBehaviour = collider.gameObject.GetComponent<ArtefactBehaviour>();
         if (artefactsForDestruction.Contains(artefactBehaviour.netId))
         {
@@ -147,7 +150,7 @@ public class PlayerToArtefactInteraction : NetworkBehaviour
             //Sends command to add it to targeted artefact
             CmdAddToTargetedArtefacts(artefactBehaviour);
 
-            if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+            if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerToArtefactInteraction>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
         }
     }
@@ -184,7 +187,7 @@ public class PlayerToArtefactInteraction : NetworkBehaviour
             else if (gameStash != null && collider.gameObject == gameStash.gameObject)
             {
                 gameStash = null;
-                if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+                if (NetworkClient.localPlayer.GetComponent<PlayerToArtefactInteraction>() == this)
                     FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
         }

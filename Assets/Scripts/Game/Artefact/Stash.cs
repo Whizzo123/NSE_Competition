@@ -21,7 +21,7 @@ public class Stash : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdAddToStashScores(PlayerToArtefactInteraction player)
     {
-        string playerName = player.playerName;
+        string playerName = player.GetComponent<PlayerStates>().playerName;
 
         //Sets score
         int score = 0;
@@ -44,7 +44,7 @@ public class Stash : NetworkBehaviour
     [ClientRpc]
     private void RpcClearInventory(PlayerToArtefactInteraction player)
     {
-        player.GetArtefactInventory().ClearInventory(player.playerName);
+        player.GetArtefactInventory().ClearInventory(player.GetComponent<PlayerStates>().playerName);
     }
     /// <summary>
     /// Updates the the scoreboard ui

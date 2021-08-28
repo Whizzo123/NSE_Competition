@@ -5,23 +5,25 @@ using Mirror;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
 public class PlayerStates : NetworkBehaviour
 {
-    [Tooltip("Are we immobolised")] [SyncVar] public bool immobilize = false;
-    [Tooltip("Have we been hit by the voodoo trap")] [SyncVar] public bool voodooPoisoned = false;
-    [Tooltip("Are we unable to use abilities?")] [SyncVar] public bool mortality = false;
-    [Tooltip("Have we recently been stolen from?")] [SyncVar] public bool hasBeenStolenFrom = false;
+    //[Tooltip("Are we immobolised")] [SyncVar] public bool immobilize = false;
+    [Tooltip("Have we been hit by the voodoo trap")] [SyncVar] private bool voodooPoisoned = false;
+    [Tooltip("Are we unable to use abilities?")] [SyncVar] public bool mortal = false;
+    [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom = false;
 
-    [Tooltip("NA")] public GameObject nameTextPrefab;
-    [Tooltip("NA")] public GameObject playerNameText;
+    [Tooltip("NA")] private GameObject nameTextPrefab;
+    [Tooltip("NA")] private GameObject playerNameText;
+    [SyncVar] public string playerName;
 
-    public PlayerMovement playerMovement;
-    public PlayerCamera playerCamera;
-    public PlayerToArtefactInteraction playerToArtefactInteraction;
-    public PlayerToObstacleInteraction playerToObstacleInteraction;
-    public PlayerToPlayerInteraction playerToPlayerInteraction;
-    public PlayerToAbilityInteraction playerToAbilityInteraction;
-    public Animator playerAnim;
+    private PlayerMovement playerMovement;
+    private PlayerCamera playerCamera;
+    private PlayerToArtefactInteraction playerToArtefactInteraction;
+    private PlayerToObstacleInteraction playerToObstacleInteraction;
+    [SyncVar] private PlayerToPlayerInteraction playerToPlayerInteraction;
+    private PlayerToAbilityInteraction playerToAbilityInteraction;
+    private Animator playerAnim;
 
     private void Awake()
     {
@@ -44,7 +46,7 @@ public class PlayerStates : NetworkBehaviour
             playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
             playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
             playerNameText.SetActive(true);
-            playerNameText.GetComponent<Text>().text = playerToArtefactInteraction.playerName;
+            playerNameText.GetComponent<Text>().text = playerName;
         }
     }
     public override void OnStartAuthority()
@@ -54,52 +56,23 @@ public class PlayerStates : NetworkBehaviour
     }
     public void SetLoadoutReleased(bool value)
     {
-        if (value == true)
-        {
-            Un_ImmobolizePlayer();
-        }
-        else
-        {
-            ImmobolizePlayer();
-        }
+        playerToAbilityInteraction.SetImmobolised(value);
         if (GameObject.Find("_wamp_water") && value == true)
         {
             GameObject.Find("_wamp_water").GetComponent<MeshCollider>().enabled = false;
         }
     }
-    //Possibly need to make these functions commands
 
-    public void ImmobolizePlayer()
+    public Animator GetAnimator()
     {
-        playerMovement.enabled = false;
+        return playerAnim;
     }
-    public void Un_ImmobolizePlayer()
+    public PlayerMovement GetPlayerMovement()
     {
-        playerMovement.enabled = true;
+        return playerMovement;
     }
-    public void SetImmobolised(bool immobolise)
+    public PlayerToAbilityInteraction GetPlayerToAbilityInteraction()
     {
-        playerMovement.enabled = immobolise;
-    }
-    public void SetStolenFrom(bool stolen)
-    {
-        playerToPlayerInteraction.enabled = !stolen;
-        SetImmobolised(stolen);
-        if (stolen == true)
-        {
-            //Todo: Start timer for wear off period
-
-        }
-    }
-
-    public void VoodooPlayer()
-    {
-        voodooPoisoned = true;
-        playerMovement.voodooSpeed = -1;
-    }
-    public void Un_VoodooPlayer()
-    {
-        voodooPoisoned = false;
-        playerMovement.speed = 1;
+        return playerToAbilityInteraction;
     }
 }

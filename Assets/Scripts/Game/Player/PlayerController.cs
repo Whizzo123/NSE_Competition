@@ -29,7 +29,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
-    [Tooltip("Our abilities that we've selected")] [SyncVar] public AbilityInventory abilityInventory;
+    [Tooltip("Our abilities that we've selected")] [SyncVar] public AbilityInventory abilityInventory;//why is this a syncvar
     [SyncVar] private ArtefactInventory artefactInventory;
     [SyncVar] public string playerName;
 
@@ -124,7 +124,7 @@ public class PlayerController : NetworkBehaviour
     private void CmdSetupPlayer()
     {
         //Components
-        abilityInventory = new AbilityInventory(this);
+        //abilityInventory = new AbilityInventory(this);
         artefactInventory = GetComponent<ArtefactInventory>();
 
         //Variables

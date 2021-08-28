@@ -109,7 +109,7 @@ public class TheCountdown : NetworkBehaviour
         {
             icon.gameObject.SetActive(false);
         }
-        NetworkClient.localPlayer.GetComponent<PlayerController>().SetLoadoutReleased(true);
+        NetworkClient.localPlayer.GetComponent<PlayerStates>().SetLoadoutReleased(true);
     }
 
     /// <summary>

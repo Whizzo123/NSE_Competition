@@ -6,7 +6,7 @@ using Mirror;
 public class PlayerTrackIconUI : MonoBehaviour
 {
 
-    private PlayerController target;
+    private PlayerToAbilityInteraction target;
     [Tooltip("Image for when target off screen")] public Sprite pointerImage;
     [Tooltip("Image for when target on screen")] public Sprite aimCircleImage;
     public Image imageComponent;
@@ -26,7 +26,7 @@ public class PlayerTrackIconUI : MonoBehaviour
         //Do stuff to have icon move around screen
         if(target != null)
         {
-            Camera playerCamera = NetworkClient.localPlayer.GetComponent<PlayerController>().playerCamera;
+            Camera playerCamera = NetworkClient.localPlayer.GetComponent<PlayerToAbilityInteraction>().GetComponent<PlayerCamera>().GetCamera();
             Vector2 screenPos = playerCamera.WorldToScreenPoint(target.transform.position);
             bool isOffScreen = screenPos.x < widthOffset || screenPos.x > Screen.width - widthOffset || screenPos.y > Screen.height - heightOffset || screenPos.y < heightOffset;
             if (isOffScreen)
@@ -78,7 +78,7 @@ public class PlayerTrackIconUI : MonoBehaviour
         GetComponent<Image>().sprite = sprite;
     }
 
-    public void SetIconTarget(PlayerController player)
+    public void SetIconTarget(PlayerToAbilityInteraction player)
     {
         target = player;
         if(target == null)

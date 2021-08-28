@@ -41,8 +41,8 @@ public class Ability
 
     [Header("Component references")]
     [Tooltip("JoeComment")] protected AbilityInventory inventory;
-    [Tooltip("Player to not target with traps and debuffs")] private PlayerToArtefactInteraction castingPlayer;
-    [Tooltip("Player to target with debuffs. JoeComment does this also do trapped players?")] private PlayerToArtefactInteraction targetedPlayer;
+    [Tooltip("Player to not target with traps and debuffs")] private PlayerToAbilityInteraction castingPlayer;
+    [Tooltip("Player to target with debuffs. JoeComment does this also do trapped players?")] private PlayerToAbilityInteraction targetedPlayer;
     #endregion
 
     #region SETUP
@@ -147,14 +147,14 @@ public class Ability
             Debug.Log("UpdatingTrapAbility: " + useCount + ": " + used);
             if (used && useCount >= 3)
             {
-                castingPlayer.GetArtefactInventory().RemoveAbilityFromInventory(this);
+                castingPlayer.GetAbilityInventory().RemoveAbilityFromInventory(this);
             }
         }
     }
 
     private void UpdateTargetTimer()
     {
-        GameObject.FindObjectOfType<Effects>().CmdUpdateTargetTimer(targetedPlayer.playerName, name, currentDuration);
+        GameObject.FindObjectOfType<Effects>().CmdUpdateTargetTimer(targetedPlayer.GetComponent<PlayerStates>().playerName, name, currentDuration);
     }
     
     /// <summary>
@@ -186,7 +186,7 @@ public class Ability
                 effectInvokedOnUse.Invoke(this);
                 if (!state.IsName("Throw") && inUse)
                 {
-                    GameObject.FindObjectOfType<Effects>().CmdCreateAbilityEffectTimer(name, targetedPlayer.playerName, duration);
+                    GameObject.FindObjectOfType<Effects>().CmdCreateAbilityEffectTimer(name, targetedPlayer.GetComponent<PlayerStates>().playerName, duration);
                     animator.SetTrigger("Throw");
                     if (useType == AbilityUseTypes.RECHARGE)
                     {
@@ -224,7 +224,7 @@ public class Ability
             inUse = false;
         }
         if (useType == AbilityUseTypes.ONE_TIME)
-            castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);
+            castingPlayer.GetAbilityInventory().RemoveAbilityFromInventory(this);
     }
 
     public static void CreateLocalAbilityEffectTimer(string abilityName, float fullDuration)
@@ -305,19 +305,19 @@ public class Ability
         inventory = _inventory;
     }
 
-    public PlayerController GetCastingPlayer()
+    public PlayerToAbilityInteraction GetCastingPlayer()
     {
         return castingPlayer;
     }
-    public void SetCastingPlayer(PlayerController player)
+    public void SetCastingPlayer(PlayerToAbilityInteraction player)
     {
         castingPlayer = player;
     }
-    public PlayerController GetTargetedPlayer()
+    public PlayerToAbilityInteraction GetTargetedPlayer()
     {
         return targetedPlayer;
     }
-    public void SetTargetedPlayer(PlayerController target)
+    public void SetTargetedPlayer(PlayerToAbilityInteraction target)
     {
         targetedPlayer = target;
     }

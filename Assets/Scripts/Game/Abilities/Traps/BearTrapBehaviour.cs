@@ -5,7 +5,7 @@ using Mirror;
 
 public class BearTrapBehaviour : NetworkBehaviour
 {
-    private PlayerController trappedPlayer;
+    private PlayerToAbilityInteraction trappedPlayer;
 
     public float trapDuration = 5;
     private float currentDuration;
@@ -29,17 +29,17 @@ public class BearTrapBehaviour : NetworkBehaviour
     {
         if (placingPlayerName != null && sprung == false)
         { 
-            if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
+            if (collider.gameObject.GetComponent<PlayerToAbilityInteraction>() && collider.isTrigger == false)
             {
-                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+                if (collider.gameObject.GetComponent<PlayerStates>().playerName != placingPlayerName)
                 {
-                    trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                    if (!trappedPlayer.IsImmobilized())
+                    trappedPlayer = collider.gameObject.GetComponent<PlayerToAbilityInteraction>();
+                    if (!trappedPlayer.GetImmobolised())
                     {
-                        trappedPlayer.CmdSetImmobilized(true);
+                        trappedPlayer.SetImmobolised(true);
                         Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
-                        trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.playerName);
-                        CmdCreateAbilityEffectTimer("Bear Trap", trappedPlayer.playerName, trapDuration);
+                        trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.GetComponent<PlayerStates>().playerName);
+                        CmdCreateAbilityEffectTimer("Bear Trap", trappedPlayer.GetComponent<PlayerStates>().playerName, trapDuration);
                     }
                     CmdSpringTrap();
                     
@@ -48,9 +48,9 @@ public class BearTrapBehaviour : NetworkBehaviour
         }
     }
 
-    public void SetPlacingPlayer(PlayerController controller)
+    public void SetPlacingPlayer(string playerName)
     {
-        placingPlayerName = controller.playerName;
+        placingPlayerName = playerName;
     }
 
     [Command (requiresAuthority = false)]
@@ -90,15 +90,15 @@ public class BearTrapBehaviour : NetworkBehaviour
             {
                 if (currentDuration < trapDuration)
                 {
-                    if(trappedPlayer.IsImmobilized() == false)
-                        trappedPlayer.CmdSetImmobilized(true);
+                    if(trappedPlayer.GetImmobolised() == false)
+                        trappedPlayer.SetImmobolised(true);
                     currentDuration += Time.deltaTime;
-                    CmdUpdateTargetTimer(trappedPlayer.playerName, "Bear Trap", currentDuration);
+                    CmdUpdateTargetTimer(trappedPlayer.GetComponent<PlayerStates>().playerName, "Bear Trap", currentDuration);
                 }
                 else
                 {
-                    if(trappedPlayer.IsImmobilized())
-                        trappedPlayer.CmdSetImmobilized(false);
+                    if(trappedPlayer.GetImmobolised())
+                        trappedPlayer.SetImmobolised(false);
                     NetworkServer.Destroy(this.gameObject);
                 }
             }
@@ -114,7 +114,7 @@ public class BearTrapBehaviour : NetworkBehaviour
     [ClientRpc]
     private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
     {
-        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName && FindObjectOfType<AbilityTimerContainer>().Contains(abilityName) == false)
+        if (NetworkClient.localPlayer.GetComponent<PlayerStates>().playerName == targetPlayerName && FindObjectOfType<AbilityTimerContainer>().Contains(abilityName) == false)
             Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
     }
 
@@ -127,7 +127,7 @@ public class BearTrapBehaviour : NetworkBehaviour
     [ClientRpc]
     private void RpcUpdateTargetTimer(string targetPlayerName, string abilityName, float duration)
     {
-        if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
+        if (NetworkClient.localPlayer.GetComponent<PlayerStates>().playerName == targetPlayerName)
             GameObject.FindObjectOfType<AbilityTimerContainer>().UpdateTimer(abilityName, duration);
     }
 }
