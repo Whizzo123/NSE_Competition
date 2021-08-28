@@ -57,9 +57,9 @@ public class AbilityRegister : MonoBehaviour
             Effects.EndSpeedBoost, 20.0f);
         Ability camouflage = new Ability("Camouflage", "Allows you to blend in with your surroundings for limited amount of time", 4, AbilityUseTypes.RECHARGE,
             AbilityType.POWERUP, 15.0f, Effects.ActivateCamouflage, Effects.DeactivateCamouflage, 50.0f);
-        Ability clueInterpretator = new Ability("Clue Interpretator", "Gain insight to where your nearby artefacts works", 5, AbilityUseTypes.RECHARGE,
+        Ability clueInterpretator = new Ability("Clue Interpretator", "Gain insight to where your nearby artefacts are", 5, AbilityUseTypes.RECHARGE,
             AbilityType.POWERUP, 10.0f, Effects.ActivateClueInterpretator, Effects.DeactivateClueInterpretator, 30.0f);
-        Ability playerTracker = new Ability("PlayerTracker", "Track other players on the map", 5, AbilityUseTypes.RECHARGE, AbilityType.POWERUP, 25.0f,
+        Ability playerTracker = new Ability("PlayerTracker", "Track the player with most artefacts on them for you to steal", 5, AbilityUseTypes.RECHARGE, AbilityType.POWERUP, 25.0f,
             Effects.ActivatePlayerTracker, Effects.DeactivatePlayerTracker, 30.0f);
         //Traps
         Ability bearTrap = new Ability("Bear Trap", "Ensnare your opponents in a bear trap to immobilize them", 3, AbilityUseTypes.ONE_TIME, AbilityType.TRAP,
@@ -71,7 +71,7 @@ public class AbilityRegister : MonoBehaviour
             20.0f, Effects.ThrowStickyBomb, Effects.EndStickyBombEffect, 30.0f);
         Ability mortalSpell = new Ability("Mortal Spell", "Brings an enemy back down to the mortal plane all abilities are stripped for 10 secs", 3, AbilityUseTypes.RECHARGE,
             AbilityType.DEBUFF, 20.0f, Effects.CastMortalSpell, Effects.EndMortalSpell, 10.0f);
-        Ability paralysisDart = new Ability("Paralysis Dart", "Shoot a poison dart capable of turning an enemies hands to lead so they cannot use tools", 3, AbilityUseTypes.RECHARGE,
+        Ability paralysisDart = new Ability("Paralysis Dart", "Shoot a poison dart capable paralyzing them", 3, AbilityUseTypes.RECHARGE,
             AbilityType.DEBUFF, 10.0f, Effects.ThrowParalysisDart, Effects.EndParalysisDartEffect, 20.0f);
         //Add these abilities into the dictionary
         abilities.Add(speedBoost.GetAbilityName(), speedBoost);
