@@ -129,10 +129,10 @@ public class MyNetworkManager : NetworkManager
         }
         base.OnServerDisconnect(conn);
     }
-
+    
     public override void ServerChangeScene(string newSceneName)
     {
-        if (newSceneName.Contains("Game"))
+        if (newSceneName.Contains("Plains") || newSceneName.Contains("Quarantine"))
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
@@ -208,7 +208,7 @@ public class MyNetworkManager : NetworkManager
         if (SceneManager.GetActiveScene().name == "LobbyScene")
         {
             if (!IsReadyToStart()) { return; }
-            ServerChangeScene("GameScene");
+            ServerChangeScene("Quarantine City");
         }
     }
     #endregion
