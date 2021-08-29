@@ -237,7 +237,7 @@ public class Effects : NetworkBehaviour
                 FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
-                genericTimer.SetTimer(3f, () => { Debug.Log("StickyTimer Up"); ability.Use(); });//Will throw bomb after 3 seconds
+                genericTimer.SetTimer(3f, () => { ability.Use(); });//Will throw bomb after 3 seconds
             }
             else
             {
@@ -253,9 +253,7 @@ public class Effects : NetworkBehaviour
             Ability speedBoost = ability.GetTargetedPlayer().abilityInventory.FindAbility("Speed");
             if (speedBoost != null)
                 speedBoost.SetOppositeDebuffActivated(true);
-            ability.GetTargetedPlayer().CmdModifySpeed(5f);
-            Debug.Log("Got player commencing throw");
-            
+            ability.GetTargetedPlayer().CmdModifySpeed(5f); 
         }
     }
 
@@ -319,6 +317,7 @@ public class Effects : NetworkBehaviour
                 FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
+                genericTimer.SetTimer(3f, () => { ability.Use(); });
             }
             else
             {
