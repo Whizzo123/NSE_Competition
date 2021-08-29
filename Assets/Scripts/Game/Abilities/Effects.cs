@@ -230,13 +230,13 @@ public class Effects : NetworkBehaviour
     {
         if(ability.GetTargetedPlayer() == null)
         {
-            FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-            PlayerController closestPlayer = FindClosestPlayer(ability);
+            
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
             if (closestPlayer != null)
             {
+                FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
-                Debug.Log("Setting targeted player");
                 genericTimer.SetTimer(3f, () => { Debug.Log("StickyTimer Up"); ability.Use(); });//Will throw bomb after 3 seconds
             }
             else
@@ -281,10 +281,18 @@ public class Effects : NetworkBehaviour
     {
         if(ability.GetTargetedPlayer() == null)
         {
-            FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-            PlayerController closestPlayer = FindClosestPlayer(ability);
-            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
-            ability.SetTargetedPlayer(closestPlayer);
+
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
+            if (closestPlayer != null)
+            {
+                FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
+                FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
+                ability.SetTargetedPlayer(closestPlayer);
+            }
+            else
+            {
+                FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
+            }
         }
         else
         {
@@ -305,10 +313,17 @@ public class Effects : NetworkBehaviour
     {
         if(ability.GetTargetedPlayer() == null)
         {
-            FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-            PlayerController closestPlayer = FindClosestPlayer(ability);
-            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
-            ability.SetTargetedPlayer(closestPlayer);
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
+            if(closestPlayer != null)
+            {
+                FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
+                FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
+                ability.SetTargetedPlayer(closestPlayer);
+            }
+            else
+            {
+                FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
+            }
         }
         else
         {
@@ -329,7 +344,8 @@ public class Effects : NetworkBehaviour
 
     #region UtilityFunctions
 
-    private static PlayerController FindClosestPlayer(Ability ability)
+    //Now can be given a range to work in
+    private static PlayerController FindClosestPlayer(Ability ability, float rangeDistance)
     {
         float shortestDistance = float.MaxValue;
         PlayerController closestPlayer = null;
@@ -337,7 +353,7 @@ public class Effects : NetworkBehaviour
         {
             if (player == ability.GetCastingPlayer()) continue;
             float newDistance = GetDistance(player.transform.position, ability.GetCastingPlayer().transform.position);
-            if(newDistance < shortestDistance)
+            if(newDistance < shortestDistance && newDistance < rangeDistance)
             {
                 shortestDistance = newDistance;
                 closestPlayer = player;
