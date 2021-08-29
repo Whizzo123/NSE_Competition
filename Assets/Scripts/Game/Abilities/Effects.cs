@@ -230,14 +230,13 @@ public class Effects : NetworkBehaviour
     {
         if(ability.GetTargetedPlayer() == null)
         {
-            
             PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
             if (closestPlayer != null)
             {
                 FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
-                genericTimer.SetTimer(3f, () => { ability.Use(); });//Will throw bomb after 3 seconds
+                genericTimer.SetTimer(3f, () => { if(!ability.IsInUse()) ability.Use(); });//Will throw bomb after 3 seconds
             }
             else
             {
@@ -317,7 +316,7 @@ public class Effects : NetworkBehaviour
                 FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
-                genericTimer.SetTimer(3f, () => { ability.Use(); });
+                genericTimer.SetTimer(3f, () => { if (!ability.IsInUse()) ability.Use(); });
             }
             else
             {
@@ -327,7 +326,7 @@ public class Effects : NetworkBehaviour
         else
         {
             ability.SetInUse(true);
-            ability.GetTargetedPlayer().CmdSetImmobilized(true);
+            ability.GetTargetedPlayer().CmdSetParalyzed(true);
             FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
             FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(ability.GetAbilityName(), true);
         }
@@ -335,7 +334,7 @@ public class Effects : NetworkBehaviour
 
     public static void EndParalysisDartEffect(Ability ability)
     {
-        ability.GetTargetedPlayer().CmdSetImmobilized(false);
+        ability.GetTargetedPlayer().CmdSetParalyzed(false);
         ability.SetTargetedPlayer(null);
     }
 

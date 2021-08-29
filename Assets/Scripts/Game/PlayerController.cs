@@ -80,6 +80,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Are we immobolised")] [SyncVar] private bool immobilize;
     [Tooltip("Have we been hit by the voodoo trap")] [SyncVar] private bool voodooPoisoned;
     [Tooltip("Can we use abilities?")] [SyncVar] private bool mortal;
+    [Tooltip("Can we use our tools?")][SyncVar] private bool paralyzed;
     [Tooltip("NA")] private float currentStunAfterTimer;
     [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal = 10.0f;
 
@@ -378,7 +379,7 @@ public class PlayerController : NetworkBehaviour
         #endregion
 
         #region OBSTACLE_INTERACTION
-        if (Input.GetKey(KeyCode.Space) && toolWait == false)//&& state.Paralyzed == false)
+        if (Input.GetKey(KeyCode.Space) && toolWait == false && paralyzed == false)
         {
             playerAnim.SetTrigger("Cut");
             StartCoroutine(Hit());
@@ -781,6 +782,12 @@ public class PlayerController : NetworkBehaviour
     public void CmdSetImmobilized(bool value)
     {
         immobilize = value;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetParalyzed(bool value)
+    {
+        paralyzed = value;
     }
 
     //Poison
