@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -6356220220854708457}
   - component: {fileID: -4587001002744856315}
   - component: {fileID: -1702432982326895286}
+  - component: {fileID: -5613930788664810020}
   m_Layer: 18
   m_Name: Bottle
   m_TagString: Artefact
@@ -134,3 +135,28 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!205 &-5613930788664810020
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5066538118683467629}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0.05892256}
+  m_Size: 0.3178451
+  m_FadeMode: 1
+  m_AnimateCrossFading: 1
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 6723603641190923960}
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  m_Enabled: 1
