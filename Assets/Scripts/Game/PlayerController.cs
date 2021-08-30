@@ -541,9 +541,17 @@ public class PlayerController : NetworkBehaviour
         //Allows us to interact with A player and shows hint message
         if (collider.gameObject.GetComponent<PlayerController>())
         {
+            if (collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled == false)
+            {
+                return;
+            }
             targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
             if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
+            {
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
+
+            }
+
         }
 
     }
@@ -554,6 +562,11 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     public void OnTriggerStay(Collider collider)
     {
+
+        if (!collider.gameObject.GetComponent<ArtefactBehaviour>())
+        {
+            return;
+        }
         ArtefactBehaviour artefactBehaviour = collider.gameObject.GetComponent<ArtefactBehaviour>();
         if (artefactsForDestruction.Contains(artefactBehaviour.netId))
         {

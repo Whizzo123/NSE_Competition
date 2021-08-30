@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using Mirror;
@@ -89,6 +89,20 @@ public class Effects : NetworkBehaviour
         GameObject go = Instantiate(MyNetworkManager.singleton.spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Invisibility_PA"),
             spawnPos, Quaternion.identity);
         NetworkServer.Spawn(go);
+        //temp();
+    }
+
+    [ClientRpc]
+    void temp()
+    {
+        if(GameObject.Find("Invisibility_PA(Clone)"))
+        {
+            Debug.LogError("PLAYING INVIS");
+            GameObject go = GameObject.Find("Invisibility_PA(Clone)");
+            go.SetActive(true);
+            go.GetComponent<ParticleSystem>().Play();
+        }
+
     }
 
     public static void DeactivateCamouflage(Ability ability)
