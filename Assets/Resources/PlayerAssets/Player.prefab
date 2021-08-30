@@ -1690,7 +1690,7 @@ MonoBehaviour:
   playerCamera: {fileID: 0}
   vCam: {fileID: 0}
   offset: {x: 0, y: 10, z: 10}
-  timeForStunAfterSteal: 10
+  timeForStunAfterSteal: 3
   devMode: 0
   devCam: {fileID: 22159899250329015, guid: 73b92ca893da92447ae9bf658bf9355c, type: 3}
 --- !u!114 &4071522212128209381

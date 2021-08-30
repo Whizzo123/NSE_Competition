@@ -82,7 +82,7 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Can we use abilities?")] [SyncVar] private bool mortal;
     [Tooltip("Can we use our tools?")][SyncVar] private bool paralyzed;
     [Tooltip("NA")] private float currentStunAfterTimer;
-    [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal = 10.0f;
+    [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal;
 
     //Other Variables
     [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom = false;
