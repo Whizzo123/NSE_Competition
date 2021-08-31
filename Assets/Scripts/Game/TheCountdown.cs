@@ -90,15 +90,16 @@ public class TheCountdown : NetworkBehaviour
         EndGame();
     }
 
-    /// <summary>
-    /// Loads in abilites selected, and disables the laodout screen and disables player immobolisation.
-    /// </summary>
+
     [ClientRpc]
     private void RpcDisconnectPlayer()
     {
         MyNetworkManager.singleton.StopClient();
     }
 
+    /// <summary>
+    /// Loads in abilites selected, and disables the laodout screen and disables player immobolisation.
+    /// </summary>
     [ClientRpc]
     private void DisableLoadoutScreen()
     {
