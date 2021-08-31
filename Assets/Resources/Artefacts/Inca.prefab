@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8630801404072232764}
   - component: {fileID: 8561310119300251705}
   - component: {fileID: 3538270924435370509}
+  - component: {fileID: 6859326898672807899}
   m_Layer: 18
   m_Name: Inca
   m_TagString: Artefact
@@ -132,3 +133,28 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!205 &6859326898672807899
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7348678549364091987}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0.07132858, z: 0}
+  m_Size: 0.3301051
+  m_FadeMode: 1
+  m_AnimateCrossFading: 1
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 9149973333134970246}
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  m_Enabled: 1

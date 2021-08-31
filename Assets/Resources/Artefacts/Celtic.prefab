@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 552467687243015804}
   - component: {fileID: 4326175156711398971}
   - component: {fileID: 1573009493923451969}
+  - component: {fileID: -2138481487328803614}
   m_Layer: 18
   m_Name: Celtic
   m_TagString: Artefact
@@ -132,3 +133,28 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!205 &-2138481487328803614
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4080121278887737943}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.0005671978, y: 0.030382544, z: -0.001809489}
+  m_Size: 0.3208778
+  m_FadeMode: 1
+  m_AnimateCrossFading: 1
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 2566907612967869314}
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  m_Enabled: 1

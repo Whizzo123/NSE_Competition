@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7865791788089855507}
   - component: {fileID: 2752408079789902713}
   - component: {fileID: 8621930975700454999}
+  - component: {fileID: 3700252523574716794}
   m_Layer: 18
   m_Name: GreenGem
   m_TagString: Artefact
@@ -132,3 +133,28 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!205 &3700252523574716794
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5110210771469321765}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.000034078956, y: -0.000012353063, z: -0.005710028}
+  m_Size: 0.27571622
+  m_FadeMode: 1
+  m_AnimateCrossFading: 1
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 6767751282043283440}
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers: []
+  m_Enabled: 1

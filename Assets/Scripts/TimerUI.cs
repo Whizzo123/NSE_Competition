@@ -15,6 +15,9 @@ public class TimerUI : MonoBehaviour
     public bool deltaTimeBased;
     //The image that we are animating for this effect
     private Image timerImage;
+    //Colours for rings
+    public Color redColor;
+    public Color blueColor;
 
     // Start is called before the first frame update
     public void InitializeDeltaTimeTimer(float time)
@@ -26,13 +29,17 @@ public class TimerUI : MonoBehaviour
         timerImage = GetComponent<Image>();
     }
 
-    public void InitializeEventTimer(float durationTime)
+    public void InitializeEventTimer(float durationTime, bool badEffect)
     {
         timeToCount = durationTime;
         deltaTimeBased = false;
         counting = false;
         currentTime = 0f;
         timerImage = GetComponent<Image>();
+        if(badEffect)
+            timerImage.color = redColor;
+        else
+            timerImage.color = blueColor;
     }
 
     /// <summary>

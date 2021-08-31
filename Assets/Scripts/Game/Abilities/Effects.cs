@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using Mirror;
@@ -244,20 +244,13 @@ public class Effects : NetworkBehaviour
     {
         if(ability.GetTargetedPlayer() == null)
         {
-            FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-            PlayerController closestPlayer = FindClosestPlayer(ability);
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
             if (closestPlayer != null)
             {
+                FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
-                Debug.Log("Setting targeted player");
-                genericTimer.SetTimer(3f, () =>
-                {//Will throw bomb after 3 seconds
-                    if (!ability.IsInUse())
-                    {
-                        ability.Use();
-                    }  
-                });
+                genericTimer.SetTimer(3f, () => { if(!ability.IsInUse()) ability.Use(); });//Will throw bomb after 3 seconds
             }
             else
             {
@@ -273,9 +266,7 @@ public class Effects : NetworkBehaviour
             Ability speedBoost = ability.GetTargetedPlayer().abilityInventory.FindAbility("Speed");
             if (speedBoost != null)
                 speedBoost.SetOppositeDebuffActivated(true);
-            ability.GetTargetedPlayer().CmdModifySpeed(5f);
-            Debug.Log("Got player commencing throw");
-            
+            ability.GetTargetedPlayer().CmdModifySpeed(5f); 
         }
     }
 
@@ -301,10 +292,18 @@ public class Effects : NetworkBehaviour
     {
         if(ability.GetTargetedPlayer() == null)
         {
-            FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-            PlayerController closestPlayer = FindClosestPlayer(ability);
-            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
-            ability.SetTargetedPlayer(closestPlayer);
+
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
+            if (closestPlayer != null)
+            {
+                FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
+                FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
+                ability.SetTargetedPlayer(closestPlayer);
+            }
+            else
+            {
+                FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
+            }
         }
         else
         {
@@ -325,15 +324,23 @@ public class Effects : NetworkBehaviour
     {
         if(ability.GetTargetedPlayer() == null)
         {
-            FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-            PlayerController closestPlayer = FindClosestPlayer(ability);
-            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
-            ability.SetTargetedPlayer(closestPlayer);
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
+            if(closestPlayer != null)
+            {
+                FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
+                FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
+                ability.SetTargetedPlayer(closestPlayer);
+                genericTimer.SetTimer(3f, () => { if (!ability.IsInUse()) ability.Use(); });
+            }
+            else
+            {
+                FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
+            }
         }
         else
         {
             ability.SetInUse(true);
-            ability.GetTargetedPlayer().CmdSetImmobilized(true);
+            ability.GetTargetedPlayer().CmdSetParalyzed(true);
             FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
             FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(ability.GetAbilityName(), true);
         }
@@ -341,7 +348,7 @@ public class Effects : NetworkBehaviour
 
     public static void EndParalysisDartEffect(Ability ability)
     {
-        ability.GetTargetedPlayer().CmdSetImmobilized(false);
+        ability.GetTargetedPlayer().CmdSetParalyzed(false);
         ability.SetTargetedPlayer(null);
     }
 
@@ -349,7 +356,8 @@ public class Effects : NetworkBehaviour
 
     #region UtilityFunctions
 
-    private static PlayerController FindClosestPlayer(Ability ability)
+    //Now can be given a range to work in
+    private static PlayerController FindClosestPlayer(Ability ability, float rangeDistance)
     {
         float shortestDistance = float.MaxValue;
         PlayerController closestPlayer = null;
@@ -357,7 +365,7 @@ public class Effects : NetworkBehaviour
         {
             if (player == ability.GetCastingPlayer()) continue;
             float newDistance = GetDistance(player.transform.position, ability.GetCastingPlayer().transform.position);
-            if(newDistance < shortestDistance)
+            if(newDistance < shortestDistance && newDistance < rangeDistance)
             {
                 shortestDistance = newDistance;
                 closestPlayer = player;
@@ -381,7 +389,7 @@ public class Effects : NetworkBehaviour
     private void RpcCreateAbilityEffectTimer(string abilityName, string targetPlayerName, float fullDuration)
     {
         if (NetworkClient.localPlayer.GetComponent<PlayerController>().playerName == targetPlayerName)
-            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration);
+            Ability.CreateLocalAbilityEffectTimer(abilityName, fullDuration, true);
     }
 
 
