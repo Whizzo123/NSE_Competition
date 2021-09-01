@@ -153,6 +153,7 @@ public class MyNetworkManager : NetworkManager
     {
         if(sceneName.Contains("Quarantine"))
             ChangeMusic();
+        SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
         base.OnServerSceneChanged(sceneName);
 
         Debug.Log("OnServerSceneChanged");
