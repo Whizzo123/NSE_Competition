@@ -131,7 +131,10 @@ public class LobbyUIManager : MonoBehaviour
         ChangeScreenTo("Browse");
 
         if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+        {
+            SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
             SteamMatchmaking.RequestLobbyList();
+        }
         else
             networkDiscovery.StartDiscovery();
     }
