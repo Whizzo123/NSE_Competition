@@ -151,7 +151,9 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
-        ChangeMusic();
+        if(sceneName.Contains("Quarantine"))
+            ChangeMusic();
+        SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
         base.OnServerSceneChanged(sceneName);
 
         Debug.Log("OnServerSceneChanged");
@@ -159,7 +161,8 @@ public class MyNetworkManager : NetworkManager
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
     {
         RoomPlayers.Clear();
-        ChangeMusic();
+        if (newSceneName.Contains("Quarantine"))
+            ChangeMusic();
         SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
         base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
     }

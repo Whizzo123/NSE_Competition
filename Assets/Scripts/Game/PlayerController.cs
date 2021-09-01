@@ -288,12 +288,13 @@ public class PlayerController : NetworkBehaviour
                     // All artefacts that are in our range get added to our inventory and gameobject destroyed
                     foreach (ArtefactBehaviour item in targetedArtefacts)
                     {
-                        Debug.Log("Looping now ");
-                        artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
-                        FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
-                        DestroyGameObject(item.gameObject);
-                        artefactsForDestruction.Add(item.GetComponent<NetworkIdentity>().netId);
-                        
+                        if (item.gameObject != null)
+                        {
+                            artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
+                            FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
+                            DestroyGameObject(item.gameObject);
+                            artefactsForDestruction.Add(item.GetComponent<NetworkIdentity>().netId);
+                        }
                     }
                     CmdClearTargetArtefacts();
                     tempArtefactStorage.Clear();

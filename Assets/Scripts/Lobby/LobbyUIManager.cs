@@ -131,7 +131,10 @@ public class LobbyUIManager : MonoBehaviour
         ChangeScreenTo("Browse");
 
         if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+        {
+            SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
             SteamMatchmaking.RequestLobbyList();
+        }
         else
             networkDiscovery.StartDiscovery();
     }
@@ -245,6 +248,7 @@ public class LobbyUIManager : MonoBehaviour
     /// </summary>
     private void CreateMirrorLobby()
     {
+        Debug.Log("CreatingMirrorLobby");
         BrowseCreateCanvas.gameObject.SetActive(false);
         networkManager.StartHost();
         networkDiscovery.AdvertiseServer();
@@ -301,22 +305,29 @@ public class LobbyUIManager : MonoBehaviour
     {
         for (int i = 0; i < screens.Length; i++)
         {
+            if(name == "Room")
+            {
+                Debug.Log("Switching to lobby screen");
+                FindObjectOfType<BackTemp>().SwitchingTo(ActiveScreen.LOBBY);
+                BrowseCreateCanvas.gameObject.SetActive(false);
+            }
             if(screens[i].screen == null) { return; }
             screens[i].screen.SetActive(false);
             if(screens[i].screenName == name)
             {
                 if(screens[i].screenName == "Room")
                 {
-                    FindObjectOfType<BackTemp>().SwitchingTo(ActiveScreen.LOBBY);
-                    BrowseCreateCanvas.gameObject.SetActive(false);
+                    ///
                 }
                 else if(screens[i].screenName == "Create")
                 {
+                    Debug.Log("Switching to create screen");
                     BrowseCreateCanvas.gameObject.SetActive(true);
                     FindObjectOfType<BackTemp>().SwitchingTo(ActiveScreen.CREATE);
                 }
                 else if(screens[i].screenName == "Browse")
                 {
+                    Debug.Log("Switching to browse screen");
                     FindObjectOfType<BackTemp>().SwitchingTo(ActiveScreen.BROWSE);
                 }
                 screens[i].screen.SetActive(true);

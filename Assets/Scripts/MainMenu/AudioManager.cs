@@ -98,6 +98,18 @@ public class AudioManager : MonoBehaviour
         MasterVolume(0.0f);
     }
 
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().name.Contains("Title"))
+        {
+            if (Array.Find(aud, AudioClips => AudioClips.clipName == "MusicGame").audioSource.isPlaying)
+            {
+                Array.Find(aud, AudioClips => AudioClips.clipName == "MusicGame").audioSource.Stop();
+                Array.Find(aud, AudioClips => AudioClips.clipName == "MusicMenu").audioSource.Play();
+            }
+        }
+    }
+
     #region VOLUME_CONTROL
     /// <summary>
     /// Manually sets music volume
@@ -187,7 +199,7 @@ public class AudioManager : MonoBehaviour
         audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == "MusicGame");
         if (audioFound != null)
         {
-            //audioFound.audioSource.Play();
+            audioFound.audioSource.Play();
         }
     }
     /// <summary>
@@ -195,10 +207,11 @@ public class AudioManager : MonoBehaviour
     /// </summary>
     public void ActivateMenuMusic()
     {
+        Debug.Log("Activating Menu Music");
         AudioClips audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == "MusicGame");
         if (audioFound != null)
         {
-            //audioFound.audioSource.Stop();
+            audioFound.audioSource.Stop();
         }
         audioFound = Array.Find(aud, AudioClips => AudioClips.clipName == "MusicMenu");
         if (audioFound != null)

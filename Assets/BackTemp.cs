@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Mirror;
 
 public enum ActiveScreen { CREATE, BROWSE, LOBBY};
 public class BackTemp : MonoBehaviour
@@ -43,6 +44,7 @@ public class BackTemp : MonoBehaviour
         {
             Debug.Log("On Lobby screen");
             MyNetworkManager.singleton.StopClient();
+            MyNetworkManager.singleton.StopServer();
             BackToCreate();
         }
     }
