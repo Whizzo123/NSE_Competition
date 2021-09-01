@@ -189,6 +189,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &278415462 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5581680211952789216, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
+  m_PrefabInstance: {fileID: 5581680210558013703}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea368fb6f27ec2f40a40e20977992b9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &292591921
 GameObject:
   m_ObjectHideFlags: 0
@@ -495,17 +506,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 443655822}
   m_CullTransparentMesh: 0
---- !u!114 &632490490 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5581680211952789228, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
-  m_PrefabInstance: {fileID: 5581680210558013703}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &881915959
 GameObject:
   m_ObjectHideFlags: 0
@@ -1525,7 +1525,7 @@ PrefabInstance:
     - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
       propertyPath: transport
       value: 
-      objectReference: {fileID: 632490490}
+      objectReference: {fileID: 278415462}
     - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
       propertyPath: offlineScene
       value: Assets/Scenes/TitleScene.unity
@@ -1536,7 +1536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
       propertyPath: useSteamMatchmaking
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5581680211952789231, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
       propertyPath: PersistNetworkManagerToOfflineScene
