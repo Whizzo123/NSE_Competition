@@ -87,7 +87,7 @@ public class TimerUI : MonoBehaviour
     /// </summary>
     private void UpdateUsingVars()
     {
-        Debug.Log("UpdateUsingVars");
+        Debug.Log("UpdateUsingVars: " + currentTime / timeToCount);
         timerImage.fillAmount = 1 - (currentTime / timeToCount);
         if(timerImage.fillAmount <= 0)
         {

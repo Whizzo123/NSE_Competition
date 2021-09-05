@@ -35,7 +35,6 @@ public class AbilityTimerContainer : MonoBehaviour
         List<string> removeKeys = new List<string>();
         foreach (string key in childTimers.Keys)
         {
-            Debug.Log("Inside childTimers");
             if (!childTimers[key].counting)
                 removeKeys.Add(key);
         }    

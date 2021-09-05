@@ -46,8 +46,6 @@ public class AbilityPickBarIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHa
     /// </summary>
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("InsideOnBeginDrag");
-        
         dragging = true;
         this.transform.SetParent(FindObjectOfType<Canvas>().transform);
     }
@@ -68,7 +66,6 @@ public class AbilityPickBarIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHa
 
         foreach (RaycastResult result in results)
         {
-            Debug.Log("Result GameObject: " + result.gameObject.name);
             //If on original ability bar, add back to ability bar. If it was in loadout, refund ability and set it as no longer a part of loadout
             //Returning to ability bar
             if (result.gameObject.GetComponent<AbilityPickBarUI>())
@@ -119,7 +116,7 @@ public class AbilityPickBarIconUI : MonoBehaviour, IBeginDragHandler, IEndDragHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Clicking");
+        
     }
 
 }
