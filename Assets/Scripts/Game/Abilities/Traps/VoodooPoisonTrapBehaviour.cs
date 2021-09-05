@@ -11,6 +11,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     public float trapDuration = 2.5f; // Test this please
     private float currentDuration;
     
+    [SyncVar]
     private bool sprung;
     private bool disabled;
 
@@ -27,23 +28,22 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
         disabled = false;
     }
 
+    //Voodoo issue has been narrowed down to only occuring for client if he walks into voodoo trap placed down by host if he is colliding with the voodoo trap at the same time
+
     public void OnTriggerEnter(Collider collider)
     {
-        if (placingPlayerName != null)
+        if (placingPlayerName != null && sprung == false && collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
         {
             if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
             {
-                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+                trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
+                sprung = true;
+                if (!trappedPlayer.IsVoodooPoisoned())
                 {
-                    trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                    if (!trappedPlayer.IsVoodooPoisoned())
-                    {
-                        trappedPlayer.CmdSetVoodooPoisoned(true);
-                        CmdCreateAbilityEffectTimer("Voodoo Poison Trap", trappedPlayer.playerName, trapDuration);
-                    }
-                    CmdSpringTrap();
-                    Close();
+                    trappedPlayer.CmdSetVoodooPoisoned(true);
+                    CmdCreateAbilityEffectTimer("Voodoo Poison Trap", trappedPlayer.playerName, trapDuration);
                 }
+                CmdSpringTrap();
             }
         }
     }
@@ -56,26 +56,25 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     [Command (requiresAuthority = false)]
     private void CmdSpringTrap()
     {
-        //Close();//Maybe call close here now that it's a direct rpc??
-        sprung = true;
+        RpcSpringTrap();
     }
 
     [ClientRpc]
     private void RpcSpringTrap()
     {
-        Close();
+        Close(); // Called on client
     }
 
-    [ClientRpc]
     public void Close()
     {
         openTrap.SetActive(false);
         closedTrap.SetActive(true);
-        Debug.Log("Closing trap");
     }
 
     void Update()
     {
+        if (trappedPlayer == null)
+            Debug.Log("Trapped player is null inside the Update Loop at: " + Time.realtimeSinceStartup);
         UpdateTrap();
     }
 
@@ -89,12 +88,18 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 if (currentDuration < trapDuration)
                 {
                     currentDuration += Time.deltaTime;
-                    CmdUpdateTargetTimer(trappedPlayer.playerName, "Voodoo Poison Trap", currentDuration);
+                    if(trappedPlayer != null)
+                        CmdUpdateTargetTimer(trappedPlayer.playerName, "Voodoo Poison Trap", currentDuration);
+                    else
+                    {
+                        Debug.LogError("Trapped player is null when in UpdateTrap and trying to UpdateTargetTimer but it's now not affecting us since we moved sprung to be set sooner in the OnTriggerEnterMethod");
+                        return;
+                    }
                 }
                 else
                 {
-                    trappedPlayer.CmdSetVoodooPoisoned(false);
-                    NetworkServer.Destroy(this.gameObject);
+                    trappedPlayer.CmdSetVoodooPoisoned(false); //Object reference not set
+                    NetworkServer.Destroy(this.gameObject); // Object reference not set to object - not had again
                 }
             }
         }

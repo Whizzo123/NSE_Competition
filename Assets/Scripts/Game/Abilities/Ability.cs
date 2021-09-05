@@ -144,7 +144,6 @@ public class Ability
         }
         else
         {
-            Debug.Log("UpdatingTrapAbility: " + useCount + ": " + used);
             if (used && useCount >= 3)
             {
                 castingPlayer.abilityInventory.RemoveAbilityFromInventory(this);

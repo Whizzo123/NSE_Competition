@@ -29,22 +29,19 @@ public class BearTrapBehaviour : NetworkBehaviour
     {
         if (placingPlayerName != null && sprung == false)
         { 
-            if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false)
+            if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false 
+                && collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
             {
-                if (collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
+                trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
+                if (!trappedPlayer.IsImmobilized())
                 {
-                    trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
-                    if (!trappedPlayer.IsImmobilized())
-                    {
-                        trappedPlayer.CmdSetImmobilized(true);
-                        Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
-                        trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.playerName);
-                        CmdCreateAbilityEffectTimer("Bear Trap", trappedPlayer.playerName, trapDuration);
-                    }
-                    //If two traps are stacked, the commands will send twice. making it trap infinitley
-                    CmdSpringTrap();
-                    
+                    trappedPlayer.CmdSetImmobilized(true);
+                    Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
+                    trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.playerName);
+                    CmdCreateAbilityEffectTimer("Bear Trap", trappedPlayer.playerName, trapDuration);
                 }
+                //If two traps are stacked, the commands will send twice. making it trap infinitley
+                CmdSpringTrap();
             }
         }
     }
