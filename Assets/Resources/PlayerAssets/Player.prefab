@@ -1623,6 +1623,7 @@ GameObject:
   - component: {fileID: 7811146946738992404}
   - component: {fileID: 799718171964016772}
   - component: {fileID: 1043160865967870262}
+  - component: {fileID: 7902141741267381799}
   - component: {fileID: 4071522212128209381}
   - component: {fileID: 1889028440207431689}
   - component: {fileID: 8921563345967218691}
@@ -1670,6 +1671,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   tempArtefactStorage: []
+  artefactsForDestruction: 
   playerName: 
   waitTime: 0.569
   speed: 10
@@ -1723,6 +1725,20 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 63744
   groundDistance: 2.5
+--- !u!114 &7902141741267381799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18faafef64148034f95c23fdc2af6d0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0

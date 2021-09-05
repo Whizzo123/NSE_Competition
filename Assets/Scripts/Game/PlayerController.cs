@@ -22,8 +22,8 @@ public class PlayerController : NetworkBehaviour
     [Header("Stored Interactables")]
     //Stored interactables
     [Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. The reason for this was to allow us to check that we are not picking up the same artefact twice.")] public List<ArtefactBehaviour> tempArtefactStorage;
-    [Tooltip("The artefacts that are in range for picking up")] readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
-    [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")]private List<uint> artefactsForDestruction = new List<uint>();
+    [Tooltip("The artefacts that are in range for picking up")] public readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
+    [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")]public List<uint> artefactsForDestruction = new List<uint>();
     [Tooltip("NA")] private Stash gameStash;
     [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
@@ -112,7 +112,6 @@ public class PlayerController : NetworkBehaviour
     //End player camera class - whole method
     #endregion
 
-
     /// <summary>
     /// Turns devcam on and off
     /// </summary>
@@ -129,8 +128,6 @@ public class PlayerController : NetworkBehaviour
     [ClientCallback]
     void Update()
     {
-
-
         if (!hasAuthority) { return; };
 
         #region DEVMODE
@@ -149,8 +146,6 @@ public class PlayerController : NetworkBehaviour
         //we can get rid of the pre-emptive code loading and reduce the amount of code that is predicted.
         if (loadoutReleased)
         {
-
-
             if (immobilize == false)
             {
                 //Player Movement class
@@ -161,8 +156,6 @@ public class PlayerController : NetworkBehaviour
             }
             else
                 playerAnim.SetBool("moving", false);
-
-           
         }
 
         //Todo:Remove ability pickups from here? Different Stash button as well? Thoughts for discussion
@@ -170,57 +163,17 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             // PlayerToArtefactInteraction class
-            //If we have artefacts in range
-            if (targetedArtefacts.Count != 0 && tempArtefactStorage.Count != 0)
-            {
-                //If we have an empty slot
-                if (artefactInventory.GetInventoryCount() <= 7)
-                {
-                    Debug.Log("Picking up Artefacts");
-                    // All artefacts that are in our range get added to our inventory and gameobject destroyed
-                    foreach (ArtefactBehaviour item in targetedArtefacts)
-                    {
-                        if (item.gameObject != null)
-                        {
-                            artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
-                            FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());
-                            DestroyGameObject(item.gameObject);
-                            artefactsForDestruction.Add(item.GetComponent<NetworkIdentity>().netId);
-                        }
-                    }
-                    CmdClearTargetArtefacts();
-                    tempArtefactStorage.Clear();
-                    
-                    if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
-                        FindObjectOfType<CanvasUIManager>().CloseHintMessage();
-                }
-                else
-                {
-                    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
-                }
-            }
+            GetComponent<PlayerToArtefactInteraction>().InteractWithArtefact(this);
             //End PlayerToArtefactInteraction class
             // Player Ability Interaction class
-            else if (targetedAbilityPickup != null)
+            if (targetedAbilityPickup != null)
             {
                 targetedAbilityPickup.PickupAbility(this);
                 targetedAbilityPickup = null;
             }
             // End Player Ability Interaction class
             //Player Artefact Interaction
-            else if (gameStash != null && artefactInventory.InventoryNotEmpty())
-            {
-                //Todo: For consistancy, instead of clearing the artefact inventory elsewhere, let's clear it here
-                gameStash.CmdAddToStashScores(this);
-                tempArtefactStorage.Clear();
-                artefactsForDestruction.Clear();
-                CmdClearTargetArtefacts();
-                FindObjectOfType<AudioManager>().PlaySound("Stash");
-            }
-            else if (gameStash != null && !artefactInventory.InventoryNotEmpty())
-            {
-                FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
-            }
+            //Game stash logic
             //End Player Artefact Interaction
         }
         #endregion
@@ -344,23 +297,8 @@ public class PlayerController : NetworkBehaviour
     }
     // End PlayerToPlayerINteraction class
 
-    /// <summary>
-    /// Calls CmdDestroyGameObject.
-    /// </summary>
-    [ClientCallback]
-    public void DestroyGameObject(GameObject go)
-    {
-        CmdDestroyGameObject(go);
-    }
-    /// <summary>
-    /// Destroys networked GameObjects.
-    /// <para>Call DestroyGameObject(GameObject go) instead to destroy on all instances.</para>
-    /// </summary>
-    [Command(requiresAuthority = false)]
-    public void CmdDestroyGameObject(GameObject go)
-    {
-        NetworkServer.Destroy(go);
-    }
+    //PlayerToArtefactInteraction class DestroyGameObject & CmdDestroyGameObject
+    //End PlayerToArtefactInteraction class
 
     // PlayerMovement class
     //Cmd and Rpc for moving player
@@ -373,16 +311,10 @@ public class PlayerController : NetworkBehaviour
     public void OnTriggerEnter(Collider collider)
     {
         //PlayerToArtefactInteraction class OnTriggerEnter method
-        //Allows us to interact with the gamestash and shows hint message
-        if (collider.gameObject.GetComponent<Stash>())
-        {
-            gameStash = collider.gameObject.GetComponent<Stash>();
-            if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
-                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
-        }
+        GetComponent<PlayerToArtefactInteraction>().TriggerEnterInteraction(this, collider);
         //End PlayerToArtefactInteraction
         //PlayerToAbilityInteraction class OnTriggerEnter method
-        else if (collider.gameObject.GetComponent<AbilityPickup>())
+        if (collider.gameObject.GetComponent<AbilityPickup>())
         {
             targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
         }
@@ -413,29 +345,7 @@ public class PlayerController : NetworkBehaviour
     public void OnTriggerStay(Collider collider)
     {
         //PlayerToArtefactInteraction class OnTriggerStay
-        if (!collider.gameObject.GetComponent<ArtefactBehaviour>())
-        {
-            return;
-        }
-        ArtefactBehaviour artefactBehaviour = collider.gameObject.GetComponent<ArtefactBehaviour>();
-        if (artefactsForDestruction.Contains(artefactBehaviour.netId))
-        {
-            return;
-        }
-        //If it is available for pickup and it currently isn't in tempartefactstorage
-        if (artefactBehaviour &&
-            tempArtefactStorage.Contains(artefactBehaviour) == false && targetedArtefacts.Contains(artefactBehaviour) == false &&
-            artefactBehaviour.IsAvaliableForPickup() && 
-            targetedArtefacts.Count <= 4)
-        {
-            //Adds it temporarily
-            tempArtefactStorage.Add(artefactBehaviour);
-            //Sends command to add it to targeted artefact
-            CmdAddToTargetedArtefacts(artefactBehaviour);
-
-            if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
-                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
-        }
+        GetComponent<PlayerToArtefactInteraction>().TriggerStayInteraction(this, collider);
         //End PlayerToArtefactInteraction class OnTriggerStay
     }
 
@@ -448,37 +358,11 @@ public class PlayerController : NetworkBehaviour
         if (collider != null)
         {
             //PlayerToArtefactInteraction class OnTriggerExit method
-            //Artefacts
-            if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
-            {
-                //Removes specific artefact that we exited.
-                int i = 0;
-                foreach (ArtefactBehaviour item in targetedArtefacts)
-                {
-                    if (item.GetInstanceID() == collider.gameObject.GetComponent<ArtefactBehaviour>().GetInstanceID())
-                    {
-                        tempArtefactStorage.Remove(item);
-                        CmdTargetArtefactsRemoveAt(item);
-
-                    }
-                    i++;
-                }
-                if (targetedArtefacts.Count == 0)
-                {
-                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
-                }
-            }
-            //Game Stash
-            else if (gameStash != null && collider.gameObject == gameStash.gameObject)
-            {
-                gameStash = null;
-                if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
-                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
-            }
+            GetComponent<PlayerToArtefactInteraction>().TriggerExitInteraction(this, collider);
             //End PlayerToArtefactInteraction class
             //PlayerToAbilityInteraction class OnTriggerExit method
             //Ability Pickup
-            else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
+            if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
             {
                 targetedAbilityPickup = null;
             }
@@ -609,29 +493,17 @@ public class PlayerController : NetworkBehaviour
         return artefactInventory;
     }
     //PlayerToArtefactInteraction class
+    //TargetArtefacts commands
+    //End PlayerToArtefactInteraction method
+
     [Command]
-    private void CmdClearTargetArtefacts()
+    public void CmdClearTargetArtefacts()
     {
         Debug.Log("Command is hit");
-        targetedArtefacts.Clear();
+        GetComponent<PlayerController>().targetedArtefacts.Clear();
         Debug.Log("TargetedArtefact is causing issues");
     }
-    [Command]
-    private void CmdAddToTargetedArtefacts(ArtefactBehaviour artefact)
-    {
-        targetedArtefacts.Add(artefact);
-    }
-    [Command]
-    private void CmdTargetArtefactsRemoveAt(ArtefactBehaviour artefact)
-    {
-        targetedArtefacts.Remove(artefact);
-    }
-    [Command]
-    private void CmdTargetArtefactsRemoveAtI(int i)
-    {
-        targetedArtefacts.RemoveAt(i);
-    }
-    //End PlayerToArtefactInteraction method
+
     public void SetArtefactInventory(ArtefactInventory inventory)
     {
         artefactInventory = inventory;
@@ -728,5 +600,15 @@ public class PlayerController : NetworkBehaviour
         Gizmos.DrawLine(transform.position, -transform.up + transform.position);//Up
         //Gizmos.color = Color.green;
         //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
+    }
+
+    public void SetGameStash(Stash stash)
+    {
+        gameStash = stash;
+    }
+
+    public Stash GetGameStash()
+    {
+        return gameStash;
     }
 }
