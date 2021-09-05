@@ -40,16 +40,11 @@ public class PlayerController : NetworkBehaviour
     //Tools
     [SerializeField] [Tooltip("Time delay before destroying another obstacle")] [Range(0, 1)] private float waitTime = 0.05f;
     [Tooltip("If the tools are currently on cooldown")] private bool toolWait = false;
-    //Gravity
-    [SerializeField] private float playerGravity = -65;
-    [SerializeField] [Tooltip("The distance from the player to the ground to check if they're grounded")] private float groundDistance = 2.5f;
-    [Tooltip("Is the player touching the ground")] private bool isGrounded = true;
-    [SerializeField] [Tooltip("How fast the player is currently falling by y axis")] private Vector3 playerFallingVelocity;
+
     //Movement
     [Tooltip("The current speed of the player")] [SyncVar] public float speed = 10f;
     [Tooltip("The original speed of the player")] public float normalSpeed = 10f;
-    [Tooltip("Direction player is moving in by input, not physics")] private Vector3 direction;
-    [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
+
 
     //Sphere
     [Tooltip("Distance forward from the player for the destruction sphere")] public float lengthOfSphere = 2f;
@@ -59,7 +54,6 @@ public class PlayerController : NetworkBehaviour
     [Header("LayerMasks and Components")]
     //Layermasks
     public LayerMask obstacles;
-    public LayerMask ground;
     [Space]
     //Player
     [Tooltip("Character controller reference")] public CharacterController playerCharacterController;//See attached()
@@ -102,69 +96,20 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        //Attatches Camera
-        vCam = FindObjectOfType<Cinemachine.CinemachineFreeLook>();
-        if (vCam != null)
-        {
-            Invoke("SetCamera", 1);
-        }
-        else
-        {
-            Invoke("SetCamera", 5);
-        }
-
-        //Setup player components and immobolise player
-        CmdSetupPlayer();
-        SetLoadoutReleased(false);
+        // Player Setup start authority method
+        GetComponent<PlayerSetup>().StartAuthority(this);
+        // End Player Setup class start authority method
         base.OnStartAuthority();
+        
     }
-    /// <summary>
-    /// Resets some variables and sets up some components
-    /// </summary>
-    [Command]
-    private void CmdSetupPlayer()
-    {
-        //Components
-        abilityInventory = new AbilityInventory(this);
-        artefactInventory = GetComponent<ArtefactInventory>();
-
-        //Variables
-        immobilize = false;
-        hasBeenStolenFrom = false;
-    }
+    // Player Setup - move whole method CmdSetupPlayer
+    // End Player Setup - whole method
+    // Player Camera class - just sitting in setup for now
     /// <summary>
     /// Attatches the normal camera and devcam. Todo: It is very messy right now, will need to clean up later
     /// </summary>
-    [Client]
-    void SetCamera()
-    {
-        //Currently what it's trying to do is find cameras, if it can't find cameras, it will instantiate cameras
-        //It also modifies so many things. It is simply a mess that needs to be fixed, it's not worth commenting here
-        vCam = FindObjectOfType<Cinemachine.CinemachineFreeLook>();
-        //DontDestroyOnLoad(vCam);
-        vCam.LookAt = this.gameObject.transform;
-        vCam.Follow = this.gameObject.transform;
-        //vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
-        playerCamera = Camera.main;
-        if (!hasAuthority)
-        {
-            //Disable other players cameras so that we don't accidentally get assigned to another players camera
-            if (playerCamera != null)
-                playerCamera.gameObject.SetActive(false);
-        }
-        if (devCam == null)
-        {
-            //REMINDER, you can't find the object if they are not in the same section ie dontdestroysection
-            devCam = GameObject.Find("DevCam");
-            Debug.LogError(devCam);
-            devCam.SetActive(false);
-        }
-        else
-        {
-            devCam = Instantiate(devCam);
-            devCam.SetActive(false);
-        }
-    }
+    
+    //End player camera class - whole method
     #endregion
 
 
@@ -197,15 +142,9 @@ public class PlayerController : NetworkBehaviour
 
         abilityInventory.Update();
 
-        //Sets up player name for scoreboard use and floating name use
-        if (playerNameText == null && SceneManager.GetActiveScene().name == "GameScene")
-        {
-            playerNameText = Instantiate(Resources.Load<GameObject>("PlayerAssets/PlayerNameText_UI"));
-            playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
-            playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
-            playerNameText.SetActive(true);
-            playerNameText.GetComponent<Text>().text = playerName;
-        }
+        //PlayerSetup class - Update
+        GetComponent<PlayerSetup>().UpdateSetup(this);
+        //End PlayerSetup
         //Todo: Cleanup, maybe instead use loadoutReleased to return instead, this should help boost speed as
         //we can get rid of the pre-emptive code loading and reduce the amount of code that is predicted.
         if (loadoutReleased)
@@ -214,70 +153,23 @@ public class PlayerController : NetworkBehaviour
 
             if (immobilize == false)
             {
-
-
+                //Player Movement class
                 #region MOVEMENT_AND_ANIMATION
-                if (isGrounded)
-                {
-                    playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-                    playerMovement = playerCamera.transform.TransformDirection(playerMovement);//Allows player to move along camera rotation axis
-                    if (Input.GetAxisRaw("Vertical") < -0.5)//To stop backwards going up
-                    {
-                        playerMovement.y = 0;
-                    }
-                }
-
-
-
-                //Animations, with movement checks
-                if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-                {
-                    direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-
-                    playerAnim.SetBool("moving", true);
-
-                    //Voodoo poison
-                    if (voodooPoisoned)
-                    {
-                        playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
-                        direction *= -1;
-                    }
-                }
-                else
-                {
-                    playerAnim.SetBool("moving", false);
-                }
-
-                #region FALLING
-
-                //Projects a sphere underneath player to check ground layer
-                isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
-
-                //Player recieves a constant y velocity from gravity
-                playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
-
-                //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
-                if (isGrounded && playerFallingVelocity.y < 0)
-                {
-                    playerFallingVelocity.y = -5f;
-                }
-
+                GetComponent<PlayerMovement>().UpdateMovement(this);
                 #endregion
-
-                playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
-                playerCharacterController.Move(playerFallingVelocity * Time.deltaTime);
-                PlayerRotation();
-                
-                #endregion
+                //End PlayerMovement
             }
             else
                 playerAnim.SetBool("moving", false);
+
+           
         }
 
         //Todo:Remove ability pickups from here? Different Stash button as well? Thoughts for discussion
         #region ARTEFACT_INTERACTION
         if (Input.GetKeyDown(KeyCode.E))
         {
+            // PlayerToArtefactInteraction class
             //If we have artefacts in range
             if (targetedArtefacts.Count != 0 && tempArtefactStorage.Count != 0)
             {
@@ -307,11 +199,15 @@ public class PlayerController : NetworkBehaviour
                     FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot pickup artefact inventory is full (Max: 8 artefacts)");
                 }
             }
+            //End PlayerToArtefactInteraction class
+            // Player Ability Interaction class
             else if (targetedAbilityPickup != null)
             {
                 targetedAbilityPickup.PickupAbility(this);
                 targetedAbilityPickup = null;
             }
+            // End Player Ability Interaction class
+            //Player Artefact Interaction
             else if (gameStash != null && artefactInventory.InventoryNotEmpty())
             {
                 //Todo: For consistancy, instead of clearing the artefact inventory elsewhere, let's clear it here
@@ -325,12 +221,14 @@ public class PlayerController : NetworkBehaviour
             {
                 FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot deposit no artefacts in inventory");
             }
+            //End Player Artefact Interaction
         }
         #endregion
 
         #region STEALING
         if (Input.GetKeyDown(KeyCode.F) && !hasBeenStolenFrom)
         {
+            //PlayerToPlayer class
             Debug.LogError(artefactInventory.GetAllArtefactNames());
 
             //If we are not full, they are no longer stunned and have artefacts, we steal
@@ -361,8 +259,11 @@ public class PlayerController : NetworkBehaviour
 
                 }
             }
+
+            //End PlayerToPlayer class
         }
 
+        //PlayerToPlayer Class
         //Stunning timer from being stolen from
         if (hasBeenStolenFrom)
         {
@@ -377,22 +278,25 @@ public class PlayerController : NetworkBehaviour
                 currentStunAfterTimer += Time.deltaTime;
             }
         }
+        //End PlayerToPlayer class
         #endregion
 
         #region OBSTACLE_INTERACTION
         if (Input.GetKey(KeyCode.Space) && toolWait == false && paralyzed == false)
         {
+            //PlayerObstacleInteraction class
             playerAnim.SetTrigger("Cut");
             StartCoroutine(Hit());
+            //End PlayerObstacleInteraction class
         }
         #endregion
 
         #region FOOTSTEP_SOUNDS
-        if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && isGrounded)
+        if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && GetComponent<PlayerMovement>().isGrounded)
         {
             //Raycasts to our feet, grabs the layer below us and uses the string from the layer to play the sound
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
+            if (Physics.Raycast(transform.position, Vector3.down, out hit, GetComponent<PlayerMovement>().ground))
             {
                 string hitstring = hit.transform.gameObject.layer.ToString();//I believe this is unnecessary
                 int layernumber = int.Parse(hitstring);//I believe this is unnescessary
@@ -411,11 +315,9 @@ public class PlayerController : NetworkBehaviour
         }
         #endregion
 
-        //Todo: Find a different way to stop players from climbing obstacles as this is unreliable
-        if (playerFallingVelocity.y < -200)
-        {
-            CmdServerValidateHit();
-        }
+        //PlayerMovement class
+        //Call to CmdServerValidateHit inside if statement determined by falling velocity
+        //End PlayerMovement class
     }
 
     /// <summary>
@@ -430,64 +332,17 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// Rotates player according to slope and movement direction.
-    /// If we wanted the model to remain upright, we can attach this to a child that isn't visible, but has the same parameters as the player(height etc)
-    /// <para>Primarily used for the purpose of aiming the forward ray when on slopes</para>
-    /// </summary>
-    [ClientCallback]
-    void PlayerRotation()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, ground))
-        {
+    //PlayerMovement class
+    //PlayerRotation
+    // End PlayerMovement class
 
-
-            //Quaternion finalQuat;
-            //Vector3 axisOfRotation = (Vector3.Cross(hit.normal, Vector3.up)).normalized;//gets the axis to rotate on a slope.
-            //float rotationAngle = Vector3.Angle(hit.normal, Vector3.up);//angle between true Y and slope normal(for somereason it's negative either way round) (dot product)
-            //Quaternion slopeQuat = Quaternion.identity;// = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
-
-            //Quaternion lookQuat = Quaternion.LookRotation(direction, Vector3.up);//Quaternion of the direction of player movement
-
-            //if (rotationAngle < 45)
-            //{
-            //    slopeQuat = Quaternion.AngleAxis(-rotationAngle, axisOfRotation);//Quaternion of the rotation necessary to angle the player on a slope
-
-            //    //finalQuat = slopeQuat.normalized;// * lookQuat; //Quaternion rotation of look rotation and slope rotation
-            //    //transform.rotation = finalQuat;
-            //}
-            if (playerMovement.x != 0 && playerMovement.z != 0)
-            {
-                float ta = Mathf.Atan2(playerMovement.x, playerMovement.z) * Mathf.Rad2Deg;// + cam.transform.eulerAngles.y;
-                Quaternion rot = Quaternion.Euler(0f, ta, 0f);// * slopeQuat.normalized;
-                transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * 10);
-
-            }
-        }
-
-        if (Input.GetMouseButton(1))
-        {
-            vCam.m_XAxis.m_MaxSpeed = 200;
-
-        }
-        else
-        {
-            vCam.m_XAxis.m_MaxSpeed = 0;
-        }
-        if (Input.GetMouseButton(2))
-        {
-            vCam.m_YAxis.m_MaxSpeed = 20;//Adjustable sensitivity
-        }else
-        {
-            vCam.m_YAxis.m_MaxSpeed = 0;
-        }
-    }
+    // PlayerToPlayerInteraction class
     [Command(requiresAuthority = false)]
     public void CmdSetHasBeenStolenFrom(bool value)
     {
         hasBeenStolenFrom = value;
     }
+    // End PlayerToPlayerINteraction class
 
     /// <summary>
     /// Calls CmdDestroyGameObject.
@@ -506,21 +361,10 @@ public class PlayerController : NetworkBehaviour
     {
         NetworkServer.Destroy(go);
     }
-    [Command(requiresAuthority = false)]
-    public void CmdMovePlayer(Vector3 position, string playerName)
-    {
-        transform.position = position;
-        RpcMovePlayer(position, playerName);
-    }
 
-    [ClientRpc]
-    public void RpcMovePlayer(Vector3 position, string playerName)
-    {
-        if(this.playerName == playerName)
-        {
-            transform.position = position;
-        }
-    }
+    // PlayerMovement class
+    //Cmd and Rpc for moving player
+    //End PlayerMovement class
 
     #region Collision
     /// <summary>
@@ -528,6 +372,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     public void OnTriggerEnter(Collider collider)
     {
+        //PlayerToArtefactInteraction class OnTriggerEnter method
         //Allows us to interact with the gamestash and shows hint message
         if (collider.gameObject.GetComponent<Stash>())
         {
@@ -535,10 +380,14 @@ public class PlayerController : NetworkBehaviour
             if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Deposit");
         }
+        //End PlayerToArtefactInteraction
+        //PlayerToAbilityInteraction class OnTriggerEnter method
         else if (collider.gameObject.GetComponent<AbilityPickup>())
         {
             targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
         }
+        //End PlayerToAbilityInteraction class
+        //PlayerToPlayer Interaction class OnTriggerEnter method
         //Allows us to interact with A player and shows hint message
         if (collider.gameObject.GetComponent<PlayerController>())
         {
@@ -554,7 +403,7 @@ public class PlayerController : NetworkBehaviour
             }
 
         }
-
+        //End PlayerToPlayerInteraction
     }
 
     /// <summary>
@@ -563,7 +412,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     public void OnTriggerStay(Collider collider)
     {
-
+        //PlayerToArtefactInteraction class OnTriggerStay
         if (!collider.gameObject.GetComponent<ArtefactBehaviour>())
         {
             return;
@@ -587,6 +436,7 @@ public class PlayerController : NetworkBehaviour
             if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                 FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press E to Pickup");
         }
+        //End PlayerToArtefactInteraction class OnTriggerStay
     }
 
     /// <summary>
@@ -594,8 +444,10 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     public void OnTriggerExit(Collider collider)
     {
+        
         if (collider != null)
         {
+            //PlayerToArtefactInteraction class OnTriggerExit method
             //Artefacts
             if (targetedArtefacts.Count != 0 && collider.gameObject.GetComponent<ArtefactBehaviour>())
             {
@@ -623,11 +475,15 @@ public class PlayerController : NetworkBehaviour
                 if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                     FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
+            //End PlayerToArtefactInteraction class
+            //PlayerToAbilityInteraction class OnTriggerExit method
             //Ability Pickup
             else if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
             {
                 targetedAbilityPickup = null;
             }
+            //End PlayerToAbilityInteraction class OnTriggerExit method
+            //PlayerToPlayerInteraction class OnTriggerExit method
             //Players
             if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
             {
@@ -635,13 +491,14 @@ public class PlayerController : NetworkBehaviour
                 if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                     FindObjectOfType<CanvasUIManager>().CloseHintMessage();
             }
+            //End PlayerToPlayerInteraction class OnTriggerExit method
         }
     }
 
     #endregion
 
     #region Obstacle Destruction
-
+    //PlayerToObstacleInteraction class
     /// <summary>
     /// Gives a delay to the destroying obstacles function 'HitForward()'.
     /// </summary>
@@ -735,6 +592,7 @@ public class PlayerController : NetworkBehaviour
             }
         }
     }
+    //End PlayerToObstacleInteraction class
 
 
 
@@ -750,7 +608,7 @@ public class PlayerController : NetworkBehaviour
     {
         return artefactInventory;
     }
-
+    //PlayerToArtefactInteraction class
     [Command]
     private void CmdClearTargetArtefacts()
     {
@@ -773,6 +631,7 @@ public class PlayerController : NetworkBehaviour
     {
         targetedArtefacts.RemoveAt(i);
     }
+    //End PlayerToArtefactInteraction method
     public void SetArtefactInventory(ArtefactInventory inventory)
     {
         artefactInventory = inventory;
@@ -871,60 +730,3 @@ public class PlayerController : NetworkBehaviour
         //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
     }
 }
-
-
-
-
-#region deadCode
-
-          //Old camera code
-            /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
-             {
-                 if (lastMousePos != Input.mousePosition)
-                 {
-                     float mouseMoveDistance = lastMousePos.x - Input.mousePosition.x;
-                     if (inverted)
-                         mouseMoveDistance *= -1;
-                     this.transform.Rotate(new Vector3(0, mouseMoveDistance * rotationSpeed * Time.deltaTime, 0));
-                 }
-
-                 lastMousePos = Input.mousePosition;
-             }
-*/
-//////Remember, this was all called from Update() A [ClientCallback], also remember we testing player position. This is updated from the transform, not necessarily the function
-//No tags, if we do something, everyone else sees that
-//[Client] If we do somethingg, everyone else sees that
-//[ClientRpc] Host can call, everyone sees. Host called RocketMan(), host and client saw host do RocketMan. Client tried RocketMan, didn't do anything for host and client.
-//[Command] Anyone can call, only host sees. Client call RocketMan(), client doesn't do RocketMan, but host sees RocketMan on client.
-
-//////Remember, this was all called from Update() A [ClientCallback], we are destroying an object
-//No tags, Host can call, only host sees. Client can call, only client sees
-//[Client] Host can call, only host sees. Client can call, only client sees
-//[ClientRpc] Host can call, everyone sees. 
-//[Command] Anyone can call, only host sees
-//Error message for 2 below, called when server not active
-//[Server] ???KEEP AN EYE, not completely sure. Host can call, only host sees
-//[TargetRpc] ???KEEP AN EYE, not completely sure. Host can call, only host sees
-
-
-
-
-//[Server]
-//Only a server can call the method(throws a warning or an error when called on a client).
-//[ServerCallback]
-//Same as Server but does not throw warning when called on client.
-
-//[Client]
-//Only a Client can call the method(throws a warning or an error when called on the server).
-//[ClientCallback]
-//Same as Client but does not throw warning when called on server.
-
-//[ClientRpc]
-//The server uses a Remote Procedure Call(RPC) to run that function on clients.See also: Remote Actions
-//[TargetRpc]
-// This is an attribute that can be put on methods of NetworkBehaviour classes to allow them to be invoked on clients from a server. Unlike the ClientRpc attribute, 
-//these functions are invoked on one individual target client, not all of the ready clients. See also: Remote Actions
-//[Command]
-//Call this from a client to run this function on the server. Make sure to validate input etc. 
-//It's not possible to call this from a server. Use this as a wrapper around another function, if you want to call it from the server too. 
-#endregion

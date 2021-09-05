@@ -1621,6 +1621,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7811146946738992400}
   - component: {fileID: 7811146946738992404}
+  - component: {fileID: 799718171964016772}
+  - component: {fileID: 1043160865967870262}
   - component: {fileID: 4071522212128209381}
   - component: {fileID: 1889028440207431689}
   - component: {fileID: 8921563345967218691}
@@ -1670,9 +1672,6 @@ MonoBehaviour:
   tempArtefactStorage: []
   playerName: 
   waitTime: 0.569
-  playerGravity: -65
-  groundDistance: 2.5
-  playerFallingVelocity: {x: 0, y: 0, z: 0}
   speed: 10
   normalSpeed: 10
   lengthOfSphere: 2
@@ -1680,9 +1679,6 @@ MonoBehaviour:
   obstacles:
     serializedVersion: 2
     m_Bits: 262656
-  ground:
-    serializedVersion: 2
-    m_Bits: 63744
   playerCharacterController: {fileID: 0}
   playerAnim: {fileID: 8412895053057340191}
   nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
@@ -1693,6 +1689,40 @@ MonoBehaviour:
   timeForStunAfterSteal: 3
   devMode: 0
   devCam: {fileID: 22159899250329015, guid: 73b92ca893da92447ae9bf658bf9355c, type: 3}
+--- !u!114 &799718171964016772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27e20643c54f0e541a5fd63a7b8999d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+--- !u!114 &1043160865967870262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2f66eabe5b9b844dbe73d75b291540c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  playerFallingVelocity: {x: 0, y: 0, z: 0}
+  playerGravity: -65
+  ground:
+    serializedVersion: 2
+    m_Bits: 63744
+  groundDistance: 2.5
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0

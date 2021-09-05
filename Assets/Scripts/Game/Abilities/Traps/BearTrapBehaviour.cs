@@ -37,7 +37,7 @@ public class BearTrapBehaviour : NetworkBehaviour
                 {
                     trappedPlayer.CmdSetImmobilized(true);
                     Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
-                    trappedPlayer.CmdMovePlayer(movePos, trappedPlayer.playerName);
+                    trappedPlayer.gameObject.GetComponent<PlayerMovement>().CmdMovePlayer(movePos, trappedPlayer.playerName);
                     CmdCreateAbilityEffectTimer("Bear Trap", trappedPlayer.playerName, trapDuration);
                 }
                 //If two traps are stacked, the commands will send twice. making it trap infinitley
