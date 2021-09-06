@@ -8,7 +8,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
 {
     private PlayerController trappedPlayer;
 
-    public float trapDuration = 2.5f; // Test this please
+    public float trapDuration = 2.5f; 
     private float currentDuration;
     
     [SyncVar]
@@ -27,8 +27,6 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
         sprung = false;
         disabled = false;
     }
-
-    //Voodoo issue has been narrowed down to only occuring for client if he walks into voodoo trap placed down by host if he is colliding with the voodoo trap at the same time
 
     public void OnTriggerEnter(Collider collider)
     {
@@ -62,7 +60,7 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
     [ClientRpc]
     private void RpcSpringTrap()
     {
-        Close(); // Called on client
+        Close();
     }
 
     public void Close()
@@ -98,8 +96,8 @@ public class VoodooPoisonTrapBehaviour : NetworkBehaviour
                 }
                 else
                 {
-                    trappedPlayer.CmdSetVoodooPoisoned(false); //Object reference not set
-                    NetworkServer.Destroy(this.gameObject); // Object reference not set to object - not had again
+                    trappedPlayer.CmdSetVoodooPoisoned(false); 
+                    NetworkServer.Destroy(this.gameObject); 
                 }
             }
         }

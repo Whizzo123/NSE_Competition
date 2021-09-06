@@ -70,7 +70,7 @@ public class PlayerMovement : NetworkBehaviour
         //Todo: Find a different way to stop players from climbing obstacles as this is unreliable
         if (playerFallingVelocity.y < -200)
         {
-            CmdServerValidateHit();
+            GetComponent<PlayerToObstacleInteraction>().CmdServerValidateHit(controller);
         }
     }
 
@@ -129,43 +129,4 @@ public class PlayerMovement : NetworkBehaviour
             transform.position = position;
         }
     }
-
-    ///Move these after test ===========================================================================
-    [Command]
-    private void CmdServerValidateHit()
-    {
-        //Validate the logic//Just a reminder that everything right now is pretty much client authorative. Cheating is easily possible.
-
-        RpcHitDown();
-    }
-    /// <summary>
-    /// Destroy obstacles underneath player, still does normal hit behaviour for interactables
-    /// </summary>
-    [ClientRpc]
-    private void RpcHitDown()
-    {
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit[] hit;
-        hit = Physics.SphereCastAll(ray, GetComponent<PlayerController>().radiusOfSphere, GetComponent<PlayerController>().lengthOfSphere, GetComponent<PlayerController>().obstacles);
-        foreach (RaycastHit item in hit)
-        {
-            if (item.transform.GetComponent<ArtefactBehaviour>())
-            {
-                item.transform.gameObject.GetComponent<ArtefactBehaviour>().EnableForPickup();
-                item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
-                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
-            }
-            else if (item.transform.GetComponent<AbilityPickup>())
-            {
-                item.transform.gameObject.GetComponent<BoxCollider>().enabled = true;
-                item.transform.gameObject.GetComponent<MeshRenderer>().enabled = true;
-                item.transform.GetComponent<AbilityPickup>().CmdSetEnabledForPickup(true);
-            }
-            else
-            {
-                Destroy(item.transform.gameObject);
-            }
-        }
-    }
-    ///============================================================================================================
 }
