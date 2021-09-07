@@ -5,12 +5,14 @@ using Mirror;
 public class PlayerToAbilityInteraction : NetworkBehaviour
 {
 
+    [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
+
     public void InteractWithAbility(PlayerController controller)
     {
-        if (controller.GetTargetedAbilityPickup() != null)
+        if (targetedAbilityPickup != null)
         {
-            controller.GetTargetedAbilityPickup().PickupAbility(controller);
-            controller.SetTargetedAbilityPickup(null);
+            targetedAbilityPickup.PickupAbility(controller);
+            targetedAbilityPickup = null;
         }
     }
 
@@ -18,15 +20,15 @@ public class PlayerToAbilityInteraction : NetworkBehaviour
     {
         if (collider.gameObject.GetComponent<AbilityPickup>())
         {
-            controller.SetTargetedAbilityPickup(collider.gameObject.GetComponent<AbilityPickup>());
+            targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
         }
     }
 
     public void TriggerExitInteraction(PlayerController controller, Collider collider)
     {
-        if (controller.GetTargetedAbilityPickup() != null && collider.gameObject == controller.GetTargetedAbilityPickup().gameObject)
+        if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
         {
-            controller.SetTargetedAbilityPickup(null);
+            targetedAbilityPickup = null;
         }
     }
 

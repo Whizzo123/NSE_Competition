@@ -53,6 +53,10 @@ public class PlayerSetup : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Attatches the normal camera and devcam. Todo: It is very messy right now, will need to clean up later
+    /// </summary>
+
     [Client]
     void SetCamera()
     {

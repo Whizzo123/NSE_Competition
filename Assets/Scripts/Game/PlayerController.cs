@@ -25,7 +25,6 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("The artefacts that are in range for picking up")] public readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
     [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")]public List<uint> artefactsForDestruction = new List<uint>();
     [Tooltip("NA")] private Stash gameStash;
-    [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
     [Tooltip("Our abilities that we've selected")] [SyncVar] public AbilityInventory abilityInventory;
@@ -92,20 +91,10 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        // Player Setup start authority method
         GetComponent<PlayerSetup>().StartAuthority(this);
-        // End Player Setup class start authority method
         base.OnStartAuthority();
         
     }
-    // Player Setup - move whole method CmdSetupPlayer
-    // End Player Setup - whole method
-    // Player Camera class - just sitting in setup for now
-    /// <summary>
-    /// Attatches the normal camera and devcam. Todo: It is very messy right now, will need to clean up later
-    /// </summary>
-    
-    //End player camera class - whole method
     #endregion
 
     /// <summary>
@@ -132,93 +121,38 @@ public class PlayerController : NetworkBehaviour
         //DevModeOn();
         //if (devMode){return;}
         #endregion
-
         abilityInventory.Update();
-
-        //PlayerSetup class - Update
         GetComponent<PlayerSetup>().UpdateSetup(this);
-        //End PlayerSetup
         //Todo: Cleanup, maybe instead use loadoutReleased to return instead, this should help boost speed as
         //we can get rid of the pre-emptive code loading and reduce the amount of code that is predicted.
         if (loadoutReleased)
         {
             if (immobilize == false)
             {
-                //Player Movement class
-                #region MOVEMENT_AND_ANIMATION
                 GetComponent<PlayerMovement>().UpdateMovement(this);
-                #endregion
-                //End PlayerMovement
             }
             else
                 playerAnim.SetBool("moving", false);
         }
-
         //Todo:Remove ability pickups from here? Different Stash button as well? Thoughts for discussion
-        #region ARTEFACT_INTERACTION
         if (Input.GetKeyDown(KeyCode.E))
         {
-            // PlayerToArtefactInteraction class
             GetComponent<PlayerToArtefactInteraction>().InteractWithArtefact(this);
-            //End PlayerToArtefactInteraction class
-            // Player Ability Interaction class
             GetComponent<PlayerToAbilityInteraction>().InteractWithAbility(this);
-            // End Player Ability Interaction class
-            //Player Artefact Interaction
-            //Game stash logic
-            //End Player Artefact Interaction
         }
-        #endregion
-
-        #region STEALING
         if (Input.GetKeyDown(KeyCode.F) && !hasBeenStolenFrom)
         {
-            //PlayerToPlayer class
             GetComponent<PlayerToPlayerInteraction>().Steal(this);
-            //End PlayerToPlayer class
         }
-
-        //PlayerToPlayer Class
         GetComponent<PlayerToPlayerInteraction>().UpdateSteal(this);
-        //End PlayerToPlayer class
-        #endregion
-
-        #region OBSTACLE_INTERACTION
         if (Input.GetKey(KeyCode.Space) && toolWait == false && paralyzed == false)
         {
-            //PlayerObstacleInteraction class
             GetComponent<PlayerToObstacleInteraction>().Cut(this);
-            //End PlayerObstacleInteraction class
         }
-        #endregion
-
-        #region FOOTSTEP_SOUNDS
         if ((Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) && GetComponent<PlayerMovement>().isGrounded)
         {
-            //Raycasts to our feet, grabs the layer below us and uses the string from the layer to play the sound
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, GetComponent<PlayerMovement>().ground))
-            {
-                string hitstring = hit.transform.gameObject.layer.ToString();//I believe this is unnecessary
-                int layernumber = int.Parse(hitstring);//I believe this is unnescessary
-                string lm = LayerMask.LayerToName(layernumber);
-                //Todo: Re do this as it causes weird behaviour
-                if (lm == "SwampGround")
-                {
-                    FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
-                }
-                else
-                {
-                    FindObjectOfType<AudioManager>().StopSound("SwampGround");
-                }
-                FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
-            }
+            SoundUpdate();
         }
-        #endregion
-
-        //PlayerMovement class
-        //Call to CmdServerValidateHit inside if statement determined by falling velocity
-        //End PlayerMovement class
     }
 
     /// <summary>
@@ -233,36 +167,15 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    //PlayerMovement class
-    //PlayerRotation
-    // End PlayerMovement class
-
-    // PlayerToPlayerInteraction class
-    //Cmdhasbeenstolenfrom
-    // End PlayerToPlayerINteraction class
-
-    //PlayerToArtefactInteraction class DestroyGameObject & CmdDestroyGameObject
-    //End PlayerToArtefactInteraction class
-
-    // PlayerMovement class
-    //Cmd and Rpc for moving player
-    //End PlayerMovement class
-
     #region Collision
     /// <summary>
     /// Used for entering the stash and other players to allow for interaction and ui pop ups
     /// </summary>
     public void OnTriggerEnter(Collider collider)
     {
-        //PlayerToArtefactInteraction class OnTriggerEnter method
         GetComponent<PlayerToArtefactInteraction>().TriggerEnterInteraction(this, collider);
-        //End PlayerToArtefactInteraction
-        //PlayerToAbilityInteraction class OnTriggerEnter method
         GetComponent<PlayerToAbilityInteraction>().TriggerEnterInteraction(this, collider);
-        //End PlayerToAbilityInteraction class
-        //PlayerToPlayer Interaction class OnTriggerEnter method
         GetComponent<PlayerToPlayerInteraction>().TriggerEnterInteraction(this, collider);
-        //End PlayerToPlayerInteraction
     }
 
     /// <summary>
@@ -271,9 +184,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     public void OnTriggerStay(Collider collider)
     {
-        //PlayerToArtefactInteraction class OnTriggerStay
         GetComponent<PlayerToArtefactInteraction>().TriggerStayInteraction(this, collider);
-        //End PlayerToArtefactInteraction class OnTriggerStay
     }
 
     /// <summary>
@@ -281,30 +192,13 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     public void OnTriggerExit(Collider collider)
     {
-        
         if (collider != null)
         {
-            //PlayerToArtefactInteraction class OnTriggerExit method
             GetComponent<PlayerToArtefactInteraction>().TriggerExitInteraction(this, collider);
-            //End PlayerToArtefactInteraction class
-            //PlayerToAbilityInteraction class OnTriggerExit method
-            //Ability Pickup
             GetComponent<PlayerToAbilityInteraction>().TriggerExitInteraction(this, collider);
-            //End PlayerToAbilityInteraction class OnTriggerExit method
-            //PlayerToPlayerInteraction class OnTriggerExit method
             GetComponent<PlayerToPlayerInteraction>().TriggerExitInteraction(this, collider);
-            //End PlayerToPlayerInteraction class OnTriggerExit method
         }
     }
-
-    #endregion
-
-    #region Obstacle Destruction
-    //PlayerToObstacleInteraction class
-    //Hit logic
-    //End PlayerToObstacleInteraction class
-
-
 
     #endregion
 
@@ -313,16 +207,11 @@ public class PlayerController : NetworkBehaviour
     {
         return artefactInventory;
     }
-    //PlayerToArtefactInteraction class
-    //TargetArtefacts commands
-    //End PlayerToArtefactInteraction method
 
     [Command]
     public void CmdClearTargetArtefacts()
     {
-        Debug.Log("Command is hit");
         GetComponent<PlayerController>().targetedArtefacts.Clear();
-        Debug.Log("TargetedArtefact is causing issues");
     }
 
     public void SetArtefactInventory(ArtefactInventory inventory)
@@ -380,24 +269,13 @@ public class PlayerController : NetworkBehaviour
     [Command]
     public void CmdToggleCamouflage(bool toggle, PlayerController player)
     {
-        Debug.Log("CmdToggleCamouflage: local player: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
-        //GetPlayerToEmpower().ToggleMesh(toggle);
         RpcToggleCamouflage(toggle, player);
     }
     [ClientRpc]
     private void RpcToggleCamouflage(bool toggle, PlayerController player)
     {
-        Debug.Log("ClientRpc call toggling camouflage for: " + player.playerName);
         if (NetworkClient.localPlayer.GetComponent<PlayerController>() != player)
-        {
-            Debug.Log("RpcToggleCamouflage the ClientRpc is hitting another player: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
             player.ToggleMesh(toggle);
-        }
-        else
-        {
-            Debug.Log("RpcToggleCamouflage the ClientRpc is hitting client called: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
-            
-        }
     }
 
     /// <summary>
@@ -448,13 +326,25 @@ public class PlayerController : NetworkBehaviour
         hasBeenStolenFrom = value;
     }
 
-    public AbilityPickup GetTargetedAbilityPickup()
+    private void SoundUpdate()
     {
-        return targetedAbilityPickup;
-    }
-
-    public void SetTargetedAbilityPickup(AbilityPickup pickup)
-    {
-        targetedAbilityPickup = pickup;
+        //Raycasts to our feet, grabs the layer below us and uses the string from the layer to play the sound
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, GetComponent<PlayerMovement>().ground))
+        {
+            string hitstring = hit.transform.gameObject.layer.ToString();//I believe this is unnecessary
+            int layernumber = int.Parse(hitstring);//I believe this is unnescessary
+            string lm = LayerMask.LayerToName(layernumber);
+            //Todo: Re do this as it causes weird behaviour
+            if (lm == "SwampGround")
+            {
+                FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
+            }
+            else
+            {
+                FindObjectOfType<AudioManager>().StopSound("SwampGround");
+            }
+            FindObjectOfType<AudioManager>().PlaySoundOnly(lm);
+        }
     }
 }
