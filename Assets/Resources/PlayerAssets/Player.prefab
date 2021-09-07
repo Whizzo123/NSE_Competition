@@ -1626,6 +1626,7 @@ GameObject:
   - component: {fileID: 7902141741267381799}
   - component: {fileID: 8952362716403429180}
   - component: {fileID: 8621103879038144355}
+  - component: {fileID: 6678475202557371851}
   - component: {fileID: 4071522212128209381}
   - component: {fileID: 1889028440207431689}
   - component: {fileID: 8921563345967218691}
@@ -1769,6 +1770,20 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   timeForStunAfterSteal: 3
+--- !u!114 &6678475202557371851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fea84e2a0fa387479d5be0b1d31afd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -162,11 +162,7 @@ public class PlayerController : NetworkBehaviour
             GetComponent<PlayerToArtefactInteraction>().InteractWithArtefact(this);
             //End PlayerToArtefactInteraction class
             // Player Ability Interaction class
-            if (targetedAbilityPickup != null)
-            {
-                targetedAbilityPickup.PickupAbility(this);
-                targetedAbilityPickup = null;
-            }
+            GetComponent<PlayerToAbilityInteraction>().InteractWithAbility(this);
             // End Player Ability Interaction class
             //Player Artefact Interaction
             //Game stash logic
@@ -262,10 +258,7 @@ public class PlayerController : NetworkBehaviour
         GetComponent<PlayerToArtefactInteraction>().TriggerEnterInteraction(this, collider);
         //End PlayerToArtefactInteraction
         //PlayerToAbilityInteraction class OnTriggerEnter method
-        if (collider.gameObject.GetComponent<AbilityPickup>())
-        {
-            targetedAbilityPickup = collider.gameObject.GetComponent<AbilityPickup>();
-        }
+        GetComponent<PlayerToAbilityInteraction>().TriggerEnterInteraction(this, collider);
         //End PlayerToAbilityInteraction class
         //PlayerToPlayer Interaction class OnTriggerEnter method
         GetComponent<PlayerToPlayerInteraction>().TriggerEnterInteraction(this, collider);
@@ -296,10 +289,7 @@ public class PlayerController : NetworkBehaviour
             //End PlayerToArtefactInteraction class
             //PlayerToAbilityInteraction class OnTriggerExit method
             //Ability Pickup
-            if (targetedAbilityPickup != null && collider.gameObject == targetedAbilityPickup.gameObject)
-            {
-                targetedAbilityPickup = null;
-            }
+            GetComponent<PlayerToAbilityInteraction>().TriggerExitInteraction(this, collider);
             //End PlayerToAbilityInteraction class OnTriggerExit method
             //PlayerToPlayerInteraction class OnTriggerExit method
             GetComponent<PlayerToPlayerInteraction>().TriggerExitInteraction(this, collider);
@@ -456,5 +446,15 @@ public class PlayerController : NetworkBehaviour
     public void SetHasBeenStolenFrom(bool value)
     {
         hasBeenStolenFrom = value;
+    }
+
+    public AbilityPickup GetTargetedAbilityPickup()
+    {
+        return targetedAbilityPickup;
+    }
+
+    public void SetTargetedAbilityPickup(AbilityPickup pickup)
+    {
+        targetedAbilityPickup = pickup;
     }
 }
