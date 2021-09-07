@@ -1621,6 +1621,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7811146946738992400}
   - component: {fileID: 7811146946738992404}
+  - component: {fileID: 799718171964016772}
+  - component: {fileID: 1043160865967870262}
+  - component: {fileID: 7902141741267381799}
+  - component: {fileID: 8952362716403429180}
+  - component: {fileID: 8621103879038144355}
+  - component: {fileID: 6678475202557371851}
   - component: {fileID: 4071522212128209381}
   - component: {fileID: 1889028440207431689}
   - component: {fileID: 8921563345967218691}
@@ -1668,11 +1674,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   tempArtefactStorage: []
+  artefactsForDestruction: 
   playerName: 
-  waitTime: 0.569
-  playerGravity: -65
-  groundDistance: 2.5
-  playerFallingVelocity: {x: 0, y: 0, z: 0}
   speed: 10
   normalSpeed: 10
   lengthOfSphere: 2
@@ -1680,9 +1683,6 @@ MonoBehaviour:
   obstacles:
     serializedVersion: 2
     m_Bits: 262656
-  ground:
-    serializedVersion: 2
-    m_Bits: 63744
   playerCharacterController: {fileID: 0}
   playerAnim: {fileID: 8412895053057340191}
   nameTextPrefab: {fileID: 1207296677192428715, guid: 2ea2f30f987f8324c9dd07e17a513a3a, type: 3}
@@ -1690,9 +1690,100 @@ MonoBehaviour:
   playerCamera: {fileID: 0}
   vCam: {fileID: 0}
   offset: {x: 0, y: 10, z: 10}
-  timeForStunAfterSteal: 3
   devMode: 0
   devCam: {fileID: 22159899250329015, guid: 73b92ca893da92447ae9bf658bf9355c, type: 3}
+--- !u!114 &799718171964016772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27e20643c54f0e541a5fd63a7b8999d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+--- !u!114 &1043160865967870262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2f66eabe5b9b844dbe73d75b291540c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  playerFallingVelocity: {x: 0, y: 0, z: 0}
+  playerGravity: -65
+  ground:
+    serializedVersion: 2
+    m_Bits: 63744
+  groundDistance: 2.5
+--- !u!114 &7902141741267381799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18faafef64148034f95c23fdc2af6d0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+--- !u!114 &8952362716403429180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77ff4df05dba9ec40905d37c4c81c163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  waitTime: 0.5
+--- !u!114 &8621103879038144355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dec7aeede4629114fb565bee972516cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  timeForStunAfterSteal: 3
+--- !u!114 &6678475202557371851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fea84e2a0fa387479d5be0b1d31afd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0
