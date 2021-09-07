@@ -1625,6 +1625,7 @@ GameObject:
   - component: {fileID: 1043160865967870262}
   - component: {fileID: 7902141741267381799}
   - component: {fileID: 8952362716403429180}
+  - component: {fileID: 8621103879038144355}
   - component: {fileID: 4071522212128209381}
   - component: {fileID: 1889028440207431689}
   - component: {fileID: 8921563345967218691}
@@ -1688,7 +1689,6 @@ MonoBehaviour:
   playerCamera: {fileID: 0}
   vCam: {fileID: 0}
   offset: {x: 0, y: 10, z: 10}
-  timeForStunAfterSteal: 3
   devMode: 0
   devCam: {fileID: 22159899250329015, guid: 73b92ca893da92447ae9bf658bf9355c, type: 3}
 --- !u!114 &799718171964016772
@@ -1754,6 +1754,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   waitTime: 0.5
+--- !u!114 &8621103879038144355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811146946738992411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dec7aeede4629114fb565bee972516cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  timeForStunAfterSteal: 3
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0

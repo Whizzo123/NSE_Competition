@@ -37,7 +37,7 @@ public class PlayerSetup : NetworkBehaviour
 
         //Variables
         controller.CmdSetImmobilized(false);
-        controller.CmdSetHasBeenStolenFrom(false);
+        GetComponent<PlayerToPlayerInteraction>().CmdSetHasBeenStolenFrom(controller, false);
     }
 
     public void UpdateSetup(PlayerController controller)

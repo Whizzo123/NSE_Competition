@@ -25,7 +25,6 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("The artefacts that are in range for picking up")] public readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
     [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")]public List<uint> artefactsForDestruction = new List<uint>();
     [Tooltip("NA")] private Stash gameStash;
-    [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
@@ -74,8 +73,6 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Have we been hit by the voodoo trap")] [SyncVar] private bool voodooPoisoned;
     [Tooltip("Can we use abilities?")] [SyncVar] private bool mortal;
     [Tooltip("Can we use our tools?")][SyncVar] private bool paralyzed;
-    [Tooltip("NA")] private float currentStunAfterTimer;
-    [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal;
 
     //Other Variables
     [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom = false;
@@ -181,55 +178,12 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.F) && !hasBeenStolenFrom)
         {
             //PlayerToPlayer class
-            Debug.LogError(artefactInventory.GetAllArtefactNames());
-
-            //If we are not full, they are no longer stunned and have artefacts, we steal
-            if (targetedPlayerToStealFrom != null)
-            {
-                if (artefactInventory.AvailableInventorySlot() && targetedPlayerToStealFrom.GrabArtefactInventory().InventoryNotEmpty() && targetedPlayerToStealFrom.hasBeenStolenFrom == false)
-                {
-
-                    //Add to our inventory
-                    ItemArtefact randomArtefact = targetedPlayerToStealFrom.GetArtefactInventory().GrabRandomItem();
-                    artefactInventory.AddToInventory(randomArtefact.name, randomArtefact.points);
-
-                    //remove from enemy inventory
-                    for (int indexToRemove = 0; indexToRemove < targetedPlayerToStealFrom.GetArtefactInventory().GetInventory().Count; indexToRemove++)
-                    {
-                        if (targetedPlayerToStealFrom.GetArtefactInventory().GetInventory()[indexToRemove].name != string.Empty && targetedPlayerToStealFrom.GetArtefactInventory().GetInventory()[indexToRemove].name == randomArtefact.name)
-                        {
-                            targetedPlayerToStealFrom.GetArtefactInventory().RemoveFromInventory(indexToRemove, randomArtefact.name, randomArtefact.points);
-                            targetedPlayerToStealFrom.CmdSetImmobilized(true);
-                            targetedPlayerToStealFrom.CmdSetHasBeenStolenFrom(true);
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    FindObjectOfType<CanvasUIManager>().PopupMessage("Cannot steal from player has no artefacts or stolen from recently");
-
-                }
-            }
-
+            GetComponent<PlayerToPlayerInteraction>().Steal(this);
             //End PlayerToPlayer class
         }
 
         //PlayerToPlayer Class
-        //Stunning timer from being stolen from
-        if (hasBeenStolenFrom)
-        {
-            if (currentStunAfterTimer >= timeForStunAfterSteal)
-            {
-                currentStunAfterTimer = 0;
-                CmdSetHasBeenStolenFrom(false);
-                CmdSetImmobilized(false);
-            }
-            else
-            {
-                currentStunAfterTimer += Time.deltaTime;
-            }
-        }
+        GetComponent<PlayerToPlayerInteraction>().UpdateSteal(this);
         //End PlayerToPlayer class
         #endregion
 
@@ -288,11 +242,7 @@ public class PlayerController : NetworkBehaviour
     // End PlayerMovement class
 
     // PlayerToPlayerInteraction class
-    [Command(requiresAuthority = false)]
-    public void CmdSetHasBeenStolenFrom(bool value)
-    {
-        hasBeenStolenFrom = value;
-    }
+    //Cmdhasbeenstolenfrom
     // End PlayerToPlayerINteraction class
 
     //PlayerToArtefactInteraction class DestroyGameObject & CmdDestroyGameObject
@@ -318,21 +268,7 @@ public class PlayerController : NetworkBehaviour
         }
         //End PlayerToAbilityInteraction class
         //PlayerToPlayer Interaction class OnTriggerEnter method
-        //Allows us to interact with A player and shows hint message
-        if (collider.gameObject.GetComponent<PlayerController>())
-        {
-            if (collider.GetComponentInChildren<SkinnedMeshRenderer>().enabled == false)
-            {
-                return;
-            }
-            targetedPlayerToStealFrom = collider.gameObject.GetComponent<PlayerController>();
-            if (FindObjectOfType<CanvasUIManager>() != null && NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
-            {
-                FindObjectOfType<CanvasUIManager>().ShowHintMessage("Press F to Steal");
-
-            }
-
-        }
+        GetComponent<PlayerToPlayerInteraction>().TriggerEnterInteraction(this, collider);
         //End PlayerToPlayerInteraction
     }
 
@@ -366,13 +302,7 @@ public class PlayerController : NetworkBehaviour
             }
             //End PlayerToAbilityInteraction class OnTriggerExit method
             //PlayerToPlayerInteraction class OnTriggerExit method
-            //Players
-            if (targetedPlayerToStealFrom != null && collider.gameObject == targetedPlayerToStealFrom.gameObject)
-            {
-                targetedPlayerToStealFrom = null;
-                if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
-                    FindObjectOfType<CanvasUIManager>().CloseHintMessage();
-            }
+            GetComponent<PlayerToPlayerInteraction>().TriggerExitInteraction(this, collider);
             //End PlayerToPlayerInteraction class OnTriggerExit method
         }
     }
@@ -390,11 +320,6 @@ public class PlayerController : NetworkBehaviour
 
     #region ARTEFACT_FUNCTIONS
     public ArtefactInventory GetArtefactInventory()
-    {
-        return artefactInventory;
-    }
-    //Todo:Remove this, we already have GetArtefactInventory, line 318 uses this
-    ArtefactInventory GrabArtefactInventory()
     {
         return artefactInventory;
     }
@@ -521,5 +446,15 @@ public class PlayerController : NetworkBehaviour
     public void SetToolWait(bool toolWait)
     {
         this.toolWait = toolWait;
+    }
+
+    public bool HasPlayerBeenStolenFrom()
+    {
+        return hasBeenStolenFrom;
+    }
+
+    public void SetHasBeenStolenFrom(bool value)
+    {
+        hasBeenStolenFrom = value;
     }
 }
