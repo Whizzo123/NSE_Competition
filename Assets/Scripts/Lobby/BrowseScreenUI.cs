@@ -31,7 +31,6 @@ public class BrowseScreenUI : MonoBehaviour
     private void Start()
     {
         lobbyUIManager = FindObjectOfType<LobbyUIManager>();
-        currentWaitTime = waitTime;
     }
 
     /// <summary>
@@ -83,8 +82,8 @@ public class BrowseScreenUI : MonoBehaviour
     //Todo: Refresh the browse screen periodically or add a refresh button to show new lobbies
     void Update()
     { 
-        //if (!FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
-        //{
+        if (!FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+        {
             //Periodically updates the details of the lobby
             if (currentWaitTime <= 0)
             {
@@ -110,7 +109,7 @@ public class BrowseScreenUI : MonoBehaviour
             {
                 currentWaitTime -= Time.deltaTime;
             }
-        //}
+        }
         /*else
         {
             if(currentWaitTime <= 0)
