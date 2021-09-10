@@ -18,7 +18,7 @@ public class AbilityTimerContainer : MonoBehaviour
     public void AddTimer(string abilityName, float fullDuration, bool badEffect)
     {
         GameObject timer = Instantiate(timerPrefab, this.transform);
-        timer.GetComponent<TimerUI>().InitializeEventTimer(fullDuration, badEffect);
+        timer.GetComponent<TimerUI>().InitializeEventTimer(fullDuration, badEffect, Resources.Load<Sprite>("UI/Abilities/AbilitiesIcons/" + abilityName));
         timer.GetComponent<TimerUI>().StartCount();
         childTimers.Add(abilityName, timer.GetComponent<TimerUI>());
     }
