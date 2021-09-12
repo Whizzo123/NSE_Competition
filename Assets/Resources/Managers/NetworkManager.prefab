@@ -48,13 +48,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  PersistNetworkManagerToOfflineScene: 0
+  PersistNetworkManagerToOfflineScene: 1
   runInBackground: 1
   autoStartServerBuild: 1
   serverTickRate: 30
   serverBatching: 1
   serverBatchInterval: 0
-  offlineScene: 
+  offlineScene: Assets/Scenes/TitleScene.unity
   onlineScene: 
   transport: {fileID: 5581680211952789228}
   networkAddress: localhost
@@ -71,6 +71,14 @@ MonoBehaviour:
   minPlayers: 2
   gamePlayerPrefab: {fileID: 7811146946738992404, guid: f1f1c90d42a4179428ca47018e5a7f2c, type: 3}
   useSteamMatchmaking: 0
+  gameScenes:
+  - m_SceneAsset: {fileID: 102900000, guid: 28ee0c5934fde4a4380eea24e3bb1ec8, type: 3}
+    m_SceneName: Plains
+  - m_SceneAsset: {fileID: 102900000, guid: 57d75e3e466d2134985105b64614788b, type: 3}
+    m_SceneName: Quarantine City
+  lobbyScene:
+    m_SceneAsset: {fileID: 102900000, guid: f48c8688d8cfc8546a7454a0eff688aa, type: 3}
+    m_SceneName: LobbyScene
   RoomPlayers: []
 --- !u!114 &5581680211952789216
 MonoBehaviour:

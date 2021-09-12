@@ -23,6 +23,8 @@ public class MyNetworkManager : NetworkManager
     [Header("Game")]
     [SerializeField] [Tooltip("Prefab used to spawn the controllable player")] private PlayerController gamePlayerPrefab = null;
     [SerializeField] [Tooltip("Do we use Steam for matchmaking or not?")] public bool useSteamMatchmaking;
+    public SceneField[] gameScenes;
+    public SceneField lobbyScene;
  
 
     //List<LobbyPlayer> RoomPlayers = new List<LobbyPlayer>();
@@ -91,7 +93,7 @@ public class MyNetworkManager : NetworkManager
     {
         Debug.Log("Inside OnServerAddPlayer");
 
-        if (SceneManager.GetActiveScene().name == "LobbyScene")
+        if (SceneManager.GetActiveScene().name == lobbyScene.SceneName)
         {
             MirrorRoomPlayerLobby lobbyPlayerInstance = Instantiate(lobbyPlayerPrefab);
 
@@ -116,9 +118,9 @@ public class MyNetworkManager : NetworkManager
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         Debug.Log("OnServerDisconnect");
-        if(conn.identity != null && SceneManager.GetActiveScene().name == "LobbyScene")
+        if(conn.identity != null && SceneManager.GetActiveScene().name == lobbyScene.SceneName)
         {
-            if (SceneManager.GetActiveScene().name == "LobbyScene")
+            if (SceneManager.GetActiveScene().name == lobbyScene.SceneName)
             {
                 var player = conn.identity.GetComponent<MirrorRoomPlayerLobby>();
 
@@ -132,7 +134,7 @@ public class MyNetworkManager : NetworkManager
     
     public override void ServerChangeScene(string newSceneName)
     {
-        if (newSceneName.Contains("Plains") || newSceneName.Contains("Quarantine"))
+        if (GameScenesContains(newSceneName))
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
@@ -151,8 +153,10 @@ public class MyNetworkManager : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
-        if(sceneName.Contains("Quarantine"))
+        if (GameScenesContains(sceneName))
+        {
             ChangeMusic();
+        }
         SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
         base.OnServerSceneChanged(sceneName);
 
@@ -161,7 +165,7 @@ public class MyNetworkManager : NetworkManager
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
     {
         RoomPlayers.Clear();
-        if (newSceneName.Contains("Quarantine"))
+        if (GameScenesContains(newSceneName))
             ChangeMusic();
         SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
         base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
@@ -208,7 +212,7 @@ public class MyNetworkManager : NetworkManager
     /// </summary>
     public void StartGame()
     {
-        if (SceneManager.GetActiveScene().name == "LobbyScene")
+        if (SceneManager.GetActiveScene().name == lobbyScene.SceneName)
         {
             if (!IsReadyToStart()) { return; }
             ServerChangeScene("Quarantine City");
@@ -222,6 +226,40 @@ public class MyNetworkManager : NetworkManager
     void ChangeMusic()
     {
         FindObjectOfType<AudioManager>().ActivateGameMusic();
+    }
+
+    public void MovePlayersToSpawnPosInTemple()
+    {
+        PlayerMovement[] players = FindObjectsOfType<PlayerMovement>();
+        SphereCollider templeCollider = FindObjectOfType<Stash>().GetComponent<SphereCollider>();
+        for (int i = 0; i < players.Length; i++)
+        {
+            players[i].CmdMovePlayer(templeCollider.gameObject.transform.position + FindRandomPosInsideSphereColliderOnXAndZAxis(templeCollider, 2f),
+                players[i].GetComponent<PlayerController>().playerName);
+        }
+    }
+
+    /// <summary>
+    /// Returns a random vector position from inside a collider on the x and z axis 
+    /// </summary>
+    /// <param name="collider"></param>
+    /// <param name="compensationOnTheY"> This is just in case model origin is not at feet so we move them up slightly to compensate </param>
+    /// <returns></returns>
+    private Vector3 FindRandomPosInsideSphereColliderOnXAndZAxis(SphereCollider collider, float compensationOnTheY = 0f)
+    {
+        Vector3 lowestValue = new Vector3(collider.center.x - collider.radius, collider.center.y + compensationOnTheY, collider.center.z - collider.radius);
+        Vector3 highestValue = new Vector3(collider.center.x + collider.radius, collider.center.y + compensationOnTheY, collider.center.z + collider.radius);
+        return new Vector3(Random.Range(lowestValue.x, highestValue.x), lowestValue.y, Random.Range(lowestValue.z, highestValue.z));
+    }
+
+    private bool GameScenesContains(string sceneName)
+    {
+        for (int i = 0; i < gameScenes.Length; i++)
+        {
+            if (gameScenes[i].SceneName == sceneName)
+                return true;
+        }
+        return false;
     }
 
 }
