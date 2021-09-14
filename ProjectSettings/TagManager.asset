@@ -8,6 +8,7 @@ TagManager:
   - Spawner
   - Artefact
   - Indestructables
+  - MinimapCamera
   layers:
   - Default
   - TransparentFX
