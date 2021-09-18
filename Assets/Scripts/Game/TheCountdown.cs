@@ -22,6 +22,7 @@ public class TheCountdown : NetworkBehaviour
     [Tooltip("Time elapsed in loadout menu")] private float currentLobbyTime;
     [SerializeField] [Tooltip("Total game time")] public float gameTime;
     [Tooltip("Elapsed time in the game scene")] private float currentGameTime;
+    private bool playersMovedToSpawnPos;
 
 
     void Start()
@@ -29,6 +30,7 @@ public class TheCountdown : NetworkBehaviour
         currentLobbyTime = lobbyTime;
         currentGameTime = gameTime;
         currentWinScreenDisplayTime = winScreenDisplayTime;
+        playersMovedToSpawnPos = false;
         StartCoroutine(Countdown());
     }
 
@@ -39,7 +41,6 @@ public class TheCountdown : NetworkBehaviour
     [Server]
     private IEnumerator Countdown()
     {
-        Debug.Log("InsideCountdown");
         var floorTime = Mathf.FloorToInt(lobbyTime);
         //Ticking down loadout screen time and updates the clock UI
         while (currentLobbyTime > 0)
@@ -52,8 +53,13 @@ public class TheCountdown : NetworkBehaviour
             if (newFloorTime != floorTime)
             {
                 floorTime = newFloorTime;
-
                 UpdateCountdown(floorTime);
+            }
+            //Once time is below 30 on lobby clock shift players to inside temple
+            if(currentLobbyTime < 30 && playersMovedToSpawnPos == false)
+            {
+                playersMovedToSpawnPos = true;
+                FindObjectOfType<MyNetworkManager>().MovePlayersToSpawnPosInTemple();
             }
         }
         //When loadout screen time is completed, disable the loadout screen and start the game couroutine

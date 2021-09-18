@@ -122,6 +122,8 @@ public class PlayerController : NetworkBehaviour
         //if (devMode){return;}
         #endregion
         abilityInventory.Update();
+        GameObject.FindGameObjectWithTag("MinimapCamera").transform.position = new Vector3(this.transform.position.x, 
+            GameObject.FindGameObjectWithTag("MinimapCamera").transform.position.y, this.transform.position.z);
         GetComponent<PlayerSetup>().UpdateSetup(this);
         //Todo: Cleanup, maybe instead use loadoutReleased to return instead, this should help boost speed as
         //we can get rid of the pre-emptive code loading and reduce the amount of code that is predicted.

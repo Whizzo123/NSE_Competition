@@ -18,24 +18,28 @@ public class TimerUI : MonoBehaviour
     //Colours for rings
     public Color redColor;
     public Color blueColor;
+    //Image to display with timer
+    public Image timerDisplayImage;
 
     // Start is called before the first frame update
-    public void InitializeDeltaTimeTimer(float time)
+    public void InitializeDeltaTimeTimer(float time, Sprite spriteForDisplayImage)
     {
         timeToCount = time;
         deltaTimeBased = true;
         counting = false;
         currentTime = 0f;
         timerImage = GetComponent<Image>();
+        timerDisplayImage.sprite = spriteForDisplayImage;
     }
 
-    public void InitializeEventTimer(float durationTime, bool badEffect)
+    public void InitializeEventTimer(float durationTime, bool badEffect, Sprite spriteForDisplayImage)
     {
         timeToCount = durationTime;
         deltaTimeBased = false;
         counting = false;
         currentTime = 0f;
         timerImage = GetComponent<Image>();
+        timerDisplayImage.sprite = spriteForDisplayImage;
         if(badEffect)
             timerImage.color = redColor;
         else
