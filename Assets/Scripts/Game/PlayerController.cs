@@ -189,10 +189,10 @@ public class PlayerController : NetworkBehaviour
         if (!hasAuthority) { return; };
 
         #region DEVMODE
-        //if (Input.GetKey(KeyCode.P)) { devMode = true;}
-        //if (Input.GetKey(KeyCode.O)){devMode = false;}
-        //DevModeOn();
-        //if (devMode){return;}
+        if (Input.GetKey(KeyCode.P)) { devMode = true; }
+        if (Input.GetKey(KeyCode.O)) { devMode = false; }
+        DevModeOn();
+        if (devMode) { return; }
         #endregion
 
         abilityInventory.Update();

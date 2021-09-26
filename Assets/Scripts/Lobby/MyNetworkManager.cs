@@ -211,7 +211,7 @@ public class MyNetworkManager : NetworkManager
         if (SceneManager.GetActiveScene().name == "LobbyScene")
         {
             if (!IsReadyToStart()) { return; }
-            ServerChangeScene("Quarantine City");
+            ServerChangeScene("Plains");
         }
     }
     #endregion

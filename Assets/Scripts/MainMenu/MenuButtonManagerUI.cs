@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
 /// Menu button manager allows navigation of the 'TitleScene', and
@@ -9,13 +10,23 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class MenuButtonManagerUI : MonoBehaviour
 {
-   //Todo: rename these variables
-
-    [SerializeField] [Tooltip("Canvas")] public GameObject panel1;//Necessary?
-    [SerializeField] [Tooltip("Panel showing main screen navigation")] public GameObject panel2;
-
+    public GameObject canvas;
+    [SerializeField] [Tooltip("Panel showing main screen navigation")] public GameObject mainScreen;
+    public string versionNumber = "V0.2.2a";
+    private Text whiteVersionNumber, blackVersionNumber;
     //Todo: Either have a LoadScene function for use of buttons, or do it through Joes ways of using Lambdas (preferable)
 
+    private void Start()
+    {
+        if (mainScreen == null)
+        {
+            mainScreen = GameObject.Find("MainMenuScreen");
+        }
+        whiteVersionNumber = GameObject.Find("W_VersionNumberText").GetComponent<Text>();
+        blackVersionNumber = GameObject.Find("B_VersionNumberText").GetComponent<Text>();
+        whiteVersionNumber.text = versionNumber;
+        blackVersionNumber.text = versionNumber;
+    }
     /// <summary>
     /// Loads LobbyScene
     /// </summary>
@@ -27,19 +38,9 @@ public class MenuButtonManagerUI : MonoBehaviour
     /// <summary>
     /// Turns on the Options panel and sets panel2 off
     /// </summary>
-    public void Options()
+    public void Options(bool on)
     {
-        FindObjectOfType<AudioManager>().TurnOn();
-        panel2.SetActive(false);
-    }
-
-    /// <summary>
-    /// Goes back to the root navigation screen and sets Options panel off
-    /// </summary>
-    public void titleScreen()
-    {
-        FindObjectOfType<AudioManager>().TurnOff();
-        panel2.SetActive(true);
+        GameObject.FindObjectOfType<AudioManager>().PanelSettings(on);
     }
 
     public void Quit()
