@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
@@ -18,6 +19,13 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     [SerializeField] [Tooltip("Start button")] private Button startGameButton = null;
     [SerializeField] [Tooltip("Remove buttons")] private Button[] removeButtons = new Button[5];
     [SerializeField] [Tooltip("Back button")] public Button backButton;
+
+    [SerializeField] private GameObject playerInfoPrefab;
+    [SerializeField] private GameObject playerInfoContentBox;
+    private int playersInLobby;
+    //[SerializeField] private List<Image> playerReadyObject;
+    //[SerializeField] private Button removePlayerButton;
+    //[SerializeField] private Text playerNameText;
     [Space]
 
     [SyncVar(hook = nameof(HandleDisplayNameChanged))]
@@ -43,8 +51,20 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         {
             isLeader = value;
             startGameButton.gameObject.SetActive(value);
+            if (value == true)
+            {
+                startGameButton.gameObject.GetComponentInChildren<Text>().text = "Start";
+                startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdStartGame);
+            }
+            else
+            {
+                startGameButton.gameObject.GetComponentInChildren<Text>().text = "Ready";
+                startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdReadyUp);
+            }
         }
     }
+
+    
 
 
     [SerializeField] [Tooltip("Reference to MyNetworkManager for")] private MyNetworkManager room;
@@ -142,6 +162,16 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 
             return;
         }
+        if (isLeader && playersInLobby < Room.RoomPlayers.Count)
+        {
+            GameObject go = Instantiate(playerInfoPrefab, playerInfoContentBox.transform);
+            NetworkServer.Spawn(go, Room.RoomPlayers[Room.RoomPlayers.Count].connectionToServer);
+
+            playerNameTexts[Room.RoomPlayers.Count + 1] = go.GetComponentInChildren<Text>();
+            removeButtons[Room.RoomPlayers.Count + 1] = go.GetComponent<Button>();
+            playerReadyTexts[Room.RoomPlayers.Count + 1] = go.GetComponentInChildren<Text>();
+            playersInLobby++;
+        }
 
 
         //Loop through playerNameTexts playerReadyTexts and set them back to default
@@ -156,6 +186,11 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
             playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
             playerReadyTexts[i].text = Room.RoomPlayers[i].IsReady ? "<color=green>Ready</color>" : "<color=red>Not Ready</color>";
         }
+    }
+
+    private void SetPlayerPrefabInfo()
+    {
+        int roomPlayers = Room.RoomPlayers.Count;
     }
 
 

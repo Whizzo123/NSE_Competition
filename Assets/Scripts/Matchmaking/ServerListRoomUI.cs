@@ -7,7 +7,8 @@ using Steamworks;
 using Mirror.Discovery;
 
 /// <summary>
-/// The UI Element (Button) for each session. Also has joining functions.
+/// Script to attatch to a server room prefab.
+/// <para>Edits the information and initiates joining</para>
 /// </summary>
 public class ServerListRoomUI : MonoBehaviour
 {

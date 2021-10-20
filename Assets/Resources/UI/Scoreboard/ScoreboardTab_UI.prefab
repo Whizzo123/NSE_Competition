@@ -32,10 +32,10 @@ RectTransform:
   m_Father: {fileID: 8006114763200243574}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -40.2, y: 1}
-  m_SizeDelta: {x: 89.09323, y: 30}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.7283063, y: 1}
+  m_AnchoredPosition: {x: 6.889, y: 1}
+  m_SizeDelta: {x: -13.771019, y: -28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3010469675427433602
 CanvasRenderer:
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 5459946349211884127}
   - component: {fileID: 7703449738582863814}
   m_Layer: 5
-  m_Name: ScoreboardTab
+  m_Name: ScoreboardTab_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -156,7 +156,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.5
 --- !u!114 &7703449738582863814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,10 +203,10 @@ RectTransform:
   m_Father: {fileID: 8006114763200243574}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 35.8, y: 7.6}
-  m_SizeDelta: {x: 96, y: 27.226166}
+  m_AnchorMin: {x: 0.7283063, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -5.6299973, y: 1.6935005}
+  m_SizeDelta: {x: -11.337677, y: -29.386902}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3082735741798754648
 CanvasRenderer:
@@ -243,12 +243,10 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 8
+    m_Alignment: 5
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '0
-
-'
+  m_Text: 999999
