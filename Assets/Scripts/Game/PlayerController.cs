@@ -84,8 +84,18 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("NA")] private float currentStunAfterTimer;
     [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal;
 
+    //Variable Camera Controls
+    [Tooltip("Can the camera be controlled on the X Axis? 1 for Yes")] public bool xCamMovementEnabled = true;
+    [Tooltip("Can the camera be controlled on the Y Axis? 1 for Yes")] public bool yCamMovementEnabled = false;
+    [Tooltip("X axis for camera sensitivity")] [Range(0, 1)] public float xCamSensitivity = 0.5f;
+    [Tooltip("Y axis for camera sensitivity")] [Range(0, 1)] public float yCamSensitivity = 0.5f;
+    [Tooltip("Does the camera have to be controlled by pressing rmb?")] public bool manualMouseControl = true;
+
     //Other Variables
     [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom = false;
+
+
+
 
     [Space]
     [Header("DevMode")]
@@ -102,6 +112,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
+        GameObject.FindObjectOfType<ControlsSettings>().UpdateControls(this);
         //Attatches Camera
         vCam = FindObjectOfType<Cinemachine.CinemachineFreeLook>();
         if (vCam != null)
@@ -466,18 +477,19 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        if (Input.GetMouseButton(1))
+        //Allows options for camera movement
+        if ((Input.GetMouseButton(1) || !manualMouseControl) && xCamMovementEnabled)
         {
-            vCam.m_XAxis.m_MaxSpeed = 200;
+            vCam.m_XAxis.m_MaxSpeed = (400 * xCamSensitivity);
 
         }
         else
         {
             vCam.m_XAxis.m_MaxSpeed = 0;
         }
-        if (Input.GetMouseButton(2))
+        if ((Input.GetMouseButton(1) || !manualMouseControl) && yCamMovementEnabled)
         {
-            vCam.m_YAxis.m_MaxSpeed = 20;//Adjustable sensitivity
+            vCam.m_YAxis.m_MaxSpeed = (40 * yCamSensitivity);
         }else
         {
             vCam.m_YAxis.m_MaxSpeed = 0;
@@ -859,17 +871,17 @@ public class PlayerController : NetworkBehaviour
 
     #endregion
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(transform.position + (transform.forward * lengthOfSphere), radiusOfSphere);//Death sphere
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down);//Down 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, -transform.up + transform.position);//Up
-        //Gizmos.color = Color.green;
-        //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.white;
+    //    Gizmos.DrawWireSphere(transform.position + (transform.forward * lengthOfSphere), radiusOfSphere);//Death sphere
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawLine(transform.position, transform.position + Vector3.down);//Down 
+    //    Gizmos.color = Color.blue;
+    //    Gizmos.DrawLine(transform.position, -transform.up + transform.position);//Up
+    //    //Gizmos.color = Color.green;
+    //    //Gizmos.DrawSphere(transform.position - new Vector3(0, 2, 0), groundDistance);
+    //}
 }
 
 

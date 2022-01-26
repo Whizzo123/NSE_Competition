@@ -247,6 +247,9 @@ public class AudioManager : MonoBehaviour
 
     public void PanelSettings(bool on)
     {
+        //GetComponent<VisualSettings>().UpdateVisualSettings();
+        //GetComponent<ControlsSettings>().UpdateControls();
+
         canvas.SetActive(on);
         settingsPanel.SetActive(on);
 
