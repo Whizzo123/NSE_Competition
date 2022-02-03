@@ -40,6 +40,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     private void Awake()
     {
         backButton.onClick.AddListener(() => FindObjectOfType<BackTemp>().Back());
+        backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
     }
 
     /// <summary>
@@ -53,12 +54,14 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
             startGameButton.gameObject.SetActive(value);
             if (value == true)
             {
-                startGameButton.gameObject.GetComponentInChildren<Text>().text = "Start";
+                backButton.gameObject.GetComponentInChildren<Text>().text = "CLOSE LOBBY";
+                startGameButton.gameObject.GetComponentInChildren<Text>().text = "START";
                 startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdStartGame);
             }
             else
             {
-                startGameButton.gameObject.GetComponentInChildren<Text>().text = "Ready";
+                backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
+                startGameButton.gameObject.GetComponentInChildren<Text>().text = "READY";
                 startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdReadyUp);
             }
         }
@@ -115,10 +118,10 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 
         lobbyUI.SetActive(true);
         //RemoveButtons enable or disable if leader
-        if (isLeader)
-            EnableRemoveButtons();
-        else
-            DisableRemoveButtons();
+        //if (isLeader)
+        //    EnableRemoveButtons();
+        //else
+        //    DisableRemoveButtons();
     }
 
     /// <summary>
@@ -148,7 +151,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     /// </summary>
     private void UpdateDisplay()
     {
-        //Updates the Element if we have authority over it.
+        //Updates the Element if we have authority over it. Standard loop to allow authoritive actions
         if(!hasAuthority)
         {
             foreach (var player in Room.RoomPlayers)
@@ -162,6 +165,8 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 
             return;
         }
+
+        //If we're host and there isn't enough player ui in the lobby then we add ui
         if (isLeader && playersInLobby < Room.RoomPlayers.Count)
         {
             GameObject go = Instantiate(playerInfoPrefab, playerInfoContentBox.transform);
@@ -184,16 +189,21 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         for (int i = 0; i < Room.RoomPlayers.Count; i++)
         {
             playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
-            playerReadyTexts[i].text = Room.RoomPlayers[i].IsReady ? "<color=green>Ready</color>" : "<color=red>Not Ready</color>";
+            //Sets name to red or green, will change it to box later
+            playerReadyTexts[i].color = Room.RoomPlayers[i].IsReady ? playerReadyTexts[i].color = Color.green : playerReadyTexts[i].color = Color.red;//"<color=green>Ready</color>" : "<color=red>Not Ready</color>";
         }
     }
-
+    [Command]
+    private void CmdSetDisplayName(string displayName)
+    {
+        DisplayName = displayName;
+    }
     private void SetPlayerPrefabInfo()
     {
         int roomPlayers = Room.RoomPlayers.Count;
     }
 
-
+    #region REMOVE_BUTTONS
     /// <summary>
     /// Disables all remove buttons
     /// </summary>
@@ -205,7 +215,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
     }
     /// <summary>
-    /// Turns on all kick player buttons and adds a listener to each button
+    /// Turns on all kick player buttons and adds a listener to each button// Need to change it to buttons that are made on the fly as each player joins, their player button will be the kick button
     /// </summary>
     public void EnableRemoveButtons()
     {
@@ -230,7 +240,9 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         if(Room.RoomPlayers[index] != null)
             Room.RoomPlayers[index].connectionToClient.Disconnect();
     }
+    #endregion
 
+    #region READY_BUTTONS
     /// <summary>
     /// Allows the Start game button to be interactable if host and 'readyToStart' is true
     /// </summary>
@@ -243,12 +255,6 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 
     //Why does host not have any authority over anything??????
 
-    [Command]
-    private void CmdSetDisplayName(string displayName)
-    {
-        DisplayName = displayName;
-    }
-
     /// <summary>
     /// Run on server to check whether we are ready
     /// </summary>
@@ -260,6 +266,12 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         Room.NotifyPlayersofReadyState();
     }
 
+    #endregion
+
+
+    /// <summary>
+    /// When everyone is ready, and start button has been clicked. This gets called and starts game.
+    /// </summary>
     [Command]
     public void CmdStartGame()
     {

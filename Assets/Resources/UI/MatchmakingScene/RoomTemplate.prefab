@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: MapName
+  m_Text: PlayerCount
 --- !u!1 &5864053928197143028
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Map:'
+  m_Text: 'Player:'
 --- !u!1 &5864053928228213877
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,7 +625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomNameText: {fileID: 5864053930087124361}
-  concurrentPlayersText: {fileID: 5864053929073996589}
+  concurrentPlayersText: {fileID: 5864053928145781056}
   joinRoom: {fileID: 5864053928812551491}
 --- !u!1 &5864053929485908355
 GameObject:
