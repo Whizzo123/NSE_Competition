@@ -174,7 +174,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2912553838016786278
 RectTransform:
   m_ObjectHideFlags: 0
@@ -581,13 +581,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: LobbyScreen
       objectReference: {fileID: 0}
+    - target: {fileID: 4702080316658213047, guid: 991674aeb1fae8d46b6e3a1be5d0075e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4702080316912510479, guid: 991674aeb1fae8d46b6e3a1be5d0075e, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.000031446056
       objectReference: {fileID: 0}
     - target: {fileID: 4702080316926171540, guid: 991674aeb1fae8d46b6e3a1be5d0075e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.7389984
+      value: 1.7389374
       objectReference: {fileID: 0}
     - target: {fileID: 4702080317328076888, guid: 991674aeb1fae8d46b6e3a1be5d0075e, type: 3}
       propertyPath: m_AnchorMax.x
