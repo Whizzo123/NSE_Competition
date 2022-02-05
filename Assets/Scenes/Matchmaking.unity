@@ -6713,7 +6713,7 @@ PrefabInstance:
     - target: {fileID: 1850645015414429774, guid: c2f415fbaae712c44b8724fcca81fa37, type: 3}
       propertyPath: playerInfoPrefab
       value: 
-      objectReference: {fileID: 3331381349446605294}
+      objectReference: {fileID: 9071241981453593168, guid: 0180bc0d3c334334a814c7d6dc4d0f99, type: 3}
     - target: {fileID: 1850645015414429774, guid: c2f415fbaae712c44b8724fcca81fa37, type: 3}
       propertyPath: playerInfoContentBox
       value: 
@@ -6838,6 +6838,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -0.000031446056
       objectReference: {fileID: 0}
+    - target: {fileID: 3331381349972769952, guid: c2f415fbaae712c44b8724fcca81fa37, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3331381349972769953, guid: c2f415fbaae712c44b8724fcca81fa37, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -6909,11 +6913,6 @@ Canvas:
 --- !u!1 &3331381349446605293 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3331381349708947043, guid: c2f415fbaae712c44b8724fcca81fa37, type: 3}
-  m_PrefabInstance: {fileID: 3331381349446605290}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3331381349446605294 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3331381349972769952, guid: c2f415fbaae712c44b8724fcca81fa37, type: 3}
   m_PrefabInstance: {fileID: 3331381349446605290}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5864053928200025056
