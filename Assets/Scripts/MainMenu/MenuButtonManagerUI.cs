@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Menu button manager allows navigation of the 'TitleScene', and
-/// //Should allow navigation of 'LobbyScene'. We will need to see if this is feasible.
+/// //Should allow navigation of 'Matchmaking'. We will need to see if this is feasible.
 /// </summary>
 public class MenuButtonManagerUI : MonoBehaviour
 {
@@ -28,7 +28,7 @@ public class MenuButtonManagerUI : MonoBehaviour
         blackVersionNumber.text = versionNumber;
     }
     /// <summary>
-    /// Loads LobbyScene
+    /// Loads Matchmaking
     /// </summary>
     public void Play()
     {

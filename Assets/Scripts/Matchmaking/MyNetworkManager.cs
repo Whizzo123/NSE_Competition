@@ -91,7 +91,7 @@ public class MyNetworkManager : NetworkManager
     {
         Debug.Log("Inside OnServerAddPlayer");
 
-        if (SceneManager.GetActiveScene().name == "LobbyScene")
+        if (SceneManager.GetActiveScene().name == "Matchmaking")
         {
             MirrorRoomPlayerLobby lobbyPlayerInstance = Instantiate(lobbyPlayerPrefab);
 
@@ -102,6 +102,7 @@ public class MyNetworkManager : NetworkManager
             //Steam setup
             if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             {
+                Debug.Log("JOE: Setting up steam and grabbing ID");
                 CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex(LobbyUIManager.LobbyId, RoomPlayers.Count);
                 lobbyPlayerInstance.SetSteamId(steamId.m_SteamID);
             }
@@ -116,9 +117,9 @@ public class MyNetworkManager : NetworkManager
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         Debug.Log("OnServerDisconnect");
-        if(conn.identity != null && SceneManager.GetActiveScene().name == "LobbyScene")
+        if(conn.identity != null && SceneManager.GetActiveScene().name == "Matchmaking")
         {
-            if (SceneManager.GetActiveScene().name == "LobbyScene")
+            if (SceneManager.GetActiveScene().name == "Matchmaking")
             {
                 var player = conn.identity.GetComponent<MirrorRoomPlayerLobby>();
 
@@ -208,7 +209,7 @@ public class MyNetworkManager : NetworkManager
     /// </summary>
     public void StartGame()
     {
-        if (SceneManager.GetActiveScene().name == "LobbyScene")
+        if (SceneManager.GetActiveScene().name == "Matchmaking")
         {
             if (!IsReadyToStart()) { return; }
             ServerChangeScene("Plains");
