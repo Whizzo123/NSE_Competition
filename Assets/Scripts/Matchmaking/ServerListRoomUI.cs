@@ -32,7 +32,6 @@ public class ServerListRoomUI : MonoBehaviour
     void Start()
     {
         lobbyUIManager = FindObjectOfType<LobbyUIManager>();
-        joinRoom = GetComponent<Button>();
         joinRoom.onClick.RemoveAllListeners();
         joinRoom.onClick.AddListener(() =>
         { 
