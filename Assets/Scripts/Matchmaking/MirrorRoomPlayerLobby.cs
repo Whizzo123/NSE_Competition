@@ -153,7 +153,6 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     /// </summary>
     private void UpdateDisplay()
     {
-        Debug.Log("JOE: UpdateDisplay");
         //Updates the Element if we have authority over it. Standard loop to allow authoritive actions
         if (!hasAuthority)
         {
@@ -186,7 +185,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         for (int i = 0; i < Room.RoomPlayers.Count; i++)
         {
             //He is null why?
-            playerNameTexts[i].text = "Waiting For Player...";
+            playerNameTexts[i].text = "Waiting For Player..."; // Null Reference HERE
             playerReadyTexts[i].text = string.Empty;
 
         }
