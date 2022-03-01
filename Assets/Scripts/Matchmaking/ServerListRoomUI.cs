@@ -25,18 +25,14 @@ public class ServerListRoomUI : MonoBehaviour
     [Space]
 
     private LobbyUIManager lobbyUIManager;
+    private ServerResponse my_response;
 
     #endregion 
 
 
-    void Start()
+    void Awake()
     {
-        lobbyUIManager = FindObjectOfType<LobbyUIManager>();
-        joinRoom.onClick.RemoveAllListeners();
-        joinRoom.onClick.AddListener(() =>
-        { 
-            if (OnJoinRoomClicked != null) OnJoinRoomClicked();
-        });
+        lobbyUIManager = GameObject.FindObjectOfType<LobbyUIManager>();
     }
     /// <summary>
     /// Updates the UIElement with info and color. Adds a JoinSteamLobby action to the button.
@@ -55,18 +51,24 @@ public class ServerListRoomUI : MonoBehaviour
         roomNameText.text = response.EndPoint.Address.ToString();
         //Setup a call back here that when clicked in the server list we call our join mirror lobby function which then decides whether we are joining through 
         //SteamMatchmaking or just a LAN connection
-        OnJoinRoomClicked += () => JoinMirrorLobby(lobbyUIManager.discoveredServers[response.serverId]);
+        //OnJoinRoomClicked += () => JoinMirrorLobby(lobbyUIManager.discoveredServers[response.serverId]);
+        my_response = lobbyUIManager.discoveredServers[response.serverId];
     }
-
 
     private void JoinSteamLobby(CSteamID lobbyID)
     {
         SteamMatchmaking.JoinLobby(lobbyID);
     }
 
-    private void JoinMirrorLobby(ServerResponse response)
+    //private void JoinMirrorLobby(ServerResponse response)
+    //{
+    //    MyNetworkManager.singleton.StartClient(response.uri);
+    //    lobbyUIManager.ChangeScreenTo("Room");
+    //}
+
+    public void JoinMirrorLobby()
     {
-        MyNetworkManager.singleton.StartClient(response.uri);
+        MyNetworkManager.singleton.StartClient(my_response.uri);
         lobbyUIManager.ChangeScreenTo("Room");
     }
 }

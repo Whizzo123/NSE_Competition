@@ -170,14 +170,10 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         }
 
         //If we're host and there isn't enough player ui in the lobby then we add ui
-        Debug.Log("JOE: Players in lobby  "  + playersInLobby);
-        Debug.Log("JOE: Room players: " + Room.RoomPlayers.Count);
         if (isLeader && playersInLobby < Room.RoomPlayers.Count)
         {
             GameObject go = Instantiate(playerInfoPrefab, playerInfoContentBox.transform);
-            Debug.Log("JOE: Instantiating: - " + Room.RoomPlayers.Count);
             NetworkServer.Spawn(go, Room.RoomPlayers[Room.RoomPlayers.Count - 1].connectionToServer);
-            Debug.Log("JOE: Past Spawn");
             playerNameTexts[Room.RoomPlayers.Count - 1] = go.GetComponentInChildren<Text>();
 
             removeButtons[Room.RoomPlayers.Count - 1] = go.GetComponent<Button>();
@@ -195,12 +191,9 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 
         }
         //Loop through all players in room and set their respective DisplayName and ReadyStatus
-        Debug.Log("JOE: " + Room.RoomPlayers.Count);
-        Debug.Log("JOE: " + playerNameTexts.Length);
         for (int i = 0; i < Room.RoomPlayers.Count; i++)
         {
             playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
-            Debug.Log("JOE: Setting text: " + Room.RoomPlayers[i].DisplayName);
             //Sets name to red or green, will change it to box later
             //playerReadyTexts[i].color = Room.RoomPlayers[i].IsReady ? playerReadyTexts[i].color = Color.green : playerReadyTexts[i].color = Color.red;//"<color=green>Ready</color>" : "<color=red>Not Ready</color>";
         }
