@@ -22,7 +22,6 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 
     [SerializeField] private GameObject playerInfoPrefab;
     [SerializeField] private GameObject playerInfoContentBox;
-    private int playersInLobby;
     //[SerializeField] private List<Image> playerReadyObject;
     //[SerializeField] private Button removePlayerButton;
     //[SerializeField] private Text playerNameText;
@@ -168,31 +167,19 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
             return;
         }
 
-        //If we're host and there isn't enough player ui in the lobby then we add ui
-        if (isLeader && playersInLobby < Room.RoomPlayers.Count)
-        {
-            GameObject go = Instantiate(playerInfoPrefab, playerInfoContentBox.transform);
-            NetworkServer.Spawn(go, Room.RoomPlayers[Room.RoomPlayers.Count - 1].connectionToServer);
-            playerNameTexts[Room.RoomPlayers.Count - 1] = go.GetComponentInChildren<Text>();
-
-            removeButtons[Room.RoomPlayers.Count - 1] = go.GetComponent<Button>();
-            playerReadyTexts[Room.RoomPlayers.Count - 1] = go.GetComponentInChildren<Text>();
-            playersInLobby++;
-        }
-
-        
         //Loop through playerNameTexts playerReadyTexts and set them back to default
         for (int i = 0; i < Room.RoomPlayers.Count; i++)
         {
-            //He is null why?
-            playerNameTexts[i].text = "Waiting For Player..."; // Null Reference HERE
-            playerReadyTexts[i].text = string.Empty;
+            playerNameTexts[i].transform.parent.gameObject.SetActive(true);
+            playerNameTexts[i].text = "Waiting For Player..."; 
+            //playerReadyTexts[i].text = string.Empty;
 
         }
         //Loop through all players in room and set their respective DisplayName and ReadyStatus
         for (int i = 0; i < Room.RoomPlayers.Count; i++)
         {
             playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
+            Debug.Log("Room.RoomPlayers[i].DisplayName: " + Room.RoomPlayers[i].DisplayName);
             //Sets name to red or green, will change it to box later
             //playerReadyTexts[i].color = Room.RoomPlayers[i].IsReady ? playerReadyTexts[i].color = Color.green : playerReadyTexts[i].color = Color.red;//"<color=green>Ready</color>" : "<color=red>Not Ready</color>";
         }
