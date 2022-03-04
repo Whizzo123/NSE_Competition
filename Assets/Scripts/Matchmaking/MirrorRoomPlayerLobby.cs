@@ -40,6 +40,10 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     {
         backButton.onClick.AddListener(() => FindObjectOfType<BackTemp>().Back());
         backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
+        backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
+        startGameButton.gameObject.GetComponentInChildren<Text>().text = "READY";
+        startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdReadyUp);
+        
     }
 
     /// <summary>
@@ -53,15 +57,11 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
             startGameButton.gameObject.SetActive(value);
             if (value == true)
             {
+                IsReady = !IsReady;
                 backButton.gameObject.GetComponentInChildren<Text>().text = "CLOSE LOBBY";
                 startGameButton.gameObject.GetComponentInChildren<Text>().text = "START";
+                startGameButton.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
                 startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdStartGame);
-            }
-            else
-            {
-                backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
-                startGameButton.gameObject.GetComponentInChildren<Text>().text = "READY";
-                startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdReadyUp);
             }
         }
     }
@@ -266,7 +266,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     [Command]
     public void CmdStartGame()
     {
-        if(Room.RoomPlayers[0].connectionToClient != connectionToClient) { return; }
+        if (Room.RoomPlayers[0].connectionToClient != connectionToClient) { return; }
 
         Room.StartGame();
     }
