@@ -86,30 +86,30 @@ public class BrowseScreenUI : MonoBehaviour
         //if (!FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
         //{
             //Periodically updates the details of the lobby
-            if (currentWaitTime <= 0)
-            {
-                Dictionary<long, ServerResponse> servers = lobbyUIManager.discoveredServers;
-                ResetUI();
-                if (servers.Count == 0)
-                {
-                    noServerFoundText.SetActive(true);
-                    return;
-                }
+            //if (currentWaitTime <= 0)
+            //{
+            //    Dictionary<long, ServerResponse> servers = lobbyUIManager.discoveredServers;
+            //    ResetUI();
+            //    if (servers.Count == 0)
+            //    {
+            //        noServerFoundText.SetActive(true);
+            //        return;
+            //    }
 
-                noServerFoundText.SetActive(false);
-                //Loop through all servers and spawn them in the server list and populate the element with the server name and stuff
-                foreach (long serverID in servers.Keys)
-                {
-                    GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
-                    ServerListRoomUI serverEntryUI = serverEntryGO.GetComponent<ServerListRoomUI>();
-                    serverEntryUI.Populate(servers[serverID], UnityEngine.Random.ColorHSV());
-                }
-                currentWaitTime = waitTime;
-            }
-            else
-            {
-                currentWaitTime -= Time.deltaTime;
-            }
+            //    noServerFoundText.SetActive(false);
+            //    //Loop through all servers and spawn them in the server list and populate the element with the server name and stuff
+            //    foreach (long serverID in servers.Keys)
+            //    {
+            //        GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
+            //        ServerListRoomUI serverEntryUI = serverEntryGO.GetComponent<ServerListRoomUI>();
+            //        serverEntryUI.Populate(servers[serverID], UnityEngine.Random.ColorHSV());
+            //    }
+            //    currentWaitTime = waitTime;
+            //}
+            //else
+            //{
+            //    currentWaitTime -= Time.deltaTime;
+            //}
         //}
         /*else
         {

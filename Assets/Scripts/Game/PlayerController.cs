@@ -186,9 +186,11 @@ public class PlayerController : NetworkBehaviour
     {
         if (vCam != null)
             vCam.enabled = !devMode;
-        playerCamera.enabled = !devMode;
-        devCam.SetActive(devMode);
-
+        if (playerCamera != null)
+        {
+            playerCamera.enabled = !devMode;
+            devCam.SetActive(devMode);
+        }
         FindObjectOfType<Canvas>().enabled = !devMode;
     }
 
