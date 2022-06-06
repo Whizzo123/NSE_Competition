@@ -33,20 +33,6 @@ public class ServerListRoomUI : MonoBehaviour
     void Awake()
     {
         lobbyUIManager = GameObject.FindObjectOfType<LobbyUIManager>();
-        //joinRoom.enabled = false;
-        //if (joinRoom == false)
-        //{
-        //    Debug.LogError("join room is not here");
-        //}
-        //FindObjectOfType<ServerListRoomUI>().joinRoom.onClick.AddListener(RandomFunction);
-        //OnJoinRoomClicked += () => RandomFunction();
-        //joinRoom.onClick.RemoveAllListeners();
-        //joinRoom.onClick.AddListener(RandomFunction);
-        ////joinRoom.onClick += () => RandomFunction();
-        //joinRoom.onClick.AddListener(() =>
-        //{
-        //    if (OnJoinRoomClicked != null) OnJoinRoomClicked();
-        //});
         
     }
     /// <summary>
@@ -56,46 +42,22 @@ public class ServerListRoomUI : MonoBehaviour
     {
         roomNameText.text = info.lobbyName;
         concurrentPlayersText.text = string.Format("{0}/{1}", info.playerCount, FindObjectOfType<MyNetworkManager>().maxConnections);
+
+        //Add listener to buttons
         OnJoinRoomClicked += () => JoinSteamLobby(info.lobbyID);
-        Debug.LogError("We are now populating and linking the button");
-        OnJoinRoomClicked += () => RandomFunction();
-        joinRoom.onClick.RemoveAllListeners();
-        joinRoom.onClick.AddListener(RandomFunction);
-        //joinRoom.onClick += () => RandomFunction();
         joinRoom.onClick.AddListener(() =>
         {
             if (OnJoinRoomClicked != null) OnJoinRoomClicked();
         });
     }
-    /// <summary>
-    /// Updates the UIElement with info and color. Adds a JoinMirrorLobby action to the button.
-    /// </summary>
-    //public void Populate(ServerResponse response, Color backgroundColor)
-    //{
-    //    roomNameText.text = response.EndPoint.Address.ToString();
-    //    //Setup a call back here that when clicked in the server list we call our join mirror lobby function which then decides whether we are joining through 
-    //    //SteamMatchmaking or just a LAN connection
-    //    //OnJoinRoomClicked += () => JoinMirrorLobby(lobbyUIManager.discoveredServers[response.serverId]);
-    //    my_response = lobbyUIManager.discoveredServers[response.serverId];
-    //}
 
     private void JoinSteamLobby(CSteamID lobbyID)
     {
         SteamMatchmaking.JoinLobby(lobbyID);
     }
-
-    //private void JoinMirrorLobby(ServerResponse response)
-    //{
-    //    MyNetworkManager.singleton.StartClient(response.uri);
-    //    lobbyUIManager.ChangeScreenTo("Room");
-    //}
     public void RandomFunction()
     {
         Debug.Log("This is the random function");
     }
-    //public void JoinMirrorLobby()
-    //{
-    //    MyNetworkManager.singleton.StartClient(my_response.uri);
-    //    lobbyUIManager.ChangeScreenTo("Room");
-    //}
+
 }

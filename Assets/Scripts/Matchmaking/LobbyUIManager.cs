@@ -239,6 +239,11 @@ public class LobbyUIManager : MonoBehaviour
         //Update the UI
         browseScreen.SessionListUpdated(lobbies);
     }
+
+    public Callback<LobbyMatchList_t> GetLobbyMatchList_T()
+    {
+        return lobbyMatchList;
+    }
     #endregion
     #endregion
 
