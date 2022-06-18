@@ -9,13 +9,14 @@ using Steamworks;
 /// <summary>
 /// Handles the UI Element for each player. Handles some networking functions such as readying up, initiating the start game, disconnecting players
 /// </summary>
+/// TODO:Rename from MirrorRoomPlayerLobby to something more appropriate. This script gets used by steam matchmaking
 public class MirrorRoomPlayerLobby : NetworkBehaviour
 {
     #region Variables
     [Header("UI")]
     [SerializeField] [Tooltip("The Lobby Screen")]private GameObject lobbyUI = null;
     [SerializeField] [Tooltip("Player name for all players")] private Text[] playerNameTexts = new Text[5];
-    [SerializeField] [Tooltip("Ready texts for all players")] private Text[] playerReadyTexts = new Text[5];
+    [SerializeField] [Tooltip("Ready texts for all players")] private Image[] playerReadyImageColor = new Image[5];
     [SerializeField] [Tooltip("Start button")] private Button startGameButton = null;
     [SerializeField] [Tooltip("Remove buttons")] private Button[] removeButtons = new Button[5];
     [SerializeField] [Tooltip("Back button")] public Button backButton;
@@ -171,17 +172,27 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         for (int i = 0; i < Room.RoomPlayers.Count; i++)
         {
             playerNameTexts[i].transform.parent.gameObject.SetActive(true);
-            playerNameTexts[i].text = "Waiting For Player..."; 
+            playerNameTexts[i].text = "Waiting For Player...";
             //playerReadyTexts[i].text = string.Empty;
-
+            playerReadyImageColor[i] = playerNameTexts[i].GetComponentInParent<Image>();
         }
         //Loop through all players in room and set their respective DisplayName and ReadyStatus
         for (int i = 0; i < Room.RoomPlayers.Count; i++)
         {
             playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
             Debug.Log("Room.RoomPlayers[i].DisplayName: " + Room.RoomPlayers[i].DisplayName);
-            //Sets name to red or green, will change it to box later
-            //playerReadyTexts[i].color = Room.RoomPlayers[i].IsReady ? playerReadyTexts[i].color = Color.green : playerReadyTexts[i].color = Color.red;//"<color=green>Ready</color>" : "<color=red>Not Ready</color>";
+
+            //Sets box color to green or red depending on if player has readied up.
+            Color col;
+            if (Room.RoomPlayers[i].IsReady)
+            {
+                 col.r = 0; col.g = 255; col.b = 0; col.a = 255;
+            }
+            else
+            {
+                col.r = 255; col.g = 0; col.b = 0; col.a = 255;
+            }
+            playerReadyImageColor[i].color = col;
         }
     }
     [Command]
