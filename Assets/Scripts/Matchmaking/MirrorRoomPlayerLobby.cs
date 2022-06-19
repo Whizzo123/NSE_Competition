@@ -17,6 +17,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     [SerializeField] [Tooltip("The Lobby Screen")]private GameObject lobbyUI = null;
     [SerializeField] [Tooltip("Player name for all players")] private Text[] playerNameTexts = new Text[5];
     [SerializeField] [Tooltip("Ready texts for all players")] private Image[] playerReadyImageColor = new Image[5];
+    
     [SerializeField] [Tooltip("Start button")] private Button startGameButton = null;
     [SerializeField] [Tooltip("Remove buttons")] private Button[] removeButtons = new Button[5];
     [SerializeField] [Tooltip("Back button")] public Button backButton;
@@ -40,7 +41,6 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     private void Awake()
     {
         backButton.onClick.AddListener(() => FindObjectOfType<BackTemp>().Back());
-        backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
         backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
         startGameButton.gameObject.GetComponentInChildren<Text>().text = "READY";
         startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdReadyUp);
@@ -136,7 +136,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         UpdateDisplay();
     }
     /// <summary>
-    /// Adds player to MyNetworkManager and updating the UI
+    /// Removes player to MyNetworkManager and updating the UI
     /// </summary>
     public override void OnStopClient()
     {
@@ -264,6 +264,14 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     public void CmdReadyUp()
     {
         IsReady = !IsReady;
+        if (IsReady)
+        {
+            startGameButton.GetComponentInChildren<Text>().text = "Unready";
+        }
+        else
+        {
+            startGameButton.GetComponentInChildren<Text>().text = "Ready";
+        }
 
         Room.NotifyPlayersofReadyState();
     }
