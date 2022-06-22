@@ -44,7 +44,10 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
         startGameButton.gameObject.GetComponentInChildren<Text>().text = "READY";
         startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdReadyUp);
-        
+        if (isLeader)
+        {
+            SetHostUI();
+        }
     }
 
     /// <summary>
@@ -55,19 +58,23 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         set
         {
             isLeader = value;
-            startGameButton.gameObject.SetActive(value);
+            //startGameButton.gameObject.SetActive(value);
             if (value == true)
             {
-                IsReady = !IsReady;
-                backButton.gameObject.GetComponentInChildren<Text>().text = "CLOSE LOBBY";
-                startGameButton.gameObject.GetComponentInChildren<Text>().text = "START";
-                startGameButton.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
-                startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdStartGame);
+                SetHostUI();
+               
             }
         }
     }
 
-    
+    void SetHostUI()
+    {
+        IsReady = true;
+        backButton.gameObject.GetComponentInChildren<Text>().text = "CLOSE LOBBY";
+        startGameButton.gameObject.GetComponentInChildren<Text>().text = "START";
+        startGameButton.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+        startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdStartGame);
+    }
 
 
     [SerializeField] [Tooltip("Reference to MyNetworkManager for")] private MyNetworkManager room;
