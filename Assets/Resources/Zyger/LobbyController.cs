@@ -8,7 +8,7 @@ using Steamworks;
 
 public class LobbyController : MonoBehaviour
 {
-    [SerializeField] public static LobbyController instance = null;
+    [SerializeField] public static LobbyController instance;
 
     public Text lobbyNameText;
 
@@ -89,7 +89,8 @@ public class LobbyController : MonoBehaviour
     {
         foreach (PlayerObjectController player in Manager.matchmakingPlayers)
         {
-            if (playerListItems.Any(b => b.connectionID == player.connectionID))
+            //Are we already in the list? If we're not we are calling
+            if (!playerListItems.Any(b => b.connectionID == player.connectionID))
             {
                 GameObject newPlayerItem = Instantiate(playerListItemPrefab) as GameObject;
                 PlayerListItem newPlayerItemScript = newPlayerItem.GetComponent<PlayerListItem>();

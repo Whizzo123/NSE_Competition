@@ -28,6 +28,7 @@ public class PlayerObjectController : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
+        CmdSetPlayerName(SteamFriends.GetPersonaName());
         gameObject.name = "LocalGamePlayer";
         
         LobbyController.instance.FindLocalPlayer();
@@ -38,7 +39,6 @@ public class PlayerObjectController : NetworkBehaviour
         Manager.matchmakingPlayers.Add(this);
         LobbyController.instance.UpdateLobbyName();
         LobbyController.instance.UpdatePlayerList();
-        CmdSetPlayerName(SteamFriends.GetPersonaName());
 
     }
     public override void OnStopClient()
