@@ -21,8 +21,8 @@ public class LobbyController : MonoBehaviour
     [SerializeField] private List<PlayerListItem> playerListItems = new List<PlayerListItem>();
     public PlayerObjectController localPlayerController;
 
-    public Button startGameButton;
-    public Button readyButton;
+    public GameObject startGameButton;
+    public GameObject readyButton;
     public Text readyButtonText;
 
     private MyNetworkManager manager;
@@ -88,18 +88,18 @@ public class LobbyController : MonoBehaviour
                 {
                     localPlayerController.ChangeReady();
                 }
-                startGameButton.enabled = true;
-                readyButton.enabled = false;
+                startGameButton.SetActive(true);
+                readyButton.SetActive(false);
             }
             else
             {
-                startGameButton.enabled = false;
+                startGameButton.SetActive(false);
 
             }
         }
         else
         {
-            startGameButton.enabled = false;
+            startGameButton.SetActive(false);
         }
     }
 
