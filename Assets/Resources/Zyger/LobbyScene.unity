@@ -3092,7 +3092,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3331381348512938227}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.9998697
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3444,7 +3444,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00005138307}
+  m_AnchoredPosition: {x: 0, y: 0.00016117882}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &3331381349043791491
@@ -5681,7 +5681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5f939e892e99bd4e8f2b1ab65e52db0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyNameText: {fileID: 3331381349642104183}
+  lobbyNameText: {fileID: 3331381348769336181}
   playerListViewContent: {fileID: 3331381349043791491}
   playerListItemPrefab: {fileID: 9071241981453593168, guid: 0180bc0d3c334334a814c7d6dc4d0f99, type: 3}
   localPlayerObject: {fileID: 0}

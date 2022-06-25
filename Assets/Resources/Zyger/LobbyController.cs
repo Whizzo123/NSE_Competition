@@ -79,19 +79,11 @@ public class LobbyController : MonoBehaviour
                 break;
             }
         }
-        if (localPlayerController.playerIDNumber == 1)
-        {
-            if (!localPlayerController.ready)
-            {
-                localPlayerController.ChangeReady();
-            }
-            readyButton.SetActive(false);
-        }
         if (allReady)
         {
             if (localPlayerController.playerIDNumber == 1)
             {
-                readyButton.SetActive(false);
+                startGameButton.SetActive(true);
             }
             else
             {
@@ -146,8 +138,8 @@ public class LobbyController : MonoBehaviour
             newPlayerItem.transform.localScale = Vector3.one;
 
             playerListItems.Add(newPlayerItemScript);
-        }
 
+        }
         playerItemCreated = true;
     }
     public void CreateClientPlayerItem()

@@ -174,4 +174,4 @@ MonoBehaviour:
   playerNameText: {fileID: 9071241981281082293}
   playerIcon: {fileID: 0}
   playerStatusImage: {fileID: 9071241981453593174}
-  ready: 1
+  ready: 0
