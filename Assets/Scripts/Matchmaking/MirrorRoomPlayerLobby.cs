@@ -14,6 +14,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
 {
     #region Variables
     [Header("UI")]
+    public string roomName;
     [SerializeField] [Tooltip("The Lobby Screen")]private GameObject lobbyUI = null;
     [SerializeField] [Tooltip("Player name for all players")] private Text[] playerNameTexts = new Text[5];
     [SerializeField] [Tooltip("Ready texts for all players")] private Image[] playerReadyImageColor = new Image[5];
@@ -45,7 +46,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
         startGameButton.gameObject.GetComponentInChildren<Text>().text = "READY";
         startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdReadyUp);
-
+        roomName = room.name;
     }
 
     /// <summary>
@@ -126,6 +127,7 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
             CmdSetDisplayName(SteamFriends.GetFriendPersonaName(new CSteamID(steamId)));
 
         lobbyUI.SetActive(true);
+        
         //RemoveButtons enable or disable if leader
         //if (isLeader)
         //    EnableRemoveButtons();

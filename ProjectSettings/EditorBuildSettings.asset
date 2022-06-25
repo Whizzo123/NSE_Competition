@@ -23,4 +23,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Quarantine City.unity
     guid: 57d75e3e466d2134985105b64614788b
+  - enabled: 1
+    path: Assets/Resources/Zyger/LobbyScene.unity
+    guid: 92079bc668550174b81f45ac6d590d6c
+  - enabled: 1
+    path: Assets/Resources/Zyger/MatchmakingScene.unity
+    guid: df929d6ab2177fa468edffa9240ae448
   m_configObjects: {}

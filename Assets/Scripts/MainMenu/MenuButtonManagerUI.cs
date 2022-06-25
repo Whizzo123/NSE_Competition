@@ -32,7 +32,7 @@ public class MenuButtonManagerUI : MonoBehaviour
     /// </summary>
     public void Play()
     {
-        SceneManager.LoadScene("Matchmaking");
+        SceneManager.LoadScene("MatchmakingScene");
     }
 
     /// <summary>

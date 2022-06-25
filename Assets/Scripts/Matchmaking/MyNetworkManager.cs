@@ -19,6 +19,9 @@ public class MyNetworkManager : NetworkManager
 
     [Header("Lobby")]
     [SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private MirrorRoomPlayerLobby lobbyPlayerPrefab = null;
+    [SerializeField][Tooltip("All players inside the lobby")] public List<MirrorRoomPlayerLobby> RoomPlayers = new List<MirrorRoomPlayerLobby>();    
+    [SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private PlayerObjectController matchmakingPlayerPrefab = null;
+    [SerializeField] public List<PlayerObjectController> matchmakingPlayers { get; } = new List<PlayerObjectController>();
     [SerializeField] [Tooltip("Minimum players to start a game")] public int minPlayers;
     [Header("Game")]
     [SerializeField] [Tooltip("Prefab used to spawn the controllable player")] private PlayerController gamePlayerPrefab = null;
@@ -27,7 +30,6 @@ public class MyNetworkManager : NetworkManager
 
     //List<LobbyPlayer> RoomPlayers = new List<LobbyPlayer>();
 
-    [SerializeField][Tooltip("All players inside the lobby")] public List<MirrorRoomPlayerLobby> RoomPlayers = new List<MirrorRoomPlayerLobby>();
 
     void Start()
     {
@@ -89,29 +91,42 @@ public class MyNetworkManager : NetworkManager
     #region SERVER_CLIENT_EVENTS
     public override void OnServerAddPlayer(NetworkConnection conn) 
     {
-        Debug.Log("Inside OnServerAddPlayer");
+        //Debug.Log("Inside OnServerAddPlayer");
 
-        if (SceneManager.GetActiveScene().name == "Matchmaking")
+        //if (SceneManager.GetActiveScene().name == "Matchmaking")
+        //{
+        //    MirrorRoomPlayerLobby lobbyPlayerInstance = Instantiate(lobbyPlayerPrefab);
+
+        //    //Host?
+        //    bool isLeader = RoomPlayers.Count == 0;
+        //    lobbyPlayerInstance.IsLeader = isLeader;
+
+        //    //Steam setup
+        //    if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+        //    {
+        //        Debug.Log("JOE: Setting up steam and grabbing ID");
+        //        CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex(LobbyUIManager.LobbyId, RoomPlayers.Count);
+        //        lobbyPlayerInstance.SetSteamId(steamId.m_SteamID);
+        //    }
+        //    else
+        //    {
+        //        lobbyPlayerInstance.SetSteamId(0);
+        //    }
+
+        //    NetworkServer.AddPlayerForConnection(conn, lobbyPlayerInstance.gameObject);
+        //}
+        if (SceneManager.GetActiveScene().name == "LobbyScene")
         {
-            MirrorRoomPlayerLobby lobbyPlayerInstance = Instantiate(lobbyPlayerPrefab);
+            Debug.Log("Creating PlayerObjectController");
+            PlayerObjectController gamePlayerInstance = Instantiate(matchmakingPlayerPrefab);
 
-            //Host?
-            bool isLeader = RoomPlayers.Count == 0;
-            lobbyPlayerInstance.IsLeader = isLeader;
+            gamePlayerInstance.connectionID = conn.connectionId;
+            gamePlayerInstance.playerIDNumber = matchmakingPlayers.Count + 1;
+            gamePlayerInstance.playerSteamID = 
+                (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.instance.currentLobbyId, matchmakingPlayers.Count);
 
-            //Steam setup
-            if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
-            {
-                Debug.Log("JOE: Setting up steam and grabbing ID");
-                CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex(LobbyUIManager.LobbyId, RoomPlayers.Count);
-                lobbyPlayerInstance.SetSteamId(steamId.m_SteamID);
-            }
-            else
-            {
-                lobbyPlayerInstance.SetSteamId(0);
-            }
-         
-            NetworkServer.AddPlayerForConnection(conn, lobbyPlayerInstance.gameObject);
+            NetworkServer.AddPlayerForConnection(conn, gamePlayerInstance.gameObject);
+
         }
     }
     public override void OnServerDisconnect(NetworkConnection conn)

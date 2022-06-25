@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 9071241981453593169}
   - component: {fileID: 9071241981453593175}
   - component: {fileID: 9071241981453593174}
-  - component: {fileID: 7862580681611426012}
+  - component: {fileID: 6647569322047170137}
   m_Layer: 0
   m_Name: PlayerTemplate
   m_TagString: Untagged
@@ -156,7 +156,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 2.5
---- !u!114 &7862580681611426012
+--- !u!114 &6647569322047170137
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -165,11 +165,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 9071241981453593168}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Script: {fileID: 11500000, guid: d5685a856440e8141a9feede9b9ff375, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  visible: 0
-  m_AssetId: 
-  hasSpawned: 0
+  playerName: 
+  connectionID: 0
+  playerSteamId: 0
+  playerNameText: {fileID: 9071241981281082293}
+  playerIcon: {fileID: 0}
