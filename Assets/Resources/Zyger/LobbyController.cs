@@ -79,16 +79,18 @@ public class LobbyController : MonoBehaviour
                 break;
             }
         }
-
+        if (localPlayerController.playerIDNumber == 1)
+        {
+            if (!localPlayerController.ready)
+            {
+                localPlayerController.ChangeReady();
+            }
+            readyButton.SetActive(false);
+        }
         if (allReady)
         {
             if (localPlayerController.playerIDNumber == 1)
             {
-                if (!localPlayerController.ready)
-                {
-                    localPlayerController.ChangeReady();
-                }
-                startGameButton.SetActive(true);
                 readyButton.SetActive(false);
             }
             else
