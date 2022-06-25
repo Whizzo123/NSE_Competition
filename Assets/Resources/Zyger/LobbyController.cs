@@ -21,6 +21,10 @@ public class LobbyController : MonoBehaviour
     [SerializeField] private List<PlayerListItem> playerListItems = new List<PlayerListItem>();
     public PlayerObjectController localPlayerController;
 
+    public Button startGameButton;
+    public Button readyButton;
+    public Text readyButtonText;
+
     private MyNetworkManager manager;
 
     private MyNetworkManager Manager
@@ -42,6 +46,64 @@ public class LobbyController : MonoBehaviour
             instance = this;
         }
     }
+
+    public void ReadyPlayer()
+    {
+        localPlayerController.ChangeReady();
+    }
+    public void UpdateButton()
+    {
+        if (localPlayerController.ready)
+        {
+            readyButtonText.text = "Unready";
+
+        }
+        else
+        {
+            readyButtonText.text = "Ready";
+
+        }
+    }
+    public void CheckIfAllReady()
+    {
+        bool allReady = false;
+        foreach (PlayerObjectController player in Manager.matchmakingPlayers)
+        {
+            if (player.ready)
+            {
+                allReady = true;
+            }
+            else
+            {
+                allReady = false;
+                break;
+            }
+        }
+
+        if (allReady)
+        {
+            if (localPlayerController.playerIDNumber == 1)
+            {
+                if (!localPlayerController.ready)
+                {
+                    localPlayerController.ChangeReady();
+                }
+                startGameButton.enabled = true;
+                readyButton.enabled = false;
+            }
+            else
+            {
+                startGameButton.enabled = false;
+
+            }
+        }
+        else
+        {
+            startGameButton.enabled = false;
+        }
+    }
+
+
 
     public void UpdateLobbyName()
     {
@@ -74,6 +136,7 @@ public class LobbyController : MonoBehaviour
             newPlayerItemScript.playerName = player.playerName;
             newPlayerItemScript.connectionID = player.connectionID;
             newPlayerItemScript.playerSteamId = player.playerSteamID;
+            newPlayerItemScript.ready = player.ready;
             newPlayerItemScript.SetPlayerValues();
 
 
@@ -98,6 +161,7 @@ public class LobbyController : MonoBehaviour
                 newPlayerItemScript.playerName = player.playerName;
                 newPlayerItemScript.connectionID = player.connectionID;
                 newPlayerItemScript.playerSteamId = player.playerSteamID;
+                newPlayerItemScript.ready = player.ready;
                 newPlayerItemScript.SetPlayerValues();
 
 
@@ -120,11 +184,18 @@ public class LobbyController : MonoBehaviour
                 if (playerListItemScript.connectionID == player.connectionID)
                 {
                     playerListItemScript.playerName = player.playerName;
+                    playerListItemScript.ready = player.ready;
                     playerListItemScript.SetPlayerValues();
+
+                    if (player == localPlayerController)
+                    {
+                        UpdateButton();
+                    }
                 }
             }
 
         }
+        CheckIfAllReady();
     }
     public void RemovePlayerItem()
     {
