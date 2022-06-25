@@ -42,12 +42,10 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
     {
         backButton.onClick.AddListener(() => FindObjectOfType<BackTemp>().Back());
         backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
+        backButton.gameObject.GetComponentInChildren<Text>().text = "LEAVE";
         startGameButton.gameObject.GetComponentInChildren<Text>().text = "READY";
         startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdReadyUp);
-        if (isLeader)
-        {
-            SetHostUI();
-        }
+
     }
 
     /// <summary>
@@ -58,11 +56,14 @@ public class MirrorRoomPlayerLobby : NetworkBehaviour
         set
         {
             isLeader = value;
-            //startGameButton.gameObject.SetActive(value);
+            startGameButton.gameObject.SetActive(value);
             if (value == true)
             {
-                SetHostUI();
-               
+                IsReady = !IsReady;
+                backButton.gameObject.GetComponentInChildren<Text>().text = "CLOSE LOBBY";
+                startGameButton.gameObject.GetComponentInChildren<Text>().text = "START";
+                startGameButton.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+                startGameButton.gameObject.GetComponent<Button>().onClick.AddListener(CmdStartGame);
             }
         }
     }

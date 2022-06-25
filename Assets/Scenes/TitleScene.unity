@@ -1703,6 +1703,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5581680211952789216, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
+      propertyPath: SteamAppID
+      value: 1900460
+      objectReference: {fileID: 0}
     - target: {fileID: 5581680211952789217, guid: 44e3b51ccdf95c749b2b9b9a6958604e, type: 3}
       propertyPath: m_Name
       value: NetworkManager
