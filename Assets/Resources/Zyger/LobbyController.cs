@@ -23,6 +23,7 @@ public class LobbyController : MonoBehaviour
 
     public GameObject startGameButton;
     public GameObject readyButton;
+    public GameObject lobbyVisibility;
     public Text readyButtonText;
 
     private MyNetworkManager manager;
@@ -64,6 +65,14 @@ public class LobbyController : MonoBehaviour
 
         }
     }
+    public void StartGame()
+    {
+        manager.StartGame();
+    }
+    public void LeaveLobby()
+    {
+        manager.StopClient();
+    }
     public void CheckIfAllReady()
     {
         bool allReady = false;
@@ -88,12 +97,20 @@ public class LobbyController : MonoBehaviour
             else
             {
                 startGameButton.SetActive(false);
-
             }
         }
         else
         {
             startGameButton.SetActive(false);
+
+            if (localPlayerController.playerIDNumber == 1)
+            {
+                lobbyVisibility.GetComponent<Dropdown>().interactable = true;
+            }
+            else
+            {
+                lobbyVisibility.GetComponent<Dropdown>().interactable = false;
+            }
         }
     }
 
@@ -213,5 +230,24 @@ public class LobbyController : MonoBehaviour
                 objectToRemove = null;
             }
         }
+    }
+
+    public void SetLobbyType(int lobbyType)
+    {
+        switch (lobbyType)
+        {
+            case 0:
+                SteamMatchmaking.SetLobbyType(new CSteamID(SteamLobby.instance.currentLobbyId), ELobbyType.k_ELobbyTypePublic);
+                break;
+            case 1:
+                SteamMatchmaking.SetLobbyType(new CSteamID(SteamLobby.instance.currentLobbyId), ELobbyType.k_ELobbyTypePrivate);
+                break;
+            case 2:
+                SteamMatchmaking.SetLobbyType(new CSteamID(SteamLobby.instance.currentLobbyId), ELobbyType.k_ELobbyTypeFriendsOnly);
+                break;
+            default:
+                break;
+        }
+
     }
 }

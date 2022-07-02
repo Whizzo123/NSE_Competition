@@ -311,8 +311,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 250700113}
   m_HandleRect: {fileID: 250700112}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.9999959
+  m_Value: 1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1009,7 +1009,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.9999959}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1591,7 +1591,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.094173566, y: 1}
-  m_AnchoredPosition: {x: 10.499634, y: -4.861801}
+  m_AnchoredPosition: {x: 10.497559, y: -4.861801}
   m_SizeDelta: {x: -20.541382, y: -47.59084}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &621149432
@@ -3118,6 +3118,7 @@ MonoBehaviour:
   matchmakingMenu: {fileID: 2058714917}
   lobbyDataItemPrefab: {fileID: 3885676482326503231, guid: 9b5a339beb10fba449bccddddb03a607, type: 3}
   lobbyListContent: {fileID: 701198397}
+  noServerText: {fileID: 2134931141}
   listOfLobbies: []
 --- !u!4 &1172580686
 Transform:
@@ -4378,7 +4379,6 @@ GameObject:
   - component: {fileID: 1418439834}
   - component: {fileID: 1418439837}
   - component: {fileID: 1418439836}
-  - component: {fileID: 1418439835}
   m_Layer: 0
   m_Name: BrowsingScreen
   m_TagString: Untagged
@@ -4407,22 +4407,6 @@ RectTransform:
   m_AnchoredPosition: {x: 10.5, y: -1.1999512}
   m_SizeDelta: {x: 202.66333, y: 126.2926}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1418439835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1418439833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 840830af6600ea54cabe7dc6dff303db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sessionListObjectPrefab: {fileID: 5864053929094649465, guid: 6f197801dc2a697498d2630a06b0e796, type: 3}
-  noServerFoundText: {fileID: 2134931141}
-  serverList: {fileID: 701198397}
-  waitTime: 3
 --- !u!114 &1418439836
 MonoBehaviour:
   m_ObjectHideFlags: 0

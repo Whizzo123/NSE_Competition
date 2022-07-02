@@ -98,6 +98,10 @@ public class SteamLobby : MonoBehaviour
         SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
         SteamMatchmaking.RequestLobbyList();
     }
+    /// <summary>
+    /// Gets called after RequestLobbyList(). Destroys all lobby prefabs in content of LobbiesListManager.
+    /// </summary>
+    /// <param name="result"></param>
     void OnGetLobbyList(LobbyMatchList_t result)
     {
         if (LobbiesListManager.instance.listOfLobbies.Count > 0) { }
@@ -113,6 +117,11 @@ public class SteamLobby : MonoBehaviour
             SteamMatchmaking.RequestLobbyData(lobbyId);
         }
     }
+
+    /// <summary>
+    /// Gets called after RequestLobbtData is completed. Will display all lobbies in LobbiesListManager.cs
+    /// </summary>
+    /// <param name="result"></param>
     void OnGetLobbyData(LobbyDataUpdate_t result)
     {
         LobbiesListManager.instance.DisplayLobbies(lobbyIDs, result);

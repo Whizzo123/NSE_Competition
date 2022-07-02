@@ -224,11 +224,8 @@ public class MyNetworkManager : NetworkManager
     /// </summary>
     public void StartGame()
     {
-        if (SceneManager.GetActiveScene().name == "Matchmaking")
-        {
-            if (!IsReadyToStart()) { return; }
-            ServerChangeScene("Plains");
-        }
+        if (!IsReadyToStart()) { return; }
+        ServerChangeScene("Plains");
     }
     #endregion
 
