@@ -6358,7 +6358,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1172580685}
         m_TargetAssemblyTypeName: LobbiesListManager, Assembly-CSharp
-        m_MethodName: GetListOfLobbies
+        m_MethodName: SwitchToLobbyListScreen
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
