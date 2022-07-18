@@ -20,7 +20,7 @@ public class MyNetworkManager : NetworkManager
     [Header("Lobby")]
     [SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private MirrorRoomPlayerLobby lobbyPlayerPrefab = null;
     [SerializeField][Tooltip("All players inside the lobby")] public List<MirrorRoomPlayerLobby> RoomPlayers = new List<MirrorRoomPlayerLobby>();    
-    [SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private PlayerObjectController matchmakingPlayerPrefab = null;
+    [SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private PlayerObjectController matchmakingPlayerPrefab;
     [SerializeField] public List<PlayerObjectController> matchmakingPlayers { get; } = new List<PlayerObjectController>();
     [SerializeField] [Tooltip("Minimum players to start a game")] public int minPlayers;
     [Header("Game")]
@@ -43,78 +43,22 @@ public class MyNetworkManager : NetworkManager
         gameObjectsFromNetworked.CopyTo(spawnPrefabs);
     }
 
-    #region CLIENT_CONNECTION_FUNCTIONS
-    public override void OnStartClient()
-    {
-        Debug.Log("OnStartClient");
-    }
-
-    public override void OnClientConnect(NetworkConnection conn)
-    {
-        base.OnClientConnect(conn);
-
-        Debug.Log("OnClientConnect");
-    }
-
-    public override void OnClientDisconnect(NetworkConnection conn)
-    {
-        base.OnClientDisconnect(conn);
-
-        Debug.Log("OnClientDisconnect");
-    }
-    #endregion
-
-    #region SERVER_CONNECTION_FUNCTIONS
-    public override void OnStartServer()
-    {
-        Debug.Log("OnStartServer");
-    }
-    /// <summary>
-    /// If the lobby is full, disconnect the most recent connnection. todo: We should also add in a way to remove the lobby if it's full
-    /// </summary>
-    public override void OnServerConnect(NetworkConnection conn)
-    {
-        Debug.Log("OnServerConnect");
-        if(numPlayers >= maxConnections)
-        {
-            conn.Disconnect();
-            return;
-        }
-    }
-    public override void OnStopServer()
-    {
-        Debug.Log("OnStopServer");
-        base.OnStopServer();
-    }
-    #endregion
+    ///// <summary>
+    ///// If the lobby is full, disconnect the most recent connnection. todo: We should also add in a way to remove the lobby if it's full
+    ///// </summary>
+    //public override void OnServerConnect(NetworkConnection conn)
+    //{
+    //    Debug.Log("OnServerConnect");
+    //    if(numPlayers >= maxConnections)
+    //    {
+    //        conn.Disconnect();
+    //        return;
+    //    }
+    //}
 
     #region SERVER_CLIENT_EVENTS
     public override void OnServerAddPlayer(NetworkConnection conn) 
     {
-        //Debug.Log("Inside OnServerAddPlayer");
-
-        //if (SceneManager.GetActiveScene().name == "Matchmaking")
-        //{
-        //    MirrorRoomPlayerLobby lobbyPlayerInstance = Instantiate(lobbyPlayerPrefab);
-
-        //    //Host?
-        //    bool isLeader = RoomPlayers.Count == 0;
-        //    lobbyPlayerInstance.IsLeader = isLeader;
-
-        //    //Steam setup
-        //    if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
-        //    {
-        //        Debug.Log("JOE: Setting up steam and grabbing ID");
-        //        CSteamID steamId = SteamMatchmaking.GetLobbyMemberByIndex(LobbyUIManager.LobbyId, RoomPlayers.Count);
-        //        lobbyPlayerInstance.SetSteamId(steamId.m_SteamID);
-        //    }
-        //    else
-        //    {
-        //        lobbyPlayerInstance.SetSteamId(0);
-        //    }
-
-        //    NetworkServer.AddPlayerForConnection(conn, lobbyPlayerInstance.gameObject);
-        //}
         if (SceneManager.GetActiveScene().name == "LobbyScene")
         {
             Debug.Log("Creating PlayerObjectController");
@@ -129,22 +73,22 @@ public class MyNetworkManager : NetworkManager
 
         }
     }
-    public override void OnServerDisconnect(NetworkConnection conn)
-    {
-        Debug.Log("OnServerDisconnect");
-        if(conn.identity != null && SceneManager.GetActiveScene().name == "Matchmaking")
-        {
-            if (SceneManager.GetActiveScene().name == "Matchmaking")
-            {
-                var player = conn.identity.GetComponent<MirrorRoomPlayerLobby>();
+    //public override void OnServerDisconnect(NetworkConnection conn)
+    //{
+    //    Debug.Log("OnServerDisconnect");
+    //    //if(conn.identity != null && SceneManager.GetActiveScene().name == "Matchmaking")
+    //    //{
+    //    //    if (SceneManager.GetActiveScene().name == "Matchmaking")
+    //    //    {
+    //    //        var player = conn.identity.GetComponent<MirrorRoomPlayerLobby>();
 
-                RoomPlayers.Remove(player);
+    //    //        RoomPlayers.Remove(player);
 
-                NotifyPlayersofReadyState();
-            } 
-        }
-        base.OnServerDisconnect(conn);
-    }
+    //    //        NotifyPlayersofReadyState();
+    //    //    } 
+    //    //}
+    //    base.OnServerDisconnect(conn);
+    //}
     
     public override void ServerChangeScene(string newSceneName)
     {
@@ -165,30 +109,30 @@ public class MyNetworkManager : NetworkManager
         base.ServerChangeScene(newSceneName);
     }
 
-    public override void OnServerSceneChanged(string sceneName)
-    {
-        if(sceneName.Contains("Quarantine"))
-            ChangeMusic();
-        SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
-        base.OnServerSceneChanged(sceneName);
+    //public override void OnServerSceneChanged(string sceneName)
+    //{
+    //    if(sceneName.Contains("Quarantine"))
+    //        ChangeMusic();
+    //    SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
+    //    base.OnServerSceneChanged(sceneName);
 
-        Debug.Log("OnServerSceneChanged");
-    }
-    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
-    {
-        RoomPlayers.Clear();
-        if (newSceneName.Contains("Quarantine"))
-            ChangeMusic();
-        SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
-        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
-    }
+    //    Debug.Log("OnServerSceneChanged");
+    //}
+    //public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
+    //{
+    //    RoomPlayers.Clear();
+    //    if (newSceneName.Contains("Quarantine"))
+    //        ChangeMusic();
+    //    SteamMatchmaking.LeaveLobby(LobbyUIManager.LobbyId);
+    //    base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
+    //}
 
-    public override void OnServerReady(NetworkConnection conn)
-    {
-        base.OnServerReady(conn);
+    //public override void OnServerReady(NetworkConnection conn)
+    //{
+    //    base.OnServerReady(conn);
 
-        Debug.Log("OnServerReady");
-    }
+    //    Debug.Log("OnServerReady");
+    //}
     #endregion
 
     #region READY_START
@@ -199,7 +143,7 @@ public class MyNetworkManager : NetworkManager
     {
         foreach (var player in RoomPlayers)
         {
-            player.HandleReadyToStart(IsReadyToStart());
+            //player.HandleReadyToStart(IsReadyToStart());
         }
     }
     /// <summary>
@@ -207,24 +151,24 @@ public class MyNetworkManager : NetworkManager
     /// return true
     /// </summary>
     /// <returns></returns>
-    private bool IsReadyToStart()
-    {
-        if (numPlayers < minPlayers) { return false; }
+    //private bool IsReadyToStart()
+    //{
+    //    if (numPlayers < minPlayers) { return false; }
 
-        foreach (var player in RoomPlayers)
-        {
-            if (!player.IsReady) { return false; }
-        }
+    //    foreach (var player in RoomPlayers)
+    //    {
+    //        if (!player.IsReady) { return false; }
+    //    }
 
-        return true;
-    }
+    //    return true;
+    //}
 
     /// <summary>
     /// If everyone is ready and we're in lobby; change everyone's scene to the 'GameScene'
     /// </summary>
     public void StartGame()
     {
-        if (!IsReadyToStart()) { return; }
+        //if (!IsReadyToStart()) { return; }
         ServerChangeScene("Plains");
     }
     #endregion

@@ -104,7 +104,7 @@ public class SteamLobby : MonoBehaviour
     /// <param name="result"></param>
     void OnGetLobbyList(LobbyMatchList_t result)
     {
-        if (LobbiesListManager.instance.listOfLobbies.Count > 0) { }
+        if (LobbiesListManager.instance.listOfLobbies.Count > 0)
         {
             LobbiesListManager.instance.DestroyLobbies();
         }

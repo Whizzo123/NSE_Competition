@@ -59,7 +59,7 @@ public class LobbyController : MonoBehaviour
             readyButtonText.text = "Unready";
 
         }
-        else
+        else if(!localPlayerController.ready)
         {
             readyButtonText.text = "Ready";
 
@@ -71,6 +71,7 @@ public class LobbyController : MonoBehaviour
     }
     public void LeaveLobby()
     {
+        Debug.Log("LobbyController.LeaveLobby() , stop client");
         manager.StopClient();
     }
     public void CheckIfAllReady()
@@ -88,29 +89,50 @@ public class LobbyController : MonoBehaviour
                 break;
             }
         }
+        //if (allReady)
+        //{
+        //    if (localPlayerController.playerIDNumber == 1)
+        //    {
+        //        startGameButton.SetActive(true);
+        //    }
+        //    else
+        //    {
+        //        startGameButton.SetActive(false);
+        //    }
+        //}
+        //else
+        //{
+        //    //startGameButton.SetActive(false);
+
+        //    //if (localPlayerController.playerIDNumber == 1)
+        //    //{
+        //    //    lobbyVisibility.GetComponent<Dropdown>().interactable = true;
+        //    //}
+        //    //else
+        //    //{
+        //    //    lobbyVisibility.GetComponent<Dropdown>().interactable = false;
+        //    //}
+        //}
         if (allReady)
         {
             if (localPlayerController.playerIDNumber == 1)
             {
-                startGameButton.SetActive(true);
+                if (!localPlayerController.ready)
+                {
+                    localPlayerController.ChangeReady();
+                }
+                startGameButton.GetComponent<Button>().enabled = true;
+                readyButton.GetComponent<Button>().enabled = false;
             }
             else
             {
-                startGameButton.SetActive(false);
+                startGameButton.GetComponent<Button>().enabled = false;
+
             }
         }
         else
         {
-            startGameButton.SetActive(false);
-
-            if (localPlayerController.playerIDNumber == 1)
-            {
-                lobbyVisibility.GetComponent<Dropdown>().interactable = true;
-            }
-            else
-            {
-                lobbyVisibility.GetComponent<Dropdown>().interactable = false;
-            }
+            startGameButton.GetComponent<Button>().enabled = false;
         }
     }
 
@@ -159,10 +181,15 @@ public class LobbyController : MonoBehaviour
         }
         playerItemCreated = true;
     }
+
+    //Creates any other players PlayerListItem
     public void CreateClientPlayerItem()
     {
+        Debug.Log(Manager.matchmakingPlayers.Count);
+        
         foreach (PlayerObjectController player in Manager.matchmakingPlayers)
         {
+            Debug.Log(player.playerName + "is currently in CreateClientPlayerItem()");
             //Are we already in the list? If we're not we are calling
             if (!playerListItems.Any(b => b.connectionID == player.connectionID))
             {
@@ -210,6 +237,7 @@ public class LobbyController : MonoBehaviour
     }
     public void RemovePlayerItem()
     {
+        Debug.Log("RemovePlayerItem( is called)");
         List<PlayerListItem> playerListItemsToRemove = new List<PlayerListItem>();
 
         foreach (PlayerListItem playerListItem in playerListItems)

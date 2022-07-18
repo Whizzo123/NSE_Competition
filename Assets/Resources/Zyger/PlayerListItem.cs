@@ -12,7 +12,7 @@ public class PlayerListItem : MonoBehaviour
     private bool avatarRecieved;
 
     public Text playerNameText;
-    public RawImage playerIcon;
+    //public RawImage playerIcon;
 
     public Image playerStatusImage;
     public bool ready;
