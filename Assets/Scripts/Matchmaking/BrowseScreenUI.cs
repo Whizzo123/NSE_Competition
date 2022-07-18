@@ -17,20 +17,20 @@ public class BrowseScreenUI : MonoBehaviour
     [SerializeField] [Tooltip("Prefab used for no lobbies")] public GameObject noServerFoundText;
     [SerializeField] [Tooltip("GameObject containing list of servers")] public GameObject serverList;
     
-
-    public event Action<LobbyInfo> OnClickJoinSession;
-
-    private LobbyUIManager lobbyUIManager;
-
+    
     [Header("Refresh rate")]
     [SerializeField][Tooltip("Time to wait for refreshing")] private float waitTime = 5f;
     [Tooltip("Time elapsed since last refresh")]private float currentWaitTime = 0f;
     //Create a countdown action
+
+    public event Action<LobbyInfo> OnClickJoinSession;
+    private LobbyUIManager lobbyUIManager;
     #endregion 
 
     private void Start()
     {
         lobbyUIManager = FindObjectOfType<LobbyUIManager>();
+        currentWaitTime = waitTime;
     }
 
     /// <summary>
@@ -54,20 +54,21 @@ public class BrowseScreenUI : MonoBehaviour
     {
         Debug.Log("Recieved session list update");
         Debug.Log(lobbies.Count);
+
         for (int i = 0; i < lobbies.Count; i++)
         {
             Debug.Log(lobbies[i].lobbyName);
         }
 
         ResetUI();
+        noServerFoundText.SetActive(false);
         if (lobbies.Count == 0)
         {
             noServerFoundText.SetActive(true);
             return;
         }
 
-        noServerFoundText.SetActive(false);
-        //Todo: Version Control, filtering
+        //TODO: Version Control
         //Instantiates all available lobbies
         foreach (LobbyInfo info in lobbies)
         {
@@ -81,28 +82,16 @@ public class BrowseScreenUI : MonoBehaviour
 
     //Todo: Refresh the browse screen periodically or add a refresh button to show new lobbies
     void Update()
-    { 
-        if (!FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+    {
+        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
         {
             //Periodically updates the details of the lobby
             if (currentWaitTime <= 0)
             {
-                Dictionary<long, ServerResponse> servers = lobbyUIManager.discoveredServers;
-                ResetUI();
-                if (servers.Count == 0)
-                {
-                    noServerFoundText.SetActive(true);
-                    return;
-                }
-
-                noServerFoundText.SetActive(false);
-                //Loop through all servers and spawn them in the server list and populate the element with the server name and stuff
-                foreach (long serverID in servers.Keys)
-                {
-                    GameObject serverEntryGO = Instantiate(sessionListObjectPrefab, serverList.transform, false);
-                    ServerListRoomUI serverEntryUI = serverEntryGO.GetComponent<ServerListRoomUI>();
-                    serverEntryUI.Populate(servers[serverID], UnityEngine.Random.ColorHSV());
-                }
+                //I believe we need to request a new lobby list
+                SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
+                SteamMatchmaking.RequestLobbyList();//This should callback the Function 'LobbyUIManager.cs::OnLobbyMatchListGrab(LobbyMatchList_t callback)' which will call 'this.cs::SessionUpdateList(List<LobbyInfo> lobbies)'
+                
                 currentWaitTime = waitTime;
             }
             else
@@ -110,13 +99,6 @@ public class BrowseScreenUI : MonoBehaviour
                 currentWaitTime -= Time.deltaTime;
             }
         }
-        /*else
-        {
-            if(currentWaitTime <= 0)
-            {
-                SteamMatchmaking.RequestLobbyList();
-            }
-        }*/
     }
 
 

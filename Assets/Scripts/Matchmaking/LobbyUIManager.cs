@@ -20,7 +20,7 @@ public struct UIScreens
 
 /// <summary>
 /// <para>This class manages both Steam and Mirror's creation of lobbies, initialisation of network, and join requests.</para>
-/// <para>It also manages a lot of UI in the 'LobbyScene'</para>
+/// <para>It also manages a lot of UI in the 'Matchmaking'</para>
 /// </summary>
 public class LobbyUIManager : MonoBehaviour
 {
@@ -238,6 +238,11 @@ public class LobbyUIManager : MonoBehaviour
 
         //Update the UI
         browseScreen.SessionListUpdated(lobbies);
+    }
+
+    public Callback<LobbyMatchList_t> GetLobbyMatchList_T()
+    {
+        return lobbyMatchList;
     }
     #endregion
     #endregion

@@ -12,11 +12,6 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class AudioManager : MonoBehaviour
 {
-
-    [Tooltip("Control the music volume slider")] public Slider musicVolume;//Necessary??
-    [Tooltip("Control the sound volume slider")] public Slider soundVolume;//necessary??
-
-
     [Header("Audio floats")]
     //Dynamic Floats
     [SerializeField] [Tooltip("Music Volume, dynamically used by sliders")] [Range(0,1)] public float mVol;
@@ -26,7 +21,6 @@ public class AudioManager : MonoBehaviour
 
     //Audio management
     [SerializeField] [Tooltip("All sound is stored inside this")] public AudioClips[] aud;
-    [Tooltip("Sound is played from here")] public AudioSource audioSource;
 
     /// <summary>
     /// AudioClips is used to store details about a track. It has:
@@ -89,25 +83,10 @@ public class AudioManager : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        mVol = 0.5f;
-        sVol = 0.5f;
-        masVol = 0.0f;
         ActivateMenuMusic();
         MusicVolume(0.5f);
         SoundVolume(0.5f);
-        MasterVolume(0.0f);
-    }
-
-    private void Update()
-    {
-        if (SceneManager.GetActiveScene().name.Contains("Title"))
-        {
-            if (Array.Find(aud, AudioClips => AudioClips.clipName == "MusicGame").audioSource.isPlaying)
-            {
-                Array.Find(aud, AudioClips => AudioClips.clipName == "MusicGame").audioSource.Stop();
-                Array.Find(aud, AudioClips => AudioClips.clipName == "MusicMenu").audioSource.Play();
-            }
-        }
+        MasterVolume(0.1f);
     }
 
     #region VOLUME_CONTROL
@@ -142,17 +121,18 @@ public class AudioManager : MonoBehaviour
     /// <summary>
     /// Updates the audioSources volumes.
     /// </summary>
-    public void ChangeVol()
+    private void ChangeVol()
     {
+        //Changes all the volumes of every audioclip in AudioClips, keeping in respect to the base value
         foreach (AudioClips audio in aud)
         {
             if (audio.music == true)
             {
-                audio.audioSource.volume = mVol * masVol;
+                audio.audioSource.volume = mVol * masVol * audio.clipVolume;
             }
             else
             {
-                audio.audioSource.volume = sVol * masVol;
+                audio.audioSource.volume = sVol * masVol * audio.clipVolume;
             }
         }
     }
@@ -254,17 +234,61 @@ public class AudioManager : MonoBehaviour
 
     //Todo: Rename Panel sections, and maybe re-do functions to think of including another settings panel e.g. the pause menu
 
-    [SerializeField] [Tooltip("Settings panel")] public GameObject panel;
+
+    [SerializeField] [Tooltip("New canvas")] private GameObject canvas;
+    private GameObject returningCanvas;
+    [SerializeField] [Tooltip("Settings panel")] private GameObject settingsPanel;
+
+    [SerializeField] private GameObject controlsPanel;
+    [SerializeField] private GameObject visualsPanel;
+    [SerializeField] private GameObject audioPanel;
 
 
-    public void TurnOn()
+
+    public void PanelSettings(bool on)
     {
-        panel.SetActive(true);
+        //GetComponent<VisualSettings>().UpdateVisualSettings();
+        //GetComponent<ControlsSettings>().UpdateControls();
+
+        canvas.SetActive(on);
+        settingsPanel.SetActive(on);
+
+        Canvas[] g = GameObject.FindObjectsOfType<Canvas>();
+        foreach (var item in g)
+        {
+            if (item == canvas.GetComponent<Canvas>())
+            {
+                item.gameObject.SetActive(on);
+            }
+            else
+            {
+                returningCanvas = item.gameObject;
+                item.gameObject.SetActive(!on);
+
+            }
+        }
+        if (!on)
+        {
+            returningCanvas.SetActive(!on);
+        }
     }
 
-    public void TurnOff()
+    public void PanelControls(bool on)
     {
-        panel.SetActive(false);
-        SceneManager.LoadScene("TitleScene");
+        controlsPanel.SetActive(on);
+        visualsPanel.SetActive(!on);
+        audioPanel.SetActive(!on);
+    }
+    public void PanelVisual(bool on)
+    {
+        controlsPanel.SetActive(!on);
+        visualsPanel.SetActive(on);
+        audioPanel.SetActive(!on);
+    }
+    public void PanelAudio(bool on)
+    {
+        controlsPanel.SetActive(!on);
+        visualsPanel.SetActive(!on);
+        audioPanel.SetActive(on);
     }
 }
