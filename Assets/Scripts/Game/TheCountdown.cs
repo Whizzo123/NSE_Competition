@@ -59,7 +59,7 @@ public class TheCountdown : NetworkBehaviour
             if(currentLobbyTime < 30 && playersMovedToSpawnPos == false)
             {
                 playersMovedToSpawnPos = true;
-                FindObjectOfType<MyNetworkManager>().MovePlayersToSpawnPosInTemple();
+                //FindObjectOfType<MyNetworkManager>().MovePlayersToSpawnPosInTemple();
             }
         }
         //When loadout screen time is completed, disable the loadout screen and start the game couroutine
