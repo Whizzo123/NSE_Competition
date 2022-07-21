@@ -112,6 +112,8 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
+        Debug.Log("OnStartAuthority: Hello I am starting authority for:" + this.playerName);
+        Debug.Log("OnStartAuthority: This person, authority:" + hasAuthority + " ,isClient:" + isClient + " ,isServer:" + isServer + " ,isLocalPlayer " + isLocalPlayer);
         GameObject.FindObjectOfType<ControlsSettings>().UpdateControls(this);
         //Attatches Camera
         vCam = FindObjectOfType<Cinemachine.CinemachineFreeLook>();
@@ -135,6 +137,8 @@ public class PlayerController : NetworkBehaviour
     [Command]
     private void CmdSetupPlayer()
     {
+        Debug.Log("CmdSetupPlayer: Hello I am starting authority for:" + this.playerName);
+        Debug.Log("CmdSetupPlayer: This person, authority:" + hasAuthority + " ,isClient:" + isClient + " ,isServer:" + isServer + " ,isLocalPlayer " + isLocalPlayer);
         //Components
         abilityInventory = new AbilityInventory(this);
         artefactInventory = GetComponent<ArtefactInventory>();
@@ -207,6 +211,9 @@ public class PlayerController : NetworkBehaviour
         DevModeOn();
         if (devMode) { return; }
         #endregion
+
+        if (abilityInventory == null)
+            return;
 
         abilityInventory.Update();
 
