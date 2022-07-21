@@ -3,10 +3,10 @@ using UnityEngine;
 using System.Collections.Generic;
 using Mirror;
 using UnityEditor;
+using T_Utils;
 
 public class Effects : NetworkBehaviour
 {
-    private static GenericTimer genericTimer;
     private static float boostToSpeed = 7.5f;
     private static List<GameObject> particles;
     private static LayerMask ground;
@@ -15,7 +15,6 @@ public class Effects : NetworkBehaviour
 
     private void Start()
     {
-        genericTimer = GameObject.Find("GenericObject").GetComponent<GenericTimer>();
         playerNormalMats = new Material[11];
         playerNormalMats[0] = Resources.Load<Material>("Character/Extracted Mats/Player_1_Mat");
         playerNormalMats[1] = Resources.Load<Material>("Character/Extracted Mats/Player_2_Mat");
@@ -250,7 +249,7 @@ public class Effects : NetworkBehaviour
                 FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
-                genericTimer.SetTimer(3f, () => { if(!ability.IsInUse()) ability.Use(); });//Will throw bomb after 3 seconds
+                GenericTimer.Create(() => { if(!ability.IsInUse()) ability.Use(); }, 3.0f, "ThrowStickyBombTimer");//Will throw bomb after 3 seconds
             }
             else
             {
@@ -330,7 +329,7 @@ public class Effects : NetworkBehaviour
                 FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
                 FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
                 ability.SetTargetedPlayer(closestPlayer);
-                genericTimer.SetTimer(3f, () => { if (!ability.IsInUse()) ability.Use(); });
+                GenericTimer.Create(() => { if (!ability.IsInUse()) ability.Use(); }, 3.0f, "ThrowParalysisDartTimer");
             }
             else
             {

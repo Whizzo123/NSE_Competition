@@ -74,7 +74,7 @@ public class LobbyUIManager : MonoBehaviour
         networkDiscovery = FindObjectOfType<NetworkDiscovery>();
         networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
         //Starts steam
-        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+        //if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             InitializeSteam();
 
         //Setup all the screens for the lobby
@@ -116,10 +116,10 @@ public class LobbyUIManager : MonoBehaviour
         roomName = createScreen.inputField.text;
         Debug.Log("CreatingRoomSession");
         FindObjectOfType<BackTemp>().SwitchingTo(ActiveScreen.LOBBY);
-        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+        //if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
             SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, networkManager.maxConnections);
-        else
-            CreateMirrorLobby();
+        //else
+        //    CreateMirrorLobby();
     }
     /// <summary>
     /// Switches to browse screen, decides whether to discover Steam lobbies or Mirror lobbies.
@@ -130,13 +130,13 @@ public class LobbyUIManager : MonoBehaviour
         FindObjectOfType<AudioManager>().PlaySound("Click");
         ChangeScreenTo("Browse");
 
-        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
-        {
+       // if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+        //{
             SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
             SteamMatchmaking.RequestLobbyList();
-        }
-        else
-            networkDiscovery.StartDiscovery();
+        //}
+        //else
+        //    networkDiscovery.StartDiscovery();
     }
     //RandomJoinNotSupportedYet----------------------------------------------------------------
     /// <summary>

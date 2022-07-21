@@ -15,17 +15,19 @@ using System.Linq;
 public class MyNetworkManager : NetworkManager
 {
 
-    [Scene] [SerializeField] private string menuScene = string.Empty;
-
+    //[Scene] [SerializeField] private string menuScene = string.Empty;
+    [Header("Settings")]
+    [SerializeField] [Tooltip("Minimum players to start a game")] public int minPlayers;
+    //[SerializeField] [Tooltip("Do we use Steam for matchmaking or not?")] public bool useSteamMatchmaking;
+    [Space]
     [Header("Lobby")]
-    [SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private MirrorRoomPlayerLobby lobbyPlayerPrefab = null;
-    [SerializeField][Tooltip("All players inside the lobby")] public List<MirrorRoomPlayerLobby> RoomPlayers = new List<MirrorRoomPlayerLobby>();    
+    //[SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private MirrorRoomPlayerLobby lobbyPlayerPrefab = null;
+    //[SerializeField][Tooltip("All players inside the lobby")] public List<MirrorRoomPlayerLobby> RoomPlayers = new List<MirrorRoomPlayerLobby>();    
     [SerializeField] [Tooltip("Prefab used to spawn the lobby player")] private PlayerObjectController matchmakingPlayerPrefab;
     [SerializeField] public List<PlayerObjectController> matchmakingPlayers { get; } = new List<PlayerObjectController>();
-    [SerializeField] [Tooltip("Minimum players to start a game")] public int minPlayers;
-    [Header("Game")]
-    [SerializeField] [Tooltip("Prefab used to spawn the controllable player")] private PlayerController gamePlayerPrefab = null;
-    [SerializeField] [Tooltip("Do we use Steam for matchmaking or not?")] public bool useSteamMatchmaking;
+    //[Space]
+    //[Header("Game")]
+    //[SerializeField] [Tooltip("Prefab used to spawn the controllable player")] private PlayerController gamePlayerPrefab = null;
  
 
     //List<LobbyPlayer> RoomPlayers = new List<LobbyPlayer>();
@@ -94,13 +96,13 @@ public class MyNetworkManager : NetworkManager
     {
         if (newSceneName.Contains("Plains") || newSceneName.Contains("Quarantine"))
         {
-            for (int i = RoomPlayers.Count - 1; i >= 0; i--)
+            for (int i = matchmakingPlayers.Count - 1; i >= 0; i--)
             {
                 //For each player, replaces their lobby identity with the game identity
-                var conn = RoomPlayers[i].connectionToClient;
+                var conn = matchmakingPlayers[i].connectionToClient;
                 Vector3 spawnPos = new Vector3(Random.Range(2.26f, 3.86f), 0.6f, Random.Range(-26.13f, -11.94f));
                 GameObject gameplayInstance = Instantiate(spawnPrefabs.Find(spawnPrefabs => spawnPrefabs.name == "Player"), spawnPos, Quaternion.identity);
-                gameplayInstance.GetComponent<PlayerController>().playerName = RoomPlayers[i].DisplayName;
+                gameplayInstance.GetComponent<PlayerController>().playerName = matchmakingPlayers[i].playerName;
                 NetworkServer.Destroy(conn.identity.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn, gameplayInstance.gameObject);
                 NetworkServer.Spawn(gameplayInstance, conn);
@@ -141,10 +143,10 @@ public class MyNetworkManager : NetworkManager
     /// </summary>
     public void NotifyPlayersofReadyState()
     {
-        foreach (var player in RoomPlayers)
-        {
-            //player.HandleReadyToStart(IsReadyToStart());
-        }
+        //foreach (var player in RoomPlayers)
+        //{
+        //    //player.HandleReadyToStart(IsReadyToStart());
+        //}
     }
     /// <summary>
     /// If all players are ready and there is more than the minimum amount of players required to start - 

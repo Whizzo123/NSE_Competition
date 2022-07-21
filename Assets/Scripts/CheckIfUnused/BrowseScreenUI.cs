@@ -83,7 +83,8 @@ public class BrowseScreenUI : MonoBehaviour
     //Todo: Refresh the browse screen periodically or add a refresh button to show new lobbies
     void Update()
     {
-        if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+        //if (FindObjectOfType<MyNetworkManager>().useSteamMatchmaking)
+        if (true)
         {
             //Periodically updates the details of the lobby
             if (currentWaitTime <= 0)
