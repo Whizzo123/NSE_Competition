@@ -2,7 +2,6 @@
 using UnityEngine;
 using Mirror;
 
-//Todo: Remove the spawning of abilities and put it in it's own script. For now leaving this script uncommented for that reason
 /// <summary>
 /// Controls the game ending
 /// </summary>

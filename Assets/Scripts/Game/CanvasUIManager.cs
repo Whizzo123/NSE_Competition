@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using T_Utils;
 //Todo: Come back and think about the effectiveness of this method compared to compartmentalising everyhting instead.
 //It just seems weird having all object stored in one script and activated in other scripts if they need to.
 //For example, the winscreen I feel like should be contained within a EndGame script where it controls what happens when the game ends.
@@ -13,7 +13,6 @@ using UnityEngine.UI;
 /// </summary>
 public class CanvasUIManager : MonoBehaviour
 {
-    private GenericTimer genericTimer;
     public Canvas canvas;
     public static GameObject playerNameTextPrefab;
     public GameObject artefactPickupPopup;
@@ -31,10 +30,6 @@ public class CanvasUIManager : MonoBehaviour
     public Text TimeText;
     public Text loadoutTimeText;
 
-    public void Start()
-    {
-        genericTimer = GameObject.Find("GenericObject").GetComponent<GenericTimer>();
-    }
     /// <summary>
     /// Show a hint message with no time associated to it's visibility. Manually close it with <see cref="CloseHintMessage"/>.
     /// </summary>
@@ -60,25 +55,7 @@ public class CanvasUIManager : MonoBehaviour
     {
         popupMessage.SetActive(true);
         popupMessage.GetComponent<Text>().text = message;
-        genericTimer.SetTimer(2f, () => { popupMessage.SetActive(false); });
-        //StartCoroutine(PopupMessageCountdown());
-    }
-    /// <summary>
-    /// Kept this in case there are issues with overlapping times
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator PopupMessageCountdown()
-    {
-        float remainingTime = popupMessageShowTime;
-
-        while (remainingTime > 0)
-        {
-            yield return null;
-
-            remainingTime -= Time.deltaTime;
-        }
-
-        popupMessage.SetActive(false);
+        GenericTimer.Create(() => { popupMessage.SetActive(false); }, 2.0f, "PopupMessageTimer");
     }
 
     public void AddToInventoryScreen(ItemArtefact artefact)
