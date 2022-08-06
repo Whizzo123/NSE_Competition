@@ -59,19 +59,19 @@ public class AbilityRegister : MonoBehaviour
             AbilityType.POWERUP, 15.0f, Effects.ActivateCamouflage, Effects.DeactivateCamouflage, 50.0f);
         Ability clueInterpretator = new Ability("Clue Interpretator", "Gain insight to where your nearby artefacts are", 5, AbilityUseTypes.RECHARGE,
             AbilityType.POWERUP, 10.0f, Effects.ActivateClueInterpretator, Effects.DeactivateClueInterpretator, 30.0f);
-        Ability playerTracker = new Ability("PlayerTracker", "Track the player with most artefacts on them for you to steal", 5, AbilityUseTypes.RECHARGE, AbilityType.POWERUP, 25.0f,
+        Ability playerTracker = new Ability("PlayerTracker", "Locate the hunter with the most artefacts in their possession", 5, AbilityUseTypes.RECHARGE, AbilityType.POWERUP, 25.0f,
             Effects.ActivatePlayerTracker, Effects.DeactivatePlayerTracker, 30.0f);
         //Traps
-        Ability bearTrap = new Ability("Bear Trap", "Ensnare your opponents in a bear trap to immobilize them", 3, AbilityUseTypes.ONE_TIME, AbilityType.TRAP,
+        Ability bearTrap = new Ability("Bear Trap", "Ensare other hunters for a short time", 3, AbilityUseTypes.ONE_TIME, AbilityType.TRAP,
             0.0f, Effects.SpringBearTrap, null, 7.0f);
-        Ability voodooTrap = new Ability("Voodoo Poison Trap", "Hits enemy with voodoo poison effect hindering their movement", 3, AbilityUseTypes.ONE_TIME,
+        Ability voodooTrap = new Ability("Voodoo Poison Trap", "Leave a noxious gas for other hunters and watch them fumble", 3, AbilityUseTypes.ONE_TIME,
             AbilityType.TRAP, 0.0f, Effects.SpringVoodooTrap, null, 7.0f);
         //Debuffs
-        Ability stickyBomb = new Ability("StickyBomb", "Stun an opponent of your choosing to change the tides", 1, AbilityUseTypes.RECHARGE, AbilityType.DEBUFF,
+        Ability stickyBomb = new Ability("StickyBomb", "Slow a nearby hunter with your nasty concoction", 1, AbilityUseTypes.RECHARGE, AbilityType.DEBUFF,
             20.0f, Effects.ThrowStickyBomb, Effects.EndStickyBombEffect, 30.0f);
-        Ability mortalSpell = new Ability("Mortal Spell", "Brings an enemy back down to the mortal plane all abilities are stripped for 10 secs", 3, AbilityUseTypes.RECHARGE,
+        Ability mortalSpell = new Ability("Mortal Spell", "Strip a hunter of their god given powers for a short time", 3, AbilityUseTypes.RECHARGE,
             AbilityType.DEBUFF, 20.0f, Effects.CastMortalSpell, Effects.EndMortalSpell, 10.0f);
-        Ability paralysisDart = new Ability("Paralysis Dart", "Shoot a poison dart capable of paralyzing their hands so they are unable to use their tools", 3, AbilityUseTypes.RECHARGE,
+        Ability paralysisDart = new Ability("Paralysis Dart", "Paralyse a hunters hand, stop them in their tracks", 3, AbilityUseTypes.RECHARGE,
             AbilityType.DEBUFF, 10.0f, Effects.ThrowParalysisDart, Effects.EndParalysisDartEffect, 20.0f);
         //Add these abilities into the dictionary
         abilities.Add(speedBoost.GetAbilityName(), speedBoost);

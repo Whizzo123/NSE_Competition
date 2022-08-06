@@ -21,7 +21,7 @@ public class LoadoutSelectionBoxUI : MonoBehaviour
 
     void Start()
     {
-        maxiumumPointsAvaliable = 9;
+        //maxiumumPointsAvaliable = 9;//Set in inspector
         currentPointsLeft = maxiumumPointsAvaliable;
 
         UpdatePoints(0);

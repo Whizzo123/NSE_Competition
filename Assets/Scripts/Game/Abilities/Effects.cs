@@ -16,30 +16,30 @@ public class Effects : NetworkBehaviour
     private void Start()
     {
         playerNormalMats = new Material[11];
-        playerNormalMats[0] = Resources.Load<Material>("Character/Extracted Mats/Player_1_Mat");
-        playerNormalMats[1] = Resources.Load<Material>("Character/Extracted Mats/Player_2_Mat");
-        playerNormalMats[2] = Resources.Load<Material>("Character/Extracted Mats/Player_3_Mat");
-        playerNormalMats[3] = Resources.Load<Material>("Character/Extracted Mats/Player_4_Mat");
-        playerNormalMats[4] = Resources.Load<Material>("Character/Extracted Mats/Player_5_Mat");
-        playerNormalMats[5] = Resources.Load<Material>("Character/Extracted Mats/Player_6_Mat");
-        playerNormalMats[6] = Resources.Load<Material>("Character/Extracted Mats/Player_7_Mat");
-        playerNormalMats[7] = Resources.Load<Material>("Character/Extracted Mats/Player_8_Mat");
-        playerNormalMats[8] = Resources.Load<Material>("Character/Extracted Mats/Player_9_Mat");
-        playerNormalMats[9] = Resources.Load<Material>("Character/Extracted Mats/Player_10_Mat");
-        playerNormalMats[10] = Resources.Load<Material>("Character/Extracted Mats/Player_11_Mat");
+        playerNormalMats[0] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_1_Mat");
+        playerNormalMats[1] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_2_Mat");
+        playerNormalMats[2] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_3_Mat");
+        playerNormalMats[3] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_4_Mat");
+        playerNormalMats[4] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_5_Mat");
+        playerNormalMats[5] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_6_Mat");
+        playerNormalMats[6] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_7_Mat");
+        playerNormalMats[7] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_8_Mat");
+        playerNormalMats[8] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_9_Mat");
+        playerNormalMats[9] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_10_Mat");
+        playerNormalMats[10] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_11_Mat");
 
         playerFadeMats = new Material[11];
-        playerFadeMats[0] = Resources.Load<Material>("Character/Extracted Mats/Player_1_FadeMat");
-        playerFadeMats[1] = Resources.Load<Material>("Character/Extracted Mats/Player_2_FadeMat");
-        playerFadeMats[2] = Resources.Load<Material>("Character/Extracted Mats/Player_3_FadeMat");
-        playerFadeMats[3] = Resources.Load<Material>("Character/Extracted Mats/Player_4_FadeMat");
-        playerFadeMats[4] = Resources.Load<Material>("Character/Extracted Mats/Player_5_FadeMat");
-        playerFadeMats[5] = Resources.Load<Material>("Character/Extracted Mats/Player_6_FadeMat");
-        playerFadeMats[6] = Resources.Load<Material>("Character/Extracted Mats/Player_7_FadeMat");
-        playerFadeMats[7] = Resources.Load<Material>("Character/Extracted Mats/Player_8_FadeMat");
-        playerFadeMats[8] = Resources.Load<Material>("Character/Extracted Mats/Player_9_FadeMat");
-        playerFadeMats[9] = Resources.Load<Material>("Character/Extracted Mats/Player_10_FadeMat");
-        playerFadeMats[10] = Resources.Load<Material>("Character/Extracted Mats/Player_11_FadeMat");
+        playerFadeMats[0] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_1_FadeMat");
+        playerFadeMats[1] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_2_FadeMat");
+        playerFadeMats[2] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_3_FadeMat");
+        playerFadeMats[3] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_4_FadeMat");
+        playerFadeMats[4] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_5_FadeMat");
+        playerFadeMats[5] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_6_FadeMat");
+        playerFadeMats[6] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_7_FadeMat");
+        playerFadeMats[7] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_8_FadeMat");
+        playerFadeMats[8] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_9_FadeMat");
+        playerFadeMats[9] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_10_FadeMat");
+        playerFadeMats[10] = Resources.Load<Material>("PlayerAssets/Extracted Mats/Player_11_FadeMat");
     }
 
     #region PowerupEffects
@@ -122,20 +122,20 @@ public class Effects : NetworkBehaviour
                 switch (artefact.GetRarity())
                 {
                     case ArtefactRarity.Common:
-                        particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/CommonArtefact_PA", typeof(GameObject))) as GameObject);
+                        particles.Add(GameObject.Instantiate(Resources.Load("Map/Artefacts/CommonArtefact_PA", typeof(GameObject))) as GameObject);
                         break;
                     case ArtefactRarity.Exotic:
-                        particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/ExoticArtefact_PA", typeof(GameObject))) as GameObject);
+                        particles.Add(GameObject.Instantiate(Resources.Load("Map/Artefacts/ExoticArtefact_PA", typeof(GameObject))) as GameObject);
                         break;
                     case ArtefactRarity.Rare:
-                        particles.Add(GameObject.Instantiate(Resources.Load("Artefacts/RareArtefact_PA", typeof(GameObject))) as GameObject);
+                        particles.Add(GameObject.Instantiate(Resources.Load("Map/Artefacts/RareArtefact_PA", typeof(GameObject))) as GameObject);
                         break;
                 }
                 particles[particles.Count - 1].transform.position = artefact.transform.position;
             }
 
         }
-        Instantiate(Resources.Load("Abilities/Powerups/ClueInterpreterSphere"), ability.GetCastingPlayer().transform.position, Quaternion.identity);
+        Instantiate(Resources.Load("Abilities/ClueInterpreterSphere"), ability.GetCastingPlayer().transform.position, Quaternion.identity);
         ability.SetInUse(true);
     }
 
