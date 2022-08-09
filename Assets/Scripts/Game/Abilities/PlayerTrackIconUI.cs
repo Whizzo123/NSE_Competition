@@ -27,39 +27,83 @@ public class PlayerTrackIconUI : MonoBehaviour
         if(target != null)
         {
             Camera playerCamera = NetworkClient.localPlayer.GetComponent<PlayerController>().playerCamera;
-            Vector2 screenPos = playerCamera.WorldToScreenPoint(target.transform.position);
+            
+            Vector3 screenPos = playerCamera.WorldToScreenPoint(target.transform.position);
             bool isOffScreen = screenPos.x < widthOffset || screenPos.x > Screen.width - widthOffset || screenPos.y > Screen.height - heightOffset || screenPos.y < heightOffset;
+           
             if (isOffScreen)
             {
-                //Outside bounds of screen
-                this.transform.localRotation = Quaternion.identity;
-                SetImage(pointerImage);
-                Vector3 dir = target.transform.position - NetworkClient.localPlayer.transform.position;
-                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                if (screenPos.x < 0)
                 {
-                    if (dir.x < 0)
-                    {
-                        this.transform.position = new Vector3(widthOffset, Screen.height / 2, 0);
-                        this.transform.Rotate(new Vector3(0, 0, 90.0f));
-                    }
-                    else if (dir.x > 0)
-                    {
-                        this.transform.position = new Vector3(Screen.width - widthOffset, Screen.height / 2, 0);
-                        this.transform.Rotate(new Vector3(0, 0, -90.0f));
-                    }
+                    screenPos *= -1;
+                }
+
+                Vector3 screenCenter = new Vector3(Screen.width, Screen.height, 0) / 2;
+
+                screenPos -= screenCenter;
+
+                float angle = Mathf.Atan2(screenCenter.y, screenPos.y);
+                angle -= 90*Mathf.Rad2Deg;
+
+                float cos = Mathf.Cos(angle);
+                float sin = -Mathf.Sin(angle);
+
+                screenPos = screenCenter + new Vector3(sin * 150, cos * 150, 0);
+
+                float m = cos / sin;
+
+                Vector3 screenBounds = screenCenter * 0.9f;
+
+                if (cos > 0)
+                {
+                    screenPos = new Vector3(screenBounds.y / m, screenBounds.y, 0);
                 }
                 else
                 {
-                    if (dir.z < 0)
-                    {
-                        this.transform.position = new Vector3(Screen.width / 2, heightOffset, 0);
-                        this.transform.Rotate(new Vector3(0, 0, 180.0f));
-                    }
-                    else if (dir.z > 0)
-                    {
-                        this.transform.position = new Vector3(Screen.width / 2, Screen.height - heightOffset, 0);
-                    }
+                    screenPos = new Vector3(-screenBounds.y / m, -screenBounds.y, 0);
                 }
+
+                if (screenPos.x>screenBounds.x)
+                {
+                    screenPos = new Vector3(screenBounds.x, screenBounds.x * m, 0);
+                }else if(screenPos.x < -screenBounds.x)
+                {
+                    screenPos = new Vector3(-screenBounds.x, -screenBounds.x * m, 0);
+                }
+
+                screenPos += screenCenter;
+
+                this.transform.localPosition = screenPos;
+                this.transform.localRotation = Quaternion.Euler(0,0, angle*Mathf.Rad2Deg);
+                ////Outside bounds of screen
+                //this.transform.localRotation = Quaternion.identity;
+                //SetImage(pointerImage);
+                //Vector3 dir = target.transform.position - NetworkClient.localPlayer.transform.position;
+                //if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                //{
+                //    if (dir.x < 0)
+                //    {
+                //        this.transform.position = new Vector3(widthOffset, Screen.height / 2, 0);
+                //        this.transform.Rotate(new Vector3(0, 0, 90.0f));
+                //    }
+                //    else if (dir.x > 0)
+                //    {
+                //        this.transform.position = new Vector3(Screen.width - widthOffset, Screen.height / 2, 0);
+                //        this.transform.Rotate(new Vector3(0, 0, -90.0f));
+                //    }
+                //}
+                //else
+                //{
+                //    if (dir.z < 0)
+                //    {
+                //        this.transform.position = new Vector3(Screen.width / 2, heightOffset, 0);
+                //        this.transform.Rotate(new Vector3(0, 0, 180.0f));
+                //    }
+                //    else if (dir.z > 0)
+                //    {
+                //        this.transform.position = new Vector3(Screen.width / 2, Screen.height - heightOffset, 0);
+                //    }
+                //}
             }
             else
             {

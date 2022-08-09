@@ -12,6 +12,7 @@ public class Effects : NetworkBehaviour
     private static LayerMask ground;
     private static Material[] playerNormalMats;
     private static  Material[] playerFadeMats;
+    private static string currentTargettingAbilityTimer;
 
     private void Start()
     {
@@ -44,6 +45,8 @@ public class Effects : NetworkBehaviour
 
     #region PowerupEffects
 
+
+    /////////Speed
     //Todo: Add speed particles
     public static void SpeedBoost(Ability ability)
     {
@@ -53,12 +56,13 @@ public class Effects : NetworkBehaviour
             ability.SetInUse(true);
         }
     }
-
     public static void EndSpeedBoost(Ability ability)
     {
         ability.GetCastingPlayer().speed = ability.GetCastingPlayer().normalSpeed;
     }
 
+
+    /////////Camo
     public static void ActivateCamouflage(Ability ability)
     {
         Vector3 spawnPos = ability.GetCastingPlayer().gameObject.transform.position;
@@ -67,7 +71,6 @@ public class Effects : NetworkBehaviour
         ability.GetCastingPlayer().CmdToggleCamouflage(false, ability.GetCastingPlayer());
         ability.SetInUse(true);
     }
-
     public static void AlterMaterials(Ability ability, bool toggle)
     {
         Debug.Log("Hitting materials: " + ability.GetCastingPlayer().GetComponentInChildren<SkinnedMeshRenderer>().materials.Length);
@@ -81,7 +84,6 @@ public class Effects : NetworkBehaviour
         }
 
     }
-
     [Command (requiresAuthority = false)]
     public void CmdSpawnCamouflageParticles(Vector3 spawnPos)
     {
@@ -90,26 +92,14 @@ public class Effects : NetworkBehaviour
         NetworkServer.Spawn(go);
         //temp();
     }
-
-    [ClientRpc]
-    void temp()
-    {
-        if(GameObject.Find("Invisibility_PA(Clone)"))
-        {
-            Debug.LogError("PLAYING INVIS");
-            GameObject go = GameObject.Find("Invisibility_PA(Clone)");
-            go.SetActive(true);
-            go.GetComponent<ParticleSystem>().Play();
-        }
-
-    }
-
     public static void DeactivateCamouflage(Ability ability)
     {
         AlterMaterials(ability, true);
         ability.GetCastingPlayer().CmdToggleCamouflage(true, ability.GetCastingPlayer());
     }
 
+
+    /////////ClueInterpreter
     public static void ActivateClueInterpretator(Ability ability)
     {
         if (particles == null)
@@ -138,7 +128,6 @@ public class Effects : NetworkBehaviour
         Instantiate(Resources.Load("Abilities/ClueInterpreterSphere"), ability.GetCastingPlayer().transform.position, Quaternion.identity);
         ability.SetInUse(true);
     }
-
     public static void DeactivateClueInterpretator(Ability ability)
     {
         List<GameObject> temp = particles;
@@ -149,17 +138,25 @@ public class Effects : NetworkBehaviour
         particles.Clear();
     }
 
+
+
+    /////////PlayerTracker
     public static void ActivatePlayerTracker(Ability ability)
     {
+        PlayerController playerController = FindHighestPlayerTarget();
+
+        if (playerController != null)
+        {
+            FindObjectOfType<CanvasUIManager>().PopupMessage("There are no players with artefacts");
+            return;
+        }
         FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(FindHighestPlayerTarget());
         ability.SetInUse(true);
     }
-
     public static void DeactivatePlayerTracker(Ability ability)
     {
         FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(null);
     }
-
     public static PlayerController FindHighestPlayerTarget()
     {
         int highestInventoryStash = 0;
@@ -167,6 +164,7 @@ public class Effects : NetworkBehaviour
         foreach (PlayerController player in FindObjectsOfType<PlayerController>())
         {
             if (player == NetworkClient.localPlayer.gameObject.GetComponent<PlayerController>()) continue;
+
             List<ItemArtefact> inventory = player.GetComponent<ArtefactInventory>().GetInventory();
             int playerInventoryStash = 0;
             foreach (ItemArtefact item in inventory)
@@ -179,21 +177,14 @@ public class Effects : NetworkBehaviour
                 playerWithHighestStashOnPerson = player;
             }
         }
-        if(playerWithHighestStashOnPerson == null)
-        {
-            Debug.LogError("COULDN'T FIND A HIGHER STASH THAN 0 IN ANOTHER PLAYER IN THE GAME");
-            return null;
-        }
-        else
-        {
-            return playerWithHighestStashOnPerson.GetComponent<PlayerController>();
-        }
+        return playerWithHighestStashOnPerson;
     }
 
     #endregion
 
     #region TrapEffects
 
+    /////////BearTrap
     public static void SpringBearTrap(Ability ability)
     {
         Vector3 spawnPos = ability.GetCastingPlayer().transform.position;
@@ -203,7 +194,6 @@ public class Effects : NetworkBehaviour
         FindObjectOfType<Effects>().CmdSpawnBearTrap(spawnPos, ability.GetCastingPlayer());
         FindObjectOfType<AudioManager>().PlaySound("BearTrapOpening");
     }
-
     [Command (requiresAuthority = false)]
     private void CmdSpawnBearTrap(Vector3 spawnPos, PlayerController placingPlayer)
     {
@@ -212,6 +202,9 @@ public class Effects : NetworkBehaviour
         NetworkServer.Spawn(go);
     }
 
+
+
+    /////////VoodooTrap
     public static void SpringVoodooTrap(Ability ability)
     {
         RaycastHit hit;
@@ -226,7 +219,6 @@ public class Effects : NetworkBehaviour
             FindObjectOfType<Effects>().CmdSpawnVoodooTrap(spawnPos, ability.GetCastingPlayer(), spawnRotation);
         }
     }
-
     [Command (requiresAuthority = false)]
     public void CmdSpawnVoodooTrap(Vector3 spawnPos, PlayerController placingPlayer, Quaternion spawnRotation)
     {
@@ -239,36 +231,34 @@ public class Effects : NetworkBehaviour
 
     #region DebuffEffects
 
+
+
+    /////////StickyBomb
     public static void ThrowStickyBomb(Ability ability)
     {
-        if(ability.GetTargetedPlayer() == null)
+        string uniqueAbilityIdentifier = "ThrowStickyBombTimer";
+
+
+        if(TargettingInUse(ability, uniqueAbilityIdentifier))
         {
-            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
-            if (closestPlayer != null)
-            {
-                FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-                FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
-                ability.SetTargetedPlayer(closestPlayer);
-                GenericTimer.Create(() => { if(!ability.IsInUse()) ability.Use(); }, 3.0f, "ThrowStickyBombTimer");//Will throw bomb after 3 seconds
-            }
-            else
-            {
-                FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
-            }
+            TargettingAbilityUse(ability);
+            //Particle Effect
+            Vector3 spawnPos = ability.GetTargetedPlayer().transform.position;
+            FindObjectOfType<Effects>().CmdSpawnStickyBombParticles(spawnPos, ability.GetDuration());
+
+            //Slow the player
+            Ability speedBoost = ability.GetTargetedPlayer().abilityInventory.FindAbility("Speed");
+            if (speedBoost != null)
+                speedBoost.SetOppositeDebuffActivated(true);//This will make sure that the speed effect does not completely ovveride this effect
+            ability.GetTargetedPlayer().CmdModifySpeed(5f);
+            
         }
         else
         {
-            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
-            ability.SetInUse(true);
-            Vector3 spawnPos = ability.GetTargetedPlayer().transform.position;
-            FindObjectOfType<Effects>().CmdSpawnStickyBombParticles(spawnPos, ability.GetDuration());
-            Ability speedBoost = ability.GetTargetedPlayer().abilityInventory.FindAbility("Speed");
-            if (speedBoost != null)
-                speedBoost.SetOppositeDebuffActivated(true);
-            ability.GetTargetedPlayer().CmdModifySpeed(5f); 
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
+            ClosestPlayerUse(ability, closestPlayer, uniqueAbilityIdentifier);
         }
     }
-
     public static void EndStickyBombEffect(Ability ability)
     {
         Ability speedBoost = ability.GetTargetedPlayer().abilityInventory.FindAbility("Speed");
@@ -277,7 +267,6 @@ public class Effects : NetworkBehaviour
         ability.GetTargetedPlayer().CmdModifySpeed(FindObjectOfType<PlayerController>().normalSpeed);
         ability.SetTargetedPlayer(null);
     }
-
     [Command (requiresAuthority = false)]
     private void CmdSpawnStickyBombParticles(Vector3 spawnPos, float effectDuration)
     {
@@ -287,64 +276,57 @@ public class Effects : NetworkBehaviour
         NetworkServer.Spawn(stickyBombParticles);
     }
 
+
+
+    /////////MortalSpell
     public static void CastMortalSpell(Ability ability)
     {
-        if(ability.GetTargetedPlayer() == null)
+        string uniqueAbilityIdentifier = "ThrowMortalSpellTimer";
+        if(TargettingInUse(ability, uniqueAbilityIdentifier))
         {
+            TargettingAbilityUse(ability);
 
-            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
-            if (closestPlayer != null)
-            {
-                FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-                FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
-                ability.SetTargetedPlayer(closestPlayer);
-            }
-            else
-            {
-                FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
-            }
+            //Particle Effect
+
+            //Set player to mortal
+            ability.GetTargetedPlayer().CmdSetMortal(true);
+
         }
         else
         {
-            ability.SetInUse(true);
-            ability.GetTargetedPlayer().CmdSetMortal(true);
-            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
-            FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(ability.GetAbilityName(), true);
+ 
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
+            ClosestPlayerUse(ability, closestPlayer, uniqueAbilityIdentifier);
         }
     }
-
     public static void EndMortalSpell(Ability ability)
     {
         ability.GetTargetedPlayer().CmdSetMortal(false);
         ability.SetTargetedPlayer(null);
     }
 
+
+
+    /////////ParalysisDart
     public static void ThrowParalysisDart(Ability ability)
     {
-        if(ability.GetTargetedPlayer() == null)
+        string uniqueAbilityIdentifier = "ThrowParalysisDartTimer";
+
+        if (TargettingInUse(ability, uniqueAbilityIdentifier))
         {
-            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
-            if(closestPlayer != null)
-            {
-                FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
-                FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
-                ability.SetTargetedPlayer(closestPlayer);
-                GenericTimer.Create(() => { if (!ability.IsInUse()) ability.Use(); }, 3.0f, "ThrowParalysisDartTimer");
-            }
-            else
-            {
-                FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
-            }
+            TargettingAbilityUse(ability);
+            //Particle Effect
+
+            //Paralyse the player
+            ability.GetTargetedPlayer().CmdSetParalyzed(true);
+
         }
         else
         {
-            ability.SetInUse(true);
-            ability.GetTargetedPlayer().CmdSetParalyzed(true);
-            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
-            FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(ability.GetAbilityName(), true);
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
+            ClosestPlayerUse(ability, closestPlayer, uniqueAbilityIdentifier);
         }
     }
-
     public static void EndParalysisDartEffect(Ability ability)
     {
         ability.GetTargetedPlayer().CmdSetParalyzed(false);
@@ -372,6 +354,52 @@ public class Effects : NetworkBehaviour
         }
         return closestPlayer;
     }
+    private static void ClosestPlayerUse(Ability ability, PlayerController closestPlayer, string uniqueAbilityIdentifier)
+    {
+        if (closestPlayer != null)
+        {
+            //Set targetting ui
+            FindObjectOfType<CanvasUIManager>().targetIconGO.SetActive(true);
+            FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(closestPlayer.gameObject);
+
+            ability.SetTargetedPlayer(closestPlayer);
+            GenericTimer.Create(() => { if (!ability.IsInUse()) ability.Use(); }, 3.0f, uniqueAbilityIdentifier);//Will throw bomb after 3 seconds, if it hasn't already been used
+        }
+        else
+        {
+            FindObjectOfType<CanvasUIManager>().PopupMessage("No players in the vicinity");
+        }
+    }
+    private static void TargettingAbilityUse(Ability ability)
+    {
+        FindObjectOfType<CanvasUIManager>().targetIconGO.GetComponent<DebuffTargetIcon>().SetTargetIconObject(null);
+        FindObjectOfType<AbilitySlotBarUI>().SetSlotUseState(ability.GetAbilityName(), true);
+        ability.SetInUse(true);
+    }
+    private static bool TargettingInUse(Ability ability, string uniqueAbilityIdentifier)
+    {
+        //If we have not used any targetting abilities
+        if (ability.GetTargetedPlayer() == null)
+        {
+            currentTargettingAbilityTimer = uniqueAbilityIdentifier;
+            return false;
+        }
+        //If we used a targetting ability, but we have clicked on a different targetting ability
+        if (currentTargettingAbilityTimer != uniqueAbilityIdentifier)
+        {
+            DestroyAllTimersOfCurrentType();
+            currentTargettingAbilityTimer = uniqueAbilityIdentifier;
+            return false;
+        }
+
+        //We have clicked on the same ability for confirmation
+        return true;
+    }
+    private static void DestroyAllTimersOfCurrentType()
+    {
+        GenericTimer.StopTimer(currentTargettingAbilityTimer);
+    }
+
 
     private static float GetDistance(Vector3 a, Vector3 b)
     {
