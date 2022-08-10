@@ -33,7 +33,8 @@ public class PlayerTrackIconUI : MonoBehaviour
            
             if (isOffScreen)
             {
-                if (screenPos.x < 0)
+                ///////////////////////////////////////////////////
+                if (screenPos.z < 0)
                 {
                     screenPos *= -1;
                 }
@@ -43,7 +44,7 @@ public class PlayerTrackIconUI : MonoBehaviour
                 screenPos -= screenCenter;
 
                 float angle = Mathf.Atan2(screenCenter.y, screenPos.y);
-                angle -= 90*Mathf.Rad2Deg;
+                angle -= 90 * Mathf.Rad2Deg;
 
                 float cos = Mathf.Cos(angle);
                 float sin = -Mathf.Sin(angle);
@@ -63,10 +64,11 @@ public class PlayerTrackIconUI : MonoBehaviour
                     screenPos = new Vector3(-screenBounds.y / m, -screenBounds.y, 0);
                 }
 
-                if (screenPos.x>screenBounds.x)
+                if (screenPos.x > screenBounds.x)
                 {
                     screenPos = new Vector3(screenBounds.x, screenBounds.x * m, 0);
-                }else if(screenPos.x < -screenBounds.x)
+                }
+                else if (screenPos.x < -screenBounds.x)
                 {
                     screenPos = new Vector3(-screenBounds.x, -screenBounds.x * m, 0);
                 }
@@ -74,7 +76,11 @@ public class PlayerTrackIconUI : MonoBehaviour
                 screenPos += screenCenter;
 
                 this.transform.localPosition = screenPos;
-                this.transform.localRotation = Quaternion.Euler(0,0, angle*Mathf.Rad2Deg);
+                this.transform.localRotation = Quaternion.Euler(0, 0, angle * Mathf.Rad2Deg);
+                SetImage(pointerImage);
+
+                /////////////////////////////////////////////
+
                 ////Outside bounds of screen
                 //this.transform.localRotation = Quaternion.identity;
                 //SetImage(pointerImage);

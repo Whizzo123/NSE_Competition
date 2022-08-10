@@ -144,14 +144,38 @@ public class Effects : NetworkBehaviour
     public static void ActivatePlayerTracker(Ability ability)
     {
         PlayerController playerController = FindHighestPlayerTarget();
-
-        if (playerController != null)
+        Debug.Log(playerController);
+        if (playerController == null)
         {
             FindObjectOfType<CanvasUIManager>().PopupMessage("There are no players with artefacts");
+            ability.playerTrackerPatch = false;
             return;
         }
-        FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(FindHighestPlayerTarget());
-        ability.SetInUse(true);
+        else
+        {
+            Debug.Log("Passed");
+            ability.playerTrackerPatch = true;
+            FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(playerController);
+            ability.SetInUse(true);
+        }
+
+
+        string uniqueAbilityIdentifier = "ThrowParalysisDartTimer";
+
+        if (TargettingInUse(ability, uniqueAbilityIdentifier))
+        {
+            TargettingAbilityUse(ability);
+            //Particle Effect
+
+            //Paralyse the player
+            ability.GetTargetedPlayer().CmdSetParalyzed(true);
+
+        }
+        else
+        {
+            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
+            ClosestPlayerUse(ability, closestPlayer, uniqueAbilityIdentifier);
+        }
     }
     public static void DeactivatePlayerTracker(Ability ability)
     {
