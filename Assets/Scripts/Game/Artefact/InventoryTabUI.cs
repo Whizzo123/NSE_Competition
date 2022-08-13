@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,7 @@ public class InventoryTabUI : MonoBehaviour
 
     [Header("Visuals")]
     public Image itemImage;
-    public Text itemCountText;
+    public TMP_Text itemCountText;
 
     /// <summary>
     /// Fills in the ui element with text and an image, and updates count
