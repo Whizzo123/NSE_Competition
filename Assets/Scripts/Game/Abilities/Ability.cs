@@ -170,14 +170,19 @@ public class Ability
         switch (abilityType)
         {
             case (AbilityType.POWERUP):
+                effectInvokedOnUse.Invoke(this);
+                if (!playerTrackerPatch)
+                {
+                    return;
+                }
                 CreateLocalAbilityEffectTimer(name, duration, false);
                 if (useType == AbilityUseTypes.ONE_TIME)
                 {
                     //Not sure if this is gonna do anything if its the end of August and still isn't used delete me pls :)
                 }
-                effectInvokedOnUse.Invoke(this);
+
                 //Reset charge value and set slot charging state
-                if (useType == AbilityUseTypes.RECHARGE && playerTrackerPatch)
+                if (useType == AbilityUseTypes.RECHARGE)
                 {
                     currentCharge = 0;
                     GameObject.FindObjectOfType<AbilitySlotBarUI>().SetSlotChargingState(name, true);

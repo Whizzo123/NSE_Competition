@@ -38,13 +38,14 @@ public class PlayerTrackIconUI : MonoBehaviour
                 {
                     screenPos *= -1;
                 }
+                Debug.LogError(screenPos);
 
                 Vector3 screenCenter = new Vector3(Screen.width, Screen.height, 0) / 2;
 
                 screenPos -= screenCenter;
 
-                float angle = Mathf.Atan2(screenCenter.y, screenPos.y);
-                angle -= 90 * Mathf.Rad2Deg;
+                float angle = Mathf.Atan2(screenPos.y, screenPos.x);
+                angle -= 270 * Mathf.Rad2Deg;
 
                 float cos = Mathf.Cos(angle);
                 float sin = -Mathf.Sin(angle);
@@ -54,6 +55,7 @@ public class PlayerTrackIconUI : MonoBehaviour
                 float m = cos / sin;
 
                 Vector3 screenBounds = screenCenter * 0.9f;
+                Debug.LogWarning(screenPos);
 
                 if (cos > 0)
                 {
@@ -73,8 +75,9 @@ public class PlayerTrackIconUI : MonoBehaviour
                     screenPos = new Vector3(-screenBounds.x, -screenBounds.x * m, 0);
                 }
 
-                screenPos += screenCenter;
-
+                //screenPos += screenCenter;
+                Debug.Log(screenBounds);
+                //screenPos.x = Screen.width / screenPos.x;
                 this.transform.localPosition = screenPos;
                 this.transform.localRotation = Quaternion.Euler(0, 0, angle * Mathf.Rad2Deg);
                 SetImage(pointerImage);

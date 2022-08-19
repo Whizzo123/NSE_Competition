@@ -147,34 +147,14 @@ public class Effects : NetworkBehaviour
         Debug.Log(playerController);
         if (playerController == null)
         {
-            FindObjectOfType<CanvasUIManager>().PopupMessage("There are no players with artefacts");
             ability.playerTrackerPatch = false;
             return;
         }
         else
         {
-            Debug.Log("Passed");
             ability.playerTrackerPatch = true;
             FindObjectOfType<CanvasUIManager>().playerTrackIcon.SetIconTarget(playerController);
             ability.SetInUse(true);
-        }
-
-
-        string uniqueAbilityIdentifier = "ThrowParalysisDartTimer";
-
-        if (TargettingInUse(ability, uniqueAbilityIdentifier))
-        {
-            TargettingAbilityUse(ability);
-            //Particle Effect
-
-            //Paralyse the player
-            ability.GetTargetedPlayer().CmdSetParalyzed(true);
-
-        }
-        else
-        {
-            PlayerController closestPlayer = FindClosestPlayer(ability, 30.0f);
-            ClosestPlayerUse(ability, closestPlayer, uniqueAbilityIdentifier);
         }
     }
     public static void DeactivatePlayerTracker(Ability ability)
