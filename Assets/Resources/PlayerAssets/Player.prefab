@@ -1790,7 +1790,7 @@ MonoBehaviour:
   playerCamera: {fileID: 0}
   vCam: {fileID: 0}
   offset: {x: 0, y: 10, z: 10}
-  timeForStunAfterSteal: 0
+  timeForStunAfterSteal: 3
   xCamMovementEnabled: 1
   yCamMovementEnabled: 0
   xCamSensitivity: 0.5

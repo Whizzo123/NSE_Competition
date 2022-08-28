@@ -308,7 +308,7 @@ public class PlayerController : NetworkBehaviour
                     // All artefacts that are in our range get added to our inventory and gameobject destroyed
                     foreach (ArtefactBehaviour item in targetedArtefacts)
                     {
-                        if (item.gameObject != null)
+                        if (item != null)
                         {
                             artefactInventory.AddToInventory(item.GetArtefactName(), item.GetPoints());
                             FindObjectOfType<AudioManager>().PlaySound(item.GetRarity().ToString());

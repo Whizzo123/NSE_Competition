@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -734338013057964744}
   - component: {fileID: -7273704546461114277}
   - component: {fileID: -7721686119369316567}
-  - component: {fileID: 4412139337825944459}
+  - component: {fileID: -2042033131285403563}
   m_Layer: 18
   m_Name: PurpleGem
   m_TagString: Artefact
@@ -133,7 +133,7 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!205 &4412139337825944459
+--- !u!205 &-2042033131285403563
 LODGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -142,15 +142,14 @@ LODGroup:
   m_GameObject: {fileID: 3500044115046012371}
   serializedVersion: 2
   m_LocalReferencePoint: {x: 0, y: 0, z: 0}
-  m_Size: 0.38176358
+  m_Size: 1
   m_FadeMode: 1
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
   - screenRelativeHeight: 0.1
     fadeTransitionWidth: 0
-    renderers:
-    - renderer: {fileID: 3139672925732090886}
+    renderers: []
   - screenRelativeHeight: 0.1
     fadeTransitionWidth: 0
     renderers: []
