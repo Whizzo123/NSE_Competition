@@ -39,9 +39,9 @@ public class BearTrapBehaviour : NetworkBehaviour
                     Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
                     trappedPlayer.gameObject.GetComponent<PlayerController>().CmdMovePlayer(movePos, trappedPlayer.playerName);
                     CmdCreateAbilityEffectTimer("Bear Trap", trappedPlayer.playerName, trapDuration);
+                    CmdSpringTrap();
                 }
                 //If two traps are stacked, the commands will send twice. making it trap infinitley
-                CmdSpringTrap();
             }
         }
     }

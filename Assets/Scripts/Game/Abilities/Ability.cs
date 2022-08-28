@@ -45,6 +45,8 @@ public class Ability
     [Tooltip("Player to target with debuffs. JoeComment does this also do trapped players?")] private PlayerController targetedPlayer;
     #endregion
 
+
+    public bool playerTrackerPatch = true;
     #region SETUP
     public Ability()
     {
@@ -73,6 +75,7 @@ public class Ability
         effectInvokedOnEnd += onEndAction;
     }
 
+    public void SetCurrentCharge(float charge) { currentCharge = charge; }
     public Ability Clone()
     {
         return new Ability(name, description, pointsCost, useType, abilityType, duration, effectInvokedOnUse, effectInvokedOnEnd, fullCharge);
@@ -167,12 +170,17 @@ public class Ability
         switch (abilityType)
         {
             case (AbilityType.POWERUP):
+                effectInvokedOnUse.Invoke(this);
+                if (!playerTrackerPatch)
+                {
+                    return;
+                }
                 CreateLocalAbilityEffectTimer(name, duration, false);
                 if (useType == AbilityUseTypes.ONE_TIME)
                 {
                     //Not sure if this is gonna do anything if its the end of August and still isn't used delete me pls :)
                 }
-                effectInvokedOnUse.Invoke(this);
+
                 //Reset charge value and set slot charging state
                 if (useType == AbilityUseTypes.RECHARGE)
                 {
