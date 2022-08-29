@@ -478,6 +478,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerTrackIcon
       objectReference: {fileID: 0}
+    - target: {fileID: 4490048064359633042, guid: f67af85e4e2d91a45ac018cc8cf4a66f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f67af85e4e2d91a45ac018cc8cf4a66f, type: 3}
 --- !u!114 &310415816 stripped
@@ -1236,7 +1240,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
