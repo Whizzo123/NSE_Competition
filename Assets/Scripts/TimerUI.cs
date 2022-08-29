@@ -95,6 +95,7 @@ public class TimerUI : MonoBehaviour
         {
             counting = false;
             timerImage.fillAmount = 0;
+            timerDisplayImage.sprite = null;
         }
     }
 
