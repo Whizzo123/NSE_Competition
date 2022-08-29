@@ -171,11 +171,26 @@ public class PlayerController : NetworkBehaviour
         #endregion
     private void PlayerCameraControl()
     {
+       
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            yCamMovementEnabled = !yCamMovementEnabled;
+            //this allows us to lock while moving camera
+            //Not moving the the max speed out so we have less if statements to go through.
+            ToggleCameraControl();
+        }
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            xCamMovementEnabled = !xCamMovementEnabled;
+            ToggleCameraControl();
+        }
+
+
         if (Input.GetMouseButtonDown(1))
         {
-            Debug.Log("<color=green>PlayerRotation.cs: GetMouseButton(1)</color>");
+            Debug.Log("<color=green>PlayerRotation.cs: GetMouseButton(1) || patchIn</color>");
             manualMouseControl = !manualMouseControl;
-
+            //Cursor View
             if (!manualMouseControl)
             {
                 Cursor.lockState = CursorLockMode.Locked;
@@ -185,30 +200,34 @@ public class PlayerController : NetworkBehaviour
                 Cursor.lockState = CursorLockMode.None;
             }
 
-            if (!manualMouseControl && xCamMovementEnabled)
-            {
-                vCam.m_XAxis.m_MaxSpeed = (400 * xCamSensitivity);
-            }
-            else
-            {
-                vCam.m_XAxis.m_MaxSpeed = 0;
-            }
-            if (!manualMouseControl && yCamMovementEnabled)
-            {
-                vCam.m_YAxis.m_MaxSpeed = (40 * yCamSensitivity);
-            }
-            else
-            {
-                vCam.m_YAxis.m_MaxSpeed = 0;
-            }
+            ToggleCameraControl();
         }
-        //Allows options for camera movement
+        
 
+    }
+    private void ToggleCameraControl()
+    {
+        //Max speed(Functionality)
+        if (!manualMouseControl && xCamMovementEnabled)
+        {
+            vCam.m_XAxis.m_MaxSpeed = (400 * xCamSensitivity);
+        }
+        else
+        {
+            vCam.m_XAxis.m_MaxSpeed = 0;
+        }
+        if (!manualMouseControl && yCamMovementEnabled)
+        {
+            vCam.m_YAxis.m_MaxSpeed = (40 * yCamSensitivity);
+        }
+        else
+        {
+            vCam.m_YAxis.m_MaxSpeed = 0;
+        }
     }
 
 
-
-        [ClientCallback]
+    [ClientCallback]
     void Update()
     {
 
