@@ -34,6 +34,8 @@ public class BearTrapBehaviour : NetworkBehaviour
                 && collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
             {
                 Debug.Log("<color=red>BearTrapSprung : IF2</color>");
+                if (trappedPlayer != null)
+                    return;
 
                 trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
                 Debug.Log("<color=red>BearTrapSprung : IF2 2</color>");
