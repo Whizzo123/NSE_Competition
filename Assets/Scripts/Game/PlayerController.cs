@@ -262,7 +262,7 @@ public class PlayerController : NetworkBehaviour
                 playerMovement = playerCamera.transform.TransformDirection(playerMovement);//Allows player to move along camera rotation axis
                 //if (Input.GetAxisRaw("Vertical") < -0.5)//To stop backwards going up
                 //{
-                    playerMovement.y = 0;
+                    playerMovement.y = playerGravity;
                 //}
             }
 

@@ -1796,8 +1796,6 @@ MonoBehaviour:
   xCamSensitivity: 0.5
   yCamSensitivity: 0.5
   manualMouseControl: 1
-  devMode: 0
-  devCam: {fileID: 22159899250329015, guid: 73b92ca893da92447ae9bf658bf9355c, type: 3}
 --- !u!114 &4071522212128209381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1854,8 +1852,8 @@ CharacterController:
   serializedVersion: 2
   m_Height: 2.7
   m_Radius: 0.5
-  m_SlopeLimit: 35.23
-  m_StepOffset: 0.77
+  m_SlopeLimit: 37.8
+  m_StepOffset: 1.31
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0.05, y: -0.42, z: 0.2}
