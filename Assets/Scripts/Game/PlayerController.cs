@@ -44,11 +44,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float playerGravity = -65;
     [SerializeField][Tooltip("The distance from the player to the ground to check if they're grounded")] private float groundDistance = 2.5f;
     [Tooltip("Is the player touching the ground")] private bool isGrounded = true;
-    [SerializeField][Tooltip("How fast the player is currently falling by y axis")] private Vector3 playerFallingVelocity;
     //Movement
     [Tooltip("The current speed of the player")][SyncVar] public float speed = 10f;
     [Tooltip("The original speed of the player")] public float normalSpeed = 10f;
-    [Tooltip("Direction player is moving in by input, not physics")] private Vector3 direction;
     [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
 
     //Sphere
@@ -225,7 +223,33 @@ public class PlayerController : NetworkBehaviour
             vCam.m_YAxis.m_MaxSpeed = 0;
         }
     }
+    private void CameraFlipping()
+    {
 
+        if (Input.GetAxisRaw("Vertical") == -1)
+        {
+            flipTime -= Time.deltaTime;
+            Vector3 diff = new Vector3(vCam.transform.position.x - transform.position.x, vCam.transform.position.y - transform.position.y, vCam.transform.position.z - transform.position.z);
+
+            if (flipTime < 0 && diff.magnitude < 8 && !flipMovement)
+            {
+                Debug.Log("<color=green> FLIP THE CAMERA</color>");
+                vCam.transform.position = transform.position;//Vector3.Slerp(vCam.transform.position, transform.position, 1.0f);
+                vCam.ForceCameraPosition(transform.position - diff, transform.rotation);
+                flipTime = 1;
+                flipMovement = true;
+            }
+        }
+        else
+        {
+            flipMovement = false;
+            flipTime = 1;
+            flipMovement = false;
+        }
+    }
+    private float flipTime = 1.0f;
+    bool flipMovement = false;
+    bool flipCameraWhenBackingUp = true;
 
     [ClientCallback]
     void Update()
@@ -259,6 +283,10 @@ public class PlayerController : NetworkBehaviour
             {
                 //Todo: When changing the camera behaviour, this movement code must be changed as it is not viable. Consider using rigidbody
                 playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+                if (flipMovement)
+                {
+                    playerMovement.z *= -1;
+                }
                 playerMovement = playerCamera.transform.TransformDirection(playerMovement);//Allows player to move along camera rotation axis
                 //if (Input.GetAxisRaw("Vertical") < -0.5)//To stop backwards going up
                 //{
@@ -267,11 +295,11 @@ public class PlayerController : NetworkBehaviour
             }
 
 
-
+            CameraFlipping();
             //Animations, with movement checks
             if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
             {
-                direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+            
 
                 playerAnim.SetBool("moving", true);
 
@@ -279,11 +307,11 @@ public class PlayerController : NetworkBehaviour
                 if (voodooPoisoned)
                 {
                     playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
-                    direction *= -1;
                 }
             }
             else
             {
+
                 playerAnim.SetBool("moving", false);
             }
 
@@ -291,15 +319,6 @@ public class PlayerController : NetworkBehaviour
 
             //Projects a sphere underneath player to check ground layer
             isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
-
-            //Player recieves a constant y velocity from gravity
-            playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
-
-            //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
-            if (isGrounded && playerFallingVelocity.y < 0)
-            {
-                playerFallingVelocity.y = -5f;
-            }
 
             #endregion
 
@@ -448,12 +467,7 @@ public class PlayerController : NetworkBehaviour
             }
         }
         #endregion
-
-        //Todo: Find a different way to stop players from climbing obstacles as this is unreliable
-        if (playerFallingVelocity.y < -200)
-        {
-            CmdServerValidateHit();
-        }
+    
     }
 
     /// <summary>
