@@ -222,8 +222,9 @@ GameObject:
   - component: {fileID: 69836630}
   - component: {fileID: 69836629}
   - component: {fileID: 69836628}
-  m_Layer: 0
-  m_Name: Box Volume
+  - component: {fileID: 69836633}
+  m_Layer: 1
+  m_Name: Swamp Volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -293,12 +294,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 69836627}
   m_LocalRotation: {x: -0, y: -0.46377367, z: -0, w: 0.8859537}
-  m_LocalPosition: {x: 106.8, y: -0.3594688, z: 25.4}
+  m_LocalPosition: {x: 105, y: -0.3594688, z: 28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: -55.262, z: 0}
+--- !u!65 &69836633
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69836627}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 20.5, y: 71.4, z: 88.2}
+  m_Center: {x: -54.46, y: 0, z: -0.35}
 --- !u!1 &84469873
 GameObject:
   m_ObjectHideFlags: 0
@@ -4005,6 +4019,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2847915053757687682, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_Antialiasing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2847915053757687682, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_RendererIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2847915053757687682, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_RenderPostProcessing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2847915053757687682, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_VolumeLayerMask.m_Bits
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3258238270017585353, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -4054,10 +4084,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_ClearFlags
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
       propertyPath: field of view
       value: 97.85
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 3258238270017585355, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+      propertyPath: m_AllowDynamicResolution
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1895423266, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
+    - {fileID: 1895423267, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fec19e3467d62cc43992b57eed9ad36d, type: 3}
 --- !u!1 &1941350631
 GameObject:

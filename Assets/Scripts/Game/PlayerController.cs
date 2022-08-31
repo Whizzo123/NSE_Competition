@@ -304,7 +304,7 @@ public class PlayerController : NetworkBehaviour
             #endregion
 
             playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
-            playerCharacterController.Move(playerFallingVelocity * Time.deltaTime);
+            //playerCharacterController.Move(playerFallingVelocity * Time.deltaTime);
             PlayerRotation();
 
             #endregion
