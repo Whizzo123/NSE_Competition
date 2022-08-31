@@ -19,24 +19,32 @@ using UnityEngine.SceneManagement;
 public class PlayerController : NetworkBehaviour
 {
     #region Variables
-    [Header("Stored Interactables")]
-    //Stored interactables
-    [Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. The reason for this was to allow us to check that we are not picking up the same artefact twice.")] public List<ArtefactBehaviour> tempArtefactStorage;
+    [Header("Artefacts", order = 0)]
+    [HideInInspector][Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. " +
+        "The reason for this was to allow us to check that we are not picking up the same artefact twice.")] public List<ArtefactBehaviour> tempArtefactStorage;
     [Tooltip("The artefacts that are in range for picking up")] readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
     [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")] private List<uint> artefactsForDestruction = new List<uint>();
+    [SyncVar] private ArtefactInventory artefactInventory;
+
     [Tooltip("NA")] private Stash gameStash;
     [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
     [Tooltip("Our abilities that we've selected")][SyncVar] public AbilityInventory abilityInventory;
-    [SyncVar] private ArtefactInventory artefactInventory;
-    [SyncVar] public string playerName;
+
+    [Tooltip("Character controller reference")] public CharacterController playerCharacterController;//See attached()
+    public Animator playerAnim;
+    [Tooltip("NA")] public GameObject nameTextPrefab;
+    [Tooltip("NA")] public GameObject playerNameText;
+    //Layermasks
+    public LayerMask obstacles;
+    public LayerMask ground;
+    [Space(5.0f, order = 1)]
 
 
-    [Space]
 
-    [Header("Player options")]
+    [Header("Player Settings", order = 2)]
     //Tools
     [SerializeField][Tooltip("Time delay before destroying another obstacle")][Range(0, 1)] private float waitTime = 0.05f;
     [Tooltip("If the tools are currently on cooldown")] private bool toolWait = false;
@@ -46,34 +54,20 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Is the player touching the ground")] private bool isGrounded = true;
     //Movement
     [Tooltip("The current speed of the player")][SyncVar] public float speed = 10f;
-    [Tooltip("The original speed of the player")] public float normalSpeed = 10f;
+    [SerializeField][Range(0.0f, 50.0f)][Tooltip("The original speed of the player")] public float normalSpeed = 10f;
     [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
 
     //Sphere
     [Tooltip("Distance forward from the player for the destruction sphere")] public float lengthOfSphere = 2f;
     [Tooltip("Radius of the obstacle destruction sphere cast")] public float radiusOfSphere = 1f;
-    [Space]
-
-    [Header("LayerMasks and Components")]
-    //Layermasks
-    public LayerMask obstacles;
-    public LayerMask ground;
-    [Space]
-    //Player
-    [Tooltip("Character controller reference")] public CharacterController playerCharacterController;//See attached()
-    public Animator playerAnim;
-
-    [Tooltip("NA")] public GameObject nameTextPrefab;
-    [Tooltip("NA")] public GameObject playerNameText;
-
-    [Tooltip("Camera attatched to the player, already in the world space")] public Camera playerCamera;
-    [Tooltip("Virtual camera controlling the playerCamera, already in the world space")] public Cinemachine.CinemachineFreeLook vCam;
-    [Space]
+    [Space(5.0f, order = 3)]
 
 
-    [Tooltip("NA")] public Vector3 offset = new Vector3(0, 10, 10);
 
-    [Header("States")]
+
+
+
+    [Header("States", order = 4)]
     //Stuns
     [Tooltip("Are we immobolised")][SyncVar] private bool immobilize;
     [Tooltip("Have we been hit by the voodoo trap")][SyncVar] private bool voodooPoisoned;
@@ -81,16 +75,29 @@ public class PlayerController : NetworkBehaviour
     [Tooltip("Can we use our tools?")][SyncVar] private bool paralyzed;
     [Tooltip("NA")] private float currentStunAfterTimer;
     [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal;
+    [Tooltip("Have we recently been stolen from?")][SyncVar] private bool hasBeenStolenFrom = false;
 
+    [Space(10.0f, order = 5)]
     //Variable Camera Controls
-    [Tooltip("Can the camera be controlled on the X Axis? 1 for Yes")] public bool xCamMovementEnabled = true;
-    [Tooltip("Can the camera be controlled on the Y Axis? 1 for Yes")] public bool yCamMovementEnabled = false;
-    [Tooltip("X axis for camera sensitivity")][Range(0, 1)] public float xCamSensitivity = 0.5f;
-    [Tooltip("Y axis for camera sensitivity")][Range(0, 1)] public float yCamSensitivity = 0.5f;
-    [Tooltip("Does the camera have to be controlled by pressing rmb?")] public bool manualMouseControl = true;
+    [Header("Camera", order = 6)]
+    [Tooltip("Camera attatched to the player, already in the world space")] public Camera playerCamera;
+    [Tooltip("Virtual camera controlling the playerCamera, already in the world space")] public Cinemachine.CinemachineFreeLook vCam;
+    [Space(1.0f, order = 7)]
+    [SerializeField][Tooltip("The amount of time the player must have been moving backwards for the flip to occur")][Range(0.0f, 3.0f)] private float flipTime = 1.0f;
+    private bool flipMovement = false;//Is the movement currently flipped
+
+    [Space(20.0f, order = 0)]
+    [Header("User Defined Settings(READ-ONLY)", order = 1)]
+    [Space(0.0f, order = 2)]
+    [HideInInspector][SyncVar] public string playerName;
+    [HideInInspector]public bool flipCameraWhenBackingUp = true;//
+    [HideInInspector][Tooltip("Does the camera have to be controlled by pressing rmb?")] public bool manualMouseControl = true;
+    [HideInInspector][Tooltip("Can the camera be controlled on the X Axis? 1 for Yes")] public bool xCamMovementEnabled = true;
+    [HideInInspector][Tooltip("Can the camera be controlled on the Y Axis? 1 for Yes")] public bool yCamMovementEnabled = false;
+    [HideInInspector][Tooltip("X axis for camera sensitivity")][Range(0, 1)] public float xCamSensitivity = 0.5f;
+    [HideInInspector][Tooltip("Y axis for camera sensitivity")][Range(0, 1)] public float yCamSensitivity = 0.5f;
 
     //Other Variables
-    [Tooltip("Have we recently been stolen from?")][SyncVar] private bool hasBeenStolenFrom = false;
 
 
 
@@ -247,9 +254,7 @@ public class PlayerController : NetworkBehaviour
             flipMovement = false;
         }
     }
-    private float flipTime = 1.0f;
-    bool flipMovement = false;
-    bool flipCameraWhenBackingUp = true;
+
 
     [ClientCallback]
     void Update()
@@ -273,8 +278,8 @@ public class PlayerController : NetworkBehaviour
         if (playerCamera == null)
             SetCamera();
 
-
-        PlayerCameraControl();
+        if (flipCameraWhenBackingUp)
+            PlayerCameraControl();
 
         if (immobilize == false)
         {
