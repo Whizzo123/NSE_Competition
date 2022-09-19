@@ -4,6 +4,8 @@ using System;
 using UnityEngine;
 using Mirror;
 
+using T_Utils;
+using static UnityEngine.Rendering.DebugUI;
 /// <summary>
 /// Generates a map for indestructables, and obstacles and artefacts, based on a (random) seed. Then instantiates them all.
 /// <para> Main idea behind the map generator is cellular automata and a sprinkle of poisson disc sampling.ref.'Proto_Procedural.cs'. </para>
@@ -309,6 +311,7 @@ public class MapGenerator : NetworkBehaviour
     }
     #endregion
 
+    bool spawnedSwamp = false;
     #region Spawner
 
     /// <summary>
@@ -328,7 +331,16 @@ public class MapGenerator : NetworkBehaviour
         if (lm.value == LayerMask.GetMask("SwampGround"))
         {
             lm = LayerMask.GetMask("SwampWater");
-            
+            if (!spawnedSwamp)
+            {
+                spawnedSwamp = true;
+                GenericTimer.Create(() => {
+                    if (GameObject.Find("_wamp_water"))
+                    {
+                        GameObject.Find("_wamp_water").GetComponent<MeshCollider>().enabled = false;
+                    }
+                }, 5, "SwampWaterOff");
+            }
         }
 
         //If ground is found

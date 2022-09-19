@@ -481,10 +481,7 @@ public class PlayerController : NetworkBehaviour
     public void SetLoadoutReleased(bool value)
     {
         loadoutReleased = value;
-        if (GameObject.Find("_wamp_water") && value == true)
-        {
-            GameObject.Find("_wamp_water").GetComponent<MeshCollider>().enabled = false;
-        }
+
     }
 
     /// <summary>

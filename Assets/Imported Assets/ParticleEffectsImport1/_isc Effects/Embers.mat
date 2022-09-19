@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Embers
   m_Shader: {fileID: 4800000, guid: 0406db5a14f94604a8c57ccfbc9f3b46, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _FADING_ON
   m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -71,9 +71,9 @@ Material:
     - _Blend: 2
     - _BlendOp: 0
     - _BumpScale: 1
-    - _CameraFadingEnabled: 0
-    - _CameraFarFadeDistance: 2
-    - _CameraNearFadeDistance: 1
+    - _CameraFadingEnabled: 1
+    - _CameraFarFadeDistance: 0
+    - _CameraNearFadeDistance: 141
     - _ColorMode: 0
     - _Cull: 2
     - _Cutoff: 0.5
@@ -108,7 +108,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 2.8284273, g: 2.8284273, b: 2.8284273, a: 1}
     - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
+    - _CameraFadeParams: {r: 141, g: -0.0070921984, b: 0, a: 0}
     - _Color: {r: 2.828427, g: 2.828427, b: 2.828427, a: 1}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
