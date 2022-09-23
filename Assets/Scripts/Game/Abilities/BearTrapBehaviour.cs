@@ -28,13 +28,22 @@ public class BearTrapBehaviour : NetworkBehaviour
     public void OnTriggerEnter(Collider collider)
     {
         if (placingPlayerName != null && sprung == false)
-        { 
+        {
+            Debug.Log("<color=red>BearTrapSprung : IF1</color>");
             if (collider.gameObject.GetComponent<PlayerController>() && collider.isTrigger == false 
                 && collider.gameObject.GetComponent<PlayerController>().playerName != placingPlayerName)
             {
+                Debug.Log("<color=red>BearTrapSprung : IF2</color>");
+                if (trappedPlayer != null)
+                    return;
+
                 trappedPlayer = collider.gameObject.GetComponent<PlayerController>();
+                Debug.Log("<color=red>BearTrapSprung : IF2 2</color>");
+
                 if (!trappedPlayer.IsImmobilized())
                 {
+                    Debug.Log("<color=red>BearTrapSprung : IF3</color>");
+
                     trappedPlayer.CmdSetImmobilized(true);
                     Vector3 movePos = new Vector3(this.transform.position.x, trappedPlayer.transform.position.y, this.transform.position.z);
                     trappedPlayer.gameObject.GetComponent<PlayerController>().CmdMovePlayer(movePos, trappedPlayer.playerName);

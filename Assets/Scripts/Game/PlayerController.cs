@@ -19,88 +19,89 @@ using UnityEngine.SceneManagement;
 public class PlayerController : NetworkBehaviour
 {
     #region Variables
-    [Header("Stored Interactables")]
-    //Stored interactables
-    [Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. The reason for this was to allow us to check that we are not picking up the same artefact twice.")] public List<ArtefactBehaviour> tempArtefactStorage;
+    [Header("Artefacts", order = 0)]
+    [HideInInspector][Tooltip("This is used for adding artefacts to the inventory temporarily while a Command is being sent to add artefacts to the real inventory. " +
+        "The reason for this was to allow us to check that we are not picking up the same artefact twice.")] public List<ArtefactBehaviour> tempArtefactStorage;
     [Tooltip("The artefacts that are in range for picking up")] readonly SyncList<ArtefactBehaviour> targetedArtefacts = new SyncList<ArtefactBehaviour>();
-    [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")]private List<uint> artefactsForDestruction = new List<uint>();
+    [Tooltip("Artefact netId's that have been marked for destruction, don't add back anywhere")] private List<uint> artefactsForDestruction = new List<uint>();
+    [SyncVar] private ArtefactInventory artefactInventory;
+
     [Tooltip("NA")] private Stash gameStash;
     [Tooltip("The player that is currently targeted to steal artefacts from")] private PlayerController targetedPlayerToStealFrom;
     [Tooltip("In devlopment: The ability pickups that are in range for picking up")] private AbilityPickup targetedAbilityPickup;
     //Loadout and inventory
     [Tooltip("Have we exited the loadout menu")] private bool loadoutReleased;
-    [Tooltip("Our abilities that we've selected")] [SyncVar] public AbilityInventory abilityInventory;
-    [SyncVar] private ArtefactInventory artefactInventory;
-    [SyncVar] public string playerName;
+    [Tooltip("Our abilities that we've selected")][SyncVar] public AbilityInventory abilityInventory;
+
+    [Tooltip("Character controller reference")] public CharacterController playerCharacterController;//See attached()
+    public Animator playerAnim;
+    [Tooltip("NA")] public GameObject nameTextPrefab;
+    [Tooltip("NA")] public GameObject playerNameText;
+    //Layermasks
+    public LayerMask obstacles;
+    public LayerMask ground;
+    [Space(5.0f, order = 1)]
 
 
-    [Space]
 
-    [Header("Player options")]
+    [Header("Player Settings", order = 2)]
     //Tools
-    [SerializeField] [Tooltip("Time delay before destroying another obstacle")] [Range(0, 1)] private float waitTime = 0.05f;
+    [SerializeField][Tooltip("Time delay before destroying another obstacle")][Range(0, 1)] private float waitTime = 0.05f;
     [Tooltip("If the tools are currently on cooldown")] private bool toolWait = false;
     //Gravity
     [SerializeField] private float playerGravity = -65;
-    [SerializeField] [Tooltip("The distance from the player to the ground to check if they're grounded")] private float groundDistance = 2.5f;
+    [SerializeField][Tooltip("The distance from the player to the ground to check if they're grounded")] private float groundDistance = 2.5f;
     [Tooltip("Is the player touching the ground")] private bool isGrounded = true;
-    [SerializeField] [Tooltip("How fast the player is currently falling by y axis")] private Vector3 playerFallingVelocity;
     //Movement
-    [Tooltip("The current speed of the player")] [SyncVar] public float speed = 10f;
-    [Tooltip("The original speed of the player")] public float normalSpeed = 10f;
-    [Tooltip("Direction player is moving in by input, not physics")] private Vector3 direction;
+    [Tooltip("The current speed of the player")][SyncVar] public float speed = 10f;
+    [SerializeField][Range(0.0f, 50.0f)][Tooltip("The original speed of the player")] public float normalSpeed = 10f;
     [Tooltip("Direction of player movement, by input and physics")] private Vector3 playerMovement = Vector3.zero;
 
     //Sphere
     [Tooltip("Distance forward from the player for the destruction sphere")] public float lengthOfSphere = 2f;
     [Tooltip("Radius of the obstacle destruction sphere cast")] public float radiusOfSphere = 1f;
-    [Space]
-
-    [Header("LayerMasks and Components")]
-    //Layermasks
-    public LayerMask obstacles;
-    public LayerMask ground;
-    [Space]
-    //Player
-    [Tooltip("Character controller reference")] public CharacterController playerCharacterController;//See attached()
-    public Animator playerAnim;
-
-    [Tooltip("NA")] public GameObject nameTextPrefab;
-    [Tooltip("NA")] public GameObject playerNameText;
-
-    [Tooltip("Camera attatched to the player, already in the world space")] public Camera playerCamera;
-    [Tooltip("Virtual camera controlling the playerCamera, already in the world space")] public Cinemachine.CinemachineFreeLook vCam;
-    [Space]
+    [Space(5.0f, order = 3)]
 
 
-    [Tooltip("NA")] public Vector3 offset = new Vector3(0, 10, 10);
 
-    [Header("States")]
+
+
+
+    [Header("States", order = 4)]
     //Stuns
-    [Tooltip("Are we immobolised")] [SyncVar] private bool immobilize;
-    [Tooltip("Have we been hit by the voodoo trap")] [SyncVar] private bool voodooPoisoned;
-    [Tooltip("Can we use abilities?")] [SyncVar] private bool mortal;
+    [Tooltip("Are we immobolised")][SyncVar] private bool immobilize;
+    [Tooltip("Have we been hit by the voodoo trap")][SyncVar] private bool voodooPoisoned;
+    [Tooltip("Can we use abilities?")][SyncVar] private bool mortal;
     [Tooltip("Can we use our tools?")][SyncVar] private bool paralyzed;
     [Tooltip("NA")] private float currentStunAfterTimer;
     [Tooltip("Time player is stunned after being stolen from")] public float timeForStunAfterSteal;
+    [Tooltip("Have we recently been stolen from?")][SyncVar] private bool hasBeenStolenFrom = false;
 
+    [Space(10.0f, order = 5)]
     //Variable Camera Controls
-    [Tooltip("Can the camera be controlled on the X Axis? 1 for Yes")] public bool xCamMovementEnabled = true;
-    [Tooltip("Can the camera be controlled on the Y Axis? 1 for Yes")] public bool yCamMovementEnabled = false;
-    [Tooltip("X axis for camera sensitivity")] [Range(0, 1)] public float xCamSensitivity = 0.5f;
-    [Tooltip("Y axis for camera sensitivity")] [Range(0, 1)] public float yCamSensitivity = 0.5f;
-    [Tooltip("Does the camera have to be controlled by pressing rmb?")] public bool manualMouseControl = true;
+    [Header("Camera", order = 6)]
+    [Tooltip("Camera attatched to the player, already in the world space")] public Camera playerCamera;
+    [Tooltip("Virtual camera controlling the playerCamera, already in the world space")] public Cinemachine.CinemachineFreeLook vCam;
+    [Space(1.0f, order = 7)]
+    [SerializeField][Tooltip("The amount of time the player must have been moving backwards for the flip to occur")][Range(0.0f, 3.0f)] private float flipTime = 1.0f;
+    private bool flipMovement = false;//Is the movement currently flipped
+
+    [Space(20.0f, order = 0)]
+    [Header("User Defined Settings(READ-ONLY)", order = 1)]
+    [Space(0.0f, order = 2)]
+    [HideInInspector][SyncVar] public string playerName;
+    [HideInInspector]public bool flipCameraWhenBackingUp = true;//
+    [HideInInspector][Tooltip("Does the camera have to be controlled by pressing rmb?")] public bool manualMouseControl = true;
+    [HideInInspector][Tooltip("Can the camera be controlled on the X Axis? 1 for Yes")] public bool xCamMovementEnabled = true;
+    [HideInInspector][Tooltip("Can the camera be controlled on the Y Axis? 1 for Yes")] public bool yCamMovementEnabled = false;
+    [HideInInspector][Tooltip("X axis for camera sensitivity")][Range(0, 1)] public float xCamSensitivity = 0.5f;
+    [HideInInspector][Tooltip("Y axis for camera sensitivity")][Range(0, 1)] public float yCamSensitivity = 0.5f;
 
     //Other Variables
-    [Tooltip("Have we recently been stolen from?")] [SyncVar] private bool hasBeenStolenFrom = false;
 
 
 
 
-    [Space]
-    [Header("DevMode")]
-    [Tooltip("Devmode allows us to disconnect ourselves from the player")] public bool devMode;
-    [Tooltip("Free look camera")] public GameObject devCam;
     #endregion
 
     #region SETUP_PLAYER
@@ -114,19 +115,12 @@ public class PlayerController : NetworkBehaviour
     {
         Debug.Log("OnStartAuthority: Hello I am starting authority for:" + this.playerName);
         Debug.Log("OnStartAuthority: This person, authority:" + hasAuthority + " ,isClient:" + isClient + " ,isServer:" + isServer + " ,isLocalPlayer " + isLocalPlayer);
-        GameObject.FindObjectOfType<ControlsSettings>().UpdateControls(this);
+
+        GameObject.FindObjectOfType<ControlsSettings>().UpdateControls(this);//Todo put settings somewhere else, like a settings manager
         //Attatches Camera
-        vCam = FindObjectOfType<Cinemachine.CinemachineFreeLook>();
-        if (vCam != null)
-        {
-            Invoke("SetCamera", 1);
-        }
-        else
-        {
-            Invoke("SetCamera", 5);
-        }
 
         //Setup player components and immobolise player
+        SetupPlayerName();
         CmdSetupPlayer();
         SetLoadoutReleased(false);
         base.OnStartAuthority();
@@ -147,6 +141,22 @@ public class PlayerController : NetworkBehaviour
         immobilize = false;
         hasBeenStolenFrom = false;
     }
+
+    [ClientCallback]
+    private void SetupPlayerName()
+    {
+        if (!hasAuthority)
+            return;
+        //Sets up player name for scoreboard use and floating name use
+        if (playerNameText == null && SceneManager.GetActiveScene().name == "GameScene")
+        {
+            playerNameText = Instantiate(Resources.Load<GameObject>("PlayerAssets/PlayerNameText_UI"));
+            playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
+            playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
+            playerNameText.GetComponent<Text>().text = playerName;
+            playerNameText.SetActive(true);
+        }
+    }
     /// <summary>
     /// Attatches the normal camera and devcam. Todo: It is very messy right now, will need to clean up later
     /// </summary>
@@ -161,138 +171,170 @@ public class PlayerController : NetworkBehaviour
         vCam.Follow = this.gameObject.transform;
         //vCam.transform.rotation = Quaternion.Euler(45, 0, 0);
         playerCamera = Camera.main;
-        if (!hasAuthority)
+    }
+
+        #endregion
+    private void PlayerCameraControl()
+    {
+       
+        if (Input.GetKeyDown(KeyCode.Y))
         {
-            //Disable other players cameras so that we don't accidentally get assigned to another players camera
-            if (playerCamera != null)
-                playerCamera.gameObject.SetActive(false);
+            yCamMovementEnabled = !yCamMovementEnabled;
+            //this allows us to lock while moving camera
+            //Not moving the the max speed out so we have less if statements to go through.
+            ToggleCameraControl();
         }
-        if (devCam == null)
+        if (Input.GetKeyDown(KeyCode.X))
         {
-            //REMINDER, you can't find the object if they are not in the same section ie dontdestroysection
-            devCam = GameObject.Find("DevCam");
-            Debug.LogError(devCam);
-            devCam.SetActive(false);
+            xCamMovementEnabled = !xCamMovementEnabled;
+            ToggleCameraControl();
+        }
+
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("<color=green>PlayerRotation.cs: GetMouseButton(1) || patchIn</color>");
+            manualMouseControl = !manualMouseControl;
+            //Cursor View
+            if (!manualMouseControl)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+            }
+
+            ToggleCameraControl();
+        }
+        
+
+    }
+    private void ToggleCameraControl()
+    {
+        //Max speed(Functionality)
+        if (!manualMouseControl && xCamMovementEnabled)
+        {
+            vCam.m_XAxis.m_MaxSpeed = (400 * xCamSensitivity);
         }
         else
         {
-            devCam = Instantiate(devCam);
-            devCam.SetActive(false);
+            vCam.m_XAxis.m_MaxSpeed = 0;
         }
-    }
-    #endregion
-
-
-    /// <summary>
-    /// Turns devcam on and off
-    /// </summary>
-    private void DevModeOn()
-    {
-        if (vCam != null)
-            vCam.enabled = !devMode;
-        if (playerCamera != null)
+        if (!manualMouseControl && yCamMovementEnabled)
         {
-            playerCamera.enabled = !devMode;
-            devCam.SetActive(devMode);
+            vCam.m_YAxis.m_MaxSpeed = (40 * yCamSensitivity);
         }
-        FindObjectOfType<Canvas>().enabled = !devMode;
+        else
+        {
+            vCam.m_YAxis.m_MaxSpeed = 0;
+        }
     }
+    private void CameraFlipping()
+    {
+
+        if (Input.GetAxisRaw("Vertical") == -1)
+        {
+            flipTime -= Time.deltaTime;
+            Vector3 diff = new Vector3(vCam.transform.position.x - transform.position.x, vCam.transform.position.y - transform.position.y, vCam.transform.position.z - transform.position.z);
+
+            if (flipTime < 0 && diff.magnitude < 8 && !flipMovement)
+            {
+                Debug.Log("<color=green> FLIP THE CAMERA</color>");
+                vCam.transform.position = transform.position;//Vector3.Slerp(vCam.transform.position, transform.position, 1.0f);
+                vCam.ForceCameraPosition(transform.position - diff, transform.rotation);
+                flipTime = 1;
+                flipMovement = true;
+            }
+        }
+        else
+        {
+            flipMovement = false;
+            flipTime = 1;
+            flipMovement = false;
+        }
+    }
+
 
     [ClientCallback]
     void Update()
     {
 
 
-        if (!hasAuthority) { return; };
-
-        #region DEVMODE
-        if (Input.GetKey(KeyCode.P)) { devMode = true; }
-        if (Input.GetKey(KeyCode.O)) { devMode = false; }
-        DevModeOn();
-        if (devMode) { return; }
-        #endregion
+        if (!hasAuthority)//If
+            return;
 
         if (abilityInventory == null)
             return;
 
         abilityInventory.Update();
 
-        //Sets up player name for scoreboard use and floating name use
-        if (playerNameText == null && SceneManager.GetActiveScene().name == "GameScene")
+        if (!loadoutReleased)
         {
-            playerNameText = Instantiate(Resources.Load<GameObject>("PlayerAssets/PlayerNameText_UI"));
-            playerNameText.transform.SetParent(FindObjectOfType<CanvasUIManager>().playerTextContainer.transform);
-            playerNameText.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
-            playerNameText.SetActive(true);
-            playerNameText.GetComponent<Text>().text = playerName;
+            Vector3 pos = FindObjectOfType<Cinemachine.CinemachineFreeLook>().transform.position; pos.x += Time.deltaTime * 5;
+            FindObjectOfType<Cinemachine.CinemachineFreeLook>().transform.position = pos; 
+            return; 
         }
-        //Todo: Cleanup, maybe instead use loadoutReleased to return instead, this should help boost speed as
-        //we can get rid of the pre-emptive code loading and reduce the amount of code that is predicted.
-        if (loadoutReleased)
+        if (playerCamera == null)
+            SetCamera();
+
+        if (flipCameraWhenBackingUp)
+            PlayerCameraControl();
+
+        if (immobilize == false)
         {
-
-
-            if (immobilize == false)
+            #region MOVEMENT_AND_ANIMATION
+            if (isGrounded)
             {
-
-
-                #region MOVEMENT_AND_ANIMATION
-                if (isGrounded)
+                //Todo: When changing the camera behaviour, this movement code must be changed as it is not viable. Consider using rigidbody
+                playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+                if (flipMovement)
                 {
-                    playerMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-                    playerMovement = playerCamera.transform.TransformDirection(playerMovement);//Allows player to move along camera rotation axis
-                    if (Input.GetAxisRaw("Vertical") < -0.5)//To stop backwards going up
-                    {
-                        playerMovement.y = 0;
-                    }
+                    playerMovement.z *= -1;
                 }
+                playerMovement = playerCamera.transform.TransformDirection(playerMovement);//Allows player to move along camera rotation axis
+                //if (Input.GetAxisRaw("Vertical") < -0.5)//To stop backwards going up
+                //{
+                    playerMovement.y = playerGravity;
+                //}
+            }
 
 
+            CameraFlipping();
+            //Animations, with movement checks
+            if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+            {
+            
 
-                //Animations, with movement checks
-                if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+                playerAnim.SetBool("moving", true);
+
+                //Voodoo poison
+                if (voodooPoisoned)
                 {
-                    direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-
-                    playerAnim.SetBool("moving", true);
-
-                    //Voodoo poison
-                    if (voodooPoisoned)
-                    {
-                        playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
-                        direction *= -1;
-                    }
+                    playerMovement = new Vector3(playerMovement.x * -1, playerMovement.y, playerMovement.z * -1);
                 }
-                else
-                {
-                    playerAnim.SetBool("moving", false);
-                }
-
-                #region FALLING
-
-                //Projects a sphere underneath player to check ground layer
-                isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
-
-                //Player recieves a constant y velocity from gravity
-                playerFallingVelocity.y += playerGravity;// * Time.deltaTime;
-
-                //If player is fully grounded then apply some velocity down, this will change the 'floating' period before plummeting.
-                if (isGrounded && playerFallingVelocity.y < 0)
-                {
-                    playerFallingVelocity.y = -5f;
-                }
-
-                #endregion
-
-                playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
-                playerCharacterController.Move(playerFallingVelocity * Time.deltaTime);
-                PlayerRotation();
-                
-                #endregion
             }
             else
+            {
+
                 playerAnim.SetBool("moving", false);
+            }
+
+            #region FALLING
+
+            //Projects a sphere underneath player to check ground layer
+            isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, 2, 0), groundDistance, ground);
+
+            #endregion
+
+            playerCharacterController.Move(playerMovement * speed * Time.deltaTime);
+            //playerCharacterController.Move(playerFallingVelocity * Time.deltaTime);
+            PlayerRotation();
+
+            #endregion
         }
+        else
+            playerAnim.SetBool("moving", false);
 
         //Todo:Remove ability pickups from here? Different Stash button as well? Thoughts for discussion
         #region ARTEFACT_INTERACTION
@@ -318,7 +360,7 @@ public class PlayerController : NetworkBehaviour
                     }
                     CmdClearTargetArtefacts();
                     tempArtefactStorage.Clear();
-                    
+
                     if (NetworkClient.localPlayer.GetComponent<PlayerController>() == this)
                         FindObjectOfType<CanvasUIManager>().CloseHintMessage();
                 }
@@ -430,12 +472,7 @@ public class PlayerController : NetworkBehaviour
             }
         }
         #endregion
-
-        //Todo: Find a different way to stop players from climbing obstacles as this is unreliable
-        if (playerFallingVelocity.y < -200)
-        {
-            CmdServerValidateHit();
-        }
+    
     }
 
     /// <summary>
@@ -444,10 +481,7 @@ public class PlayerController : NetworkBehaviour
     public void SetLoadoutReleased(bool value)
     {
         loadoutReleased = value;
-        if (GameObject.Find("_wamp_water") && value == true)
-        {
-            GameObject.Find("_wamp_water").GetComponent<MeshCollider>().enabled = false;
-        }
+
     }
 
     /// <summary>
@@ -486,23 +520,7 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        //Allows options for camera movement
-        if ((Input.GetMouseButton(1) || !manualMouseControl) && xCamMovementEnabled)
-        {
-            vCam.m_XAxis.m_MaxSpeed = (400 * xCamSensitivity);
 
-        }
-        else
-        {
-            vCam.m_XAxis.m_MaxSpeed = 0;
-        }
-        if ((Input.GetMouseButton(1) || !manualMouseControl) && yCamMovementEnabled)
-        {
-            vCam.m_YAxis.m_MaxSpeed = (40 * yCamSensitivity);
-        }else
-        {
-            vCam.m_YAxis.m_MaxSpeed = 0;
-        }
     }
     [Command(requiresAuthority = false)]
     public void CmdSetHasBeenStolenFrom(bool value)
@@ -537,7 +555,7 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void RpcMovePlayer(Vector3 position, string playerName)
     {
-        if(this.playerName == playerName)
+        if (this.playerName == playerName)
         {
             transform.position = position;
         }
@@ -597,7 +615,7 @@ public class PlayerController : NetworkBehaviour
         //If it is available for pickup and it currently isn't in tempartefactstorage
         if (artefactBehaviour &&
             tempArtefactStorage.Contains(artefactBehaviour) == false && targetedArtefacts.Contains(artefactBehaviour) == false &&
-            artefactBehaviour.IsAvaliableForPickup() && 
+            artefactBehaviour.IsAvaliableForPickup() &&
             targetedArtefacts.Count <= 4)
         {
             //Adds it temporarily
@@ -865,7 +883,7 @@ public class PlayerController : NetworkBehaviour
         else
         {
             Debug.Log("RpcToggleCamouflage the ClientRpc is hitting client called: " + NetworkClient.localPlayer.GetComponent<PlayerController>().playerName);
-            
+
         }
     }
 
@@ -898,19 +916,19 @@ public class PlayerController : NetworkBehaviour
 
 #region deadCode
 
-          //Old camera code
-            /* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
-             {
-                 if (lastMousePos != Input.mousePosition)
-                 {
-                     float mouseMoveDistance = lastMousePos.x - Input.mousePosition.x;
-                     if (inverted)
-                         mouseMoveDistance *= -1;
-                     this.transform.Rotate(new Vector3(0, mouseMoveDistance * rotationSpeed * Time.deltaTime, 0));
-                 }
+//Old camera code
+/* if (Input.mousePosition.x > 0 && Input.mousePosition.x < Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
+ {
+     if (lastMousePos != Input.mousePosition)
+     {
+         float mouseMoveDistance = lastMousePos.x - Input.mousePosition.x;
+         if (inverted)
+             mouseMoveDistance *= -1;
+         this.transform.Rotate(new Vector3(0, mouseMoveDistance * rotationSpeed * Time.deltaTime, 0));
+     }
 
-                 lastMousePos = Input.mousePosition;
-             }
+     lastMousePos = Input.mousePosition;
+ }
 */
 //////Remember, this was all called from Update() A [ClientCallback], also remember we testing player position. This is updated from the transform, not necessarily the function
 //No tags, if we do something, everyone else sees that

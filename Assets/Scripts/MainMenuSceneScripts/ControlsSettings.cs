@@ -6,7 +6,7 @@ public class ControlsSettings : MonoBehaviour
 {
 
     [SerializeField] [Tooltip("Can the camera be moved on the x axis with mouse controls")] public bool xCamMovement = true;
-    [SerializeField] [Tooltip("Can the camera be moved on the y axis with mouse controls")] public bool yCamMovement = false;
+    [SerializeField] [Tooltip("Can the camera be moved on the y axis with mouse controls")] public bool yCamMovement = true;
     [SerializeField] [Tooltip("Whether the player has to press the rmb to use move the camera with mouse")] public bool manualCamera = true;
 
     [SerializeField] [Tooltip("Whether the player has to press the rmb to use move the camera with mouse")] public float xCamSensitivity = 0.5f;
