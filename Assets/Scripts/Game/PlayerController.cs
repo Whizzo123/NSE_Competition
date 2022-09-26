@@ -705,7 +705,8 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     void HitForward()
     {
-        FindObjectOfType<AudioManager>().PlaySound("Cut");
+        if(FindObjectOfType<AudioManager>().IsSoundPlaying("Cut") == false)
+            FindObjectOfType<AudioManager>().PlaySound("Cut");
 
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit[] hit;

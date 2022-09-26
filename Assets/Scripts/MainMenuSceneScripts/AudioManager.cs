@@ -227,6 +227,11 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public bool IsSoundPlaying(string audioName)
+    {
+        AudioClips audio = Array.Find(aud, AudioClips => AudioClips.clipName == audioName);
+        return audio.audioSource.isPlaying;
+    }
 
 
 
