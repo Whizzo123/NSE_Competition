@@ -29,6 +29,7 @@ public class CanvasUIManager : MonoBehaviour
     public WinScreenUI winScreen;
     public Text TimeText;
     public Text loadoutTimeText;
+    public GameObject pauseMenu;
 
     /// <summary>
     /// Show a hint message with no time associated to it's visibility. Manually close it with <see cref="CloseHintMessage"/>.
@@ -73,5 +74,17 @@ public class CanvasUIManager : MonoBehaviour
         int mins = timeLeft / 60;
         int seconds = timeLeft % 60;
         TimeText.text = mins + ":" + seconds;
+    }
+
+    public void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            pauseMenu.SetActive(!pauseMenu.activeInHierarchy);
+        }
+    }
+    public void LeaveLobby()
+    {
+        MyNetworkManager.singleton.StopClient();
     }
 }

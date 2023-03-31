@@ -171,6 +171,8 @@ public class MyNetworkManager : NetworkManager
     public void StartGame()
     {
         //if (!IsReadyToStart()) { return; }
+        SteamLobby.instance.SetLobbyType(ELobbyType.k_ELobbyTypePrivate);
+        
         ServerChangeScene("Plains");
     }
     #endregion

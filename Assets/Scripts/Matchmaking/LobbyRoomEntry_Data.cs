@@ -8,6 +8,7 @@ public class LobbyRoomEntry_Data : MonoBehaviour
     public CSteamID lobbyID;
     public string lobbyName;
     public Text lobbyNameText;
+    public int numberOfPlayers;
 
     public void SetLobbyData()
     {

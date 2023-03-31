@@ -53,9 +53,26 @@ public class SteamLobby : MonoBehaviour
         manager.StartHost();
 
         SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey, SteamUser.GetSteamID().ToString());
+        SteamMatchmaking.SetLobbyType(new CSteamID(callback.m_ulSteamIDLobby), ELobbyType.k_ELobbyTypePublic);
+        SteamMatchmaking.SetLobbyJoinable(new CSteamID(currentLobbyId), true);
+        SteamMatchmaking.SetLobbyMemberLimit(new CSteamID(currentLobbyId), 5);
         SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "LobbyName", SteamFriends.GetPersonaName().ToString());
     }
+    public void SetLobbyType(ELobbyType type)
+    {
+      
+        SteamMatchmaking.SetLobbyType(new CSteamID(currentLobbyId), type);
+        if (type == ELobbyType.k_ELobbyTypePrivate)
+        {
+            SteamMatchmaking.SetLobbyJoinable(new CSteamID(currentLobbyId), false);
+        }
+        else
+        {
+            SteamMatchmaking.SetLobbyJoinable(new CSteamID(currentLobbyId), true);
 
+        }
+
+    }
     private void OnJoinRequest(GameLobbyJoinRequested_t callback)
     {
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
@@ -71,7 +88,7 @@ public class SteamLobby : MonoBehaviour
             return;
         }
         manager.networkAddress = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey);
-
+        
         manager.StartClient();
     }
 
@@ -96,6 +113,7 @@ public class SteamLobby : MonoBehaviour
 
         SteamMatchmaking.AddRequestLobbyListResultCountFilter(10);
         SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
+        
         SteamMatchmaking.RequestLobbyList();
     }
     /// <summary>

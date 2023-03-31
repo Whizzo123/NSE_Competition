@@ -71,8 +71,9 @@ public class LobbyController : MonoBehaviour
     }
     public void LeaveLobby()
     {
-        Debug.Log("LobbyController.LeaveLobby() , stop client");
         manager.StopClient();
+        Debug.Log("LobbyController.LeaveLobby() , stop client");
+
     }
     public void CheckIfAllReady()
     {
@@ -89,30 +90,7 @@ public class LobbyController : MonoBehaviour
                 break;
             }
         }
-        //if (allReady)
-        //{
-        //    if (localPlayerController.playerIDNumber == 1)
-        //    {
-        //        startGameButton.SetActive(true);
-        //    }
-        //    else
-        //    {
-        //        startGameButton.SetActive(false);
-        //    }
-        //}
-        //else
-        //{
-        //    //startGameButton.SetActive(false);
 
-        //    //if (localPlayerController.playerIDNumber == 1)
-        //    //{
-        //    //    lobbyVisibility.GetComponent<Dropdown>().interactable = true;
-        //    //}
-        //    //else
-        //    //{
-        //    //    lobbyVisibility.GetComponent<Dropdown>().interactable = false;
-        //    //}
-        //}
         if (allReady)
         {
             if (localPlayerController.playerIDNumber == 1)
@@ -265,13 +243,13 @@ public class LobbyController : MonoBehaviour
         switch (lobbyType)
         {
             case 0:
-                SteamMatchmaking.SetLobbyType(new CSteamID(SteamLobby.instance.currentLobbyId), ELobbyType.k_ELobbyTypePublic);
+                SteamLobby.instance.SetLobbyType(ELobbyType.k_ELobbyTypePublic);
                 break;
             case 1:
-                SteamMatchmaking.SetLobbyType(new CSteamID(SteamLobby.instance.currentLobbyId), ELobbyType.k_ELobbyTypePrivate);
+                SteamLobby.instance.SetLobbyType(ELobbyType.k_ELobbyTypePrivate);
                 break;
             case 2:
-                SteamMatchmaking.SetLobbyType(new CSteamID(SteamLobby.instance.currentLobbyId), ELobbyType.k_ELobbyTypeFriendsOnly);
+                SteamLobby.instance.SetLobbyType(ELobbyType.k_ELobbyTypeFriendsOnly);
                 break;
             default:
                 break;

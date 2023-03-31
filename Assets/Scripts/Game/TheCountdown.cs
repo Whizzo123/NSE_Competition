@@ -101,7 +101,9 @@ public class TheCountdown : NetworkBehaviour
     private void RpcDisconnectPlayer()
     {
         MyNetworkManager.singleton.StopClient();
+        Debug.Log("<color = green>[ClientRPC]TheCountdown.cs::RPCDisconnectPlayer() - Client has stopped</color>");
     }
+    
 
     /// <summary>
     /// Loads in abilites selected, and disables the laodout screen and disables player immobolisation.
@@ -237,5 +239,9 @@ public class TheCountdown : NetworkBehaviour
         }
         RpcDisconnectPlayer();
         MyNetworkManager.singleton.StopHost();
+        Debug.Log("<color = blue>[Server]TheCountdown.cs::WinScreenDisplayTimer() - Host has stopped</color>");
+        NetworkServer.DisconnectAll();
+        Debug.Log("<color = blue>[Server]TheCountdown.cs::WinScreenDisplayTimer() - DisconnectAll</color>");
+
     }
 }
